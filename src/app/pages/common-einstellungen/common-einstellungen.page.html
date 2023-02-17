@@ -1,0 +1,88 @@
+<ion-header>
+  <page-header #PageHeader>
+    <page-header-menu></page-header-menu>
+  </page-header>
+</ion-header>
+<ion-content>
+
+  <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
+    <tr>
+      <td style="width: 460px">
+        <button-value [Buttontext]="'Anzahl der Favoriten pro Zeile'"
+                      [Wert_A]="Pool.Mitarbeitersettings.HeadermenueMaxFavoriten.toString()"
+                      [Buttoncolor]="Basics.Farben.Burnicklbraun"
+                      (ButtonClicked)="FavoritenanzahlClicked()">
+        </button-value>
+      </td>
+    </tr>
+  </table>
+
+  <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
+    <tr>
+      <td style="width: 460px">
+        <button-value [Buttontext]="'Meilensteine anzeigen nach Erledigung'"
+                      [Wert_A]="Pool.Mitarbeitersettings.AufgabenMeilensteineNachlauf.toString() + ' Kalenderwochen'"
+                      [Buttoncolor]="Basics.Farben.Burnicklbraun"
+                      (ButtonClicked)="MeilensteineNachlaufClicked()">
+        </button-value>
+      </td>
+    </tr>
+  </table>
+
+  <ion-grid *ngIf="Pool.Mitarbeitersettings !== null">
+    <ion-row>
+      <ion-col>
+        <table  class="paddingtable">
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowNummer" (CheckChanged)="ListesettingCheckChanged($event, 'Nummer')"></checkbox-clon></td><td>Nummer</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowStartdatum" (CheckChanged)="ListesettingCheckChanged($event, 'Startdatum')"></checkbox-clon></td><td>Startdatum</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowAufgabe" (CheckChanged)="ListesettingCheckChanged($event, 'Aufgabe')"></checkbox-clon></td><td>Aufgabe</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowBemerkung" (CheckChanged)="ListesettingCheckChanged($event, 'Bemerkungen')"></checkbox-clon></td><td>Bemerkungen</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowFortschritt" (CheckChanged)="ListesettingCheckChanged($event, 'Fortschritt')"></checkbox-clon></td><td>Fortschritt</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowZeitansatz" (CheckChanged)="ListesettingCheckChanged($event, 'Zeitansatz')"></checkbox-clon></td><td>Zeitansatz</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowTermin" (CheckChanged)="ListesettingCheckChanged($event, 'Termin')"></checkbox-clon></td><td>Termin</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowTage" (CheckChanged)="ListesettingCheckChanged($event, 'Tage')"></checkbox-clon></td><td>Tage</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowZustaendig" (CheckChanged)="ListesettingCheckChanged($event, 'Zustaendig')"></checkbox-clon></td><td>Zuständig</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowStatus" (CheckChanged)="ListesettingCheckChanged($event, 'Status')"></checkbox-clon></td><td>Status</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowMeintag" (CheckChanged)="ListesettingCheckChanged($event, 'Meintag')"></checkbox-clon></td><td>Meintag</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowMeinewoche" (CheckChanged)="ListesettingCheckChanged($event, 'Meine Woche')"></checkbox-clon></td><td>Meintag</td>
+          </tr>
+        </table>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
+<ion-footer>
+  <page-footer #PageFooter>
+
+  </page-footer>
+</ion-footer>
+
+<auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex"
+                [Dialogbreite]="300" [Dialoghoehe]="300" [PositionY]="200"
+                [Titel]="Auswahltitel" [Iconname]="'apps-outline'"
+                (OkClickedEvent)="AuswahlOkButtonClicked($event)"
+                (CancelClickedEvent)="ShowAuswahl = false"></auswahl-dialog>

@@ -1,0 +1,162 @@
+<ion-header>
+  <page-header #PageHeader>
+    <page-header-menu [ShowSuchleiste]="true" [ShowProjektetitle]="true"
+                      [ShowSandortfilter]="ShowMitarbeiterauswahl === false" (StandortfilterClicked)="StandortfilterClickedHandler()"
+                      (SucheChanged)="SucheChanged($event)">
+    </page-header-menu>
+  </page-header>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item class="ion-text-wrap" class="ion-no-padding" *ngFor="let Projekt of Liste, let i = index"  (click)="ProjektButtonClicked(i)">
+      <ion-grid class="maingridclass">
+        <ion-row  *ngIf="Buchstabenliste[i] !== ''">
+          <ion-col size="12">
+            <table class="paddingsmalltable">
+              <tr>
+                <td>
+                  <ion-text color="orange"><b>{{Buchstabenliste[i]}}</b></ion-text>
+                </td>
+              </tr>
+            </table>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col sizeXs="12" sizeSm="5" sizeMd="5" sizeLg="5" sizeXl="5">
+              <ion-grid>
+                <ion-row>
+                  <ion-col size="12">
+                    <table>
+                      <tr>
+                        <td>
+                          <div class="kontaktclass">
+                            <table class="paddingsmalltable">
+                              <tr>
+                                <td style="width: 30px"><div style="height: 30px; width: 30px; border-radius: 4px" [style.background]="DB.GetProjektfarbeByName(Projekt.Projektfarbe).Background"></div></td>
+                                <td>
+                                  <table>
+                                    <tr *ngIf="!Projekt.Filtered">
+                                      <td>{{Projekt.Projektname}} / {{Projekt.Projektkurzname}}</td>
+                                    </tr>
+                                    <tr *ngIf="Projekt.Filtered">
+                                      <td>
+                                        <span>{{Projekt.Text_A}}</span><span style="color: green">{{Projekt.Text_B}}</span><span>{{Projekt.Text_C}}</span> / {{Projekt.Projektkurzname}}
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td colspan="2">
+
+                                  <table class="infotable" style="white-space:nowrap;">
+                                    <tr>
+                                      <td class="ergonametextclass">Projektnummer:</td><td>{{Projekt.Projektnummer}}</td><td style="width: 20px"></td>
+                                      <td class="ergonametextclass">Projektleiter:</td><td>{{DBMitarbeiter.GetMitarbeitername(Projekt.ProjektleiterID)}}</td><td style="width: 20px"></td>
+                                      <td class="ergonametextclass">Stellvertreter:</td><td>{{DBMitarbeiter.GetMitarbeitername(Projekt.StellvertreterID)}}</td><td style="width: 20px"></td>
+                                      <td class="ergonametextclass">Standort:</td><td>{{DBStandort.GetStandort(Projekt.StandortID)}}</td><td style="width: 20px"></td>
+                                      <td class="ergonametextclass">Status:</td><td [style.color]="DB.GetProjektstatuscolor(Projekt.Status)">{{Projekt.Status}}</td><td style="width: 20px"></td>
+                                    </tr>
+                                  </table>
+
+                                </td>
+                              </tr>
+                            </table>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+
+  <table *ngIf="Liste.length === 0" class="paddingtable" width="100%">
+    <tr>
+      <td align="center">
+        keine Projekte vorhanden
+      </td>
+    </tr>
+  </table>
+
+  <abstand-element-fixed></abstand-element-fixed>
+</ion-content>
+<ion-footer>
+  <page-footer #PageFooter>
+
+    <div class="rootbuttonclass" (click)="AddProjektButtonClicked()">
+      <ion-icon style="font-size: 28px" color="burnicklgruen" name="add-circle-outline"></ion-icon>
+    </div>
+
+  </page-footer>
+</ion-footer>
+
+<pj-projekt-editor *ngIf="ShowEditor"
+                   [Dialogbreite]="StrukturDialogbreite" [Dialoghoehe]="StrukturDialoghoehe" [PositionY]="DialogPosY" [Titel]="GetProjekteditorTitel()" Iconname="business-outline"
+                    (StatusClickedEvent)="StatusClickedHandler()"
+                    (StandortClickedEvent)="StandortClickedHandler()"
+                    (ProjektleiterClickedEvent)="ProjektleiterClickedHandler()"
+                    (StellvertreterClickedEvent)="StellvertreterClickedHandler()"
+                    (CancelClickedEvent)="ShowEditor = false"
+                    (OkClickedEvent)="ShowEditor = false"
+                    (BeteiligteClickedEvend)="BeteiligteClickedEventHandler($event)"
+                    (AddBeteiligteClickedEvent)="AddProjektbeteiligteButtonClickedHandler()"
+                    (AddBauteilClickedEvent)="AddBauteilClickedHandler()"
+                    (AddGeschossClickedEvent)="AddGeschossClickedHandler()"
+                    (AddRaumClickedEvent)="AddRaumClickedHandler()"
+                    (EditBauteilClickedEvent)="EditBauteilClickedHandler($event)"
+                    (EditGeschossClickedEvent)="EditGeschossClickedHandler($event)"
+                    (EditRaumClickedEvent)="EditRaumClickedHandler($event)"></pj-projekt-editor>
+
+<pj-beteiligten-editor *ngIf="ShowBeteiligteneditor" [Dialogbreite]="600" [Dialoghoehe]="640" [PositionY]="200" [Titel]="GetBerteiligteeditorTitel()" Iconname="color-filter-outline"
+                       (CancelClickedEvent)="ShowBeteiligteneditor = false"
+                       (OkClickedEvent)="ShowBeteiligteneditor = false"
+                       (DeleteClickedEvent)="ShowBeteiligteneditor = false"
+                       (FachbereichClickedEvent)="BeteiligteFachbereichClickedEventHandler()">
+</pj-beteiligten-editor>
+
+<pj-gebaeude-bauteileditor *ngIf="ShowBauteilEditor" [PositionY]="200" [Dialoghoehe]="200" [Dialogbreite]="300" Iconname="hammer-outline" [Titel]="GetBauteileditorTitel()"
+                       (CancelClickedEvent)="ShowBauteilEditor = false"
+                       (OkClickedEvent)="ShowBauteilEditor = false">
+</pj-gebaeude-bauteileditor>
+
+<pj-gebaeude-geschosseditor *ngIf="ShowGeschossEditor" [PositionY]="200" [Dialoghoehe]="400" [Dialogbreite]="300" Iconname="hammer-outline" [Titel]="GetGeschosseditorTitel()"
+                            (CancelClickedEvent)="ShowGeschossEditor = false"
+                            (OkClickedEvent)="ShowGeschossEditor = false"
+                            (DeleteClickedEvent)="ShowGeschossEditor = false">
+</pj-gebaeude-geschosseditor>
+
+<pj-gebaeude-raumeditor *ngIf="ShowRaumEditor" [PositionY]="200" [Dialoghoehe]="400" [Dialogbreite]="300" Iconname="hammer-outline" [Titel]="GetRaumeditorTitel()"
+                            (CancelClickedEvent)="ShowRaumEditor = false"
+                            (OkClickedEvent)="ShowRaumEditor = false"
+                            (DeleteClickedEvent)="ShowRaumEditor = false">
+</pj-gebaeude-raumeditor>
+
+<fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
+                        [Titel]="MitarbeiterauswahlTitel"
+                        [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+                        [Multiselect]="false"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
+                        (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
+                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
+
+<auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex"
+                [Dialogbreite]="200" [Dialoghoehe]="200" [PositionY]="200"
+                [Titel]="Auswahltitel" [Iconname]="GetDialogTitelicon()"
+                (OkClickedEvent)="AuswahlOkButtonClicked($event)"
+                (CancelClickedEvent)="ShowAuswahl = false"></auswahl-dialog>
+
+<alphabet #Alphabet (AlphabetClicked)="AlphabetClicked($event)"
+          [PageHeader]="PageHeader"
+          [PageFooter]="PageFooter"
+          [Buchstabenliste]="Kontaktephabet"
+          [Auswahl]="Alphabetauswahl"
+          [Breite]="Alphapetbreite"></alphabet>
+
+
+

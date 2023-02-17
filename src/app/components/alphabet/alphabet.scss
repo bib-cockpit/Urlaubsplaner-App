@@ -1,0 +1,22 @@
+.alphabetclass {
+
+  position: absolute;
+  background: #ffffff;
+  right: 0px;
+  width: 12vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; // horizontal
+}
+
+.alphabetitem {
+
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center;     // vertical
+  flex-grow: 1;
+  color: white;
+  font-size: 80%;
+  cursor: pointer;
+}
+

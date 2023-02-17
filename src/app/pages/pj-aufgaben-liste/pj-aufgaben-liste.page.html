@@ -1,0 +1,363 @@
+<!--
+<div style="position: absolute; z-index: 1000000; width: 100px; height: 100px; left: 0px; top: 212px; background: red"></div>
+-->
+
+<ion-header>
+  <page-header #PageHeader>
+    <page-header-menu
+      [Filterorigin]="Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Zeitfilter"
+      (FavoritenClicked)="FavoritenClickedHandler($event)"
+      (FilterChanged)="FilterChangedHandler($event)"
+      (ZeitspanneFilterClicked)="ZeitspanneFilterClickedHandler()"></page-header-menu>
+  </page-header>
+</ion-header>
+<ion-content>
+
+  <!--
+  {{Heute.format('DD.MM.YYYY')}} / {{Heute.format('dddd')}}
+  -->
+
+  <!-- Meilensteine Projektpunkte  -->
+
+  <ng-container *ngIf="DBProjekte.CurrentFavoritprojektindex === 1500">
+    <ng-container  *ngFor="let Datenliste of this.Meilensteineprojektpunkteliste; let projektindex = index">
+
+      <div style="padding: 4px;">
+        <pj-projektpunkteliste [Datenliste]="Datenliste"
+                               [CheckFilterEnabled]="false"
+                               [ShowProjektnamen]="true"
+                               [ShowMeintag]="true"
+                               [Projekt]="MeilensteineProjektliste[projektindex]"
+                               (FortschrittClicked)="FortschrittClickedHandler($event, projektindex, Datenursprungsvarianten.Meilensteine)"
+                               (ZustaendigExternZuweisenClicked)="ListeZustaendigExternHandler($event, projektindex, Datenursprungsvarianten.Meilensteine)"
+                               (ZustaendigInternZuweisenClicked)="ListeZustaendigInternHandler($event, projektindex, Datenursprungsvarianten.Meilensteine)"
+                               (StatusClicked)="StatusClickedHandler($event, projektindex, Datenursprungsvarianten.Meilensteine)"
+                               (EndedatumClicked)="EndedatumClickedHandler($event, projektindex, Datenursprungsvarianten.Meilensteine)"
+                               (MeintagClicked)="PrepareDaten()"
+                               (MeilensteinClicked)="PrepareDaten()"
+                               (ProtokollmarkeClicked)="ProtokollmarkeClickedHandler()"
+                               (AufgabeClicked)="AufgabeClickedHandler($event, projektindex, Datenursprungsvarianten.Meilensteine)"
+                               (TerminFiltermodusClicked)="TerminFiltermodusClickedHandler($event)"
+                               (AddProjektpunktClicked)="AddAufgabeClickedHandler(projektindex, Datenursprungsvarianten.Meilensteine)"
+                               (MeinewocheZuweisenClicked)="MeinewocheZuweisenClickedHandler($event, projektindex, Datenursprungsvarianten.Meilensteine)"
+                               (MeinewocheBearbeitenClicked)="MeineWocheBearbeitenClickedHandler($event, projektindex, Datenursprungsvarianten.Meilensteine)">
+        </pj-projektpunkteliste>
+
+      </div>
+
+    </ng-container>
+
+    <div *ngIf="Meilensteineprojektpunkteliste.length === 0" class="keineintragclass">
+      Kein Eintrag vorhanden
+    </div>
+  </ng-container>
+
+  <!-- Mein Tag Projektpunkte  -->
+
+  <ng-container *ngIf="DBProjekte.CurrentFavoritprojektindex === 2000">
+
+    <ng-container  *ngFor="let Datenliste of this.Meintagprojektpunkteliste; let projektindex = index">
+
+      <div *ngIf="DBProjektpunkte.CountProjektpunkte(Datenliste, true) !== 0" style="padding: 4px;">
+        <pj-projektpunkteliste [Datenliste]="Datenliste"
+                               [ShowProjektnamen]="true"
+                               [ShowMeintag]="true"
+                               [Projekt]="MeinTagProjektliste[projektindex]"
+                               (FortschrittClicked)="FortschrittClickedHandler($event, projektindex, Datenursprungsvarianten.MeinTag)"
+                               (ZustaendigExternZuweisenClicked)="ListeZustaendigExternHandler($event, projektindex, Datenursprungsvarianten.MeinTag)"
+                               (ZustaendigInternZuweisenClicked)="ListeZustaendigInternHandler($event, projektindex, Datenursprungsvarianten.MeinTag)"
+                               (StatusClicked)="StatusClickedHandler($event, projektindex, Datenursprungsvarianten.MeinTag)"
+                               (EndedatumClicked)="EndedatumClickedHandler($event, projektindex, Datenursprungsvarianten.MeinTag)"
+                               (MeintagClicked)="PrepareDaten()"
+                               (MeilensteinClicked)="PrepareDaten()"
+                               (ProtokollmarkeClicked)="ProtokollmarkeClickedHandler()"
+                               (AufgabeClicked)="AufgabeClickedHandler($event, projektindex, Datenursprungsvarianten.MeinTag)"
+                               (TerminFiltermodusClicked)="TerminFiltermodusClickedHandler($event)"
+                               (AddProjektpunktClicked)="AddAufgabeClickedHandler(projektindex, Datenursprungsvarianten.MeinTag)"
+                               (MeinewocheZuweisenClicked)="MeinewocheZuweisenClickedHandler($event, projektindex, Datenursprungsvarianten.MeinTag)"
+                               (MeinewocheBearbeitenClicked)="MeineWocheBearbeitenClickedHandler($event, projektindex, Datenursprungsvarianten.MeinTag)">
+        </pj-projektpunkteliste>
+
+      </div>
+
+
+    </ng-container>
+
+    <div *ngIf="Meintagprojektpunkteliste.length === 0" class="keineintragclass">
+      Kein Eintrag vorhanden
+    </div>
+  </ng-container>
+
+  <!-- Meine Woche --->
+
+  <ng-container *ngIf="DBProjekte.CurrentFavoritprojektindex === 3000">
+
+    <div style="width: 100%; background: red; overflow: hidden">
+      <table style="width: 100%">
+        <tr>
+          <td [style.width.px]="Tagbreite" [style.height.px]="Listenhoehe">
+            <div class="tagaufteilungkeeperdivclass">
+              <div *ngFor="let Punkt of DBProjektpunkte.Wochenpunkteliste['Montag']" class="tagaufteilungeintragdivclass"
+                   [style.background]="DBProjekte.GetProjektFarbe(Punkt).Background"
+                   [style.color]="DBProjekte.GetProjektFarbe(Punkt).Foreground"
+                   [style.height.px]="GetProjektpunthoehe(Punkt)"
+                   (click)="MeineWocheEintragEditClicked($event, Punkt, 'Montag')">
+                <table style="width: 100%">
+                  <tr>
+                    <td [innerHTML]="GetProjektpunktAufgabentext(Punkt)"></td>
+                    <td style="width: 30px"><ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Montag')"></ion-icon></td>
+                  </tr>
+                  <tr>
+                    <td><div (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
+                    <td style="width: 30px"><ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Montag')"></ion-icon></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </td>
+          <td style="width: 1px; background: white"></td>
+          <td [style.width.px]="Tagbreite" [style.height.px]="Listenhoehe">
+            <div class="tagaufteilungkeeperdivclass">
+              <div *ngFor="let Punkt of DBProjektpunkte.Wochenpunkteliste['Dienstag']" class="tagaufteilungeintragdivclass"
+                   [style.background]="DBProjekte.GetProjektFarbe(Punkt).Background"
+                   [style.color]="DBProjekte.GetProjektFarbe(Punkt).Foreground"
+                   [style.height.px]="GetProjektpunthoehe(Punkt)"
+                   (click)="MeineWocheEintragEditClicked($event,Punkt,'Dienstag')">
+                <table style="width: 100%">
+                  <tr>
+                    <td [innerHTML]="GetProjektpunktAufgabentext(Punkt)"></td>
+                    <td style="width: 30px"><ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Dienstag')"></ion-icon></td>
+                  </tr>
+                  <tr>
+                    <td><div (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
+                    <td style="width: 30px"><ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Dienstag')"></ion-icon></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </td>
+          <td style="width: 1px; background: white"></td>
+          <td [style.width.px]="Tagbreite" [style.height.px]="Listenhoehe">
+            <div class="tagaufteilungkeeperdivclass">
+              <div *ngFor="let Punkt of DBProjektpunkte.Wochenpunkteliste['Mittwoch']" class="tagaufteilungeintragdivclass"
+                   [style.background]="DBProjekte.GetProjektFarbe(Punkt).Background"
+                   [style.color]="DBProjekte.GetProjektFarbe(Punkt).Foreground"
+                   [style.height.px]="GetProjektpunthoehe(Punkt)"
+                   (click)="MeineWocheEintragEditClicked($event, Punkt, 'Mittwoch')">
+                <table style="width: 100%">
+                  <tr>
+                    <td [innerHTML]="GetProjektpunktAufgabentext(Punkt)"></td>
+                    <td style="width: 30px"><ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Mittwoch')"></ion-icon></td>
+                  </tr>
+                  <tr>
+                    <td><div (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
+                    <td style="width: 30px"><ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Mittwoch')"></ion-icon></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </td>
+          <td style="width: 1px; background: white"></td>
+          <td [style.width.px]="Tagbreite" [style.height.px]="Listenhoehe">
+            <div class="tagaufteilungkeeperdivclass">
+              <div *ngFor="let Punkt of DBProjektpunkte.Wochenpunkteliste['Donnerstag']" class="tagaufteilungeintragdivclass"
+                   [style.background]="DBProjekte.GetProjektFarbe(Punkt).Background"
+                   [style.color]="DBProjekte.GetProjektFarbe(Punkt).Foreground"
+                   [style.height.px]="GetProjektpunthoehe(Punkt)"
+                   (click)="MeineWocheEintragEditClicked($event, Punkt, 'Donerstag')">
+                <table style="width: 100%">
+                  <tr>
+                    <td [innerHTML]="GetProjektpunktAufgabentext(Punkt)"></td>
+                    <td style="width: 30px"><ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Donnerstag')"></ion-icon></td>
+                  </tr>
+                  <tr>
+                    <td><div (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
+                    <td style="width: 30px"><ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Donnerstag')"></ion-icon></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </td>
+          <td style="width: 1px; background: white"></td>
+          <td [style.width.px]="Tagbreite" [style.height.px]="Listenhoehe">
+            <div class="tagaufteilungkeeperdivclass">
+              <div *ngFor="let Punkt of DBProjektpunkte.Wochenpunkteliste['Freitag']" class="tagaufteilungeintragdivclass"
+                   [style.background]="DBProjekte.GetProjektFarbe(Punkt).Background"
+                   [style.color]="DBProjekte.GetProjektFarbe(Punkt).Foreground"
+                   [style.height.px]="GetProjektpunthoehe(Punkt)"
+                   (click)="MeineWocheEintragEditClicked($event, Punkt, 'Freitag')">
+                <table style="width: 100%">
+                  <tr>
+                    <td [innerHTML]="GetProjektpunktAufgabentext(Punkt)"></td>
+                    <td style="width: 30px"><ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Freitag')"></ion-icon></td>
+                  </tr>
+                  <tr>
+                    <td><div (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
+                    <td style="width: 30px">
+                      <ion-icon tooltip="Eintrag löschen" name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Freitag')"></ion-icon>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </td>
+          <!--
+          <td><div class="tagaufteilungkeeperdivclass" [style.height.px]="Listenhoehe">{{Resthoehe}}</div></td>
+          -->
+        </tr>
+      </table>
+
+    </div>
+
+  </ng-container>
+
+  <!-- Meine Woche Ende --->
+
+  <!-- Favoritenprojektpunkte  -->
+
+  <div *ngIf="DBProjekte.CurrentFavoritprojektindex !== 1500 && DBProjekte.CurrentFavoritprojektindex !== 2000 && DBProjekte.CurrentFavoritprojektindex !== 3000" style="padding: 4px">
+
+    <pj-projektpunkteliste [Datenliste]="FavoritenProjektpunkteliste"
+                           [ShowProjektnamen]="true"
+                           [Projekt]="DBProjekte.CurrentProjekt"
+                           (FortschrittClicked)="FortschrittClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
+                           (ZustaendigExternZuweisenClicked)="ListeZustaendigExternHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
+                           (ZustaendigInternZuweisenClicked)="ListeZustaendigInternHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
+                           (StatusClicked)="StatusClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
+                           (EndedatumClicked)="EndedatumClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
+                           (MeintagClicked)="PrepareDaten()"
+                           (MeilensteinClicked)="PrepareDaten()"
+                           (ProtokollmarkeClicked)="ProtokollmarkeClickedHandler()"
+                           (AufgabeClicked)="AufgabeClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
+                           (TerminFiltermodusClicked)="TerminFiltermodusClickedHandler($event)"
+                           (AddProjektpunktClicked)="AddAufgabeClickedHandler(null, Datenursprungsvarianten.Favoritenprojekt)"
+                           (MeinewocheZuweisenClicked)="MeinewocheZuweisenClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
+                           (MeinewocheBearbeitenClicked)="MeineWocheBearbeitenClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)">
+    </pj-projektpunkteliste>
+
+  </div>
+
+</ion-content>
+<ion-footer>
+  <page-footer #PageFooter>
+
+    <table width="100%">
+      <tr>
+        <td align="left">
+          <div class="datumkeeperclass">{{GetDatum()}}</div>
+        </td>
+        <td style="width: 50px" align="right">
+          <!--
+          <div class="rootbuttonclass" (click)="DBProjekte.CurrentProjekt !== null ? AddAufgabeClickedHandler() : null">
+            <ion-icon style="font-size: 28px" [color]="DBProjekte.CurrentProjekt !== null ? 'burnicklgruen' : 'burnicklbraun'" name="add-circle-outline"></ion-icon>
+          </div>
+          -->
+        </td>
+      </tr>
+    </table>
+
+  </page-footer>
+</ion-footer>
+
+<pj-aufgaben-listefilter *ngIf="ShowZeitspannefilter"
+                         [Titel]="'Zeitspanne festlegen'"
+                         [Dialogbreite]="700"
+                         [Dialoghoehe]="340"
+                         [PositionY]="DialogPosY + 200"
+                         [ZIndex]="4000" (CancelClickedEvent)="ShowZeitspannefilter = false"
+                         (OkClickedEvent)="ShowZeitspannefilter = false">
+</pj-aufgaben-listefilter>
+
+
+<pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+                        [ZIndex]="3000" [Titel]="GetProjektpunkteditorTitel()" Iconname="book-outline"
+                        (StatusClicked)="EditorStatusClickedHandler()" (FachbereichClicked)="FachbereichClickedHandler()"
+                        (KostengruppeClicked)="KostengruppeClickedHandler()"
+                        (ZustaendigInternClicked)="EditorZustaendigInternHandler()"
+                        (ZustaendigExternClicked)="EditorZustaendigExternHandler()"
+                        (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
+                        (TerminButtonClicked)="ShowDateKkPicker = true"
+                        (CancelClickedEvent)="ShowProjektpunktEditor = false"
+                        (OkClickedEvent)="ShowProjektpunktEditor = false"></pj-projektpunkt-editor>
+
+
+<fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
+                        [Titel]="'Zuständige Kollegen festlegen'"
+                        [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe - 200" [PositionY]="DialogPosY + 100" [ZIndex]="4000"
+                        [Multiselect]="true"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
+                        (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
+                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
+
+<pj-beteiligten-auswahl *ngIf="ShowBeteiligteauswahl"
+                        [Titel]="GetBeteiligtenauswahlTitel()"
+                        [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe - 200" [PositionY]="DialogPosY + 100" [ZIndex]="4000"
+                        [Multiselect]="true"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowBeteiligteauswahl = false"
+                        (OkClickedEvent)="BeteiligteauswahlOkButtonClicked($event)"></pj-beteiligten-auswahl>
+
+<projektpunkt-statusdate-picker *ngIf="ShowDateStatusPicker" [Dialogbreite]="600"
+                                   [Dialoghoehe]="Dialoghoehe - 200"
+                                   [PositionY]="DialogPosY + 100"
+                                   [ZIndex]="4000"
+                                   [Iconname]="'calendar-outline'"
+                                   [Titel]="'Termin und Status festlegen'"
+                                   [ShowProtokollpunkte]="false"
+                                   [Datum]="Datum"
+                                   [Status]="DBProjektpunkte.CurrentProjektpunkt.Status"
+                                   (OkClickedEvent)="ShowDateStatusPicker = false"
+                                   (CancelClickedEvent)="ShowDateStatusPicker = false">
+</projektpunkt-statusdate-picker>
+
+<projektpunkt-date-kw-picker *ngIf="ShowDateKkPicker" [Dialogbreite]="380"
+                                   [Dialoghoehe]="460"
+                                   [PositionY]="DialogPosY + 200"
+                                   [ZIndex]="5000"
+                                   [Iconname]="'calendar-outline'"
+                                   [Titel]="'Termin oder KW festlegen'"
+                                   (OkClickedEvent)="ShowDateKkPicker = false"
+                                   (CancelClickedEvent)="ShowDateKkPicker = false">
+</projektpunkt-date-kw-picker>
+
+<pj-favoriten-auswahl *ngIf="ShowFavoritenauswahl"
+                      [ZIndex]="5000"
+                      [Dialogbreite]="800"
+                      [Dialoghoehe]="Auswahlhoehe"
+                      [PositionY]="200" [Titel]="'Favoriten auswählen'" [Iconname]="'star-outline'"
+                      (CancelClickedEvent)="ShowFavoritenauswahl = false"
+                      (OkClickedEvent)="ShowFavoritenauswahl = false">
+</pj-favoriten-auswahl>
+
+<pj-meinewoche-editor *ngIf="ShowMeinewocheEditor"
+                      [ZIndex]="5000"
+                      [Dialogbreite]="Basics.Contentbreite - 40"
+                      [Dialoghoehe]="900"
+                      [PositionY]="160" [Titel]="'Wochentage auswählen'" [Iconname]="'calendar-outline'"
+                      (OkClickedEvent)="ShowMeinewocheEditor = false"
+                      (CancelClickedEvent)="ShowMeinewocheEditor = false">
+</pj-meinewoche-editor>
+
+<auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"
+                [Dialogbreite]="200" [Dialoghoehe]="Auswahlhoehe" [PositionY]="200"
+                [Titel]="Auswahltitel" [Iconname]="GetDialogTitelicon()"
+                (OkClickedEvent)="AuswahlOkButtonClicked($event)"
+                (CancelClickedEvent)="ShowAuswahl = false">
+</auswahl-dialog>
+
+<pj-protokoll-editor *ngIf="ShowProtokollEditor"  [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+                     [Titel]="'Protokoll bearbeiten'" Iconname="book-outline"
+                     [ZIndex]="2000"
+                     (OkClickedEvent)="ShowProtokollEditor = false"
+                     (CancelClickedEvent)="ShowProtokollEditor = false"
+                     (LeistungsphaseClickedEvent)="LeistungsphaseClickedHandler()"
+                     (TeamteilnehmerClicked)="TeamteilnehmerClickedHandler()"
+                     (BeteiligteteilnehmerClicked)="BeteiligteteilnehmerClickedHandler()"
+                     (ProtokollpunktClicked)="ProtokollpunktClickedHandler($event)"
+                     (AddProtokollpunktClicked)="AddProtokollpunktClickedHandler()">
+</pj-protokoll-editor>
+
+

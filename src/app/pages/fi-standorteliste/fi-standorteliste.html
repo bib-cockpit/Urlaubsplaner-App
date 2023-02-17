@@ -1,0 +1,81 @@
+
+<ion-header>
+  <page-header #PageHeader>
+    <page-header-menu [ShowSuchleiste]="true" [ShowStandorttitle]="true" (SucheChanged)="SucheChangedHandler($event)"></page-header-menu>
+  </page-header>
+</ion-header>
+<ion-content>
+  <ion-list *ngIf="Standorteliste && Standorteliste.length > 0">
+    <ion-item class="ion-text-wrap" class="ion-no-padding" *ngFor="let Eintrag of Standorteliste, let i = index" (click)="StandortButtonClicked(Eintrag)">
+      <ion-grid class="maingridclass">
+        <ion-row  *ngIf="Standortebuchstabenliste[i] !== ''">
+          <ion-col size="12">
+            <ion-text color="orange"><b>{{Standortebuchstabenliste[i]}}</b></ion-text>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col sizeXs="11" sizeSm="11" sizeMd="6" sizeLg="6" sizeXl="6">
+            <div class="kontaktclass">
+              <table class="paddingsmalltable" width="100%">
+                <tr>
+                  <td>
+                    <table cellspacing="0" cellpadding="0">
+                      <tr *ngIf="!Eintrag.Filtered">
+                        <td>
+                          {{Eintrag.Ort}}
+                        </td>
+                      </tr>
+                      <tr *ngIf="Eintrag.Filtered">
+                        <td>
+                          <span>{{Eintrag.Text_A}}</span><span style="color: green">{{Eintrag.Text_B}}</span><span>{{Eintrag.Text_C}}</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <table class="infotable" style="white-space:nowrap;">
+                      <tr>
+                        <td class="ergonametextclass">Kürzel:</td><td>{{Eintrag.Kuerzel}}</td><td style="width: 20px"></td>
+                        <td class="ergonametextclass">Email:</td><td>{{Eintrag.Email}}</td><td style="width: 20px"></td>
+                      </tr>
+                    </table>
+                </tr>
+              </table>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+  <table *ngIf="Standorteliste.length === 0" class="paddingtable" width="100%">
+    <tr>
+      <td style="height: 80px; text-align: center; vertical-align: center">
+        kein Standorte vorhanden
+      </td>
+    </tr>
+  </table>
+</ion-content>
+<ion-footer>
+  <page-footer #PageFooter>
+
+    <div class="rootbuttonclass" (click)="AddStandorteButtonClicked()">
+      <ion-icon style="font-size: 28px" color="burnicklgruen" name="add-circle-outline"></ion-icon>
+    </div>
+
+  </page-footer>
+</ion-footer>
+
+<fi-standort-editor *ngIf="ShowEditor" [Dialogbreite]="600" [Dialoghoehe]="400" [PositionY]="100" [Titel]="GetDialogTitel()" Iconname="location-outline"
+                    (CancelClickedEvent)="ShowEditor = false"
+                    (OkClickedEvent)="ShowEditor = false" (DeleteClickedEvent)="ShowEditor = false"></fi-standort-editor>
+
+<alphabet #Alphabet (AlphabetClicked)="AlphabetClicked($event)"
+          [PageHeader]="PageHeader"
+          [PageFooter]="PageFooter"
+          [Buchstabenliste]="Standortealphabet"
+          [Breite]="Alphapetbreite"
+          [Auswahl]="Standortealphabetauswahl"></alphabet>
+
+

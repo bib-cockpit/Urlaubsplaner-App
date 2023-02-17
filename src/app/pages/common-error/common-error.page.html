@@ -1,0 +1,24 @@
+<ion-header>
+  <page-header></page-header>
+</ion-header>
+<ion-content>
+    <table class="paddingtable">
+      <tr>
+        <td valign="middle" [innerHTML]="Message | safe : 'html'"></td>
+      </tr>
+      <!--
+      <tr *ngIf="!SendMailFinished">
+        <td>
+          <ion-button color="blau" (click)="SendMailButtonCLicked()">
+            <ion-icon name="mail" slot="start" style="font-size: 32px"></ion-icon>
+            <ion-text color="weiss">Fehlerbericht senden</ion-text>
+          </ion-button>
+        </td>
+      </tr>
+      <tr *ngIf="SendMailFinished">
+        <td [style.color]="SendMailError ? 'red' : 'green'">{{SendMailResult}}</td>
+      </tr>
+      -->
+    </table>
+
+</ion-content>

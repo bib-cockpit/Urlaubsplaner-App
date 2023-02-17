@@ -1,0 +1,211 @@
+:root {
+
+  .angular-editor-toolbar {
+    font: 100 14px/15px Roboto, Arial, sans-serif !important;
+    background-color: #444444 !important;
+  }
+  .angular-editor-toolbar-set {
+    .angular-editor-button {
+
+      background-color: silver !important;
+      color: black !important;
+
+    }
+
+  }
+
+  .doctablecontainer {
+
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .doctableheader {
+
+    width: 100%;
+    color: white;
+    background: var(--ion-color-primary);
+    padding: 2px;
+    border-top-left-radius: 0.5vh;
+    border-top-right-radius: 0.5vh;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;     // vertical
+  }
+
+  .doctablecontent {
+
+    width: 100%;
+    padding: 1vh;
+    border: 1px solid var(--ion-color-primary);
+    box-sizing: border-box;
+    background: white;
+    color: black;
+  }
+
+  .doctableitem {
+
+    width: 100%;
+    padding-top: 1.3vh;
+    padding-bottom: 1.3vh;
+    box-sizing: border-box;
+  }
+
+  .doctabletrenner {
+
+    width: 100%;
+    height: 1px;
+    background: var(--ion-color-schwarz);
+  }
+
+  .docinnertablespezial {
+
+    // border:  0px solid #000000;
+  }
+
+  .docinnertablespezial td {
+
+    padding: 4px;
+    border-bottom:  1px solid var(--ion-color-schwarz);
+    border-left:    1px solid var(--ion-color-schwarz);
+    border-right:   1px solid var(--ion-color-schwarz);
+  }
+
+  .docinnertable {
+
+    border:  1px solid #000000;
+  }
+
+  .docinnertable td {
+
+    padding: 4px;
+    border:  1px solid var(--ion-color-schwarz);
+  }
+
+  .docinnertablesmallfont {
+
+    border:  1px solid #000000;
+  }
+
+  .docinnertablesmallfont td {
+
+    font-size: 85%;
+    padding: 4px;
+    border:  1px solid var(--ion-color-schwarz);
+  }
+
+  .paddingtablesenkrecht {
+
+    border-collapse: collapse;
+  }
+  .paddingtablesenkrecht td {
+
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .paddingtable {
+
+    border-collapse: collapse;
+  }
+  .paddingtable td {
+
+    padding: 4px
+  }
+
+  .paddingsmalltable {
+
+    border-collapse: collapse;
+  }
+  .paddingsmalltable td {
+
+    padding: 2px
+  }
+
+  .nopaddingtable {
+
+    border-collapse: collapse;
+  }
+  .nopaddingtable td {
+
+    padding: 0px
+  }
+
+  .nobordertable {
+
+    border-collapse: collapse;
+  }
+  .nobordertable td {
+
+    padding: 4px;
+    border: none;
+  }
+
+  .nobordersmalltable {
+
+    border-collapse: collapse;
+  }
+
+  .nobordersmalltable td {
+
+    padding: 0px;
+    border: none;
+  }
+
+  .reddoctableheader {
+
+    width: 100%;
+    color: var(--ion-color-light);
+    background: var(--ion-color-teal);
+    padding: 6px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+  }
+
+  .reddoctableheaderextended {
+
+    width: 100%;
+    color: var(--ion-color-light);
+    background: var(--ion-color-teal);
+    padding: 6px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 0px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 0px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+  }
+
+  .reddoctablecontent {
+
+    width: 100%;
+    border: 1px solid var(--ion-color-teal);
+    box-sizing: border-box;
+    background: white;
+  }
+
+  .greendoctableheader {
+
+    width: 100%;
+    color: var(--ion-color-light);
+    background: var(--ion-color-gruen);
+    padding: 1vh;
+    border-top-left-radius: 0.5vh;
+    border-top-right-radius: 0.5vh;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;     // vertical
+  }
+
+  .greendoctablecontent {
+
+    width: 100%;
+    padding: 1vh;
+    border: 1px solid var(--ion-color-gruen);
+    box-sizing: border-box;
+    background: white;
+  }
+}

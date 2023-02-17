@@ -1,0 +1,166 @@
+:root {
+
+  div.timepicker__actions.ng-tns-c146-0 {
+
+    background: #354547 !important;
+  }
+
+  div.css-1obar3y {
+    display: none!important;
+  }
+
+  /*
+  div.timepicker__actions.ng-tns-c146-0 > div:nth-child(1) > div  { // :nth-child(1) > div
+
+    background: none !important;
+    color: #c7d304 !important;
+    cursor: pointer !important;
+  }
+
+  div.timepicker__actions.ng-tns-c146-0 > div:nth-child(2) > div  { // :nth-child(1) > div
+
+    background: none !important;
+    color: #c7d304 !important;
+    cursor: pointer !important;
+  }
+
+   */
+
+  //--------------------------------------------------------------------------
+
+  body {
+
+    font-size: 14px;
+  }
+
+  ion-radio {
+
+    --color:         #7b6a58;
+    --color-checked: #7b6a58;
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  ion-icon {
+
+    font-size: 22px;
+  }
+
+
+  // Applies a text wrap on ion options
+  .alert-tappable.alert-radio {
+    height: auto;
+    contain: content;
+  }
+
+
+
+  .alert-radio-label.sc-ion-alert-md,
+  .alert-radio-label.sc-ion-alert-ios {
+    white-space: normal;
+  }
+
+  ion-content {
+
+    --background: white;
+    --color: black;
+  }
+
+  ::-webkit-scrollbar, *::-webkit-scrollbar {
+    display: none;
+    overflow: hidden;
+  }
+
+  .scroll-content {
+    overflow: hidden;
+  }
+
+  .rootbuttonclass {
+
+    cursor: pointer;
+    min-width: 32px;
+    min-height: 32px;
+    display: flex;
+    justify-content: center; // horizontal
+    align-items: center; // vertikal
+  }
+
+  .rootbuttonsmallclass {
+
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    justify-content: center; // horizontal
+    align-items: center; // vertikal
+    background: #7b6a58;
+    border-radius: 3px;
+  }
+
+  .filedropcontentclass {
+
+    height: 50px;
+    color: #444444;
+    font-weight: bold;
+    display: flex;
+    justify-content: center; // horizontal
+    align-items: center; // vertikal
+
+  }
+
+  .filedropzoneclass {
+
+    height: 58px;
+    border: 2px dotted #444444;
+    border-radius: 8px;
+    padding: 4px;
+  }
+
+  ion-input {
+
+    border: 1px solid var(--ion-color-primary);
+
+    --padding-start: 4px;
+    --color: black;
+    --placeholder-color: #444444;
+  }
+
+  ion-textarea {
+
+    border: 1px solid var(--ion-color-primary);
+
+    --padding-start: 4px;
+    --color: black;
+    --placeholder-color: #444444;
+
+  }
+
+  .footerbuttonrightclass {
+
+    height: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    float: right;
+    padding-right: 2px;
+  }
+
+  .footerbuttonleftclass {
+
+    height: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    float: left;
+    padding-left: 2px;
+  }
+
+  .badgeclass {
+
+    font-size: 70%;
+  }
+
+
+}

@@ -1,0 +1,294 @@
+.strukturkeeperdiv {
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.strukturbauteildiv {
+
+  height: 100%;
+  width: 33.3%;
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid #354547;
+}
+
+.strukturbauteilupperdiv {
+
+  padding-left: 4px;
+  height: 26px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
+
+}
+
+.strukturbauteilmiddlediv {
+
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  border-top: 1px solid #354547;
+  border-bottom: 1px solid #354547;
+}
+
+.strukturbauteillowerdiv {
+
+  height: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end; // horizontal
+  align-items: center; // vertikal
+}
+
+.strukturgeschossldiv {
+
+  height: 100%;
+  width: 33.3%;
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid #354547;
+}
+
+.strukturgeschossupperdiv {
+
+  padding-left: 4px;
+  height: 26px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
+
+}
+
+.strukturgeschossmiddlediv {
+
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  border-top: 1px solid #354547;
+  border-bottom: 1px solid #354547;
+}
+
+.strukturgeschosslowerdiv {
+
+  height: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end; // horizontal
+  align-items: center; // vertikal
+}
+
+
+.strukturraeumediv {
+
+  height: 100%;
+  width: 33.3%;
+  display: flex;
+  flex-direction: column;
+}
+
+.strukturraumupperdiv {
+
+  padding-left: 4px;
+  height: 26px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
+
+}
+
+.strukturraummiddlediv {
+
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  border-top: 1px solid #354547;
+  border-bottom: 1px solid #354547;
+}
+
+.strukturraumlowerdiv {
+
+  height: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end; // horizontal
+  align-items: center; // vertikal
+}
+
+
+.infotable {
+
+  td {
+
+    font-size: 90%;
+    color: #444444;
+  }
+}
+
+.keeperdivclass {
+
+  width: 100%;
+  height: 100%;
+  position:absolute;
+}
+
+.contentdivclass {
+
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%);
+}
+
+.menufilterbuttonclass {
+
+  padding: 2px;
+  padding-right: 4px;
+  cursor: pointer;
+  background: #7b6a58;
+  border-radius: 4px;
+}
+
+.contentinnerclass {
+
+  border-left:  3px solid #354547;
+  border-right: 3px solid #354547;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+.contentleftinnerclass {
+
+  width: 700px;
+  height: 100%;
+}
+
+.contentrightinnerclass {
+
+  width: auto;
+  flex-grow: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.projektbeteiligtenheaderclass {
+
+  width: 100%;
+}
+
+.projektbeteiligtencontentclass {
+
+  width: 100%;
+  height: auto;
+  flex-grow: 1;
+  padding-left:   8px;
+  padding-right:  8px;
+  padding-bottom: 8px;
+}
+
+.projektbeteiligtencontentframeclass {
+
+  width:  100%;
+  height: 100%;
+  padding-left:  4px;
+  padding-right: 4px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #444444;
+}
+
+.beteiligtelisteclass {
+
+  width: 100%;
+  height: auto;
+  flex-grow: 1;
+}
+
+.beteiligtebuttonclass {
+
+  width: 100%;
+  height: 58px;
+  border-top: 1px solid #444444;
+}
+
+.bullclass {
+
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  background: black;
+}
+
+.menubuttonclass {
+
+  cursor: pointer;
+}
+
+.trennertdclass {
+
+  width: 30px;
+}
+
+.trennerdivclass {
+
+  width: 1px;
+  min-height: 30px;
+  height: 100%;
+  background: silver;
+}
+
+.bauteildivclass {
+
+  min-height: 40px;
+  border-radius: 8px;
+  padding: 4px;
+  width: 340px;
+  margin: 2px;
+  border: 1px solid #444444;
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
+  cursor: pointer;
+}
+.bauteilmediumdivclass {
+
+  min-height: 40px;
+  border-radius: 8px;
+  padding: 4px;
+  width: 280px;
+  margin: 2px;
+  border: 1px solid #444444;
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
+  cursor: pointer;
+}
+
+.bauteildivsmallclass {
+
+  min-height: 40px;
+  border-radius: 8px;
+  padding: 4px;
+  width: 50px;
+  margin: 2px;
+  border: 1px solid #444444;
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
+}
+
+.strukturtrennerdivclass {
+
+  width: 100%;
+  height: 2px;
+  width: 680px;
+  background: #444444;
+}

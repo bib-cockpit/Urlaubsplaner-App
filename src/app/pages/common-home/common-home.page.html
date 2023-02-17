@@ -1,0 +1,310 @@
+<ion-header>
+  <page-header #PageHeader>
+
+    <table>
+      <tr>
+        <td style="width: 10px"></td>
+        <td>
+          <div class="menubuttonclass"
+               (mouseenter)="LogoutMouseOver = true"
+               (mouseleave)="LogoutMouseOver = false"
+               (click)="LogoutButtonClicked()">
+            <table class="paddingsmalltable">
+              <tr>
+                <td>
+                  <ion-icon name="log-out-outline"
+                            [color]="LogoutMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
+                  </ion-icon>
+                </td>
+                <td [style.color]="LogoutMouseOver ? '#c7d304' : 'white'">Abmelden</td>
+              </tr>
+            </table>
+          </div>
+        </td>
+        <td style="width: 10px"></td>
+        <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
+        <td style="width: 10px"></td>
+        <td>
+          <div class="menubuttonclass"
+               (mouseenter)="DebugMouseOver = true"
+               (mouseleave)="DebugMouseOver = false"
+               (click)="DebugButtonClicked()">
+            <table class="paddingsmalltable">
+              <tr>
+                <td>
+                  <ion-icon name="bug-outline"
+                            [color]="DebugMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
+                  </ion-icon>
+                </td>
+                <td [style.color]="DebugMouseOver ? '#c7d304' : 'white'">Debug</td>
+              </tr>
+            </table>
+          </div>
+        </td>
+        <td style="width: 10px"></td>
+        <td>
+          <div class="menubuttonclass"
+               (mouseenter)="EinstellungenMouseOver = true"
+               (mouseleave)="EinstellungenMouseOver = false"
+               (click)="EinstellungenButtonClicked()">
+            <table class="paddingsmalltable">
+              <tr>
+                <td>
+                  <ion-icon name="settings-outline"
+                            [color]="EinstellungenMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
+                  </ion-icon>
+                </td>
+                <td [style.color]="EinstellungenMouseOver ? '#c7d304' : 'white'">Einstellungen</td>
+              </tr>
+            </table>
+          </div>
+        </td>
+    </tr>
+  </table>
+
+</page-header>
+</ion-header>
+<ion-content>
+
+  <div style="width: 100%; height: 100%; background: #354547">
+    <div style="position: absolute; width: 100%; height: 100%; z-index: 1;">
+
+      <img [src]="BackgroundimageURL">
+
+    </div>
+    <div style="position: absolute; width: 100%; height: 100%; z-index: 2">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <div style="height: 40px"></div>
+          </ion-col>
+        </ion-row>
+      <ion-row>
+        <ion-col>
+          <table style="width: 100%;">
+            <tr>
+              <td align="center">
+
+                <table>
+                  <tr>
+                    <td>
+
+                      <div class="buttonclass"
+                           (click)="StandorteButtonClicked()"
+                           (mouseenter)="StandortMouseOver = true"
+                           (mouseleave)="StandortMouseOver = false">
+
+                        <table>
+                          <tr>
+                            <td align="center">
+                              <ion-icon name="location-outline" [color]="StandortMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="text-align: center;">
+                              <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">Standorte</ion-text>
+                            </td>
+                          </tr>
+                        </table>
+
+                      </div>
+
+
+                    </td>
+                    <td>
+                      <div class="trennerdiv"></div>
+                    </td>
+                    <td>
+
+                      <div class="buttonclass"
+                           (click)="MitarbeiterButtonClicked()"
+                           (mouseenter)="MitarbeiterMouseOver = true"
+                           (mouseleave)="MitarbeiterMouseOver = false">
+
+                        <table>
+                          <tr>
+                            <td align="center">
+                              <ion-icon name="people-outline" [color]="MitarbeiterMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="text-align: center;">
+                              <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">Mitarbeiter</ion-text>
+                            </td>
+                          </tr>
+                        </table>
+
+                      </div>
+
+                    </td>
+                    <td>
+                      <div class="trennerdiv"></div>
+                    </td>
+                    <td>
+
+                      <div class="buttonclass"
+                           (click)="ProjekteButtonClicked()"
+                           (mouseenter)="ProjekteMouseOver = true"
+                           (mouseleave)="ProjekteMouseOver = false">
+                        <table>
+                          <tr>
+                            <td align="center">
+                              <ion-icon name="business-outline" [color]="ProjekteMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="text-align: center;">
+                              <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">Projekte</ion-text>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+
+
+                    </td>
+                    <td>
+                      <div class="trennerdiv"></div>
+                    </td>
+                    <td>
+                      <div class="buttonclass"
+                           (click)="FavoritenButtonClicked()"
+                           (mouseenter)="FavoritenMouseOver = true"
+                           (mouseleave)="FavoritenMouseOver = false">
+                        <table>
+                          <tr>
+                            <td align="center">
+                              <ion-icon name="bookmarks-outline" [color]="FavoritenMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="text-align: center;">
+                              <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">Favoriten</ion-text>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+
+                    </td>
+                  </tr>
+                </table>
+
+
+              </td>
+            </tr>
+          </table>
+        </ion-col>
+      </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <div style="height: 40px"></div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <table style="width: 100%">
+              <tr>
+                <td align="center">
+
+                  <div class="favlistedivclass" [style.height.px]="GetFavoritenlistehoehe()">
+
+                    <ion-radio-group *ngIf="Pool.Mitarbeiterdaten !== null" [value]="DBProjekte.CurrentFavorit !== null ? DBProjekte.CurrentFavorit.FavoritenID : null" (ionChange)="FavoritChangedHandler($event)">
+                      <table *ngIf="Pool.Mitarbeiterdaten.Favoritenliste.length > 0" class="paddingtable">
+                        <tr *ngFor="let Favorit of Pool.Mitarbeiterdaten.Favoritenliste">
+                          <td>
+                            <ion-radio [value]="Favorit.FavoritenID" style="font-size: 40px"></ion-radio>
+                          </td>
+                          <td style="font-size: 22px"
+                              [style.color]="DBProjekte.CurrentFavorit === null || DBProjekte.CurrentFavorit.FavoritenID !== Favorit.FavoritenID ? '#7b6a58' : '#c7d304'">{{Favorit.Name}}</td>
+                        </tr>
+                      </table>
+                    </ion-radio-group>
+
+                    <table style="width: 100%;" *ngIf="Pool.Mitarbeiterdaten !== null &&  Pool.Mitarbeiterdaten.Favoritenliste.length === 0" class="paddingtable">
+                      <tr>
+                        <td style="font-size: 22px; text-align: center" [style.color]="'#7b6a58'">Bitte erstelle zuerst deine Projektfavoriten.</td>
+                      </tr>
+                    </table>
+
+                  </div>
+
+                </td>
+              </tr>
+            </table>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <div style="height: 40px"></div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <table style="width: 100%;">
+              <tr>
+                <td align="center">
+
+                  <table>
+                    <tr>
+                      <td>
+
+                        <div class="buttonbigclass"
+                             (click)="PlayButtonClicked()"
+                             (mouseenter)="PlayMouseOver = true"
+                             (mouseleave)="PlayMouseOver = false">
+
+                          <table style="width: 100%;">
+                            <tr>
+                              <td align="center">
+                                <ion-icon name="airplane-outline" [color]="PlayMouseOver && DBProjekte.CurrentFavorit ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 120px"></ion-icon>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="text-align: center;">
+                                <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 26px">BIB Cockpit</ion-text>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="text-align: center; font-size: 90%; color: gray">
+                                Version: {{Basics.AppVersionName}} / {{Basics.AppVersionDatum}}
+                              </td>
+                            </tr>
+                          </table>
+
+                          <!--
+
+                          <table>
+                            <tr>
+                              <td align="center">
+                                <ion-icon name="play-outline" [color]="PlayMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 120px"></ion-icon>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="text-align: center;">
+                                <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 24px">Start</ion-text>
+                              </td>
+                            </tr>
+                          </table>
+                          -->
+
+                        </div>
+
+
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </ion-col>
+        </ion-row>
+
+      </ion-grid>
+    </div>
+  </div>
+
+</ion-content>
+<ion-footer>
+<page-footer #PageFooter>
+
+</page-footer>
+</ion-footer>

@@ -1,0 +1,45 @@
+
+.datumdivclass {
+
+  padding: 4px;
+  width: 100%;
+  min-height: 36px;
+  height: 100%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  border-radius: 3px;
+  font-size: 90%;
+  color: black;
+}
+
+.smalldatumclass {
+
+  cursor: pointer;
+  font-size: 90%;
+  color: black;
+}
+
+.smalldatumclass:hover {
+
+  text-decoration: underline;
+}
+
+
+
+ion-datetime {
+  height: auto;
+  width:  auto;
+  max-width: 350px;
+}
+
+ion-modal {
+  --width: 290px;
+  --height: 382px;
+  --border-radius: 8px;
+}
+
+ion-modal ion-datetime {
+  height: 382px;
+}

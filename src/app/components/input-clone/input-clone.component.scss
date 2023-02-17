@@ -1,0 +1,55 @@
+.framedivclass {
+
+  width: 100%;
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: flex-start; // vertikal
+
+}
+
+ion-label {
+
+  color: black;
+}
+
+ion-input {
+
+  border: none;
+  --padding-bottom: 0px;
+  --padding-end:    0px;
+  --padding-start:  0px;
+  --padding-top:    0px;
+  --color: black;
+}
+
+ion-textarea {
+
+  margin-top: 0px;
+  border: none;
+  --padding-bottom: 0px;
+  --padding-end:    0px;
+  --padding-start:  0px;
+  --padding-top:    0px;
+  --color: black;
+}
+
+.uppercellclass {
+
+  font-size:      80%;
+  color:          gray;
+  padding-left:   4px;
+  padding-right:  4px;
+  padding-top:    4px;
+  padding-bottom: 2px;
+
+
+}
+.lowercellclass {
+
+  padding-left:   4px;
+  padding-right:  4px;
+  padding-top:    0px;
+  padding-bottom: 4px;
+}
+
+

@@ -1,0 +1,129 @@
+<ion-header no-shadow no-border>
+  <page-header #PageHeader>
+    <page-header-menu [ShowSuchleiste]="true" [ShowSandortfilter]="true" [ShowMitarbeitertitle]="true"
+                      (SucheChanged)="SucheChanged($event)" (StandortfilterClicked)="StandortFilterClickedHandler()"></page-header-menu>
+  </page-header>
+</ion-header>
+<ion-content no-shadow no-border>
+
+    <ion-list *ngIf="Mitarbeiterliste && Mitarbeiterliste.length > 0">
+      <ion-item class="ion-text-wrap" class="ion-no-padding" *ngFor="let Mitarbeiter of Mitarbeiterliste, let i = index" (click)="MitrabeiterButtonClicked(Mitarbeiter)">
+        <ion-grid class="maingridclass">
+          <ion-row  *ngIf="Mitarbeiterbuchstabenliste[i] !== ''">
+            <ion-col size="12">
+              <ion-text color="orange"><b>{{Mitarbeiterbuchstabenliste[i]}}</b></ion-text>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <div class="kontaktclass">
+                <table class="paddingsmalltable" width="100%">
+                  <tr>
+                    <td>
+                      <table cellspacing="0" cellpadding="0">
+                        <tr *ngIf="!Mitarbeiter.Filtered">
+                          <td>
+                            {{Mitarbeiter.Name}} {{Mitarbeiter.Vorname}} / {{Mitarbeiter.Kuerzel}}
+                          </td>
+                        </tr>
+                        <tr *ngIf="Mitarbeiter.Filtered">
+                          <td>
+                            <span>{{Mitarbeiter.Text_A}}</span><span style="color: green">{{Mitarbeiter.Text_B}}</span><span>{{Mitarbeiter.Text_C}}</span> / {{Mitarbeiter.Kuerzel}}
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <table class="infotable" style="white-space:nowrap;">
+                        <tr>
+                          <td class="ergonametextclass">Stadort:</td><td>{{DBStandort.GetStandort(Mitarbeiter.StandortID)}}</td><td style="width: 20px"></td>
+                          <td class="ergonametextclass">Email:</td><td>{{Mitarbeiter.Email}}</td><td style="width: 20px"></td>
+                          <td class="ergonametextclass">Fachbereich:</td><td>{{Mitarbeiter.Fachbereich}}</td><td style="width: 20px"></td>
+                        </tr>
+                      </table>
+                  </tr>
+                </table>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
+
+    <table *ngIf="Mitarbeiterliste.length === 0" class="paddingtable" width="100%">
+      <tr>
+        <td style="height: 80px; text-align: center; vertical-align: center">
+          keine Mitarbeiter vorhanden
+        </td>
+      </tr>
+    </table>
+
+
+
+
+    <!--
+  <ng-container *ngIf="Menueindex === 2">
+    <ion-list [style.width.px]="Listenbreite">
+
+      <ion-item  *ngFor="let Lager of Pool.Lagerliste, let i = index" class="ion-text-wrap" class="ion-no-padding"   (click)="LieferantButtonClicked(Lager)">
+        <ion-grid class="maingridclass">
+          <ion-row>
+            <ion-col>
+              <table cellspacing="0" cellpadding="0">
+                <tr>
+                  <td>
+                    {{Lager.Displayname}}
+                  </td>
+                  <td>
+                    <ion-icon  name="subway" [color]="'blau'" style="font-size: 32px"></ion-icon>
+                  </td>
+                </tr>
+              </table>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
+
+    <table *ngIf="Pool.Lagerliste.length === 0"  class="paddingtable" width="100%">
+      <tr>
+        <td align="center">
+          kein Lager / Einzelhändler vorhanden
+        </td>
+      </tr>
+    </table>
+  </ng-container>
+  [Buttoncolor]="Basics.Ionicfarben.GRUEN"
+-->
+</ion-content>
+<ion-footer>
+  <page-footer #PageFooter>
+
+    <div class="rootbuttonclass" (click)="AddMitarbeiterButtonClicked()">
+      <ion-icon style="font-size: 28px" color="burnicklgruen" name="add-circle-outline"></ion-icon>
+    </div>
+
+  </page-footer>
+</ion-footer>
+
+<fi-mitarbeiter-editor *ngIf="ShowEditor" [Dialogbreite]="600" [Dialoghoehe]="660" [PositionY]="100"  [Titel]="GetDialogTitel()" Iconname="people-outline"
+                       (StandortClickedEvent)="StandortClickedHandler()"
+                       (CancelClickedEvent)="ShowEditor = false"
+                       (OkClickedEvent)="ShowEditor = false" (DeleteClickedEvent)="ShowEditor = false"
+                       (FachbereichClickedEvent)="FachbereichClickedHandler()">
+</fi-mitarbeiter-editor>
+
+<auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex"
+                [Dialogbreite]="300" [Dialoghoehe]="300" [PositionY]="200"
+                [Titel]="Auswahltitel" [Iconname]="GetDialogTitelicon()"
+                (OkClickedEvent)="AuswahlOkButtonClicked($event)"
+                (CancelClickedEvent)="ShowAuswahl = false"></auswahl-dialog>
+
+<alphabet #Alphabet (AlphabetClicked)="AlphabetClicked($event)"
+          [PageHeader]="PageHeader"
+          [PageFooter]="PageFooter"
+          [Breite]="Alphapetbreite"
+          [Buchstabenliste]="Mitarbeiteralphabet"
+          [Auswahl]="Mitarbeiteralphabetauswahl"></alphabet>

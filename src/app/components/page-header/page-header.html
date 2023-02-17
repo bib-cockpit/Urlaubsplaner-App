@@ -1,0 +1,44 @@
+<div #PageHeaderDiv class="keeperdivclass">
+  <ng-content></ng-content>
+  <div *ngIf="Pool.ShowProgress" class="loadingdivclass">
+
+    <table width="100%">
+      <tr>
+        <td>
+          <div class="headerdivclass">
+            Projektdaten werden geladen
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="contentdivclass">
+
+            <table class="paddingtable" width="100%">
+              <tr>
+                <td style="text-align: center; color: black">
+                  {{Pool.ProgressMessage}}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <ion-progress-bar [value]="Pool.CurrentProgressValue / Pool.MaxProgressValue"></ion-progress-bar>
+                </td>
+              </tr>
+            </table>
+
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div style="background: #354547; width: 100%; height: 20px">
+
+          </div>
+        </td>
+      </tr>
+    </table>
+
+
+  </div>
+</div>

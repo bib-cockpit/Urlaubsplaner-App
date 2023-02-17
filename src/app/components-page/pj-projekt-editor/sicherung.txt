@@ -1,0 +1,32 @@
+                <!--
+
+
+
+
+
+              </ion-grid>
+
+              <br>
+              <br>
+              <br>
+              <table class="docinnertable">
+                <tr>
+                  <td><b>Current Bautrilindex</b></td><td>{{Bauteileservice.CurrentBauteilindex !== null ? Bauteileservice.CurrentBauteilindex : 'null'}}</td>
+                </tr>
+                <tr>
+                  <td><b>Current Bauteil</b></td><td>{{Bauteileservice.CurrentBauteil !== null ? Bauteileservice.CurrentBauteil.Bauteilname + ' / ' + Bauteileservice.CurrentBauteil.BauteilID : 'null'}}</td>
+                </tr>
+                <tr>
+                  <td><b>Current Geschossindex</b></td><td>{{Bauteileservice.CurrentGeschossindex !== null ? Bauteileservice.CurrentGeschossindex : 'null'}}</td>
+                </tr>
+                <tr>
+                  <td><b>Current Geschoss</b></td><td>{{Bauteileservice.CurrentGeschoss !== null ? Bauteileservice.CurrentGeschoss.Geschossname + ' / ' + Bauteileservice.CurrentGeschoss.GeschossID : 'null'}}</td>
+                </tr>
+
+                <tr>
+                  <td><b>Current Raum</b></td><td>{{Bauteileservice.CurrentRaum !== null ? Bauteileservice.CurrentRaum.Raumname + ' / ' + Bauteileservice.CurrentRaum.RaumID : 'null'}}</td>
+                </tr>
+              </table>
+
+
+                -->

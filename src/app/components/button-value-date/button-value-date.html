@@ -1,0 +1,55 @@
+
+<div class="buttonclass" tappable  [id]="ElementID"  [style.background]="Enabled ? Buttoncolor : Basics.Farben.ButtongrauDisabled">
+
+  <div style="height: 100%; width: 60%;">
+    <div class="buttontextclass">
+      <table class="paddingtable" cellspacing="0" cellpadding="0">
+        <tr>
+          <td height="100%" valign="middle">
+            <ion-text color="weiss">{{Buttontext}}</ion-text>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="outerinfokeeperclass">
+    <div class="infokeeperclass" [style.background]="InnerBackgroundcolor">
+
+      <table>
+        <tr>
+          <td style="color: white">{{Datum !== null ? Datum.format('DD.MM.YYYY') : '------'}}</td>
+          <ng-container *ngIf="ShowKW">
+            <td style="width: 16px; text-align: center; font-size: 26px">&bull;</td>
+            <td>KW{{Datum.isoWeek()}}</td>
+          </ng-container>
+        </tr>
+      </table>
+
+    </div>
+  </div>
+</div>
+<!--
+<ion-button *ngIf="ToolboxDesign === false" [id]="ElementID" [size]="Buttonsize" [color]="Enabled ? Basics.Ionicfarben.Blau : Basics.Ionicfarben.GRAU">{{Buttontext}}</ion-button>
+-->
+<ion-modal [trigger]="Enabled === true ? ElementID : null">
+  <ng-template>
+    <ion-content force-overscroll="false">
+
+      <!--
+      monthNames="Januar, Februar, März, April, Mai, Juni, Juli, August, September, Oktober, November, Dezember"
+      monthShortNames="Jan., Feb., Mrz., Apr., Mai, Jun., Jul., Aug., Sep., Okt., Nov., Dez." first-day-of-week="1"
+      [value]="Datum.format('YYYY-MM-DD')" (ionChange)="DateChangedHandler($event)"
+      -->
+        <ion-datetime #DatePicker
+                      locale="de-DE"
+                      showDefaultButtons="true"
+                      doneText="Fertig"
+                      cancelText="Abbrechen"
+                      [min]="Minimumstring"
+                      [max]="Maximumstring"
+                      presentation="date" [value]="Datum.format('YYYY-MM-DD')" color="burnicklgruen" (ionChange)="DateChangedHandler($event)">
+        </ion-datetime>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+

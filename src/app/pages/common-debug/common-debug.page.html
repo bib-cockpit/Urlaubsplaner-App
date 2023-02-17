@@ -1,0 +1,67 @@
+<ion-header>
+  <page-header #PageHeader>
+    <page-header-menu [ShowSuchleiste]="false"></page-header-menu>
+  </page-header>
+</ion-header>
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="ClearSecurityToken()">Security Token löschen</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="TestButtonCLcicked()">Test</ion-button>
+      </ion-col>
+      <ion-row>
+        <ion-col>
+          <ion-button (click)="ClearMessagesButtonCLcicked()">Clear Messages</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <b>Security Token:</b>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        {{AuthService.ActiveUsername}}<br><br>
+        {{AuthService.SecurityToken}}
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <table class="docinnertable">
+          <tr>
+            <td><b>CurrentProjekt</b></td>
+            <td><b>CurrentProjektpunkt</b></td>
+          </tr>
+          <tr>
+            <td>
+              {{DBProjekte.CurrentProjekt !== null ? DBProjekte.CurrentProjekt.Projektname : 'null'}}
+            </td>
+            <td>
+              {{DBProjektpunkte.CurrentProjektpunkt !== null ? DBProjektpunkte.CurrentProjektpunkt.Aufgabe : 'null'}}
+            </td>
+          </tr>
+
+        </table>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <div *ngFor="let message of Debug.Debugmessageliste" style="width: 100%;" [innerHTML]="message | prettyjson"></div>
+
+
+
+  <abstand-element-fixed></abstand-element-fixed>
+
+</ion-content>
+<ion-footer>
+  <page-footer #PageFooter>
+
+  </page-footer>
+</ion-footer>

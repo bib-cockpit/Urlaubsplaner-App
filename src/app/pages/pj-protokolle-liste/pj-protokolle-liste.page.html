@@ -1,0 +1,143 @@
+<ion-header>
+  <page-header #PageHeader>
+    <page-header-menu
+      (LeistungsphaseFilterClicked)="LeistungsphaseFilterClickedHanlder()"
+      (ZeitspanneFilterClicked)="ZeitspanneFilterClickedHandler()"></page-header-menu>
+  </page-header>
+</ion-header>
+<ion-content>
+
+  <div style="height: 100%; width: 100%;">
+    <div  [style.height.px]="Headerhoehe" style="width: 100%; padding-left: 8px; padding-right: 8px; padding-top: 8px">
+      <table *ngIf="Protokollliste.length !== 0"  width="100%" class="docinnertable">
+        <tr>
+          <td style="width: 60px; height: 30px; font-weight: bold">Nr.</td>
+          <td style="width: 100px; font-weight: bold">Datum</td>
+          <td style="width: 80px; font-weight: bold">LPH</td>
+          <td style="width: auto; font-weight: bold">Titel</td>
+          <td style="width: 80px; font-weight: bold">Einträge</td>
+          <td style="width: 60px; font-weight: bold">Offen</td>
+        </tr>
+      </table>
+
+    </div>
+    <div [style.height.px]="Listenhoehe" style="width: 100%; height: 100%; overflow: auto;">
+
+      <div  *ngFor="let Protokoll of Protokollliste;" (click)="ProtokollClicked(Protokoll)" style="width: 100%; cursor: pointer; padding-left: 8px; padding-right: 8px">
+        <table width="100%" class="docinnertable">
+          <tr>
+            <td style="width: 60px; height: 40px">{{Protokoll.Protokollnummer}}</td>
+            <td style="width: 100px;">{{Protokoll.Zeitstring}}</td>
+            <td style="width: 80px;">{{Protokoll.Leistungsphase !== Const.NONE ? Protokoll.Leistungsphase : ''}}</td>
+            <td style="width: auto;">
+              <ng-container *ngIf="Protokoll.Filtered !== true">
+                {{Protokoll.Titel}}
+              </ng-container>
+              <ng-container *ngIf="Protokoll.Filtered === true">
+                <span>{{Protokoll.Text_A}}</span><span style="color: orange">{{Protokoll.Text_B}}</span><span>{{Protokoll.Text_C}}</span>
+              </ng-container>
+            </td>
+
+            <td style="width: 80px;">{{Protokoll.ProjektpunkteIDListe.length !== 0 ? Protokoll.ProjektpunkteIDListe.length : 'leer'}}</td>
+            <td style="width: 60px;" [style.color]="Protokoll.Punkteanzahl > 0 ? 'red' : 'green'">{{Protokoll.Punkteanzahl > 0 ? Protokoll.Punkteanzahl  : '0'}}</td>
+          </tr>
+        </table>
+
+      </div>
+
+      <table *ngIf="Protokollliste.length === 0" class="paddingtable" width="100%">
+        <tr>
+          <td style="text-align: center; padding: 40px;">
+            keine Protokolle für <b>{{DBProjekte.CurrentProjekt !== null ? DBProjekte.CurrentProjekt.Projektname : 'unbekannt'}}</b> vorhanden
+          </td>
+        </tr>
+      </table>
+
+    </div>
+  </div>
+
+
+</ion-content>
+<ion-footer>
+  <page-footer #PageFooter>
+
+    <div class="rootbuttonclass" (click)="AddProtokollButtonClicked()">
+      <ion-icon style="font-size: 28px" color="burnicklgruen" name="add-circle-outline"></ion-icon>
+    </div>
+
+  </page-footer>
+</ion-footer>
+
+<pj-protokoll-editor *ngIf="ShowProtokollEditor"  [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+                     [Titel]="GetProtokollTitel()" Iconname="book-outline"
+                     [ZIndex]="2000"
+                     (OkClickedEvent)="ShowProtokollEditor = false"
+                     (CancelClickedEvent)="ShowProtokollEditor = false"
+                     (LeistungsphaseClickedEvent)="LeistungsphaseClickedHandler()"
+                     (TeamteilnehmerClicked)="TeamteilnehmerClickedHandler()"
+                     (BeteiligteteilnehmerClicked)="BeteiligteteilnehmerClickedHandler()"
+                     (ProtokollpunktClicked)="ProtokollpunktClickedHandler($event)"
+                     (AddProtokollpunktClicked)="AddProtokollpunktClickedHandler()"></pj-protokoll-editor>
+
+<pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+                        [ZIndex]="3000" [Titel]="GetProjektpunkteditorTitel()" Iconname="book-outline"
+                        (StatusClicked)="StatusClickedHandler()"
+                        (FachbereichClicked)="FachbereichClickedHandler()"
+                        (KostengruppeClicked)="KostengruppeClickedHandler()"
+                        (ZustaendigInternClicked)="ZustaendigInternHandler()"
+                        (ZustaendigExternClicked)="ZustaendigExternHandler()"
+                        (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
+                        (TerminButtonClicked)="ShowDateKkPicker = true"
+                        (CancelClickedEvent)="ShowProjektpunktEditor = false"
+                        (OkClickedEvent)="ShowProjektpunktEditor = false"></pj-projektpunkt-editor>
+
+<projektpunkt-date-kw-picker *ngIf="ShowDateKkPicker" [Dialogbreite]="380"
+                             [Dialoghoehe]="460"
+                             [PositionY]="DialogPosY + 200"
+                             [ZIndex]="5000"
+                             [Iconname]="'calendar-outline'"
+                             [Titel]="'Termin oder KW festlegen'"
+                             (OkClickedEvent)="ShowDateKkPicker = false"
+                             (CancelClickedEvent)="ShowDateKkPicker = false">
+</projektpunkt-date-kw-picker>
+
+<pj-kostengruppen-auswahl *ngIf="ShowKostengruppenauswahl" Titel="Kostengruppe festlegen"
+                          [Dialogbreite]="KostenDialogbreite" [Dialoghoehe]="KostenDialoghoehe" [PositionY]="DialogPosY"
+                          (OkClickedEvent)="ShowKostengruppenauswahl = false"
+                          (CancelClickedEvent)="ShowKostengruppenauswahl = false"></pj-kostengruppen-auswahl>
+
+<fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
+                        [Titel]="'Zuständige Kollegen festlegen'"
+                        [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe - 200" [PositionY]="DialogPosY + 100" [ZIndex]="4000"
+                        [Multiselect]="true"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
+                        (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
+                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
+
+<pj-beteiligten-auswahl *ngIf="ShowBeteiligteauswahl"
+                        [Titel]="GetBeteiligtenauswahlTitel()"
+                        [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe - 200" [PositionY]="DialogPosY + 100" [ZIndex]="4000"
+                        [Multiselect]="true"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowBeteiligteauswahl = false"
+                        (OkClickedEvent)="BeteiligteauswahlOkButtonClicked($event)"></pj-beteiligten-auswahl>
+
+<pj-gebaeude-raumauswahl *ngIf="ShowRaumauswahl" [Titel]="'Gebäudeteil auswählen'" [Dialogbreite]="StrukturDialogbreite" [Dialoghoehe]="StrukturDialoghoehe"
+                         [PositionY]="DialogPosY" [ZIndex]="4000"
+                         (CancelClickedEvent)="ShowRaumauswahl = false"
+                         (OkClickedEvent)="ShowRaumauswahl = false">
+</pj-gebaeude-raumauswahl>
+
+<pj-protokoll-listefilter *ngIf="ShowZeitspannefilter" [PositionY]="140" [Dialoghoehe]="514" [Dialogbreite]="580" Iconname="filter-circle-outline" [Titel]="'Zeitspanne festlegen'"
+                          (CancelClickedEvent)="ShowZeitspannefilter = false"
+                          (OkClickedEvent)="ShowZeitspannefilter = false"></pj-protokoll-listefilter>
+
+<auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"
+                [Dialogbreite]="200" [Dialoghoehe]="280" [PositionY]="200"
+                [Titel]="Auswahltitel" [Iconname]="GetDialogTitelicon()"
+                (OkClickedEvent)="AuswahlOkButtonClicked($event)"
+                (CancelClickedEvent)="ShowAuswahl = false"></auswahl-dialog>
+

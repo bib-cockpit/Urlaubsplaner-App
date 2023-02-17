@@ -1,0 +1,80 @@
+
+.menubuttonclass {
+
+  cursor: pointer;
+}
+
+.menufilterbuttonclass {
+
+  padding: 2px;
+  padding-right: 4px;
+  cursor: pointer;
+  background: #7b6a58;
+  border-radius: 4px;
+}
+
+.trennertdclass {
+
+  width: 30px;
+}
+
+.trennerdivclass {
+
+  width: 1px;
+  min-height: 30px;
+  height: 100%;
+  background: silver;
+}
+
+ion-searchbar {
+
+  width: 300px;
+  height: 50px;
+  --border-radius: none;
+  --box-shadow: none;
+  --background: black;
+}
+
+.menubuttonclass {
+
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
+  width: 100%;
+  min-height: 50px;
+  padding: 2px;
+}
+
+.buttonclass {
+
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  width: 100%;
+  min-height: 44px;
+  height: 100%;
+  padding: 2px;
+  border: 1px solid white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.statusvaianteclass {
+
+  padding: 6px;
+  border-radius: 3px;
+  width: auto;
+  white-space: nowrap;
+  color: white;
+  font-size: 80%;
+}
+.wocheheaderdivclass {
+
+  background: #354547;
+  color: white;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  // font-weight: bold;
+}
+

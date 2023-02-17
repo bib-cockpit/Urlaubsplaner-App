@@ -1,0 +1,75 @@
+.buttonclass {
+
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  width: 100%;
+  height: 44px;
+  border-radius: 4px;
+  padding: 2px;
+  display: flex;
+}
+
+.buttontextclass {
+
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertical
+  min-height: 44px;
+  width: 100%;
+  height: 100%;
+}
+
+.outerinfokeeperclass {
+
+  height: 100%;
+  width: 60%;
+  padding: 2px;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+}
+
+.infokeeperclass {
+
+  color: white;
+  height: 30px;
+  width: 100%;
+  padding: 2px;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center;     // vertical
+  border-radius: 4px;
+}
+
+ion-datetime {
+  height: auto;
+  width:  auto;
+  max-width: 350px;
+}
+
+ion-modal {
+  --width:  260px;
+  --height: 260px;
+  --border-radius: 8px;
+}
+
+ion-modal ion-datetime {
+  height: 260px;
+}
+
+.cancelbuttonclass {
+
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
+  width: 135px;
+}
+
+.okbuttonclass {
+
+  display: flex;
+  justify-content: flex-end; // horizontal
+  align-items: center; // vertikal
+  width: 135px;
+}

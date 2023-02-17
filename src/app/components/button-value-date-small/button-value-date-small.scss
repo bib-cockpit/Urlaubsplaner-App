@@ -1,0 +1,45 @@
+
+.buttonclass {
+
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+
+
+.infokeeperclass {
+
+  color: white;
+  height: auto;
+  width: 100%;
+  padding: 2px;
+  border-radius: 4px;
+
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center;     // vertical
+
+
+}
+
+ion-datetime {
+  height: auto;
+  width:  auto;
+  max-width: 350px;
+  --background: #354547;
+}
+
+ion-modal {
+  --width: 290px;
+  --height: 382px;
+  --border-radius: 8px;
+}
+
+ion-modal ion-datetime {
+  height: 382px;
+}

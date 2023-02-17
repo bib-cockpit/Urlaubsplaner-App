@@ -1,0 +1,34 @@
+
+<div *ngIf="Smallsize === false" class="datumdivclass" tappable  [id]="ElementID"  [style.background]="Background" [style.color]="Color" (click)="DateClickedHandler($event)">
+  {{Datum.format(Smalldate === false ? 'DD.MM.YYYY' : 'DD.MM.YY')}}
+</div>
+<span class="smalldatumclass" *ngIf="Smallsize === true"  [id]="ElementID"  [style.background]="Background" [style.color]="Color" (click)="DateClickedHandler($event)">
+  {{Datum.format(Smalldate === false ? 'DD.MM.YYYY' : 'DD.MM.YY')}}
+</span>
+
+<!--
+<ion-button *ngIf="ToolboxDesign === false" [id]="ElementID" [size]="Buttonsize" [color]="Enabled ? Basics.Ionicfarben.Blau : Basics.Ionicfarben.GRAU">{{Buttontext}}</ion-button>
+-->
+
+<ion-popover [trigger]="ElementID" show-backdrop="false">
+  <ng-template>
+        <ion-datetime #DatePicker
+                      locale="de-DE"
+                      showDefaultButtons="true"
+                      doneText="Fertig"
+                      cancelText="Abbrechen"
+                      [min]="Minimumstring"
+                      [max]="Maximumstring"
+                      presentation="date" [value]="Datum.format('YYYY-MM-DD')" (ionChange)="DateChangedHandler($event)">
+        </ion-datetime>
+  </ng-template>
+      <!--
+    <ion-content force-overscroll="false">
+    </ion-content>
+
+      monthNames="Januar, Februar, März, April, Mai, Juni, Juli, August, September, Oktober, November, Dezember"
+      monthShortNames="Jan., Feb., Mrz., Apr., Mai, Jun., Jul., Aug., Sep., Okt., Nov., Dez." first-day-of-week="1"
+      [value]="Datum.format('YYYY-MM-DD')" (ionChange)="DateChangedHandler($event)"
+      -->
+</ion-popover>
+

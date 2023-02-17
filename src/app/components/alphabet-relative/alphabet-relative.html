@@ -1,0 +1,16 @@
+<div [ngStyle]="Style" class="alphabetclass">
+
+
+  <div *ngFor="let Buchstabe of Filterliste; let i = index" class="alphabetitem"
+        (click)="AlphabetClickedHandler(Buchstabe)">
+       <ion-badge style="background: none; border: 2px solid" [style.color]="Buchstabe === Auswahl ? this.Basics.Farben.Burnicklgruen : 'white'"
+                  [style.border-color]="Buchstabe === Auswahl ? this.Basics.Farben.Burnicklgruen : this.Basics.Farben.Burnicklgrau">
+          {{Buchstabe}}
+       </ion-badge>
+  </div>
+
+</div>
+
+<!--
+Buchstabe === Auswahl ? this.Basics.Farben.Burnicklgruen : 'none'"
+                  -->

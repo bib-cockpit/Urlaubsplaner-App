@@ -1,0 +1,326 @@
+
+<div [style.z-index]="ZIndex" style="position: absolute; top: 0px; left: 0px; background: none; width: 100%; height: 100%">
+  <div  class="keeperdivclass" [style.background]="Displayservice.ShowOpacity(Displayservice.Dialognamen.Protokolleditor) ? 'rgba(0, 0, 0, 0.5)' : 'none'" (click)="ContentClicked($event)">
+    <div class="contentdivclass"
+         [style.width.px]="Dialogbreite"
+         [style.height.px]="Dialoghoehe" [style.top.px]="PositionY" (click)="ContentClicked($event)">
+      <ion-header>
+        <page-header>
+          <table class="paddingsmalltable">
+            <tr>
+              <td style="width: 4px"></td>
+              <td><ion-icon [name]="Iconname" color="burnicklgruen"></ion-icon></td>
+              <td [style.color]="'white'">{{Titel}}</td>
+              <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
+              <td>
+                <div class="menubuttonclass" (click)="AllgemeinMenuButtonClicked()">
+                  <table class="paddingsmalltable">
+                    <tr>
+                      <td><ion-icon name="reader-outline" [color]="Bereich === Bereiche.Allgemein ? 'burnicklgruen' : 'weis'"></ion-icon></td>
+                      <td [style.color]="Bereich === Bereiche.Allgemein ? Basics.Farben.Burnicklgruen : 'white'">Allgemein</td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+              <td style="width: 20px"></td>
+              <td>
+                <div class="menubuttonclass" (click)="Valid === true ? ThemenlisteMenuButtonClicked() : null">
+                  <table class="paddingsmalltable">
+                    <tr>
+                      <td><ion-icon name="list-outline" [color]="GetThemenlisteIconcolor()"></ion-icon></td>
+                      <td [style.color]="GetThemenlisteTextcolor()">Themenliste</td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </page-header>
+      </ion-header>
+
+      <ion-content>
+
+        <div class="contentinnerclass">
+
+          <ng-container [ngSwitch]="Bereich">
+
+            <ng-container *ngSwitchCase="Bereiche.Allgemein">
+
+              <ion-grid>
+                <ion-row>
+                  <ion-col size="3">
+                    <ion-text color="burnicklgruen"><b>{{DBProjekte.CurrentProjekt !== null ? DBProjekte.CurrentProjekt.Projektname : 'Projekt unbekannt' }}</b></ion-text>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col [size]="Tools.GetButtonvalueSize()">
+                    <input-clone [(Value)]="DB.CurrentProtokoll.Titel" [Titel]="'Titel'" [Required]="true" [MaxLength]="150" (TextChanged)="TextChangedHandler()"></input-clone>
+                  </ion-col>
+                  <ion-col [size]="Tools.GetButtonvalueSize()">
+
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col [size]="Tools.GetButtonvalueSize()">
+                    <input-clone [(Value)]="DB.CurrentProtokoll.Protokollnummer" [Titel]="'Protokollnummer'" [Required]="true" [MaxLength]="150"  (TextChanged)="TextChangedHandler()"></input-clone>
+                  </ion-col>
+                  <ion-col [size]="Tools.GetButtonvalueSize()">
+                    <input-clone [(Value)]="DB.CurrentProtokoll.Besprechungsort" [Titel]="'Besprechungsort'" [Required]="true" [MaxLength]="20" (TextChanged)="TextChangedHandler()"></input-clone>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <span *ngIf="DB.CurrentProtokoll.Protokollnummer === ''" style="font-size: 90%; color: gray;">Letzte Protokollnummer {{DB.GetLetzteProtokollnummer()}}</span>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col [size]="Tools.GetButtonvalueSize()">
+                    <button-value-date [Datum]="GetDatum()" [Buttontext]="'Datum'" [ElementID]="'datum'" (TimeChanged)="DatumChanged($event)" [ShowKW]="true"></button-value-date>
+                  </ion-col>
+                  <ion-col [size]="Tools.GetButtonvalueSize()">
+                    <button-value [Buttontext]="'Leistungsphase'"
+                                  [Wert_A]="DB.CurrentProtokoll.Leistungsphase !== Const.NONE ? DB.CurrentProtokoll.Leistungsphase : 'unbekannt'"
+                                  (ButtonClicked)="LeistungsphaseButtonClicked()"></button-value>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col [size]="Tools.GetButtonvalueSize()">
+                    <button-value-time [Uhrzeit]="GetStartzeit()" [Buttontext]="'Start'" [ElementID]="'Startpicker'" (TimeChanged)="StartzeitChanged($event)"></button-value-time>
+                  </ion-col>
+                  <ion-col [size]="Tools.GetButtonvalueSize()">
+                    <button-value-time [Uhrzeit]="GetEndezeit()" [Buttontext]="'Ende'" [ElementID]="'Endepicker'" (TimeChanged)="EndezeitChanged($event)"></button-value-time>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col size="6">
+                    <input-clone [MinHeight]="44" [Lines]="DB.CurrentProtokoll.BeteiligtInternIDListe.length"
+                                 [Clickable]="true" [Enabled]="false" Titel="Teilnehmer Intern" [Value]="GetTeamteilnehmerliste()" (click)="TeamteilnehmerClicked.emit()"></input-clone>
+                  </ion-col>
+                  <ion-col size="6">
+                    <input-clone [MinHeight]="44" [Lines]="DB.CurrentProtokoll.BeteiligExternIDListe.length"
+                                 [Clickable]="true" [Enabled]="false" Titel="Teilnehmer Extern" [Value]="GetBeteiligteteilnehmerliste()"
+                                 (click)="BeteiligteteilnehmerClicked.emit()"></input-clone>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col [size]="12">
+                    <input-clone [(Value)]="DB.CurrentProtokoll.Notizen" [Titel]="'Notizen'" [Lines]="6" (TextChanged)="TextChangedHandler()"></input-clone>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+
+            </ng-container>
+            <ng-container *ngSwitchCase="Bereiche.Themenliste">
+
+              <div style="width: 100%; overflow: hidden" [style.height.px]="Gesamthoehe">
+
+                <div style="width: 100%;" [style.height.px]="Titelhoehe">
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col size="3">
+                        <ion-text color="burnicklgruen"><b>{{DBProjekte.CurrentProjekt !== null ? DBProjekte.CurrentProjekt.Projektname : 'Projekt unbekannt' }}</b></ion-text>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="3">
+                        <ion-text color="burnicklgruen">
+                          <b>
+                            {{DB.CurrentProtokoll.Titel}} &bull; {{GetDatum().format('DD.MM.YYYY')}}
+                          </b>
+                        </ion-text>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </div>
+                <div style="width: 100%; display: flex; justify-content: center; align-items: flex-end;" [style.height.px]="Listeheaderhoehe">
+                  <table class="listeheaderclass" style="color: black">
+                    <tr>
+                      <td style="width: 30px; text-align: center"><b>Nr.</b></td>
+                      <td style="width: 600px"><b>Beschreibung</b></td>
+                      <td style="width: 90px"><b>Termin</b></td>
+                      <td style="width: 110px"><b>Status</b></td>
+                      <td style="width: 100px; text-align: center"><b>Zuständig</b></td>
+                    </tr>
+                  </table>
+                </div>
+
+                <div style="width: 100%; display: flex; justify-content: center; align-items: flex-start; overflow: auto" [style.height.px]="Listehoehe">
+
+                  <table  style="width: 100%">
+                    <tr *ngFor="let Projektpunkt of Punkteliste;">
+                      <td>
+                        <div (click)="ProtokollpunktClicked.emit(Projektpunkt)" style="width: 100%; display: flex; justify-content: center; align-items: flex-start;">
+
+                          <table class="docinnertablespezial">
+                            <tr>
+                              <td style="width: 30px" align="center" valign="middle">
+
+                                <!-- Nummer -->
+
+                                <table class="nobordersmalltable">
+                                  <tr>
+                                    <td style="text-align: center; font-size: 90%">{{Projektpunkt.Nummer}}</td>
+                                  </tr>
+                                </table>
+                              </td>
+                              <td valign="top" style="height: inherit; width: 600px">
+
+                                <!-- Aufgabe --->
+
+                                <table class="nobordersmalltable" style="width: 100%;">
+                                  <tr>
+                                    <td>
+                                      <div  class="aufgabedivclass">
+
+                                        <table style="font-size: 90%">
+                                          <tr *ngIf="Projektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name">
+                                            <td  style="color: #FF9333; font-weight: bold; vertical-align: top; min-width: 20px">{{KostenService.GetKostengruppenname(Projektpunkt)}}</td>
+                                          </tr>
+                                          <tr>
+                                            <td [innerHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe: 'html'"></td>
+                                          </tr>
+                                        </table>
+
+
+                                      </div>
+
+                                    </td>
+                                  </tr>
+                                </table>
+
+                              </td>
+                              <td style="height: inherit; width: 90px">
+
+                                <!-- Termin -->
+
+                                <div style="height: 100%; padding: 6px;" *ngIf="Projektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name &&
+                                    Projektpunkt.Status !== Const.Projektpunktstatustypen.Festlegung.Name &&
+                                    Projektpunkt.Status !== Const.Projektpunktstatustypen.Geschlossen.Name &&
+                                    Projektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name"
+                                     [style.background]="DBProjektpunkte.GetFaelligBackground(Projektpunkt)">
+
+                                  <table width="100%" class="nobordersmalltable">
+                                    <tr>
+                                      <td style="font-size: 90%; text-align: center" [style.color]="DBProjektpunkte.CheckProjektpunktFaellig(Projektpunkt) === Const.Faelligkeitsstatus.Nicht_faellig ? 'black' : 'white'">
+                                        {{GetTermindatum(Projektpunkt)}}
+                                      </td>
+                                    </tr>
+                                  </table>
+
+                                </div>
+
+                              </td>
+                              <td style="width: 110px">
+
+                                <!-- Status -->
+
+                                <div class="statusdivclass"
+                                     [style.background]="DBProjektpunkte.GetProjektpunktstusByName(Projektpunkt.Status).Color"
+                                     (click)="ProjektpunktStatusClicked(Projektpunkt)">
+                                  {{DBProjektpunkte.GetProjektpunktstusByName(Projektpunkt.Status).Displayname}}
+                                </div>
+
+                              </td>
+
+                              <td style="height: inherit; width: 100px">
+
+                                <!-- Zuständig -->
+
+                                <table class="nobordersmalltable" style="width: 100%">
+                                  <tr  *ngFor="let ZustaendigID of Projektpunkt.ZustaendigeInternIDListe">
+                                    <td style="text-align: center; color: black; font-size: 90%">
+                                      {{GetZustaendigInternName(ZustaendigID)}}
+                                    </td>
+                                  </tr>
+                                  <tr *ngIf="Projektpunkt.ZustaendigeExternIDListe.length > 0 && Projektpunkt.ZustaendigeInternIDListe.length > 0">
+                                    <td style="text-align: center; font-size: 180%; font-weight: bold">&bull;</td>
+                                  </tr>
+                                  <tr *ngFor="let ZustaendigID of Projektpunkt.ZustaendigeExternIDListe">
+                                    <td style="text-align: center; color: black; font-size: 90%">
+                                      {{GetZustaendigExternName(ZustaendigID)}}
+                                    </td>
+                                  </tr>
+                                </table>
+                              </td>
+
+                            </tr>
+                          </table>
+
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+
+                        <ion-grid>
+                          <ion-row>
+                            <ion-col>
+                              <ion-button size="small" [color]="Valid === true ? 'burnicklbraun' : 'grau'"
+                                          (click)="Valid === true ? AddProtokollpunktClicked.emit() : null">
+                                <ion-icon name="add-circle-outline" color="weiss" slot="start"></ion-icon>
+                                <ion-text color="weiss">Neuer Eintrag</ion-text>
+                              </ion-button>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col>
+                              <div *ngIf="CheckOkButtonEnabled()" class="savestatusdivclass" [style.background]="ProtokollSaved === true ? 'green' : 'red'"></div>
+                            </ion-col>
+                          </ion-row>
+                        </ion-grid>
+
+                      </td>
+                    </tr>
+                  </table>
+
+
+                </div>
+              </div>
+
+            </ng-container>
+
+          </ng-container>
+
+
+
+
+          </div>
+
+      </ion-content>
+
+
+      <ion-footer>
+        <page-footer>
+          <table class="paddingsmalltable" width="100%">
+            <tr>
+              <td>
+                <div class="rootbuttonclass" (click)="CancelButtonClicked()">
+                  <ion-icon style="font-size: 28px" color="burnicklgruen" name="close-outline"></ion-icon>
+                </div>
+              <td style="width: 100%"></td>
+              <!--
+              <td *ngIf="Bereich === Bereiche.Themenliste">
+
+                <div class="rootbuttonclass" (click)="Valid === true ? AddProtokollpunktClicked.emit() : null">
+                  <ion-icon style="font-size: 28px" [color]="Valid === true ? 'burnicklgruen' : 'burnicklbraun'" name="add-circle-outline"></ion-icon>
+                </div>
+              </td>
+              -->
+              <td>
+
+                <div class="rootbuttonclass" (click)="Valid === true ? OkButtonClicked() : null">
+                  <ion-icon style="font-size: 28px" [color]="Valid === true ? 'burnicklgruen' : 'burnicklbraun'" name="save-outline"></ion-icon>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </page-footer>
+      </ion-footer>
+
+    </div>
+  </div>
+</div>
+
+
+
+

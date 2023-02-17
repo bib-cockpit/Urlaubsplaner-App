@@ -1,0 +1,69 @@
+
+
+
+.trennerdiv {
+
+  width: 100px;
+  height: 10px;
+  border-radius: 4px;
+  background: #7b6a58;
+  margin: 6px;
+}
+
+.trennerdivclass {
+
+  width: 1px;
+  min-height: 30px;
+  height: 100%;
+  background: silver;
+}
+
+.buttonclass {
+
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  border: 2px solid gray;
+  border-radius: 10px;
+  width: 140px;
+  height: 140px;
+  cursor: pointer;
+  background: white;
+}
+
+.buttonbigclass {
+
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  border: 2px solid gray;
+  border-radius: 10px;
+  width: 220px;
+  height: 220px;
+  cursor: pointer;
+  background: white;
+}
+
+.favlistedivclass {
+
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  border: 2px solid gray;
+  border-radius: 10px;
+  width: 400px;
+  cursor: pointer;
+  background: white;
+  overflow: auto;
+}
+
+.menubuttonclass {
+
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
+  width: 100%;
+  min-height: 50px;
+  padding: 2px;
+}
+

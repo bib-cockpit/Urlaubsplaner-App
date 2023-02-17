@@ -1,0 +1,62 @@
+
+<div  class="keeperdivclass" (click)="ContentClicked($event)">
+  <div class="contentdivclass"
+       [style.width.px]="Dialogbreite"
+       [style.height.px]="Dialoghoehe" [style.top.px]="PositionY" (click)="ContentClicked($event)">
+    <ion-header>
+      <page-header>
+        <table class="paddingsmalltable">
+          <tr>
+            <td><ion-icon [name]="Iconname" color="burnicklgruen"></ion-icon></td>
+            <td [style.color]="'white'">{{Titel}}</td>
+          </tr>
+        </table>
+
+        <ng-container *ngIf="ShowSandortfilter">
+          <td style="width: 20px"></td>
+          <td>
+            <div class="menufilterbuttonclass" (click)="StandortfilterButtonClicked()">
+              <table class="paddingsmalltable">
+                <tr>
+                  <td><ion-icon name="funnel-outline"></ion-icon></td>
+                  <td [innerHTML]="DBStandort.GetStandortfiller()"></td>
+                </tr>
+              </table>
+            </div>
+          </td>
+
+        </ng-container>
+      </page-header>
+    </ion-header>
+
+    <ion-content>
+        <ng-content>
+
+        </ng-content>
+    </ion-content>
+
+    <ion-footer>
+      <page-header>
+        <table class="paddingsmalltable" width="100%">
+          <tr>
+            <td>
+              <ion-button size="small" color="rot" (click)="CancelButtonClicked()">
+                <ion-icon name="close-outline"></ion-icon>
+              </ion-button>
+            <td style="width: 100%"></td>
+            <td>
+              <ion-button [disabled]="OkButtonEneabled === false" size="small" color="gruen" (click)="OkButtonClicked()">
+                <ion-icon name="checkmark-outline"></ion-icon>
+              </ion-button>
+            </td>
+          </tr>
+        </table>
+      </page-header>
+    </ion-footer>
+
+  </div>
+</div>
+
+
+
+

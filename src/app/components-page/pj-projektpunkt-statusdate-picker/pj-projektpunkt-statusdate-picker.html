@@ -1,0 +1,293 @@
+
+
+<div [style.z-index]="ZIndex" style="position: absolute; top: 0px; left: 0px; background: none; width: 100%; height: 100%">
+  <div  class="keeperdivclass" [style.background]="Displayservice.ShowOpacity(Displayservice.Dialognamen.ProjektpunktStatusDatePicker) ? 'rgba(0, 0, 0, 0.5)' : 'none'" (click)="ContentClicked($event)">
+    <div class="contentdivclass"
+         [style.width.px]="Dialogbreite"
+         [style.height.px]="Dialoghoehe" [style.top.px]="PositionY" (click)="ContentClicked($event)">
+      <ion-header>
+        <page-header-center>
+          <table class="paddingsmalltable">
+            <tr>
+              <td><ion-icon [name]="Iconname" color="burnicklgruen"></ion-icon></td>
+              <td [style.color]="'white'">{{Titel}}</td>
+            </tr>
+          </table>
+        </page-header-center>
+      </ion-header>
+
+      <ion-content>
+        <div class="contentinnerclass">
+
+          <table class="paddingtable" *ngIf="DBProjektpunkte.CurrentProjektpunkt !== null">
+            <tr>
+              <td style="padding-bottom: 4px"><ion-text color="burnicklgruen"><b>Status</b></ion-text></td>
+              <td></td>
+
+              <td rowspan="2" *ngIf="DBProjektpunkte.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name" valign="top">
+
+
+                <!--
+                <lop-liste-gebaeudestruktur-picker [Windowhoehe]="GetWindowHeight() - 90" (AddFerstlegungskategorie)="AddFerstlegungskategorieHandler($event)"></lop-liste-gebaeudestruktur-picker>
+                -->
+              </td>
+            </tr>
+            <tr>
+              <td valign="top">
+                <table>
+                  <tr>
+                    <td>
+
+                      <ion-radio-group [value]="Status" (ionChange)="StatusChangedHandler($event)">
+                        <div style="overflow: auto">
+                          <table class="paddingtable">
+                            <tr>
+                              <td><ion-radio [value]="Const.Projektpunktstatustypen.Offen.Name" mode="md"></ion-radio></td>
+                              <td>{{Const.Projektpunktstatustypen.Offen.Displayname}}</td>
+                              <td style="width: 12px"></td>
+                              <td><ion-radio [value]="Const.Projektpunktstatustypen.Ruecklauf.Name" mode="md"></ion-radio></td>
+                              <td>{{Const.Projektpunktstatustypen.Ruecklauf.Displayname}}</td>
+                            </tr>
+                            <tr>
+                              <td><ion-radio [value]="Const.Projektpunktstatustypen.Geschlossen.Name" mode="md"></ion-radio></td>
+                              <td>{{Const.Projektpunktstatustypen.Geschlossen.Displayname}}</td>
+                              <td style="width: 12px"></td>
+                              <td><ion-radio *ngIf="ShowProtokollpunkte === true"[value]="Const.Projektpunktstatustypen.Festlegung.Name" mode="md"></ion-radio></td>
+                              <td><span *ngIf="ShowProtokollpunkte === true">{{Const.Projektpunktstatustypen.Festlegung.Displayname}}</span></td>
+                            </tr>
+                            <tr>
+                              <td><ion-radio [value]="Const.Projektpunktstatustypen.Bearbeitung.Name" mode="md"></ion-radio></td>
+                              <td>{{Const.Projektpunktstatustypen.Bearbeitung.Displayname}}</td>
+                              <td style="width: 12px"></td>
+                              <td><ion-radio *ngIf="ShowProtokollpunkte === true" [value]="Const.Projektpunktstatustypen.Protokollpunkt.Name" mode="md"></ion-radio></td>
+                              <td><span      *ngIf="ShowProtokollpunkte === true">{{Const.Projektpunktstatustypen.Protokollpunkt.Displayname}}</span></td>
+                            </tr>
+
+
+
+                            <!--
+
+                            <ng-container *ngFor="let Status of Projektpunkteservice.Statustypenliste">
+                              <tr *ngIf="Status.Name === Const.Projektpunktstatustypen.Protokollpunkt.Name && ShowProtokollpunkte === true">
+                                <td>
+                                  <ion-radio [value]="Status.Name"></ion-radio>
+                                </td>
+                                <td style="color: white; width: 200px; font-size: 90%">
+                                  {{Status.Displayname}}
+                                </td>
+                              </tr>
+                              <tr *ngIf="Status.Name !== Const.Projektpunktstatustypen.Protokollpunkt.Name">
+                                <td>
+                                  <ion-radio [value]="Status.Name"></ion-radio>
+                                </td>
+                                <td>
+                                  {{Status.Displayname}}
+                                </td>
+                              </tr>
+                            </ng-container>
+                            -->
+
+                          </table>
+                        </div>
+                      </ion-radio-group>
+
+
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding-top: 4px; padding-bottom: 12px">
+                      <ion-text color="burnicklgruen"><b>Termin</b></ion-text>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ion-radio-group [value]="Terminvariante" (ionChange)="TerminStatusChangedHandler($event)">
+                        <div style="overflow: auto">
+                          <table class="paddingtable">
+                            <tr>
+                              <td><ion-radio [value]="Terminvarianten.Stichtag" mode="md"></ion-radio></td>
+                              <td>Stichtag</td>
+                            </tr>
+                            <tr>
+                              <td><ion-radio [value]="Terminvarianten.Kalenderwoche" mode="md"></ion-radio></td>
+                              <td>Kalenderwoche</td>
+                            </tr>
+                          </table>
+                        </div>
+                      </ion-radio-group>
+                    </td>
+                  </tr>
+                  <tr *ngIf="Terminvariante === Terminvarianten.Stichtag">
+                    <td>
+                      <ion-datetime color="burnicklgruen" style="--background: #7b6a58; color: white; border: 1px solid gray;" first-day-of-week="1" size="fixed"  presentation="date"  [value]="Datum.format('YYYY-MM-DD')" (ionChange)="StichtagChangedEvent($event)"></ion-datetime>
+                    </td>
+                  </tr>
+                  <tr *ngIf="Terminvariante === Terminvarianten.Kalenderwoche">
+                    <td>
+                      <div style="background: #7b6a58; color: white; padding: 4px; width: 350px">
+
+                        <table class="paddingtable" width="100%">
+                          <tr>
+                            <td colspan="8" style="padding-top: 4px; padding-bottom: 6px; padding-left: 10px">
+
+                              <table width="100%">
+                                <tr>
+                                  <td style="font-size: 120%; color: silver">{{GetEndemonatname()}}</td>
+                                  <td style="width: 90px">
+
+                                    <table>
+                                      <tr>
+                                        <td><ion-icon (click)="KalenderwocheMonatRueckwaerts()" style="color: darkgray; font-size: 24px; cursor: pointer" name="chevron-back-outline"></ion-icon></td>
+                                        <td style="width: 30px;"></td>
+                                        <td><ion-icon (click)="KalenderwocheMonatVorwaerts()" style="color: darkgray; font-size: 24px; cursor: pointer" name="chevron-forward-outline"></ion-icon></td>
+                                      </tr>
+                                    </table>
+
+                                  </td>
+                                </tr>
+                              </table>
+
+                            </td>
+                          </tr>
+                          <tr style="text-align: center; color: darkgray">
+                            <td>KW</td>
+                            <td>Mo</td>
+                            <td>Di</td>
+                            <td>Mi</td>
+                            <td>Do</td>
+                            <td>Fr</td>
+                            <td>Sa</td>
+                            <td>So</td>
+                          </tr>
+                          <tr *ngFor="let Tageliste of Kalendertageliste; let wocheindex = index" style="text-align: center">
+                            <td style="height: 40px">
+                              <div (click)="KalenderwocheClicked($event, Tageliste[6])" class="kwdivclass" [style.background]="CheckKalenderwoche(Tageliste[wocheindex].Kalenderwoche) === true ? '#c7d304' : 'none'">
+                                {{Tageliste[wocheindex].Kalenderwoche}}
+                              </div>
+                            </td>
+                            <td *ngFor="let Tag of Tageliste" [style.color]="Tag.Hauptmonat === true ? 'white' : 'darkgray'">
+                              {{Tag.Tagnummer}}
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+
+          <!--
+
+              <table class="paddingtable">
+                <tr>
+                  <td>
+
+                  </td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td valign="top" style="color: white">
+                    <table>
+                      <tr>
+                        <td>
+
+                          <ion-radio-group [value]="Status" (ionChange)="StatusChangedHandler($event)">
+                            <table class="paddingtable" style="color: white;">
+                              <ng-container *ngFor="let Status of Projektpunkteservice.Statustypenliste">
+                                <tr *ngIf="Status.Name === Const.Projektpunktstatustypen.Protokollpunkt.Name && ShowProtokollpunkte === true">
+                                  <td>
+                                    <ion-radio [value]="Status.Name"></ion-radio>
+                                  </td>
+                                  <td style="color: white; width: 200px; font-size: 90%">
+                                    {{Status.Displayname}}
+                                  </td>
+                                </tr>
+                                <tr *ngIf="Status.Name !== Const.Projektpunktstatustypen.Protokollpunkt.Name">
+                                  <td>
+                                    <ion-radio [value]="Status.Name"></ion-radio>
+                                  </td>
+                                  <td>
+                                    {{Status.Displayname}}
+                                  </td>
+                                </tr>
+                              </ng-container>
+                            </table>
+                          </ion-radio-group>
+
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <ion-text color="primary"><b>Datum</b></ion-text>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <ion-datetime first-day-of-week="1" size="fixed"  presentation="date" style="--background: black; color: white; border: 1px solid gray" [value]="Datum.format('YYYY-MM-DD')" (ionChange)="DateChangedEvent($event)"></ion-datetime>
+                        </td>
+                      </tr>
+                    </table>
+
+                  </td>
+                  <td *ngIf="Projektpunkteservice.Projektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name">
+                    <div style="width: 1px; background: #444444" [style.max-height.px]="GetWindowHeight() - 90"></div>
+                  </td>
+                  <td *ngIf="Projektpunkteservice.Projektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name" valign="top">
+
+                    <lop-liste-gebaeudestruktur-picker [Windowhoehe]="GetWindowHeight() - 90" (AddFerstlegungskategorie)="AddFerstlegungskategorieHandler($event)"></lop-liste-gebaeudestruktur-picker>
+
+                  </td>
+
+                </tr>
+                <tr>
+                  <td colspan="10" align="right" style="padding-right: 12px">
+                    <ion-button size="small" color="gruen" (click)="FertigButtonClicked($event)">Fertig</ion-button>
+                  </td>
+                </tr>
+              </table>
+
+              -->
+
+        </div>
+      </ion-content>
+
+      <ion-footer>
+        <page-footer>
+
+          <table class="paddingsmalltable" width="100%">
+            <tr>
+              <td>
+                <div class="rootbuttonclass" (click)="CancelButtonClicked()">
+                  <ion-icon style="font-size: 28px" color="burnicklgruen" name="close-outline"></ion-icon>
+                </div>
+              <td style="width: 100%"></td>
+              <td>
+
+                <div class="rootbuttonclass" (click)="OkButtonClicked()">
+                  <ion-icon style="font-size: 28px" color="burnicklgruen" name="save-outline"></ion-icon>
+                </div>
+              </td>
+            </tr>
+          </table>
+
+        </page-footer>
+      </ion-footer>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+

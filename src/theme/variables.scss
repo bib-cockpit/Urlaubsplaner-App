@@ -1,8 +1,22 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
+
+
 /** Ionic CSS Variables **/
+.skalierungpopupclass {
+
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+;
+}
+
+
 :root {
+
+
+
   /** primary **/
   --ion-color-primary: #3880ff;
   --ion-color-primary-rgb: 56, 128, 255;
@@ -145,6 +159,15 @@
     --ion-color-light-contrast-rgb: 255,255,255;
     --ion-color-light-shade: #1e2023;
     --ion-color-light-tint: #383a3e;
+
+    --ion-item-background: #ffffff;
+    --ion-item-color: black;
+
+    --ion-toolbar-background: #1f1f1f;
+
+    --ion-tab-bar-background: #1f1f1f;
+
+    --ion-card-background: #1e1e1e;
   }
 
   /*
@@ -179,9 +202,15 @@
     --ion-color-step-900: #e6e6e6;
     --ion-color-step-950: #f2f2f2;
 
+    /*
     --ion-item-background: #000000;
 
+    --ion-item-background: white;
+
     --ion-card-background: #1c1c1d;
+
+
+     */
   }
 
   .ios ion-modal {
@@ -225,6 +254,7 @@
     --ion-color-step-900: #e7e7e7;
     --ion-color-step-950: #f3f3f3;
 
+    /*
     --ion-item-background: #1e1e1e;
 
     --ion-toolbar-background: #1f1f1f;
@@ -232,5 +262,7 @@
     --ion-tab-bar-background: #1f1f1f;
 
     --ion-card-background: #1e1e1e;
+
+     */
   }
 }
