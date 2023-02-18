@@ -80,6 +80,8 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
 
       if(this.AuthService.ActiveUser !== null) {
 
+        debugger;
+
         Liste = this.AuthService.ActiveUser.name.split(' ');
 
         this.DB.CurrentMitarbeiter.Email = this.AuthService.ActiveUser.username;

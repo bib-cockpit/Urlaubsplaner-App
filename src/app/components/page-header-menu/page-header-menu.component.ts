@@ -16,7 +16,7 @@ import {DatabaseProjekteService} from "../../services/database-projekte/database
 import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
 import {DatabaseAuthenticationService} from "../../services/database-authentication/database-authentication.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import {LocalstorageService} from "../../services/localstorage/localstorage";
+// import {LocalstorageService} from "../../services/localstorage/localstorage";
 import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
 import moment, {Moment} from "moment";
 import {

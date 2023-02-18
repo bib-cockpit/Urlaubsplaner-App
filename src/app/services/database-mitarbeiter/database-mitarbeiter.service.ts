@@ -426,9 +426,13 @@ export class DatabaseMitarbeiterService {
 
           next: (result) => {
 
+            debugger;
+
             Daten = result;
           },
           complete: () => {
+
+            debugger;
 
             resove(Daten);
           },

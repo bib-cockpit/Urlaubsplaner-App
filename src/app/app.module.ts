@@ -15,17 +15,20 @@ import {MenueService} from "./services/menue/menue.service";
 import {DisplayService} from "./services/diplay/display.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HttpClientModule} from "@angular/common/http";
-import {MSAL_INSTANCE, MsalBroadcastService, MsalModule, MsalRedirectComponent, MsalService} from "@azure/msal-angular";
+// import {MSAL_INSTANCE, MsalBroadcastService, MsalModule, MsalRedirectComponent, MsalService} from "@azure/msal-angular";
 import {IPublicClientApplication, PublicClientApplication} from "@azure/msal-browser";
 import {LocalstorageService} from "./services/localstorage/localstorage";
 
 
+/*
 export const MSALInstanceFactory = (): IPublicClientApplication => new PublicClientApplication({
   auth: {
     clientId: '6ca3f4ee-c064-4388-bf2d-60152b70a7c2',
     redirectUri: 'http://localhost:8100'
   }
 });
+
+ */
 
 
 @NgModule({
@@ -38,7 +41,7 @@ export const MSALInstanceFactory = (): IPublicClientApplication => new PublicCli
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    MsalModule,
+    // MsalModule,
   ],
   providers: [
 
@@ -51,17 +54,20 @@ export const MSALInstanceFactory = (): IPublicClientApplication => new PublicCli
     DisplayService,
     SecurityService,
     LocalstorageService,
+    /*
     {
       provide: MSAL_INSTANCE,
       useFactory: MSALInstanceFactory
     },
-    MsalService,
-    MsalBroadcastService,
+
+     */
+    // MsalService,
+    // MsalBroadcastService,
     {
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy,
     }],
-  bootstrap: [AppComponent, MsalRedirectComponent],
+  bootstrap: [AppComponent], // MsalRedirectComponent
   exports: [
 
   ]

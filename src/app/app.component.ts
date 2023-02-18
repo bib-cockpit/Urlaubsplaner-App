@@ -8,16 +8,17 @@ import {DatabaseAuthenticationService} from "./services/database-authentication/
 import {ToolsProvider} from "./services/tools/tools";
 import {HttpErrorResponse} from "@angular/common/http";
 import {filter, Subject, Subscription, takeUntil} from "rxjs";
-import {MsalBroadcastService, MsalService} from "@azure/msal-angular";
+// import {MsalBroadcastService, MsalService} from "@azure/msal-angular";
 import {AuthenticationResult, EventMessage, EventType, InteractionStatus} from "@azure/msal-browser";
 import {ConstProvider} from "./services/const/const";
 import {DatabaseMitarbeiterService} from "./services/database-mitarbeiter/database-mitarbeiter.service";
-import {LocalstorageService} from "./services/localstorage/localstorage";
 import {DatabaseStandorteService} from "./services/database-standorte/database-standorte.service";
 import {DatabaseProjekteService} from "./services/database-projekte/database-projekte.service";
 import {
   DatabaseMitarbeitersettingsService
 } from "./services/database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {LocalstorageService} from "./services/localstorage/localstorage";
+
 
 @Component({
   selector: 'app-root',
@@ -34,16 +35,16 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
               private Menuservice: MenueService,
               private AuthService: DatabaseAuthenticationService,
               private changeDetector: ChangeDetectorRef,
-              private MSALService: MsalService,
-              private MSALBroadcastService: MsalBroadcastService,
+              // private MSALService: MsalService,
+              // private MSALBroadcastService: MsalBroadcastService,
               private Basics: BasicsProvider,
               private Tools: ToolsProvider,
               private Const: ConstProvider,
-              private StorageService: LocalstorageService,
               private MitarbeiterDB: DatabaseMitarbeiterService,
               private MitarbeitersettingsDB: DatabaseMitarbeitersettingsService,
               private StandortDB: DatabaseStandorteService,
               private ProjekteDB: DatabaseProjekteService,
+              private StorageService: LocalstorageService,
               private Debug: DebugProvider) {
 
     try {
@@ -84,6 +85,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
     try {
 
+      this.StartApp(); // Muss wieder entfernt werden -> StartApp über MSAL
+
+      /*
       this.MSALBroadcastService.inProgress$
         .pipe(
           filter((status: InteractionStatus) => status === InteractionStatus.None),
@@ -94,6 +98,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         this.AuthService.SetAuthenticationStatus();
       });
+
+       */
 
       /*
 
@@ -161,6 +167,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
         this.AuthService.SecurityToken = token;
 
         let result = await this.MitarbeiterDB.GetMitarbeiterRegistrierung(this.AuthService.ActiveUser.username);
+
+        debugger;
 
         if (result === null) {
 

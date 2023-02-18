@@ -1,6 +1,6 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {DebugProvider} from "../debug/debug";
-import {MsalService} from "@azure/msal-angular";
+// import {MsalService} from "@azure/msal-angular";
 import {AccountInfo} from "@azure/msal-browser";
 import {ConstProvider} from "../const/const";
 import {LocalstorageService} from "../localstorage/localstorage";
@@ -20,10 +20,20 @@ export class DatabaseAuthenticationService {
   constructor(private Debug: DebugProvider,
               private Const: ConstProvider,
               private StorgeService: LocalstorageService,
-              private MSALService: MsalService) {
+              // private MSALService: MsalService
+  ) {
     try {
 
-      this.SecurityToken = this.Const.NONE;
+      this.SecurityToken   = this.Const.NONE;
+      this.IsAuthenticated = true; // Unbedingt auf false setzen
+      this.ActiveUser      = { // Unbedingt auf null setzen
+        environment:    "",
+        homeAccountId:  "",
+        localAccountId: "",
+        tenantId: "",
+        username: "p.hornburger@burnickl.com",
+        name: "Peter Hornburger"
+      };
 
     } catch (error) {
 
@@ -53,6 +63,7 @@ export class DatabaseAuthenticationService {
 
       // debugger;
 
+      /*
       let activeAccount: AccountInfo = this.MSALService.instance.getActiveAccount();
 
       if(activeAccount === null && this.MSALService.instance.getAllAccounts().length > 0) {
@@ -62,9 +73,11 @@ export class DatabaseAuthenticationService {
         this.MSALService.instance.setActiveAccount(activeAccount);
       }
 
-      this.IsAuthenticated = activeAccount !== null ? true : false;
-      this.ActiveUsername  = activeAccount !== null ? activeAccount.username : this.Const.NONE;
-      this.ActiveUser      = activeAccount;
+       */
+
+      this.IsAuthenticated = true; // activeAccount !== null ? true : false; // Im Construktor auf false setzren
+      this.ActiveUsername  = this.ActiveUser.username;  //  activeAccount !== null ? activeAccount.username : this.Const.NONE;
+      // this.ActiveUser      = null; // activeAccount;
 
 
       this.AuthenticationChanged.emit();
@@ -79,10 +92,13 @@ export class DatabaseAuthenticationService {
 
     try {
 
+      /*
       this.MSALService.instance.loginRedirect({
 
         scopes: ["User.Read"]
       });
+
+       */
 
     } catch (error) {
 
@@ -98,6 +114,9 @@ export class DatabaseAuthenticationService {
 
         this.StorgeService.RemoveSecurityToken().then(() => {
 
+          resolve(true);
+          /*
+
           this.MSALService.instance.logoutRedirect().then(() => {
 
             resolve(true);
@@ -107,11 +126,14 @@ export class DatabaseAuthenticationService {
             reject(error);
 
           });
+
+           */
         }).catch((error: any) => {
 
           reject(error);
 
         });
+
       });
     } catch (error) {
 

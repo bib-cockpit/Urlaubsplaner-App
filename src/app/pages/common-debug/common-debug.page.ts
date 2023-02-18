@@ -34,7 +34,9 @@ export class CommonDebugPage implements OnInit, OnDestroy {
               public DBProjekte: DatabaseProjekteService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public AuthService: DatabaseAuthenticationService,
-              private StorageService: LocalstorageService) {
+              private StorageService: LocalstorageService
+
+  ) {
     try
     {
       this.ServerUrl = this.Pool.CockpitserverURL + '/standorte/';
