@@ -51,6 +51,8 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
       this.Auswahlliste      = [];
       this.Auswahldialogorigin = this.Const.NONE;
 
+      // Test
+
     }
     catch (error) {
 

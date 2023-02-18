@@ -69,6 +69,8 @@ export class DatabasePoolService {
       this.Protokollliste           = [];
       this.CockpitserverURL         = 'http://localhost:5000';
 
+      // Test
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Pool', 'constructor', this.Debug.Typen.Service);

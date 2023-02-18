@@ -40,6 +40,8 @@ export class CommonDebugPage implements OnInit, OnDestroy {
     try
     {
       this.ServerUrl = this.Pool.CockpitserverURL + '/standorte/';
+
+      // Test
     }
     catch (error) {
 

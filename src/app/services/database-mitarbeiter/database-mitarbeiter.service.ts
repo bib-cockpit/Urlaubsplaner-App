@@ -35,6 +35,8 @@ export class DatabaseMitarbeiterService {
 
       this.CurrentMeinewoche = this.GetEmptyMeinewocheeintrag();
 
+      // Test
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'constructor', this.Debug.Typen.Service);
