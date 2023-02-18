@@ -51,6 +51,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
       this.AuthSubscription = null;
 
+      // Test
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'App Component', 'constructor', this.Debug.Typen.Component);
