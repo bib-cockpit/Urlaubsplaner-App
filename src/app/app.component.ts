@@ -14,11 +14,9 @@ import {ConstProvider} from "./services/const/const";
 import {DatabaseMitarbeiterService} from "./services/database-mitarbeiter/database-mitarbeiter.service";
 import {DatabaseStandorteService} from "./services/database-standorte/database-standorte.service";
 import {DatabaseProjekteService} from "./services/database-projekte/database-projekte.service";
-import {
-  DatabaseMitarbeitersettingsService
-} from "./services/database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {DatabaseMitarbeitersettingsService} from "./services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {LocalstorageService} from "./services/localstorage/localstorage";
-
+import * as lodash from "lodash-es";
 
 @Component({
   selector: 'app-root',
@@ -172,60 +170,69 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         debugger;
 
-        if (result === null) {
+        if(result !== null && !lodash.isUndefined(result.error)) {
 
-          // Neuen Mitarbeiter registrieren
+          // Databse not available
 
-          await this.Pool.ReadStandorteliste();
-
-          this.Menuservice.ShowRegistrierungPage();
+          this.Tools.SetRootPage(this.Const.Pages.TestPage);
         }
         else {
 
-          // Mitarbeiter ist bereits registriert
+          if (result === null) {
 
-          this.Pool.Mitarbeiterdaten     = this.Pool.InitMitarbeiter(result.Mitarbeiter);
-          this.AuthService.SecurityToken = result.Token;
+            // Neuen Mitarbeiter registrieren
 
-          await this.StorageService.SetSecurityToken(this.AuthService.SecurityToken);
-          await this.Pool.Init();
+            await this.Pool.ReadStandorteliste();
 
-          this.Pool.Mitarbeitersettings = this.Pool.InitMitarbeitersettings();
-
-          await this.MitarbeitersettingsDB.SaveMitarbeitersettings();
-
-          // this.Pool.Mitarbeiterdaten.Favoritenliste = [];
-
-          this.Pool.MitarbeitersettingsChanged.emit();
-
-          if(this.Pool.Mitarbeiterdaten.SettingsID === null) {
-
-            this.Pool.Mitarbeiterdaten.SettingsID = this.Pool.Mitarbeitersettings._id;
-
-            await this.MitarbeiterDB.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten);
-          }
-
-          this.MitarbeiterDB.InitService();
-          this.StandortDB.InitService();
-          this.ProjekteDB.InitService();
-
-          if(this.Pool.Mitarbeiterdaten.Favoritenliste.length === 0) {
-
-            this.Tools.SetRootPage(this.Const.Pages.HomePage);
+            this.Menuservice.ShowRegistrierungPage();
           }
           else {
 
-            this.ProjekteDB.InitGesamtprojekteliste();
-            this.ProjekteDB.InitProjektfavoritenliste();
+            // Mitarbeiter ist bereits registriert
 
-            await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);
+            this.Pool.Mitarbeiterdaten     = this.Pool.InitMitarbeiter(result.Mitarbeiter);
+            this.AuthService.SecurityToken = result.Token;
 
-            this.ProjekteDB.InitMenuProjektauswahl();
+            await this.StorageService.SetSecurityToken(this.AuthService.SecurityToken);
+            await this.Pool.Init();
 
-            this.Menuservice.SetCurrentPage();
+            this.Pool.Mitarbeitersettings = this.Pool.InitMitarbeitersettings();
+
+            await this.MitarbeitersettingsDB.SaveMitarbeitersettings();
+
+            // this.Pool.Mitarbeiterdaten.Favoritenliste = [];
+
+            this.Pool.MitarbeitersettingsChanged.emit();
+
+            if(this.Pool.Mitarbeiterdaten.SettingsID === null) {
+
+              this.Pool.Mitarbeiterdaten.SettingsID = this.Pool.Mitarbeitersettings._id;
+
+              await this.MitarbeiterDB.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten);
+            }
+
+            this.MitarbeiterDB.InitService();
+            this.StandortDB.InitService();
+            this.ProjekteDB.InitService();
+
+            if(this.Pool.Mitarbeiterdaten.Favoritenliste.length === 0) {
+
+              this.Tools.SetRootPage(this.Const.Pages.HomePage);
+            }
+            else {
+
+              this.ProjekteDB.InitGesamtprojekteliste();
+              this.ProjekteDB.InitProjektfavoritenliste();
+
+              await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);
+
+              this.ProjekteDB.InitMenuProjektauswahl();
+
+              this.Menuservice.SetCurrentPage();
+            }
+
+            this.Pool.LoadingAllDataFinished.emit();
           }
-
-          this.Pool.LoadingAllDataFinished.emit();
         }
       }
       else {

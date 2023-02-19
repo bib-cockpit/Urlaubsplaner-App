@@ -420,7 +420,7 @@ export class DatabaseMitarbeiterService {
         'authorization': Token
       });
 
-      return new Promise<any>((resove, reject) => {
+      return new Promise<any>((resolve, reject) => {
 
         Observer = this.http.get(this.ServerRegistrierungUrl, { params: Params, headers: headers });
 
@@ -436,13 +436,13 @@ export class DatabaseMitarbeiterService {
 
             debugger;
 
-            resove(Daten);
+            resolve(Daten);
           },
           error: (error: HttpErrorResponse) => {
 
             debugger;
 
-            reject(error);
+            resolve(error);
           }
         });
       });

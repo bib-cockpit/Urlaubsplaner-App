@@ -164,6 +164,8 @@ const database_mitarbeitersettings_service_1 = __webpack_require__(/*! ./service
 
 const localstorage_1 = __webpack_require__(/*! ./services/localstorage/localstorage */ 42117);
 
+const lodash = tslib_1.__importStar(__webpack_require__(/*! lodash-es */ 92792));
+
 let AppComponent = class AppComponent {
   constructor(platform, Pool, Menuservice, AuthService, changeDetector, // private MSALService: MsalService,
   // private MSALBroadcastService: MsalBroadcastService,
@@ -270,48 +272,53 @@ let AppComponent = class AppComponent {
           let result = yield _this.MitarbeiterDB.GetMitarbeiterRegistrierung(_this.AuthService.ActiveUser.username);
           debugger;
 
-          if (result === null) {
-            // Neuen Mitarbeiter registrieren
-            yield _this.Pool.ReadStandorteliste();
-
-            _this.Menuservice.ShowRegistrierungPage();
+          if (result !== null && !lodash.isUndefined(result.error)) {
+            // Databse not available
+            _this.Tools.SetRootPage(_this.Const.Pages.TestPage);
           } else {
-            // Mitarbeiter ist bereits registriert
-            _this.Pool.Mitarbeiterdaten = _this.Pool.InitMitarbeiter(result.Mitarbeiter);
-            _this.AuthService.SecurityToken = result.Token;
-            yield _this.StorageService.SetSecurityToken(_this.AuthService.SecurityToken);
-            yield _this.Pool.Init();
-            _this.Pool.Mitarbeitersettings = _this.Pool.InitMitarbeitersettings();
-            yield _this.MitarbeitersettingsDB.SaveMitarbeitersettings(); // this.Pool.Mitarbeiterdaten.Favoritenliste = [];
+            if (result === null) {
+              // Neuen Mitarbeiter registrieren
+              yield _this.Pool.ReadStandorteliste();
 
-            _this.Pool.MitarbeitersettingsChanged.emit();
-
-            if (_this.Pool.Mitarbeiterdaten.SettingsID === null) {
-              _this.Pool.Mitarbeiterdaten.SettingsID = _this.Pool.Mitarbeitersettings._id;
-              yield _this.MitarbeiterDB.UpdateMitarbeiter(_this.Pool.Mitarbeiterdaten);
-            }
-
-            _this.MitarbeiterDB.InitService();
-
-            _this.StandortDB.InitService();
-
-            _this.ProjekteDB.InitService();
-
-            if (_this.Pool.Mitarbeiterdaten.Favoritenliste.length === 0) {
-              _this.Tools.SetRootPage(_this.Const.Pages.HomePage);
+              _this.Menuservice.ShowRegistrierungPage();
             } else {
-              _this.ProjekteDB.InitGesamtprojekteliste();
+              // Mitarbeiter ist bereits registriert
+              _this.Pool.Mitarbeiterdaten = _this.Pool.InitMitarbeiter(result.Mitarbeiter);
+              _this.AuthService.SecurityToken = result.Token;
+              yield _this.StorageService.SetSecurityToken(_this.AuthService.SecurityToken);
+              yield _this.Pool.Init();
+              _this.Pool.Mitarbeitersettings = _this.Pool.InitMitarbeitersettings();
+              yield _this.MitarbeitersettingsDB.SaveMitarbeitersettings(); // this.Pool.Mitarbeiterdaten.Favoritenliste = [];
 
-              _this.ProjekteDB.InitProjektfavoritenliste();
+              _this.Pool.MitarbeitersettingsChanged.emit();
 
-              yield _this.Pool.ReadProjektdaten(_this.ProjekteDB.Projektliste);
+              if (_this.Pool.Mitarbeiterdaten.SettingsID === null) {
+                _this.Pool.Mitarbeiterdaten.SettingsID = _this.Pool.Mitarbeitersettings._id;
+                yield _this.MitarbeiterDB.UpdateMitarbeiter(_this.Pool.Mitarbeiterdaten);
+              }
 
-              _this.ProjekteDB.InitMenuProjektauswahl();
+              _this.MitarbeiterDB.InitService();
 
-              _this.Menuservice.SetCurrentPage();
+              _this.StandortDB.InitService();
+
+              _this.ProjekteDB.InitService();
+
+              if (_this.Pool.Mitarbeiterdaten.Favoritenliste.length === 0) {
+                _this.Tools.SetRootPage(_this.Const.Pages.HomePage);
+              } else {
+                _this.ProjekteDB.InitGesamtprojekteliste();
+
+                _this.ProjekteDB.InitProjektfavoritenliste();
+
+                yield _this.Pool.ReadProjektdaten(_this.ProjekteDB.Projektliste);
+
+                _this.ProjekteDB.InitMenuProjektauswahl();
+
+                _this.Menuservice.SetCurrentPage();
+              }
+
+              _this.Pool.LoadingAllDataFinished.emit();
             }
-
-            _this.Pool.LoadingAllDataFinished.emit();
           }
         } else {
           _this.Menuservice.ShowLoginPage();
@@ -19742,7 +19749,7 @@ let DatabaseMitarbeiterService = class DatabaseMitarbeiterService {
                 'content-type': 'application/json',
                 'authorization': Token
             });
-            return new Promise((resove, reject) => {
+            return new Promise((resolve, reject) => {
                 Observer = this.http.get(this.ServerRegistrierungUrl, { params: Params, headers: headers });
                 Observer.subscribe({
                     next: (result) => {
@@ -19751,11 +19758,11 @@ let DatabaseMitarbeiterService = class DatabaseMitarbeiterService {
                     },
                     complete: () => {
                         debugger;
-                        resove(Daten);
+                        resolve(Daten);
                     },
                     error: (error) => {
                         debugger;
-                        reject(error);
+                        resolve(error);
                     }
                 });
             });
