@@ -160,6 +160,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
       this.Basics.Contentbreite = this.platform.width();
       this.Basics.Contenthoehe  = this.platform.height();
 
+      this.Tools.SetRootPage(this.Const.Pages.TestPage);
+      /*
+
       if(this.AuthService.IsAuthenticated) {
 
         let token = await this.StorageService.GetSecurityToken();
@@ -239,6 +242,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         this.Menuservice.ShowLoginPage();
       }
+
+       */
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'App Component', 'StartApp', this.Debug.Typen.Component);

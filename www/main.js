@@ -164,8 +164,6 @@ const database_mitarbeitersettings_service_1 = __webpack_require__(/*! ./service
 
 const localstorage_1 = __webpack_require__(/*! ./services/localstorage/localstorage */ 42117);
 
-const lodash = tslib_1.__importStar(__webpack_require__(/*! lodash-es */ 92792));
-
 let AppComponent = class AppComponent {
   constructor(platform, Pool, Menuservice, AuthService, changeDetector, // private MSALService: MsalService,
   // private MSALBroadcastService: MsalBroadcastService,
@@ -266,63 +264,59 @@ let AppComponent = class AppComponent {
         _this.Basics.Contentbreite = _this.platform.width();
         _this.Basics.Contenthoehe = _this.platform.height();
 
-        if (_this.AuthService.IsAuthenticated) {
-          let token = yield _this.StorageService.GetSecurityToken();
-          _this.AuthService.SecurityToken = token;
-          let result = yield _this.MitarbeiterDB.GetMitarbeiterRegistrierung(_this.AuthService.ActiveUser.username);
-          debugger;
-
-          if (result !== null && !lodash.isUndefined(result.error)) {
-            // Databse not available
-            _this.Tools.SetRootPage(_this.Const.Pages.TestPage);
-          } else {
-            if (result === null) {
-              // Neuen Mitarbeiter registrieren
-              yield _this.Pool.ReadStandorteliste();
-
-              _this.Menuservice.ShowRegistrierungPage();
-            } else {
-              // Mitarbeiter ist bereits registriert
-              _this.Pool.Mitarbeiterdaten = _this.Pool.InitMitarbeiter(result.Mitarbeiter);
-              _this.AuthService.SecurityToken = result.Token;
-              yield _this.StorageService.SetSecurityToken(_this.AuthService.SecurityToken);
-              yield _this.Pool.Init();
-              _this.Pool.Mitarbeitersettings = _this.Pool.InitMitarbeitersettings();
-              yield _this.MitarbeitersettingsDB.SaveMitarbeitersettings(); // this.Pool.Mitarbeiterdaten.Favoritenliste = [];
-
-              _this.Pool.MitarbeitersettingsChanged.emit();
-
-              if (_this.Pool.Mitarbeiterdaten.SettingsID === null) {
-                _this.Pool.Mitarbeiterdaten.SettingsID = _this.Pool.Mitarbeitersettings._id;
-                yield _this.MitarbeiterDB.UpdateMitarbeiter(_this.Pool.Mitarbeiterdaten);
+        _this.Tools.SetRootPage(_this.Const.Pages.TestPage);
+        /*
+               if(this.AuthService.IsAuthenticated) {
+                 let token = await this.StorageService.GetSecurityToken();
+                 this.AuthService.SecurityToken = token;
+                 let result = await this.MitarbeiterDB.GetMitarbeiterRegistrierung(this.AuthService.ActiveUser.username);
+                 debugger;
+                 if(result !== null && !lodash.isUndefined(result.error)) {
+                   // Databse not available
+                   this.Tools.SetRootPage(this.Const.Pages.TestPage);
+          }
+          else {
+                   if (result === null) {
+                     // Neuen Mitarbeiter registrieren
+                     await this.Pool.ReadStandorteliste();
+                     this.Menuservice.ShowRegistrierungPage();
+            }
+            else {
+                     // Mitarbeiter ist bereits registriert
+                     this.Pool.Mitarbeiterdaten     = this.Pool.InitMitarbeiter(result.Mitarbeiter);
+              this.AuthService.SecurityToken = result.Token;
+                     await this.StorageService.SetSecurityToken(this.AuthService.SecurityToken);
+              await this.Pool.Init();
+                     this.Pool.Mitarbeitersettings = this.Pool.InitMitarbeitersettings();
+                     await this.MitarbeitersettingsDB.SaveMitarbeitersettings();
+                     // this.Pool.Mitarbeiterdaten.Favoritenliste = [];
+                     this.Pool.MitarbeitersettingsChanged.emit();
+                     if(this.Pool.Mitarbeiterdaten.SettingsID === null) {
+                       this.Pool.Mitarbeiterdaten.SettingsID = this.Pool.Mitarbeitersettings._id;
+                       await this.MitarbeiterDB.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten);
               }
-
-              _this.MitarbeiterDB.InitService();
-
-              _this.StandortDB.InitService();
-
-              _this.ProjekteDB.InitService();
-
-              if (_this.Pool.Mitarbeiterdaten.Favoritenliste.length === 0) {
-                _this.Tools.SetRootPage(_this.Const.Pages.HomePage);
-              } else {
-                _this.ProjekteDB.InitGesamtprojekteliste();
-
-                _this.ProjekteDB.InitProjektfavoritenliste();
-
-                yield _this.Pool.ReadProjektdaten(_this.ProjekteDB.Projektliste);
-
-                _this.ProjekteDB.InitMenuProjektauswahl();
-
-                _this.Menuservice.SetCurrentPage();
+                     this.MitarbeiterDB.InitService();
+              this.StandortDB.InitService();
+              this.ProjekteDB.InitService();
+                     if(this.Pool.Mitarbeiterdaten.Favoritenliste.length === 0) {
+                       this.Tools.SetRootPage(this.Const.Pages.HomePage);
               }
-
-              _this.Pool.LoadingAllDataFinished.emit();
+              else {
+                       this.ProjekteDB.InitGesamtprojekteliste();
+                this.ProjekteDB.InitProjektfavoritenliste();
+                       await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);
+                       this.ProjekteDB.InitMenuProjektauswahl();
+                       this.Menuservice.SetCurrentPage();
+              }
+                     this.Pool.LoadingAllDataFinished.emit();
             }
           }
-        } else {
-          _this.Menuservice.ShowLoginPage();
         }
+        else {
+                 this.Menuservice.ShowLoginPage();
+        }
+                */
+
       } catch (error) {
         _this.Debug.ShowErrorMessage(error, 'App Component', 'StartApp', _this.Debug.Typen.Component);
       }
