@@ -265,6 +265,8 @@ let AppComponent = class AppComponent {
         _this.Basics.Contenthoehe = _this.platform.height();
 
         _this.Tools.SetRootPage(_this.Const.Pages.TestPage);
+
+        console.log('Hello World');
         /*
                if(this.AuthService.IsAuthenticated) {
                  let token = await this.StorageService.GetSecurityToken();
@@ -316,7 +318,6 @@ let AppComponent = class AppComponent {
                  this.Menuservice.ShowLoginPage();
         }
                 */
-
       } catch (error) {
         _this.Debug.ShowErrorMessage(error, 'App Component', 'StartApp', _this.Debug.Typen.Component);
       }

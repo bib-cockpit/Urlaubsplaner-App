@@ -161,6 +161,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
       this.Basics.Contenthoehe  = this.platform.height();
 
       this.Tools.SetRootPage(this.Const.Pages.TestPage);
+
+      console.log('Hello World');
       /*
 
       if(this.AuthService.IsAuthenticated) {
