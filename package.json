@@ -6,7 +6,7 @@
   "license": "All right's by Peter Hornburger",
   "scripts": {
     "start": "ionic serve",
-    "build": "ionic build"
+    "build": "npm install @ionic/cli && ionic build"
   },
   "private": true,
   "dependencies": {
