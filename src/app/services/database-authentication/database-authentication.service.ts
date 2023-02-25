@@ -32,7 +32,7 @@ export class DatabaseAuthenticationService {
         localAccountId: "",
         tenantId: "",
         username: "p.hornburger@burnickl.com",
-        name: "Peter Hornburger"
+        name:     "Peter Hornburger"
       };
 
       // Test

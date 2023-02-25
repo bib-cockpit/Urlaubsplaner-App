@@ -89,26 +89,32 @@
                   <tr>
                     <td>
 
-                      <div class="buttonclass"
-                           (click)="StandorteButtonClicked()"
+                      <div (click)="StandorteButtonClicked()"
                            (mouseenter)="StandortMouseOver = true"
-                           (mouseleave)="StandortMouseOver = false">
-
-                        <table>
-                          <tr>
-                            <td align="center">
-                              <ion-icon name="location-outline" [color]="StandortMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td style="text-align: center;">
-                              <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">Standorte</ion-text>
-                            </td>
-                          </tr>
-                        </table>
-
+                           (mouseleave)="StandortMouseOver = false" class="buttonclass">
+                          <table>
+                            <tr>
+                              <td align="center">
+                                <ion-icon name="location-outline" [color]="StandortMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="text-align: center;">
+                                <table>
+                                  <tr>
+                                    <td style="font-size: 22px; font-weight: bold; color: #c7d304">
+                                      {{Pool.Standorteliste.length}}
+                                    </td>
+                                    <td style="width: 4px"></td>
+                                    <td>
+                                      <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">Standorte</ion-text>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </table>
                       </div>
-
 
                     </td>
                     <td>
@@ -129,7 +135,17 @@
                           </tr>
                           <tr>
                             <td style="text-align: center;">
-                              <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">Mitarbeiter</ion-text>
+                              <table>
+                                <tr>
+                                  <td style="font-size: 22px; font-weight: bold; color: #c7d304">
+                                    {{Pool.Mitarbeiterliste.length}}
+                                  </td>
+                                  <td style="width: 4px"></td>
+                                  <td style="text-align: center;">
+                                    <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">Mitarbeiter</ion-text>
+                                  </td>
+                                </tr>
+                              </table>
                             </td>
                           </tr>
                         </table>
@@ -154,7 +170,17 @@
                           </tr>
                           <tr>
                             <td style="text-align: center;">
-                              <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">Projekte</ion-text>
+                              <table>
+                                <tr>
+                                  <td style="font-size: 22px; font-weight: bold; color: #c7d304">
+                                    {{Pool.Gesamtprojektliste.length}}
+                                  </td>
+                                  <td style="width: 4px"></td>
+                                  <td style="text-align: center;">
+                                    <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">Projekte</ion-text>
+                                  </td>
+                                </tr>
+                              </table>
                             </td>
                           </tr>
                         </table>

@@ -26,7 +26,7 @@ export type Mitarbeitersettingsstruktur = {
   Deleted:                  boolean;
   HeadermenueMaxFavoriten:  number;
 
-  AufgabenShowMeilensteine: boolean;
+  AufgabenShowMeilensteine:  boolean;
   AufgabenShowNummer:        boolean;
   AufgabenShowStartdatum:    boolean;
   AufgabenShowAufgabe:       boolean;

@@ -524,7 +524,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
       this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.Klimatisierung, SecoundColumn: '', Data: this.Const.Fachbereiche.Klimatisierung});
       this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.MSR, SecoundColumn: '',            Data: this.Const.Fachbereiche.MSR});
 
-      this.Auswahlindex = this.DB.Fachbereichsliste.indexOf(this.DB.CurrentMitarbeiter.Fachbereich);
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.DB.CurrentMitarbeiter.Fachbereich} );
 
       if(this.Auswahlindex === -1) this.Auswahlindex = 0;
 

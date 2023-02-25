@@ -17,7 +17,6 @@ export class DatabaseMitarbeiterService {
 
   public CurrentMitarbeiter: Mitarbeiterstruktur;
   public CurrentMeinewoche: Meinewochestruktur;
-  public Fachbereichsliste: string[];
   private ServerMitarbeiterUrl: string;
   private ServerSettingsUrl: string;
   private ServerRegistrierungUrl: string;
@@ -32,8 +31,7 @@ export class DatabaseMitarbeiterService {
       this.ServerMitarbeiterUrl   = this.Pool.CockpitserverURL + '/mitarbeiter';
       this.ServerSettingsUrl      = this.Pool.CockpitserverURL + '/settings';
       this.ServerRegistrierungUrl = this.Pool.CockpitserverURL + '/registrierung';
-
-      this.CurrentMeinewoche = this.GetEmptyMeinewocheeintrag();
+      this.CurrentMeinewoche      = this.GetEmptyMeinewocheeintrag();
 
       // Test
 
@@ -334,8 +332,6 @@ export class DatabaseMitarbeiterService {
 
           next: (result) => {
 
-            debugger;
-
             Mitarbeiter = result.Mitarbeiter;
 
           },
@@ -428,13 +424,10 @@ export class DatabaseMitarbeiterService {
 
           next: (result) => {
 
-            debugger;
-
             Daten = result;
           },
-          complete: () => {
 
-            debugger;
+          complete: () => {
 
             resolve(Daten);
           },
@@ -460,7 +453,6 @@ export class DatabaseMitarbeiterService {
       let Observer: Observable<any>;
       let Params = new HttpParams({fromObject: {email: email}});
       let Daten: any;
-
 
       return new Promise<any>((resove, reject) => {
 

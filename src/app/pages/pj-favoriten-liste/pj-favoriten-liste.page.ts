@@ -43,6 +43,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
   public ShowAuswahl: boolean;
   public Datenliste: Projektestruktur[][];
   public DataSubscription: Subscription;
+  private MitarbeiterSubscription: Subscription;
 
   constructor(public Debug: DebugProvider,
               public DBMitarbeiter: DatabaseMitarbeiterService,
@@ -69,6 +70,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
       this.ProjekteauswahlTitel = 'Projekte festlegen';
       this.Datenliste           = [];
       this.DataSubscription     = null;
+      this.MitarbeiterSubscription = null;
 
     } catch (error) {
 
@@ -81,6 +83,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
     try {
 
       this.DataSubscription.unsubscribe();
+      this.MitarbeiterSubscription.unsubscribe();
 
     } catch (error) {
 
@@ -155,6 +158,11 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
     try {
 
       this.DataSubscription = this.Pool.LoadingAllDataFinished.subscribe(() => {
+
+        this.PrepareData();
+      });
+
+      this.MitarbeiterSubscription = this.Pool.MitarbeiterdatenChanged.subscribe(() => {
 
         this.PrepareData();
       });

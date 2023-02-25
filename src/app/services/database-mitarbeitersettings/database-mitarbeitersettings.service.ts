@@ -59,6 +59,8 @@ export class DatabaseMitarbeitersettingsService {
 
     return new Promise<any>((resolve, reject) => {
 
+      debugger;
+
       if(this.Pool.Mitarbeitersettings._id === null) {
 
         // POST für neue Settings

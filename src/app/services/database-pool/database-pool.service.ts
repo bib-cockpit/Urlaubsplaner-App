@@ -34,6 +34,7 @@ export class DatabasePoolService {
   public MaxProgressValue: number;
   public CurrentProgressValue: number;
   public ProgressMessage: string;
+  private UseServerOnline: boolean;
 
   public StandortelisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public MitarbeiterlisteChanged: EventEmitter<any> = new EventEmitter<any>();
@@ -67,7 +68,8 @@ export class DatabasePoolService {
       this.Projektpunkteliste       = [];
       this.Projektpunkteliste       = [];
       this.Protokollliste           = [];
-      this.CockpitserverURL         = 'http://localhost:5000';
+      this.UseServerOnline          = true;
+      this.CockpitserverURL         = this.UseServerOnline ? 'https://bib-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
 
       // Test
 
@@ -206,6 +208,8 @@ export class DatabasePoolService {
         'content-type': 'application/json',
         'authorization': this.AuthService.GetAuthenticationToken()
       });
+
+      debugger;
 
       return new Promise((resolve, reject) => {
 

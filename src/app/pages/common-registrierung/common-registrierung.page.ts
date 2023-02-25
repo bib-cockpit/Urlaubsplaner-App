@@ -82,8 +82,6 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
 
       if(this.AuthService.ActiveUser !== null) {
 
-        debugger;
-
         Liste = this.AuthService.ActiveUser.name.split(' ');
 
         this.DB.CurrentMitarbeiter.Email = this.AuthService.ActiveUser.username;
@@ -134,16 +132,17 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
 
       this.Auswahlliste.push({Index: 0, FirstColumn: this.Const.Fachbereiche.unbekannt, SecoundColumn: '',      Data: this.Const.Fachbereiche.unbekannt});
       this.Auswahlliste.push({Index: 1, FirstColumn: this.Const.Fachbereiche.Elektrotechnik, SecoundColumn: '', Data: this.Const.Fachbereiche.Elektrotechnik});
-      this.Auswahlliste.push({Index: 1, FirstColumn: this.Const.Fachbereiche.HLS, SecoundColumn: '',            Data: this.Const.Fachbereiche.HLS});
-      this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.Heizung, SecoundColumn: '',        Data: this.Const.Fachbereiche.Heizung});
-      this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.Lueftung, SecoundColumn: '',       Data: this.Const.Fachbereiche.Lueftung});
-      this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.Sanitaer, SecoundColumn: '',       Data: this.Const.Fachbereiche.Sanitaer});
-      this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.Klimatisierung, SecoundColumn: '', Data: this.Const.Fachbereiche.Klimatisierung});
-      this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.MSR, SecoundColumn: '',            Data: this.Const.Fachbereiche.MSR});
-      this.Auswahlliste.push({ Index: 3, FirstColumn: 'Geschäftsführung', SecoundColumn: '',                    Data: this.Const.Fachbereiche.Geschaeftsfuehrung });
-      this.Auswahlliste.push({ Index: 4, FirstColumn: 'Assistenz', SecoundColumn: '',                           Data: this.Const.Fachbereiche.Assistenz });
+      this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.HLS, SecoundColumn: '',            Data: this.Const.Fachbereiche.HLS});
+      this.Auswahlliste.push({Index: 3, FirstColumn: this.Const.Fachbereiche.Heizung, SecoundColumn: '',        Data: this.Const.Fachbereiche.Heizung});
+      this.Auswahlliste.push({Index: 4, FirstColumn: this.Const.Fachbereiche.Lueftung, SecoundColumn: '',       Data: this.Const.Fachbereiche.Lueftung});
+      this.Auswahlliste.push({Index: 5, FirstColumn: this.Const.Fachbereiche.Sanitaer, SecoundColumn: '',       Data: this.Const.Fachbereiche.Sanitaer});
+      this.Auswahlliste.push({Index: 6, FirstColumn: this.Const.Fachbereiche.Klimatisierung, SecoundColumn: '', Data: this.Const.Fachbereiche.Klimatisierung});
+      this.Auswahlliste.push({Index: 7, FirstColumn: this.Const.Fachbereiche.MSR, SecoundColumn: '',            Data: this.Const.Fachbereiche.MSR});
+      this.Auswahlliste.push({Index: 8, FirstColumn: 'Geschäftsführung', SecoundColumn: '',                     Data: this.Const.Fachbereiche.Geschaeftsfuehrung });
+      this.Auswahlliste.push({Index: 9, FirstColumn: 'Assistenz', SecoundColumn: '',                            Data: this.Const.Fachbereiche.Assistenz });
 
-      this.Auswahlindex = this.DB.Fachbereichsliste.indexOf(this.DB.CurrentMitarbeiter.Fachbereich);
+
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.DB.CurrentMitarbeiter.Fachbereich} );
 
       if(this.Auswahlindex === -1) this.Auswahlindex = 0;
 
