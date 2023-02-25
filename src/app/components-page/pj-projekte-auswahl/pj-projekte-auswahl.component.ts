@@ -7,7 +7,6 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import {Projektestruktur} from "../../dataclasses/Projektestruktur";
 import {BasicsProvider} from "../../services/basics/basics";
 import {DebugProvider} from "../../services/debug/debug";
 import {ToolsProvider} from "../../services/tools/tools";
@@ -19,6 +18,7 @@ import {AlphabetComponent} from "../../components/alphabet/alphabet";
 import * as lodash from "lodash-es";
 import {DisplayService} from "../../services/diplay/display.service";
 import {Subscription} from "rxjs";
+import {Projektestruktur} from "../../dataclasses/projektestruktur";
 
 @Component({
   selector: 'pj-projekte-auswahl',
