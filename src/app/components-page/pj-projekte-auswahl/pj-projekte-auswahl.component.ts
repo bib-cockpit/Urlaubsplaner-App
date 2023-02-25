@@ -81,6 +81,8 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
       this.Projekteliste               = [];
       this.StandortfilterSubsciption   = null;
 
+      // Hello World
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projekte Auswahl', 'constructor', this.Debug.Typen.Component);
