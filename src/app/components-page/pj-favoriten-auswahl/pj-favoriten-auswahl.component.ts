@@ -52,7 +52,7 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
   constructor(public Debug: DebugProvider,
               public Displayservice: DisplayService,
               public Const: ConstProvider,
-              private Pool: DatabasePoolService,
+              public  Pool: DatabasePoolService,
               private DBMitarbeiter: DatabaseMitarbeiterService,
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public DBStandort: DatabaseStandorteService,

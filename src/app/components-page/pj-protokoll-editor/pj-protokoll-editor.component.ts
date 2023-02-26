@@ -96,8 +96,8 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
   private JoiShema: ObjectSchema;
   public Gesamthoehe: number;
   public Titelhoehe: number;
-  private Listeheaderhoehe: number;
-  private Listehoehe: number;
+  public Listeheaderhoehe: number;
+  public Listehoehe: number;
 
   @Input() Titel: string;
   @Input() Iconname: string;

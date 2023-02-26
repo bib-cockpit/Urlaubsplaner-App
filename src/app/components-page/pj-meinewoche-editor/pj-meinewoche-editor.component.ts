@@ -65,7 +65,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
-              private DB: DatabaseMitarbeiterService,
+              public DB: DatabaseMitarbeiterService,
               public DBProjekte: DatabaseProjekteService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public Displayservice: DisplayService,

@@ -59,15 +59,15 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   constructor(private Debug: DebugProvider,
               public Basics: BasicsProvider,
               public Const: ConstProvider,
-              private DBMitarbeiter: DatabaseMitarbeiterService,
+              public DBMitarbeiter: DatabaseMitarbeiterService,
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public Auswahlservice: AuswahlDialogService,
               public  DBStandort: DatabaseStandorteService,
               public DBProjekte: DatabaseProjekteService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
-              private AuthService: DatabaseAuthenticationService,
-              private Pool: DatabasePoolService,
-              private Menuservice: MenueService) {
+              public  AuthService: DatabaseAuthenticationService,
+              public  Pool: DatabasePoolService,
+              public  Menuservice: MenueService) {
 
     try {
 

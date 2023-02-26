@@ -933,7 +933,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     }
   }
 
-  private PrepareDaten() {
+  public PrepareDaten() {
 
     try {
 

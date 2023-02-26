@@ -46,7 +46,7 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
-              private DB: DatabaseProjektpunkteService,
+              public DB: DatabaseProjektpunkteService,
               public Displayservice: DisplayService,
               public Kostengruppenservice: KostengruppenService,
               public Const: ConstProvider) {

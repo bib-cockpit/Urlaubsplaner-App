@@ -90,7 +90,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
               public Tools: ToolsProvider,
               // private NavParams: Navparameter,
               private Pool: DatabasePoolService,
-              private Database: DatabaseProjektpunkteService,
+              public  Database: DatabaseProjektpunkteService,
               private ProjekteDB: DatabaseProjekteService,
               private ProtokolleDB: DatabaseProtokolleService,
               private MitarbeiterDB: DatabaseMitarbeiterService,

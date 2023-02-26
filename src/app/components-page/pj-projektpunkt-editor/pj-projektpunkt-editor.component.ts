@@ -71,7 +71,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
-              private DB: DatabaseProjektpunkteService,
+              public DB: DatabaseProjektpunkteService,
               public DBMitarbeiter: DatabaseMitarbeiterService,
               public DBStandort: DatabaseStandorteService,
               public DBBeteiligte: DatabaseProjektbeteiligteService,

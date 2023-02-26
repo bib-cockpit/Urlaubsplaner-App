@@ -72,7 +72,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
-              private DB: DatabaseProjekteService,
+              public DB: DatabaseProjekteService,
               public DBMitarbeiter: DatabaseMitarbeiterService,
               public DBStandort: DatabaseStandorteService,
               public DBBeteiligte: DatabaseProjektbeteiligteService,

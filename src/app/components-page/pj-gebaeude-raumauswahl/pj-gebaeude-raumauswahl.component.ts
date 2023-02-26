@@ -44,7 +44,7 @@ export class PjGebaeudeRaumauswahlComponent implements OnInit, OnDestroy, AfterV
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
-              private DB: DatabaseProjekteService,
+              public DB: DatabaseProjekteService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public Displayservice: DisplayService,
               public Pool: DatabasePoolService,

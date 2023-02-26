@@ -18,7 +18,7 @@ export class PageHeaderComponent implements OnInit {
 
   constructor(private Debug: DebugProvider,
               public Basics: BasicsProvider,
-              private Pool: DatabasePoolService,
+              public Pool: DatabasePoolService,
               public Const: ConstProvider) {
 
     try {

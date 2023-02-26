@@ -53,7 +53,7 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
-              private DB: DatabaseProjektbeteiligteService,
+              public DB: DatabaseProjektbeteiligteService,
               private DBProjekte: DatabaseProjekteService,
               public Const: ConstProvider,
               public Displayservice: DisplayService,
