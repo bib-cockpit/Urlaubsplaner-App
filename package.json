@@ -5,8 +5,8 @@
   "homepage": "https://www.alinea-software.net",
   "license": "All right's by Peter Hornburger",
   "scripts": {
-    "start": "ionic serve",
-    "build": "ionic build"
+    "start": "",
+    "build": ""
   },
   "private": true,
   "dependencies": {
