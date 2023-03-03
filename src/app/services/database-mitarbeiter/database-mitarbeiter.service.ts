@@ -412,9 +412,12 @@ export class DatabaseMitarbeiterService {
 
       let headers: HttpHeaders = new HttpHeaders({
 
+        'Access-Control-Allow-Origin': '*',
         'content-type': 'application/json',
-        'authorization': Token
+        'authorization': Token,
       });
+
+      debugger;
 
       return new Promise<any>((resolve, reject) => {
 

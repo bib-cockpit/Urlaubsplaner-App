@@ -8,7 +8,7 @@ import {DatabaseAuthenticationService} from "./services/database-authentication/
 import {ToolsProvider} from "./services/tools/tools";
 import {HttpErrorResponse} from "@angular/common/http";
 import {filter, Subject, Subscription, takeUntil} from "rxjs";
-// import {MsalBroadcastService, MsalService} from "@azure/msal-angular";
+import {MsalBroadcastService, MsalService} from "@azure/msal-angular";
 import {AuthenticationResult, EventMessage, EventType, InteractionStatus} from "@azure/msal-browser";
 import {ConstProvider} from "./services/const/const";
 import {DatabaseMitarbeiterService} from "./services/database-mitarbeiter/database-mitarbeiter.service";
@@ -33,8 +33,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
               private Menuservice: MenueService,
               private AuthService: DatabaseAuthenticationService,
               private changeDetector: ChangeDetectorRef,
-              // private MSALService: MsalService,
-              // private MSALBroadcastService: MsalBroadcastService,
+              private MSALService: MsalService,
+              private MSALBroadcastService: MsalBroadcastService,
               private Basics: BasicsProvider,
               private Tools: ToolsProvider,
               private Const: ConstProvider,
@@ -85,21 +85,23 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
     try {
 
-      this.StartApp(); // Muss wieder entfernt werden -> StartApp über MSAL
+      //  this.StartApp(); // Muss wieder entfernt werden -> StartApp über MSAL
 
-      /*
-      this.MSALBroadcastService.inProgress$
-        .pipe(
-          filter((status: InteractionStatus) => status === InteractionStatus.None),
-          takeUntil(this.unsubscribe)
-        ).subscribe(() => {
+      if(this.AuthService.SecurityEnabled) {
 
-          console.log('Authentication stataus cnhaged');
+        this.MSALBroadcastService.inProgress$
+          .pipe(
+            filter((status: InteractionStatus) => status === InteractionStatus.None),
+            takeUntil(this.unsubscribe)
+          ).subscribe(() => {
 
-        this.AuthService.SetAuthenticationStatus();
-      });
+            console.log('Authentication stataus changed');
 
-       */
+          this.AuthService.SetAuthenticationStatus();
+        });
+      }
+
+
 
       /*
 
@@ -112,18 +114,24 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         this.MSALService.instance.setActiveAccount(AuthResult.account);
       });
-      */
 
+       */
 
+      if(this.AuthService.SecurityEnabled) {
 
-      this.AuthSubscription = this.AuthService.AuthenticationChanged.subscribe(() => {
+        this.AuthSubscription = this.AuthService.AuthenticationChanged.subscribe(() => {
 
-        this.StartApp();
+          this.StartApp();
 
           // debugger;
-      });
+        });
+
+      }
+
+      if(this.AuthService.SecurityEnabled === false) this.StartApp();
 
       /*
+
 
       this.MSALService.instance.handleRedirectPromise().then((res: AuthenticationResult) => {
 
@@ -143,6 +151,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
        */
 
+
+
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'App Component', 'OnInit', this.Debug.Typen.Component);
@@ -159,6 +170,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
       this.Basics.Contentbreite = this.platform.width();
       this.Basics.Contenthoehe  = this.platform.height();
+
+      debugger;
 
       if(this.AuthService.IsAuthenticated) {
 
@@ -250,15 +263,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
     this.changeDetector.detectChanges();
 
-    /*
     try {
-
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Mitarbeiter Auswahl', 'function', this.Debug.Typen.Component);
     }
-
-     */
   }
 }

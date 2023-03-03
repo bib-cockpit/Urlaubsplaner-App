@@ -4,6 +4,7 @@ import {NavController} from "@ionic/angular";
 import {ConstProvider} from "../const/const";
 import {DebugProvider} from "../debug/debug";
 import {CanLoad, Route, Router} from "@angular/router";
+import {DatabaseAuthenticationService} from "../database-authentication/database-authentication.service";
 // import {MsalService} from "@azure/msal-angular";
 
 @Injectable({
@@ -16,7 +17,7 @@ export class SecurityService implements CanLoad {
               private nav: NavController,
               private router: Router,
               public Debug: DebugProvider,
-              // private MSALService: MsalService,
+              private AuthenticationDB: DatabaseAuthenticationService,
               private Const: ConstProvider) {
     try {
 
@@ -57,7 +58,7 @@ export class SecurityService implements CanLoad {
 
     try {
 
-      return true; //  this.MSALService.instance.getActiveAccount() !== null;
+      return this.AuthenticationDB.HasActiveAccount();
 
     } catch (error) {
 

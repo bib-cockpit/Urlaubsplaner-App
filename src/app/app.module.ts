@@ -15,20 +15,22 @@ import {MenueService} from "./services/menue/menue.service";
 import {DisplayService} from "./services/diplay/display.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HttpClientModule} from "@angular/common/http";
-// import {MSAL_INSTANCE, MsalBroadcastService, MsalModule, MsalRedirectComponent, MsalService} from "@azure/msal-angular";
+import {MSAL_INSTANCE, MsalBroadcastService, MsalModule, MsalRedirectComponent, MsalService} from "@azure/msal-angular";
 import {IPublicClientApplication, PublicClientApplication} from "@azure/msal-browser";
 import {LocalstorageService} from "./services/localstorage/localstorage";
 
+const MandantenID: string = '1bf5df3d-726d-435f-b6dd-658e78e90581'; // Tenant ID -> AZURE Portal -> Active Directory -> MandantenID
 
-/*
 export const MSALInstanceFactory = (): IPublicClientApplication => new PublicClientApplication({
+
   auth: {
-    clientId: '6ca3f4ee-c064-4388-bf2d-60152b70a7c2',
-    redirectUri: 'http://localhost:8100'
+
+    clientId:    'dd260d53-6b48-4b65-b7bb-ea63e35b0db9',
+    authority:   'https://login.microsoftonline.com/' + MandantenID,
+    redirectUri: 'https://lemon-moss-06aa32f03.2.azurestaticapps.net' // http://localhost'
   }
 });
 
- */
 
 
 @NgModule({
@@ -41,7 +43,7 @@ export const MSALInstanceFactory = (): IPublicClientApplication => new PublicCli
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    // MsalModule,
+    MsalModule,
   ],
   providers: [
 
@@ -54,20 +56,18 @@ export const MSALInstanceFactory = (): IPublicClientApplication => new PublicCli
     DisplayService,
     SecurityService,
     LocalstorageService,
-    /*
+    MsalService,
+    MsalBroadcastService,
     {
       provide: MSAL_INSTANCE,
       useFactory: MSALInstanceFactory
     },
-
-     */
-    // MsalService,
-    // MsalBroadcastService,
     {
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy,
-    }],
-  bootstrap: [AppComponent], // MsalRedirectComponent
+    }
+    ],
+  bootstrap: [AppComponent, MsalRedirectComponent],
   exports: [
 
   ]

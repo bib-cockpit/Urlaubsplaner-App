@@ -160,6 +160,7 @@ export class DatabasePoolService {
         Params  = new HttpParams({ fromObject: { projektkey: projekt.Projektkey }} );
         Headers = new HttpHeaders({
 
+          'Access-Control-Allow-Origin': '*',
           'content-type': 'application/json',
           'authorization': this.AuthService.GetAuthenticationToken()
         });
