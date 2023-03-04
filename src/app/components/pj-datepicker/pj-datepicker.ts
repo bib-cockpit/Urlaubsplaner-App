@@ -65,7 +65,7 @@ export class PjDatepickerComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Button Value Date', 'Constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Button Value Date', 'Constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -76,7 +76,7 @@ export class PjDatepickerComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Button Value Date', 'ngOnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Button Value Date', 'ngOnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -102,7 +102,7 @@ export class PjDatepickerComponent implements OnInit, OnChanges {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Button Value Date', 'ngOnChanges', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Button Value Date', 'ngOnChanges', this.Debug.Typen.Component);
     }
   }
 
@@ -115,7 +115,7 @@ export class PjDatepickerComponent implements OnInit, OnChanges {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Button Value Date', 'FetigButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Button Value Date', 'FetigButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -145,7 +145,7 @@ export class PjDatepickerComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Button Value Date', 'DateChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Button Value Date', 'DateChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -157,7 +157,7 @@ export class PjDatepickerComponent implements OnInit, OnChanges {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Button Value Date', 'DateClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Button Value Date', 'DateClickedHandler', this.Debug.Typen.Component);
     }
   }
 }

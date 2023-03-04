@@ -57,7 +57,7 @@ export class PjProtokollListefilterComponent implements OnDestroy, OnInit, After
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokolle Liste Filter', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokolle Liste Filter', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -70,7 +70,7 @@ export class PjProtokollListefilterComponent implements OnDestroy, OnInit, After
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokolle Liste Filter', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokolle Liste Filter', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -83,7 +83,7 @@ export class PjProtokollListefilterComponent implements OnDestroy, OnInit, After
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokolle Liste Filter', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokolle Liste Filter', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -99,7 +99,7 @@ export class PjProtokollListefilterComponent implements OnDestroy, OnInit, After
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokolle Liste Filter', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokolle Liste Filter', 'OnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -114,7 +114,7 @@ export class PjProtokollListefilterComponent implements OnDestroy, OnInit, After
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokolle Liste Filter', 'ionViewDidEnter', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokolle Liste Filter', 'ionViewDidEnter', this.Debug.Typen.Component);
     }
   }
 
@@ -126,7 +126,7 @@ export class PjProtokollListefilterComponent implements OnDestroy, OnInit, After
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokolle Liste Filter', 'ionViewDidLeave', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokolle Liste Filter', 'ionViewDidLeave', this.Debug.Typen.Component);
     }
   }
 
@@ -139,7 +139,7 @@ export class PjProtokollListefilterComponent implements OnDestroy, OnInit, After
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokolle Liste Filter', 'PrepareData', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokolle Liste Filter', 'PrepareData', this.Debug.Typen.Component);
     }
   }
 
@@ -152,7 +152,7 @@ export class PjProtokollListefilterComponent implements OnDestroy, OnInit, After
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokolle Liste Filter', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokolle Liste Filter', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -165,7 +165,7 @@ export class PjProtokollListefilterComponent implements OnDestroy, OnInit, After
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokolle Liste Filter', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokolle Liste Filter', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -176,7 +176,7 @@ export class PjProtokollListefilterComponent implements OnDestroy, OnInit, After
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokolle Liste Filter', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokolle Liste Filter', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -190,7 +190,7 @@ export class PjProtokollListefilterComponent implements OnDestroy, OnInit, After
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokolle Liste Filter', 'GetMonatstring', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokolle Liste Filter', 'GetMonatstring', this.Debug.Typen.Component);
     }
 
   }

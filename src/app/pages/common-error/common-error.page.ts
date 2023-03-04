@@ -43,7 +43,7 @@ export class CommonErrorPage {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Common Error', 'Constructor', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message,  'Common Error', 'Constructor', this.Debug.Typen.Page);
     }
   }
 
@@ -91,7 +91,7 @@ export class CommonErrorPage {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Common Error', 'ionViewDidEnter', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Common Error', 'ionViewDidEnter', this.Debug.Typen.Page);
     }
   }
 
@@ -160,7 +160,7 @@ export class CommonErrorPage {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Error', 'ShowError', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Error', 'ShowError', this.Debug.Typen.Component);
     }
   }
 
@@ -254,7 +254,7 @@ export class CommonErrorPage {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Error', 'ShowTransactionError', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Error', 'ShowTransactionError', this.Debug.Typen.Component);
     }
   }
 
@@ -338,7 +338,7 @@ export class CommonErrorPage {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Error', 'ShowSqlError', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Error', 'ShowSqlError', this.Debug.Typen.Component);
     }
   }
 
@@ -436,7 +436,7 @@ export class CommonErrorPage {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'PageError', 'SendMail', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'PageError', 'SendMail', this.Debug.Typen.Component);
     }
   }
 
@@ -448,7 +448,7 @@ export class CommonErrorPage {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'PageError', 'SendMailButtonCLicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'PageError', 'SendMailButtonCLicked', this.Debug.Typen.Component);
     }
   }
 }

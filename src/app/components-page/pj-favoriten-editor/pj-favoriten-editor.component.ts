@@ -64,7 +64,7 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Editor', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Editor', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -82,7 +82,7 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
 
       } catch (error) {
 
-        this.Debug.ShowErrorMessage(error, 'Favoriten Editor', 'OnDestroy', this.Debug.Typen.Component);
+        this.Debug.ShowErrorMessage(error.message, 'Favoriten Editor', 'OnDestroy', this.Debug.Typen.Component);
       }
 
     }
@@ -108,7 +108,7 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Editor', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Editor', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -125,7 +125,7 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Editor', 'SetupValidation', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Editor', 'SetupValidation', this.Debug.Typen.Component);
     }
   }
 
@@ -139,17 +139,15 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
 
         this.Valid = false;
 
-        console.log(Result.error.message);
+        this.Debug.ShowErrorMessage(Result.error.message, 'Favoriten Editor', 'SetupValidation', this.Debug.Typen.Component);
       }
       else this.Valid = true;
 
-
       if(this.DBProjekte.CurrentFavorit.Projekteliste.length === 0) this.Valid = false;
-
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Editor', 'ValidateInput', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Editor', 'ValidateInput', this.Debug.Typen.Component);
     }
   }
 
@@ -161,7 +159,7 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Editor', 'TextChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Editor', 'TextChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -173,7 +171,7 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Editor', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Editor', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -188,7 +186,7 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -208,7 +206,7 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Editor', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Editor', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -221,7 +219,7 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Editor', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Editor', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -233,7 +231,7 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Editor', 'EditProjekteButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Editor', 'EditProjekteButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -257,7 +255,7 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Editor', 'PrepareData', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Editor', 'PrepareData', this.Debug.Typen.Component);
     }
   }
 }

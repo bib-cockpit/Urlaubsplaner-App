@@ -165,7 +165,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -200,7 +200,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'OnInit', this.Debug.Typen.Component);
     }
 
   }
@@ -214,7 +214,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -243,7 +243,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'OnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -259,7 +259,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ionViewDidEnter', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ionViewDidEnter', this.Debug.Typen.Component);
     }
   }
 
@@ -271,7 +271,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ionViewDidLeave', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ionViewDidLeave', this.Debug.Typen.Component);
     }
   }
 
@@ -321,7 +321,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Projektpunkteintrag', 'AufgabeClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Projektpunkteintrag', 'AufgabeClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -359,7 +359,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Projektpunkteintrag', 'PreparePersonen', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Projektpunkteintrag', 'PreparePersonen', this.Debug.Typen.Component);
     }
   }
 
@@ -405,7 +405,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'PrepareData', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'PrepareData', this.Debug.Typen.Component);
     }
   }
 
@@ -427,7 +427,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ZoomImageClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ZoomImageClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -475,7 +475,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'AuswahlIndexChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'AuswahlIndexChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -505,7 +505,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -529,7 +529,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
         }).catch((error: any) => {
 
-          this.Debug.ShowFirebaseErrorMessage(error,'Protokoll Editor', 'OkButtonClicked', this.Debug.Typen.Component);
+          this.Debug.ShowErrorMessage(error.message,'Protokoll Editor', 'OkButtonClicked', this.Debug.Typen.Component);
         });
 
       }
@@ -537,7 +537,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -566,7 +566,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ProjektButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ProjektButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -584,7 +584,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetProjektname', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetProjektname', this.Debug.Typen.Component);
     }
   }
 
@@ -598,7 +598,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetProjektkurzname', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetProjektkurzname', this.Debug.Typen.Component);
     }
   }
 
@@ -630,7 +630,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'DatumChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'DatumChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -646,7 +646,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -666,7 +666,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'SetupValidation', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'SetupValidation', this.Debug.Typen.Component);
     }
   }
 
@@ -683,7 +683,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ValidateInput', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ValidateInput', this.Debug.Typen.Component);
     }
   }
 
@@ -716,7 +716,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'CheckOkButtonEnabled', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'CheckOkButtonEnabled', this.Debug.Typen.Component);
     }
   }
 
@@ -738,18 +738,18 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
           }).catch((error: any) => {
 
-            this.Debug.ShowFirebaseErrorMessage(error, 'Protokoll Editor', 'DeleteProtokollClicked', this.Debug.Typen.Component);
+            this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'DeleteProtokollClicked', this.Debug.Typen.Component);
           });
         }).catch((error: any) => {
 
-          this.Debug.ShowFirebaseErrorMessage(error, 'Protokoll Editor', 'DeleteProtokollClicked', this.Debug.Typen.Component);
+          this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'DeleteProtokollClicked', this.Debug.Typen.Component);
         });
       }
 
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'DeleteProtokollClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'DeleteProtokollClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -761,7 +761,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetDatum', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetDatum', this.Debug.Typen.Component);
     }
   }
 
@@ -775,7 +775,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'CheckProjektbeteiligterExist', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'CheckProjektbeteiligterExist', this.Debug.Typen.Component);
     }
   }
 
@@ -788,7 +788,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'CheckTeammitgliedExist', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'CheckTeammitgliedExist', this.Debug.Typen.Component);
     }
   }
 
@@ -807,7 +807,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'function', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'function', this.Debug.Typen.Component);
     }
 
   }
@@ -831,7 +831,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'StopSaveProtokollTimer', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'StopSaveProtokollTimer', this.Debug.Typen.Component);
     }
   }
 
@@ -852,7 +852,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'StartSaveProtokollTimer', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'StartSaveProtokollTimer', this.Debug.Typen.Component);
     }
   }
 
@@ -867,7 +867,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ProjektpunktAufgabeTextChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ProjektpunktAufgabeTextChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -915,7 +915,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'DeleteOrCancelProjektpunkt', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'DeleteOrCancelProjektpunkt', this.Debug.Typen.Component);
     }
   }
 
@@ -931,7 +931,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetTermindatum', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetTermindatum', this.Debug.Typen.Component);
     }
   }
 
@@ -947,7 +947,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ProjektpunktStatusClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ProjektpunktStatusClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -966,7 +966,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ProjektpunktProtokollPublicChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ProjektpunktProtokollPublicChanged', this.Debug.Typen.Component);
     }
 
   }
@@ -992,7 +992,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'BeteiligteButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'BeteiligteButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -1021,7 +1021,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ZustaendigExternZuweisenClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ZustaendigExternZuweisenClicked', this.Debug.Typen.Component);
     }
   }
   */
@@ -1069,7 +1069,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ZustaendigInternZuweisenClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ZustaendigInternZuweisenClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -1105,7 +1105,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetZustaendigExternName', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetZustaendigExternName', this.Debug.Typen.Component);
     }
   }
 
@@ -1128,7 +1128,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetZustaendigInternName', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetZustaendigInternName', this.Debug.Typen.Component);
     }
   }
 
@@ -1166,7 +1166,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'LeistungsphaseButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'LeistungsphaseButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -1185,7 +1185,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'DuplicateProtokollClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'DuplicateProtokollClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -1201,7 +1201,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'StartzeitChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'StartzeitChanged', this.Debug.Typen.Component);
     }
 
   }
@@ -1218,7 +1218,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'EndezeitChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'EndezeitChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -1231,7 +1231,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetStartzeit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetStartzeit', this.Debug.Typen.Component);
     }
   }
 
@@ -1243,7 +1243,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetEndezeit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetEndezeit', this.Debug.Typen.Component);
     }
   }
 
@@ -1257,7 +1257,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ShowDetailsChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ShowDetailsChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -1274,7 +1274,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'StopSubscription', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'StopSubscription', this.Debug.Typen.Component);
     }
 
   }
@@ -1403,7 +1403,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'StartSubscription', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'StartSubscription', this.Debug.Typen.Component);
     }
   }
 
@@ -1449,7 +1449,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'TeammitgliederButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'TeammitgliederButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -1472,7 +1472,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetTeammitgliedername', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetTeammitgliedername', this.Debug.Typen.Component);
     }
   }
 
@@ -1495,7 +1495,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetTeammitgliederkuerzel', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetTeammitgliederkuerzel', this.Debug.Typen.Component);
     }
   }
 
@@ -1526,7 +1526,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ZoomImageClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ZoomImageClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -1538,7 +1538,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Festlegung Liste', 'TextChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Festlegung Liste', 'TextChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -1552,7 +1552,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'AllgemeinMenuButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'AllgemeinMenuButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -1567,12 +1567,12 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
       }).catch((error: HttpErrorResponse) => {
 
-        this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ThemenlisteMenuButtonClicked', this.Debug.Typen.Component);
+        this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ThemenlisteMenuButtonClicked', this.Debug.Typen.Component);
       });
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ThemenlisteMenuButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ThemenlisteMenuButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -1597,7 +1597,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetTeamteilnehmerliste', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetTeamteilnehmerliste', this.Debug.Typen.Component);
     }
   }
 
@@ -1630,7 +1630,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetBeteiligteteilnehmerliste', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetBeteiligteteilnehmerliste', this.Debug.Typen.Component);
     }
   }
 
@@ -1651,7 +1651,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetThemenlisteIconcolor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetThemenlisteIconcolor', this.Debug.Typen.Component);
     }
   }
 
@@ -1670,7 +1670,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetThemenlisteTextcolor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetThemenlisteTextcolor', this.Debug.Typen.Component);
     }
   }
 }

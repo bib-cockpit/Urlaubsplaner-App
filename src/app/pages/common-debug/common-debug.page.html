@@ -52,9 +52,18 @@
     </ion-row>
   </ion-grid>
 
-
-  <div *ngFor="let message of Debug.Debugmessageliste" style="width: 100%;" [innerHTML]="message | prettyjson"></div>
-
+  <table class="docinnertable">
+    <tr>
+      <td style="font-weight: bold">Skpript</td>
+      <td style="font-weight: bold">Message</td>
+      <td style="font-weight: bold">Funktion</td>
+    </tr>
+    <tr *ngFor="let Eintrag of Debug.Debugmessageliste">
+      <td>{{Eintrag.Message}}</td>
+      <td [style.color]="Eintrag.Color">{{Eintrag.Message}}</td>
+      <td>{{Eintrag.Function}}</td>
+    </tr>
+  </table>
 
 
   <abstand-element-fixed></abstand-element-fixed>

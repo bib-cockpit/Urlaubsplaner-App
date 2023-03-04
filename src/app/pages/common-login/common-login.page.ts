@@ -48,7 +48,7 @@ export class CommonLoginPage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Login', 'constructor', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Login', 'constructor', this.Debug.Typen.Page);
     }
   }
 
@@ -60,7 +60,7 @@ export class CommonLoginPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Login', 'OnInit', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Login', 'OnInit', this.Debug.Typen.Page);
     }
   }
 
@@ -72,7 +72,7 @@ export class CommonLoginPage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Login', 'ionViewDidEnter', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Login', 'ionViewDidEnter', this.Debug.Typen.Page);
     }
   }
 
@@ -85,7 +85,7 @@ export class CommonLoginPage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Login', 'OkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Login', 'OkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -171,7 +171,7 @@ export class CommonLoginPage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Login', 'CheckForm', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Login', 'CheckForm', this.Debug.Typen.Page);
     }
   }
 
@@ -186,7 +186,7 @@ export class CommonLoginPage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Login', 'NeuButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Login', 'NeuButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -198,7 +198,7 @@ export class CommonLoginPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Login', 'CheckLoginForm', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Login', 'CheckLoginForm', this.Debug.Typen.Page);
     }
   }
 
@@ -210,7 +210,7 @@ export class CommonLoginPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Login', 'PasswortVergessenButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Login', 'PasswortVergessenButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -220,7 +220,7 @@ export class CommonLoginPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Login', 'OnDestroy', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Login', 'OnDestroy', this.Debug.Typen.Page);
     }
   }
 }

@@ -99,7 +99,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -114,7 +114,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'OnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -137,7 +137,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -157,7 +157,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'SetupValidation', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'SetupValidation', this.Debug.Typen.Component);
     }
   }
 
@@ -182,7 +182,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'PrepareData', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'PrepareData', this.Debug.Typen.Page);
     }
   }
 
@@ -199,7 +199,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -216,7 +216,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'ValidateInput', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'ValidateInput', this.Debug.Typen.Component);
     }
   }
 
@@ -252,7 +252,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'TextChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'TextChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -264,7 +264,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'LoeschenCheckboxChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'LoeschenCheckboxChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -276,7 +276,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'ResetEditor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'ResetEditor', this.Debug.Typen.Component);
     }
   }
 
@@ -290,7 +290,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'StatusClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'StatusClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -307,7 +307,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'LoeschenButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'LoeschenButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -319,7 +319,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'ProjektleiterClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'ProjektleiterClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -331,7 +331,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'StellvertreterClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'StellvertreterClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -343,7 +343,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'StandortClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'StandortClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -357,7 +357,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -396,7 +396,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -409,7 +409,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -421,7 +421,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'StandortfilterButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'StandortfilterButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -434,7 +434,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'BeteiligteButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'BeteiligteButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -446,7 +446,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'AddBeteiligteButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'AddBeteiligteButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -458,7 +458,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'AllgemeinMenuButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'AllgemeinMenuButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -470,7 +470,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'BeteiligteMenuButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'BeteiligteMenuButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -482,7 +482,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'StrukturMenuButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'StrukturMenuButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -521,7 +521,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'BauteilIndexChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'BauteilIndexChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -545,7 +545,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'GeschossIndexChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'GeschossIndexChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -577,7 +577,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'RaumUpButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'RaumUpButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -607,7 +607,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'RaumDownButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'RaumDownButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -633,7 +633,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'RaumVerschiebenCheckChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'RaumVerschiebenCheckChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -645,7 +645,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'ProjektfarbeChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'ProjektfarbeChangedHandler', this.Debug.Typen.Component);
     }
   }
 }

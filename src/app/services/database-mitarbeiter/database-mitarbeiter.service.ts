@@ -37,7 +37,7 @@ export class DatabaseMitarbeiterService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'constructor', this.Debug.Typen.Service);
     }
   }
 
@@ -112,7 +112,7 @@ export class DatabaseMitarbeiterService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'GetMeinewocheStunden', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'GetMeinewocheStunden', this.Debug.Typen.Service);
     }
   }
 
@@ -150,7 +150,7 @@ export class DatabaseMitarbeiterService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'GetEmptyMeinewoche', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'GetEmptyMeinewoche', this.Debug.Typen.Service);
     }
   }
 
@@ -183,7 +183,7 @@ export class DatabaseMitarbeiterService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'GetEmptyMitarbeiter', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'GetEmptyMitarbeiter', this.Debug.Typen.Service);
     }
   }
 
@@ -201,7 +201,7 @@ export class DatabaseMitarbeiterService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'GetMitarbeitername', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'GetMitarbeitername', this.Debug.Typen.Service);
     }
   }
 
@@ -211,7 +211,7 @@ export class DatabaseMitarbeiterService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'InitService', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'InitService', this.Debug.Typen.Service);
     }
   }
 
@@ -221,7 +221,7 @@ export class DatabaseMitarbeiterService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'FinishService', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'FinishService', this.Debug.Typen.Service);
     }
   }
 
@@ -276,7 +276,7 @@ export class DatabaseMitarbeiterService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'UpdateMitarbeiter', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'UpdateMitarbeiter', this.Debug.Typen.Page);
     }
   }
 
@@ -293,11 +293,11 @@ export class DatabaseMitarbeiterService {
 
         this.Pool.Mitarbeiterliste[Index] = mitarbeiter; // aktualisieren
 
-        console.log('Mitarbeiterliste updated: ' + mitarbeiter.Name);
+        this.Debug.ShowMessage('Mitarbeiterliste updated: ' + mitarbeiter.Name, 'Database Mitarbeiter', 'UpdateMitarbeiter', this.Debug.Typen.Service);
       }
       else {
 
-        console.log('Mitarbeiter nicht gefunden -> neuen Mitarbeiter hinzufügen');
+        this.Debug.ShowMessage('Mitarbeiter nicht gefunden -> neuen Mitarbeiter hinzufügen', 'Database Mitarbeiter', 'UpdateMitarbeiter', this.Debug.Typen.Service);
 
         this.Pool.Mitarbeiterliste.push(mitarbeiter); // neuen
       }
@@ -311,7 +311,7 @@ export class DatabaseMitarbeiterService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'UpdateMitarbeiterliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'UpdateMitarbeiterliste', this.Debug.Typen.Service);
     }
   }
 
@@ -354,7 +354,7 @@ export class DatabaseMitarbeiterService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'AddMitarbeiter', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'AddMitarbeiter', this.Debug.Typen.Service);
     }
   }
 
@@ -397,7 +397,7 @@ export class DatabaseMitarbeiterService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'RegisterMitarbeiter', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'RegisterMitarbeiter', this.Debug.Typen.Page);
     }
   }
 
@@ -445,7 +445,7 @@ export class DatabaseMitarbeiterService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Standorte', 'GetMitarbeiterRegistrierung', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'GetMitarbeiterRegistrierung', this.Debug.Typen.Service);
     }
   }
 
@@ -482,7 +482,7 @@ export class DatabaseMitarbeiterService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Standorte', 'SaveMitarbeiter', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'SaveMitarbeiter', this.Debug.Typen.Service);
     }
   }
 
@@ -496,7 +496,7 @@ export class DatabaseMitarbeiterService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Standorte', 'DeleteMitarbeiter', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'DeleteMitarbeiter', this.Debug.Typen.Service);
     }
   }
 }

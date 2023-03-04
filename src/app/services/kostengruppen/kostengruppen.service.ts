@@ -1970,7 +1970,7 @@ export class KostengruppenService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Kostengruppen', 'constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'constructor', this.Debug.Typen.Service);
     }
   }
 
@@ -2015,7 +2015,7 @@ export class KostengruppenService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Kostengruppen', 'GetKostengruppe', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'GetKostengruppe', this.Debug.Typen.Service);
     }
   }
 
@@ -2029,7 +2029,7 @@ export class KostengruppenService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Kostengruppen', 'GetKostengruppenname', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'GetKostengruppenname', this.Debug.Typen.Service);
     }
   }
 }

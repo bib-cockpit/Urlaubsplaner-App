@@ -60,7 +60,7 @@ export class PjGebaeudeGeschosseditorComponent implements OnInit, OnDestroy, Aft
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Geschoss Editor', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Geschoss Editor', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -72,7 +72,7 @@ export class PjGebaeudeGeschosseditorComponent implements OnInit, OnDestroy, Aft
 
       } catch (error) {
 
-        this.Debug.ShowErrorMessage(error, 'Geschoss Editor', 'OnDestroy', this.Debug.Typen.Component);
+        this.Debug.ShowErrorMessage(error.message, 'Geschoss Editor', 'OnDestroy', this.Debug.Typen.Component);
       }
 
     }
@@ -88,7 +88,7 @@ export class PjGebaeudeGeschosseditorComponent implements OnInit, OnDestroy, Aft
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Geschoss Editor', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Geschoss Editor', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -107,7 +107,7 @@ export class PjGebaeudeGeschosseditorComponent implements OnInit, OnDestroy, Aft
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteil Editor', 'SetupValidation', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteil Editor', 'SetupValidation', this.Debug.Typen.Component);
     }
   }
 
@@ -121,7 +121,8 @@ export class PjGebaeudeGeschosseditorComponent implements OnInit, OnDestroy, Aft
 
         this.Valid = false;
 
-        console.log(Result.error.message);
+        this.Debug.ShowErrorMessage(Result.error.message, 'Bauteil Editor', 'ValidateInput', this.Debug.Typen.Component);
+
       }
       else this.Valid = true;
 
@@ -129,7 +130,7 @@ export class PjGebaeudeGeschosseditorComponent implements OnInit, OnDestroy, Aft
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Geschoss Editor', 'ValidateInput', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Geschoss Editor', 'ValidateInput', this.Debug.Typen.Component);
     }
   }
 
@@ -141,7 +142,7 @@ export class PjGebaeudeGeschosseditorComponent implements OnInit, OnDestroy, Aft
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Geschoss Editor', 'TextChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Geschoss Editor', 'TextChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -153,7 +154,7 @@ export class PjGebaeudeGeschosseditorComponent implements OnInit, OnDestroy, Aft
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Geschoss Editor', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Geschoss Editor', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -167,7 +168,7 @@ export class PjGebaeudeGeschosseditorComponent implements OnInit, OnDestroy, Aft
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Geschoss Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Geschoss Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -183,7 +184,7 @@ export class PjGebaeudeGeschosseditorComponent implements OnInit, OnDestroy, Aft
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Geschoss Editor', 'LoeschenButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Geschoss Editor', 'LoeschenButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -211,7 +212,7 @@ export class PjGebaeudeGeschosseditorComponent implements OnInit, OnDestroy, Aft
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Geschoss Editor', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Geschoss Editor', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -224,7 +225,7 @@ export class PjGebaeudeGeschosseditorComponent implements OnInit, OnDestroy, Aft
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Geschoss Editor', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Geschoss Editor', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -236,7 +237,7 @@ export class PjGebaeudeGeschosseditorComponent implements OnInit, OnDestroy, Aft
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Geschoss Editor', 'ListenpostionTextChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Geschoss Editor', 'ListenpostionTextChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -248,7 +249,7 @@ export class PjGebaeudeGeschosseditorComponent implements OnInit, OnDestroy, Aft
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Geschoss Editor', 'LoeschenCheckboxChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Geschoss Editor', 'LoeschenCheckboxChanged', this.Debug.Typen.Component);
     }
   }
 }

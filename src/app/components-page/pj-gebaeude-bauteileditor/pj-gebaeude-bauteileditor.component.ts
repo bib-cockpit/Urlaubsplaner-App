@@ -57,7 +57,7 @@ export class PjGebaeudeBauteileditorComponent implements OnInit, OnDestroy, Afte
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteil Editor', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteil Editor', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -69,7 +69,7 @@ export class PjGebaeudeBauteileditorComponent implements OnInit, OnDestroy, Afte
 
       } catch (error) {
 
-        this.Debug.ShowErrorMessage(error, 'Bauteil Editor', 'OnDestroy', this.Debug.Typen.Component);
+        this.Debug.ShowErrorMessage(error.message, 'Bauteil Editor', 'OnDestroy', this.Debug.Typen.Component);
       }
 
     }
@@ -85,7 +85,7 @@ export class PjGebaeudeBauteileditorComponent implements OnInit, OnDestroy, Afte
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteil Editor', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteil Editor', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -103,7 +103,7 @@ export class PjGebaeudeBauteileditorComponent implements OnInit, OnDestroy, Afte
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteil Editor', 'SetupValidation', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteil Editor', 'SetupValidation', this.Debug.Typen.Component);
     }
   }
 
@@ -117,7 +117,7 @@ export class PjGebaeudeBauteileditorComponent implements OnInit, OnDestroy, Afte
 
         this.Valid = false;
 
-        console.log(Result.error.message);
+        this.Debug.ShowErrorMessage(Result.error.message, 'Bauteil Editor', 'ValidateInput', this.Debug.Typen.Component);
       }
       else this.Valid = true;
 
@@ -125,7 +125,7 @@ export class PjGebaeudeBauteileditorComponent implements OnInit, OnDestroy, Afte
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteil Editor', 'ValidateInput', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteil Editor', 'ValidateInput', this.Debug.Typen.Component);
     }
   }
 
@@ -137,7 +137,7 @@ export class PjGebaeudeBauteileditorComponent implements OnInit, OnDestroy, Afte
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteil Editor', 'TextChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteil Editor', 'TextChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -148,7 +148,7 @@ export class PjGebaeudeBauteileditorComponent implements OnInit, OnDestroy, Afte
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteil Editor', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteil Editor', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -163,7 +163,7 @@ export class PjGebaeudeBauteileditorComponent implements OnInit, OnDestroy, Afte
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteil Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteil Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -185,7 +185,7 @@ export class PjGebaeudeBauteileditorComponent implements OnInit, OnDestroy, Afte
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteil Editor', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteil Editor', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -198,7 +198,7 @@ export class PjGebaeudeBauteileditorComponent implements OnInit, OnDestroy, Afte
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteil Editor', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteil Editor', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -215,7 +215,7 @@ export class PjGebaeudeBauteileditorComponent implements OnInit, OnDestroy, Afte
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteil Editor', 'ListenpositionChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteil Editor', 'ListenpositionChangedHandler', this.Debug.Typen.Component);
     }
   }
 }

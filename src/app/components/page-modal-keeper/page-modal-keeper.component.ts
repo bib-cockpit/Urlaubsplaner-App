@@ -47,7 +47,7 @@ export class PageModalKeeperComponent implements OnInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Modal Keeper', 'consturctor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Modal Keeper', 'consturctor', this.Debug.Typen.Component);
     }
   }
 
@@ -57,7 +57,7 @@ export class PageModalKeeperComponent implements OnInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Modal Keeper', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Modal Keeper', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -71,7 +71,7 @@ export class PageModalKeeperComponent implements OnInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Modal Keeper', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Modal Keeper', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -84,7 +84,7 @@ export class PageModalKeeperComponent implements OnInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Modal Keeper', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Modal Keeper', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -97,7 +97,7 @@ export class PageModalKeeperComponent implements OnInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Modal Keeper', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Modal Keeper', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -109,7 +109,7 @@ export class PageModalKeeperComponent implements OnInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Modal Keeper', 'StandortfilterButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Modal Keeper', 'StandortfilterButtonClicked', this.Debug.Typen.Component);
     }
 
   }

@@ -28,7 +28,7 @@ export class PageLogoComponent implements OnInit {
     catch (error) {
 
 
-      this.Debug.ShowErrorMessage(error,  'Page Logo', 'Construktor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Page Logo', 'Construktor', this.Debug.Typen.Component);
     }
   }
 
@@ -39,7 +39,7 @@ export class PageLogoComponent implements OnInit {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Page Logo', 'ngOnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Page Logo', 'ngOnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -59,7 +59,7 @@ export class PageLogoComponent implements OnInit {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Page Logo', 'GetAbstandY', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Page Logo', 'GetAbstandY', this.Debug.Typen.Component);
     }
   }
 }

@@ -46,7 +46,7 @@ export class DatabaseAuthenticationService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'constructor', this.Debug.Typen.Service);
     }
   }
 
@@ -65,7 +65,7 @@ export class DatabaseAuthenticationService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'HasActiveAccount', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'HasActiveAccount', this.Debug.Typen.Service);
     }
   }
 
@@ -81,7 +81,7 @@ export class DatabaseAuthenticationService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'GetAuthenticationToken', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'GetAuthenticationToken', this.Debug.Typen.Service);
     }
   }
 
@@ -120,7 +120,7 @@ export class DatabaseAuthenticationService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'SetAuthenticationStatus', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'SetAuthenticationStatus', this.Debug.Typen.Service);
     }
   }
 
@@ -136,7 +136,7 @@ export class DatabaseAuthenticationService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'Login', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'Login', this.Debug.Typen.Service);
     }
   }
 
@@ -164,7 +164,7 @@ export class DatabaseAuthenticationService {
       });
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'Logout', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'Logout', this.Debug.Typen.Service);
     }
   }
 }

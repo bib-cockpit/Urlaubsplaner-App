@@ -70,7 +70,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -105,7 +105,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'SetupValidation', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'SetupValidation', this.Debug.Typen.Component);
     }
   }
 
@@ -120,7 +120,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -132,7 +132,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'OnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -144,7 +144,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'PrepareData', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'PrepareData', this.Debug.Typen.Component);
     }
   }
 
@@ -160,7 +160,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -176,7 +176,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'ValidateInput', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'ValidateInput', this.Debug.Typen.Component);
     }
   }
 
@@ -188,7 +188,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'ResetEditor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'ResetEditor', this.Debug.Typen.Component);
     }
   }
 
@@ -203,7 +203,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -235,7 +235,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -249,7 +249,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -263,7 +263,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'BeteiligtetypChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'BeteiligtetypChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -275,7 +275,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'GeschlechtChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'GeschlechtChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -288,7 +288,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'TextChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'TextChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -300,7 +300,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'CanDeleteCheckedChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'CanDeleteCheckedChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -321,7 +321,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'DeleteButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'DeleteButtonClicked', this.Debug.Typen.Component);
     }
   }
 }

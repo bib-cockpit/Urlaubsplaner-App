@@ -18,7 +18,7 @@ export class LoadingAnimationService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'file', 'constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'file', 'constructor', this.Debug.Typen.Service);
     }
   }
 
@@ -65,7 +65,7 @@ export class LoadingAnimationService {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Loading Message Provider', 'ShowLoadingAnimation', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Loading Message Provider', 'ShowLoadingAnimation', this.Debug.Typen.Service);
     }
   }
 
@@ -117,7 +117,7 @@ export class LoadingAnimationService {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Loading Message Provider', 'HideLoadingAnimation', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Loading Message Provider', 'HideLoadingAnimation', this.Debug.Typen.Service);
     }
   }
 }

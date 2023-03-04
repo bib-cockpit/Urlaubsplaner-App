@@ -25,7 +25,7 @@ export class LocalstorageService {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LocalstorageService', 'constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'LocalstorageService', 'constructor', this.Debug.Typen.Service);
     }
   }
 
@@ -49,7 +49,7 @@ export class LocalstorageService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LocalstorageService', 'GetSecurityToken', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'LocalstorageService', 'GetSecurityToken', this.Debug.Typen.Service);
     }
   }
 
@@ -77,7 +77,7 @@ export class LocalstorageService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LocalstorageService', 'SetSecurityToken', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'LocalstorageService', 'SetSecurityToken', this.Debug.Typen.Service);
     }
   }
 
@@ -105,7 +105,7 @@ export class LocalstorageService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LocalstorageService', 'ClearSecurityToken', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'LocalstorageService', 'ClearSecurityToken', this.Debug.Typen.Service);
     }
   }
 }

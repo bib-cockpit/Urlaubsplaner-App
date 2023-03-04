@@ -89,7 +89,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'consturctor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'consturctor', this.Debug.Typen.Component);
     }
   }
 
@@ -101,7 +101,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'OnDestroy', this.Debug.Typen.Component);
     }
     }
 
@@ -113,7 +113,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -176,7 +176,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
        */
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ngAfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'ngAfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -190,7 +190,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'MainMenueButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'MainMenueButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -204,7 +204,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'FirmaMenueButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'FirmaMenueButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -218,7 +218,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ProjekteMenueButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'ProjekteMenueButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -230,7 +230,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetMainMenueColor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'GetMainMenueColor', this.Debug.Typen.Component);
     }
   }
 
@@ -242,7 +242,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetProjekteMenueIconcolor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'GetProjekteMenueIconcolor', this.Debug.Typen.Component);
     }
   }
 
@@ -254,7 +254,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetProjekteMenueIconcolor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'GetProjekteMenueIconcolor', this.Debug.Typen.Component);
     }
   }
 
@@ -268,7 +268,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'StandortButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'StandortButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -320,7 +320,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'FavoritenClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'FavoritenClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -339,7 +339,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetProjektbuttoncolor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'GetProjektbuttoncolor', this.Debug.Typen.Component);
     }
   }
 
@@ -351,7 +351,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ZeitspaneClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'ZeitspaneClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -363,7 +363,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'LeistungsphaseClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'LeistungsphaseClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -412,12 +412,12 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
       }).catch((error: HttpErrorResponse) => {
 
-        this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'StatusFilterChanged', this.Debug.Typen.Component);
+        this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'StatusFilterChanged', this.Debug.Typen.Component);
       });
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'StatusFilterChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'StatusFilterChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -429,7 +429,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'StatusFilterShowFaelligOnlyChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'StatusFilterShowFaelligOnlyChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -493,7 +493,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetZeitfilterButtontext', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'GetZeitfilterButtontext', this.Debug.Typen.Component);
     }
   }
 
@@ -595,7 +595,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetZeitfilterButtonwert', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'GetZeitfilterButtonwert', this.Debug.Typen.Component);
     }
   }
 
@@ -607,7 +607,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'MainMenueHomeButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'MainMenueHomeButtonClicked', this.Debug.Typen.Page);
     }
   }
 }

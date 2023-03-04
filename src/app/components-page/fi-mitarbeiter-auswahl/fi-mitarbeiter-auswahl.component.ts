@@ -84,7 +84,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Auswahl', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -98,7 +98,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Auswahl', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'OnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -119,7 +119,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Auswahl', 'function', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'function', this.Debug.Typen.Component);
     }
   }
 
@@ -269,7 +269,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Auswahl', 'PrepareDaten', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'PrepareDaten', this.Debug.Typen.Component);
     }
   }
 
@@ -292,7 +292,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Auswahl', 'GetMitarbeiterAlphabetbuchstabe', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'GetMitarbeiterAlphabetbuchstabe', this.Debug.Typen.Component);
     }
   }
 
@@ -303,7 +303,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Auswahl', 'MitrabeiterButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'MitrabeiterButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -318,7 +318,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Auswahl', 'AlphabetClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'AlphabetClicked', this.Debug.Typen.Component);
     }
 
   }
@@ -354,7 +354,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Auswahl', 'CheckedChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'CheckedChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -366,7 +366,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Auswahl', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -388,7 +388,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Auswahl', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -401,7 +401,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Auswahl', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -414,7 +414,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Auswahl', 'StandortfilterButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'StandortfilterButtonClicked', this.Debug.Typen.Component);
     }
 
   }
@@ -428,7 +428,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Auswahl', 'GetStandortfiller', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'GetStandortfiller', this.Debug.Typen.Component);
     }
   }
 }

@@ -30,7 +30,7 @@ export class CheckboxClonComponent implements OnInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'file', 'function', this.Debug.Typen.Page);
     }
   }
 
@@ -50,7 +50,7 @@ export class CheckboxClonComponent implements OnInit {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'file', 'function', this.Debug.Typen.Page);
     }
   }
 }

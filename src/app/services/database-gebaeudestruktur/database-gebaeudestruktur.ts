@@ -57,7 +57,7 @@ export class DatabaseGebaeudestrukturService {
     }
     catch(error)
     {
-      this.Debug.ShowErrorMessage(error, 'Bauteile', 'constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteile', 'constructor', this.Debug.Typen.Service);
     }
   }
 
@@ -92,7 +92,7 @@ export class DatabaseGebaeudestrukturService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteile', 'Init', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteile', 'Init', this.Debug.Typen.Service);
     }
   }
 
@@ -155,7 +155,7 @@ export class DatabaseGebaeudestrukturService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteile', 'SaveBauteil', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteile', 'SaveBauteil', this.Debug.Typen.Service);
     }
   }
 
@@ -195,7 +195,7 @@ export class DatabaseGebaeudestrukturService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteile', 'SaveGeschoss', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteile', 'SaveGeschoss', this.Debug.Typen.Service);
     }
   }
 
@@ -235,7 +235,7 @@ export class DatabaseGebaeudestrukturService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteile', 'SaveRaum', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteile', 'SaveRaum', this.Debug.Typen.Service);
     }
   }
 
@@ -269,7 +269,7 @@ export class DatabaseGebaeudestrukturService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteile', 'DeleteRaum', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteile', 'DeleteRaum', this.Debug.Typen.Service);
     }
   }
 
@@ -319,7 +319,7 @@ export class DatabaseGebaeudestrukturService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteile', 'DeleteGeschoss', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteile', 'DeleteGeschoss', this.Debug.Typen.Service);
     }
   }
 
@@ -336,7 +336,7 @@ export class DatabaseGebaeudestrukturService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteile', 'GetBauteilnamen', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteile', 'GetBauteilnamen', this.Debug.Typen.Service);
     }
   }
 
@@ -380,7 +380,7 @@ export class DatabaseGebaeudestrukturService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteile', 'CheckGeschossHasRaumliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteile', 'CheckGeschossHasRaumliste', this.Debug.Typen.Service);
     }
   }
 
@@ -399,7 +399,7 @@ export class DatabaseGebaeudestrukturService {
       };
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Gebauedestruktur', 'GetEmptyGeschoss', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Gebauedestruktur', 'GetEmptyGeschoss', this.Debug.Typen.Service);
     }
 
   }
@@ -434,7 +434,7 @@ export class DatabaseGebaeudestrukturService {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteile', 'function', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteile', 'function', this.Debug.Typen.Service);
     }
   }
 
@@ -486,7 +486,7 @@ export class DatabaseGebaeudestrukturService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteile', 'GetRaumliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteile', 'GetRaumliste', this.Debug.Typen.Service);
     }
   }
 
@@ -519,7 +519,7 @@ export class DatabaseGebaeudestrukturService {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteile', 'GetRaumnamen', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteile', 'GetRaumnamen', this.Debug.Typen.Service);
     }
   }
 
@@ -550,7 +550,7 @@ export class DatabaseGebaeudestrukturService {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bauteile', 'GetGeschossliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Bauteile', 'GetGeschossliste', this.Debug.Typen.Service);
     }
   }
 
@@ -604,7 +604,7 @@ export class DatabaseGebaeudestrukturService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetGebaeudeteilname', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'GetGebaeudeteilname', this.Debug.Typen.Component);
     }
   }
 

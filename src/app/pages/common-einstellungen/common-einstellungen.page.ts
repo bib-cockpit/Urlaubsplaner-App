@@ -43,7 +43,7 @@ export class CommonEinstellungenPage implements OnInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Einstellungen', 'constructor', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Einstellungen', 'constructor', this.Debug.Typen.Page);
     }
   }
 
@@ -138,12 +138,12 @@ export class CommonEinstellungenPage implements OnInit {
 
       }).catch((error: HttpErrorResponse) => {
 
-        this.Debug.ShowErrorMessage(error, 'Mitarbeiter Settings', 'ListesettingCheckChanged', this.Debug.Typen.Page);
+        this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Settings', 'ListesettingCheckChanged', this.Debug.Typen.Page);
       });
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Settings', 'ListesettingCheckChanged', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Settings', 'ListesettingCheckChanged', this.Debug.Typen.Page);
     }
   }
 
@@ -175,7 +175,7 @@ export class CommonEinstellungenPage implements OnInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Settings', 'FavoritenanzahlClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Settings', 'FavoritenanzahlClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -206,14 +206,14 @@ export class CommonEinstellungenPage implements OnInit {
 
       }).catch((error: HttpErrorResponse) => {
 
-        this.Debug.ShowErrorMessage(error, 'Einstellungen', 'MaxFavoritenanzahlChanged', this.Debug.Typen.Page);
+        this.Debug.ShowErrorMessage(error.message, 'Einstellungen', 'MaxFavoritenanzahlChanged', this.Debug.Typen.Page);
       });
 
       this.ShowAuswahl = false;
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Settings', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Settings', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -241,7 +241,7 @@ export class CommonEinstellungenPage implements OnInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Settings', 'MeilensteineNachlaufClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Settings', 'MeilensteineNachlaufClicked', this.Debug.Typen.Page);
     }
 
   }

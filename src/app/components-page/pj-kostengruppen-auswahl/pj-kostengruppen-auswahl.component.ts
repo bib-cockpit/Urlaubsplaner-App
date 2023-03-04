@@ -66,7 +66,7 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Kostengruppen Auswahl', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen Auswahl', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -78,7 +78,7 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Kostengruppen Auswahl', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen Auswahl', 'OnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -93,7 +93,7 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Kostengruppen Auswahl', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen Auswahl', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -141,7 +141,7 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Kostengruppen Auswahl', 'PrepareData', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen Auswahl', 'PrepareData', this.Debug.Typen.Component);
     }
   }
 
@@ -152,7 +152,7 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Kostengruppen Auswahl', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen Auswahl', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -165,7 +165,7 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Kostengruppen Auswahl', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen Auswahl', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -182,7 +182,7 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Kostengruppen Auswahl', 'OberkostengruppeChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen Auswahl', 'OberkostengruppeChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -198,7 +198,7 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Kostengruppen Auswahl', 'HauptkostengruppeChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen Auswahl', 'HauptkostengruppeChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -212,7 +212,7 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Kostengruppen Auswahl', 'UnterkostengruppeChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen Auswahl', 'UnterkostengruppeChanged', this.Debug.Typen.Component);
     }
   }
 }

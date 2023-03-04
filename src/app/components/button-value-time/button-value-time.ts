@@ -67,7 +67,7 @@ export class ButtonValueTimeComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Button Value Time', 'Constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Button Value Time', 'Constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -78,7 +78,7 @@ export class ButtonValueTimeComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Button Value Time', 'ngOnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Button Value Time', 'ngOnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -92,7 +92,7 @@ export class ButtonValueTimeComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Button Value Time', 'ButtonClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Button Value Time', 'ButtonClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -109,7 +109,7 @@ export class ButtonValueTimeComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Button Value Time', 'ngOnChanges', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Button Value Time', 'ngOnChanges', this.Debug.Typen.Component);
     }
   }
 
@@ -180,7 +180,7 @@ export class ButtonValueTimeComponent implements OnInit, OnChanges {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'file', 'function', this.Debug.Typen.Page);
     }
   }
 
@@ -251,7 +251,7 @@ export class ButtonValueTimeComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Button Value Time', 'TimeChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Button Value Time', 'TimeChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -272,7 +272,7 @@ export class ButtonValueTimeComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Button Value Time', 'GetMinUhrzeit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Button Value Time', 'GetMinUhrzeit', this.Debug.Typen.Component);
     }
   }
 
@@ -291,7 +291,7 @@ export class ButtonValueTimeComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Button Value Time', 'GetMaxUhrzeit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Button Value Time', 'GetMaxUhrzeit', this.Debug.Typen.Component);
     }
   }
 
@@ -310,7 +310,7 @@ export class ButtonValueTimeComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Button Value Time', 'GetUhrzeit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Button Value Time', 'GetUhrzeit', this.Debug.Typen.Component);
     }
   }
 
@@ -323,7 +323,7 @@ export class ButtonValueTimeComponent implements OnInit, OnChanges {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'file', 'function', this.Debug.Typen.Page);
     }
   }
 }

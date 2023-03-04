@@ -82,7 +82,7 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Input Clone', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Input Clone', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -95,7 +95,7 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Input Clone', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Input Clone', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -131,7 +131,7 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Input Clone', 'ngOnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Input Clone', 'ngOnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -150,7 +150,8 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
 
           valid = false;
 
-          console.log(Result.error.message);
+          this.Debug.ShowErrorMessage(Result.error.message, 'Input Clone', 'CheckValid', this.Debug.Typen.Component);
+
         }
         else valid = true;
       }
@@ -163,7 +164,7 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Input Clone', 'CheckValid', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Input Clone', 'CheckValid', this.Debug.Typen.Component);
     }
   }
 
@@ -197,7 +198,7 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Input Clone', 'TextChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Input Clone', 'TextChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -224,7 +225,7 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Input Clone', 'ngOnChanges', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Input Clone', 'ngOnChanges', this.Debug.Typen.Component);
     }
   }
 }

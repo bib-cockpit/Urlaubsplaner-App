@@ -17,7 +17,7 @@ export class CommonTestseitePage implements OnInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Test', 'constructor', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Test', 'constructor', this.Debug.Typen.Page);
     }
   }
 

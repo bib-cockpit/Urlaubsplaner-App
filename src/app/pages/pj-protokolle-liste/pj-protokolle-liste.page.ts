@@ -95,7 +95,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'constructor', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'constructor', this.Debug.Typen.Page);
     }
   }
 
@@ -119,7 +119,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'OnInit', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'OnInit', this.Debug.Typen.Page);
     }
   }
 
@@ -131,7 +131,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'OnDestroy', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'OnDestroy', this.Debug.Typen.Page);
     }
   }
 
@@ -152,7 +152,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'ionViewDidEnter', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'ionViewDidEnter', this.Debug.Typen.Page);
     }
   }
 
@@ -163,7 +163,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'ionViewDidLeave', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'ionViewDidLeave', this.Debug.Typen.Page);
     }
   }
 
@@ -177,7 +177,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'AddProtokollButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'AddProtokollButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -194,7 +194,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'GetProtokollTitel', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'GetProtokollTitel', this.Debug.Typen.Page);
     }
   }
 
@@ -237,7 +237,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -266,7 +266,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'GetDialogTitelicon', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'GetDialogTitelicon', this.Debug.Typen.Page);
     }
   }
 
@@ -300,7 +300,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'MitarebiterStandortfilterClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'MitarebiterStandortfilterClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -327,7 +327,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'MitarbeiterauswahlOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'MitarbeiterauswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -354,7 +354,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'BeteiligteauswahlOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'BeteiligteauswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -380,7 +380,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'LeistungsphaseClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'LeistungsphaseClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -395,7 +395,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'TeamteilnehmerClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'TeamteilnehmerClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -410,7 +410,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'BeteiligteteilnehmerClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'BeteiligteteilnehmerClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -433,7 +433,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'GetBeteiligtenauswahlTitel', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'GetBeteiligtenauswahlTitel', this.Debug.Typen.Page);
     }
   }
 
@@ -445,7 +445,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'GetProjektpunkteditorTitel', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'GetProjektpunkteditorTitel', this.Debug.Typen.Page);
     }
   }
 
@@ -468,7 +468,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'AddProtokollpunktClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'AddProtokollpunktClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -495,7 +495,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'StatusClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'StatusClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -520,7 +520,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
   } catch (error) {
 
-    this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'FachbereichClickedHandler', this.Debug.Typen.Page);
+    this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'FachbereichClickedHandler', this.Debug.Typen.Page);
   }
 
   ZustaendigInternHandler() {
@@ -533,7 +533,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'ZustaendigInternHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'ZustaendigInternHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -547,7 +547,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'ZustaendigExternHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'ZustaendigExternHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -559,7 +559,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, '', 'KostengruppeClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, '', 'KostengruppeClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -571,7 +571,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'GebaeudeteilClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'GebaeudeteilClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -600,7 +600,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'LeistungsphaseFilterClickedHanlder', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'LeistungsphaseFilterClickedHanlder', this.Debug.Typen.Page);
     }
   }
 
@@ -612,7 +612,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'ZeitspanneFilterClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'ZeitspanneFilterClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -660,7 +660,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'PrepareData', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'PrepareData', this.Debug.Typen.Page);
     }
   }
 
@@ -674,7 +674,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'ProtokollClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'ProtokollClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -687,7 +687,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'ProtokollpunktClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'ProtokollpunktClickedHandler', this.Debug.Typen.Page);
     }
   }
 }

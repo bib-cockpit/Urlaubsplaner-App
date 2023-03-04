@@ -91,7 +91,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -103,7 +103,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'OnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -121,7 +121,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -181,7 +181,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'PrepareData', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'PrepareData', this.Debug.Typen.Component);
     }
   }
 
@@ -194,7 +194,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -207,7 +207,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -299,7 +299,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'TagCheckChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'TagCheckChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -332,7 +332,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'OkButtonClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'OkButtonClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -415,7 +415,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'ZeitansatzClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'ZeitansatzClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -435,7 +435,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'GetZeitansatzstring', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'GetZeitansatzstring', this.Debug.Typen.Component);
     }
   }
 
@@ -488,7 +488,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'ZeitansatzStundenChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'ZeitansatzStundenChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -541,7 +541,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'ZeitansatzMinutenChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'ZeitansatzMinutenChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -553,7 +553,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'TimepickerOkButtonClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'TimepickerOkButtonClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -573,7 +573,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'GetProjektpunktBackground', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'GetProjektpunktBackground', this.Debug.Typen.Component);
     }
   }
 
@@ -589,7 +589,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'GetProjektpunthoehe', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'GetProjektpunthoehe', this.Debug.Typen.Component);
     }
   }
 
@@ -605,7 +605,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'GetProjektpunktAufgabentext', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'GetProjektpunktAufgabentext', this.Debug.Typen.Component);
     }
   }
 }

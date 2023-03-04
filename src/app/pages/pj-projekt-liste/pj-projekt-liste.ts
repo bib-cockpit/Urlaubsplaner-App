@@ -114,7 +114,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'constructor', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'constructor', this.Debug.Typen.Page);
     }
   }
 
@@ -128,7 +128,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'OnDestroy', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'OnDestroy', this.Debug.Typen.Page);
     }
   }
 
@@ -146,7 +146,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'ngOnInit', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'ngOnInit', this.Debug.Typen.Page);
     }
   }
 
@@ -180,7 +180,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'SucheTextChanged', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'SucheTextChanged', this.Debug.Typen.Page);
     }
   }
 
@@ -202,7 +202,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'ionViewDidEnter', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'ionViewDidEnter', this.Debug.Typen.Page);
     }
   }
 
@@ -214,7 +214,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'ionViewDidLeave', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'ionViewDidLeave', this.Debug.Typen.Page);
     }
   }
 
@@ -323,7 +323,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'PrepareData', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'PrepareData', this.Debug.Typen.Page);
     }
   }
 
@@ -358,7 +358,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Projekt Liste', 'AlphabetClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message,  'Projekt Liste', 'AlphabetClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -372,7 +372,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Projekt Liste', 'ProjektButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message,  'Projekt Liste', 'ProjektButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -385,7 +385,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'AddProjektButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'AddProjektButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -398,7 +398,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'AddProjektbeteiligteButtonClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'AddProjektbeteiligteButtonClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -411,7 +411,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'CancelButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'CancelButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -429,7 +429,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'GetProjekteditorTitel', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'GetProjekteditorTitel', this.Debug.Typen.Page);
     }
   }
 
@@ -441,7 +441,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'EditorValidChanged', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'EditorValidChanged', this.Debug.Typen.Page);
     }
   }
 
@@ -463,7 +463,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'function', this.Debug.Typen.Page);
     }
 
   }
@@ -507,7 +507,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'GetDialogTitelicon', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'GetDialogTitelicon', this.Debug.Typen.Page);
     }
   }
 
@@ -545,7 +545,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'StandortfilterClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'StandortfilterClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -570,7 +570,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'StandortClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'StandortClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -591,7 +591,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
           }).catch((error) => {
 
-            this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+            this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
           });
 
           this.PrepareData();
@@ -626,7 +626,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -642,7 +642,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'ProjektleiterClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'ProjektleiterClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -658,7 +658,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'StellvertreterClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'StellvertreterClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -692,7 +692,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'MitarebiterStandortfilterClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'MitarebiterStandortfilterClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -704,7 +704,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'GetOpacity', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'GetOpacity', this.Debug.Typen.Page);
     }
   }
 
@@ -736,7 +736,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'MitarbeiterauswahlOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'MitarbeiterauswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -753,7 +753,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'GetBerteiligteeditorTitel', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'GetBerteiligteeditorTitel', this.Debug.Typen.Page);
     }
   }
 
@@ -766,7 +766,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'BeteiligteClickedEventHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'BeteiligteClickedEventHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -794,7 +794,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'BeteiligteFachbereichClickedEventHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'BeteiligteFachbereichClickedEventHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -808,7 +808,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'AddBauteilClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'AddBauteilClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -821,7 +821,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'EditBauteilClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'EditBauteilClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -834,7 +834,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'EditGeschossClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'EditGeschossClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -847,7 +847,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'EditRaumClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'EditRaumClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -863,7 +863,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'GetBauteileditorTitel', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'GetBauteileditorTitel', this.Debug.Typen.Page);
     }
   }
 
@@ -879,7 +879,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'GetGeschosseditorTitel', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'GetGeschosseditorTitel', this.Debug.Typen.Page);
     }
   }
 
@@ -895,7 +895,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'GetRaumeditorTitel', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'GetRaumeditorTitel', this.Debug.Typen.Page);
     }
   }
 
@@ -910,7 +910,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'AddGeschossClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'AddGeschossClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -923,7 +923,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'AddRaumClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'AddRaumClickedHandler', this.Debug.Typen.Page);
     }
   }
 

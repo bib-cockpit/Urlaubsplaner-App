@@ -49,7 +49,7 @@ export class DatabaseProjektbeteiligteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projektbeteiligte', 'constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektbeteiligte', 'constructor', this.Debug.Typen.Service);
     }
   }
 
@@ -86,7 +86,7 @@ export class DatabaseProjektbeteiligteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projektbeteiligte', 'GetBeteiligtenvorname', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektbeteiligte', 'GetBeteiligtenvorname', this.Debug.Typen.Service);
     }
   }
 
@@ -102,7 +102,7 @@ export class DatabaseProjektbeteiligteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projektbeteiligte', 'GetBeteiligtenFachbereichname', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektbeteiligte', 'GetBeteiligtenFachbereichname', this.Debug.Typen.Service);
     }
   }
 
@@ -136,7 +136,7 @@ export class DatabaseProjektbeteiligteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projektbeteiligte', 'GetEmptyProjektbeteiligte', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektbeteiligte', 'GetEmptyProjektbeteiligte', this.Debug.Typen.Service);
     }
   }
 }

@@ -142,7 +142,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'constructor', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'constructor', this.Debug.Typen.Page);
     }
   }
 
@@ -158,7 +158,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'GetProjektpunthoehe', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'GetProjektpunthoehe', this.Debug.Typen.Page);
     }
   }
 
@@ -181,7 +181,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'InitScreen', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'InitScreen', this.Debug.Typen.Page);
     }
   }
 
@@ -223,7 +223,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'OnInit', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'OnInit', this.Debug.Typen.Page);
     }
   }
 
@@ -242,7 +242,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'GetProjektpunktAufgabentext', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'GetProjektpunktAufgabentext', this.Debug.Typen.Page);
     }
   }
 
@@ -258,7 +258,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'OnDestroy', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'OnDestroy', this.Debug.Typen.Page);
     }
   }
 
@@ -273,7 +273,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'ionViewDidEnter', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'ionViewDidEnter', this.Debug.Typen.Page);
     }
   }
 
@@ -284,7 +284,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'ionViewDidLeave', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'ionViewDidLeave', this.Debug.Typen.Page);
     }
   }
 
@@ -331,7 +331,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -360,7 +360,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'BeteiligteauswahlOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'BeteiligteauswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -389,7 +389,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'GetDialogTitelicon', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'GetDialogTitelicon', this.Debug.Typen.Page);
     }
   }
 
@@ -424,7 +424,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'MitarebiterStandortfilterClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'MitarebiterStandortfilterClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -454,7 +454,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'MitarbeiterauswahlOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'MitarbeiterauswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -466,7 +466,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'GetProjektpunkteditorTitel', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'GetProjektpunkteditorTitel', this.Debug.Typen.Page);
     }
   }
 
@@ -501,7 +501,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'SetProjektindexAndUrsprung', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'SetProjektindexAndUrsprung', this.Debug.Typen.Page);
     }
   }
 
@@ -548,7 +548,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'FortschrittClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste', 'FortschrittClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -575,7 +575,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'AddAufgabeClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'AddAufgabeClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -605,7 +605,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'EditorStatusClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'EditorStatusClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -631,7 +631,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
   } catch (error) {
 
-    this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'FachbereichClickedHandler', this.Debug.Typen.Page);
+    this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'FachbereichClickedHandler', this.Debug.Typen.Page);
   }
 
 
@@ -643,7 +643,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, '', 'KostengruppeClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, '', 'KostengruppeClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -655,7 +655,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'GebaeudeteilClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'GebaeudeteilClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -667,7 +667,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'ZeitspanneFilterClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'ZeitspanneFilterClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -683,7 +683,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'GetDatum', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'GetDatum', 'function', this.Debug.Typen.Page);
     }
   }
 
@@ -697,7 +697,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'EditorZustaendigInternHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'EditorZustaendigInternHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -715,7 +715,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'ListeZustaendigInternHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'ListeZustaendigInternHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -744,7 +744,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'GetBeteiligtenauswahlTitel', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'GetBeteiligtenauswahlTitel', this.Debug.Typen.Page);
     }
   }
 
@@ -758,7 +758,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'EditorZustaendigExternHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'EditorZustaendigExternHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -777,7 +777,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
           if(Index !== -1) {
 
-            console.log('Aufgabenliste: "' + this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe + '" updated.');
+            this.Debug.ShowMessage('Aufgabenliste: "' + this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe + '" updated.', 'Aufgaben Liste', 'UpdateDaten', this.Debug.Typen.Page);
 
             this.Meilensteineprojektpunkteliste[this.MeilensteineProjektindex][Index] = this.DBProjektpunkte.CurrentProjektpunkt;
           }
@@ -813,7 +813,8 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
           if(Index !== -1) {
 
-            console.log('Aufgabenliste: "' + this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe + '" updated.');
+            this.Debug.ShowMessage('Aufgabenliste: "' + this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe + '" updated.', 'Aufgaben Liste', 'UpdateDaten', this.Debug.Typen.Page);
+
 
             this.Meintagprojektpunkteliste[this.MeinTagProjektindex][Index] = this.DBProjektpunkte.CurrentProjektpunkt;
           }
@@ -856,7 +857,8 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
           if(Index !== -1) {
 
-            console.log('Aufgabenliste: "' + this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe + '" updated.');
+            this.Debug.ShowMessage('Aufgabenliste: "' + this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe + '" updated.', 'Aufgaben Liste', 'UpdateDaten', this.Debug.Typen.Page);
+
 
             this.FavoritenProjektpunkteliste[Index] = this.DBProjektpunkte.CurrentProjektpunkt;
           }
@@ -864,8 +866,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
             this.FavoritenProjektpunkteliste.push(this.DBProjektpunkte.CurrentProjektpunkt);
 
-            console.log('Aufgabenliste: "' + this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe + '" hinzugefügt.');
-
+            this.Debug.ShowMessage('Aufgabenliste: "' + this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe + '" hinzugefügt.', 'Aufgaben Liste', 'UpdateDaten', this.Debug.Typen.Page);
 
           }
 
@@ -887,7 +888,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'UpdateDaten', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'UpdateDaten', this.Debug.Typen.Page);
     }
   }
 
@@ -929,7 +930,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'SortPunkteliste', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'SortPunkteliste', this.Debug.Typen.Page);
     }
   }
 
@@ -1123,7 +1124,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'PrepareDaten', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'PrepareDaten', this.Debug.Typen.Page);
     }
   }
 
@@ -1142,7 +1143,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'AufgabeClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'AufgabeClickedHandler', this.Debug.Typen.Page);
     }
 
   }
@@ -1176,7 +1177,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'FavoritenClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'FavoritenClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -1194,7 +1195,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'EndedatumClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'EndedatumClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -1212,7 +1213,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'StatusClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'StatusClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -1230,7 +1231,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'ListeZustaendigExternHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'ListeZustaendigExternHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -1242,7 +1243,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'FilterChangedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'FilterChangedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -1254,7 +1255,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'TerminFiltermodusClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'TerminFiltermodusClickedHandler', this.Debug.Typen.Page);
     }
 
   }
@@ -1278,7 +1279,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'MeinewocheZuweisenClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'MeinewocheZuweisenClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -1294,7 +1295,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'MeineWocheBearbeitenClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'MeineWocheBearbeitenClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -1318,7 +1319,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'MeineWocheEintragTagClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'MeineWocheEintragTagClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -1339,7 +1340,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'MeineWocheEintragEditClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'MeineWocheEintragEditClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -1370,7 +1371,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'MeineWocheStatusClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'MeineWocheStatusClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -1434,7 +1435,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'MeineWocheDeleteClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'MeineWocheDeleteClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -1460,7 +1461,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'LeistungsphaseClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'LeistungsphaseClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -1475,7 +1476,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'BeteiligteteilnehmerClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'BeteiligteteilnehmerClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -1491,7 +1492,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'TeamteilnehmerClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'TeamteilnehmerClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -1514,7 +1515,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'AddProtokollpunktClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'AddProtokollpunktClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -1527,7 +1528,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'ProtokollpunktClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'ProtokollpunktClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -1541,7 +1542,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'ProtokollmarkeClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'ProtokollmarkeClickedHandler', this.Debug.Typen.Page);
     }
   }
 }

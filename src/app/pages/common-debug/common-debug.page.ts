@@ -45,7 +45,7 @@ export class CommonDebugPage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Login', 'constructor', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Login', 'constructor', this.Debug.Typen.Page);
     }
   }
 
@@ -57,7 +57,7 @@ export class CommonDebugPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Debug', 'OnInit', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Debug', 'OnInit', this.Debug.Typen.Page);
     }
   }
 
@@ -69,7 +69,7 @@ export class CommonDebugPage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Debug', 'ionViewDidEnter', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Debug', 'ionViewDidEnter', this.Debug.Typen.Page);
     }
   }
 
@@ -80,7 +80,7 @@ export class CommonDebugPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Debug', 'OnDestroy', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Debug', 'OnDestroy', this.Debug.Typen.Page);
     }
   }
 
@@ -95,7 +95,7 @@ export class CommonDebugPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Debug', 'ClearSecurityToken', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Debug', 'ClearSecurityToken', this.Debug.Typen.Page);
     }
   }
 
@@ -138,7 +138,7 @@ export class CommonDebugPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Debug', 'TextButtonCLcicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Debug', 'TextButtonCLcicked', this.Debug.Typen.Page);
     }
   }
 
@@ -150,7 +150,7 @@ export class CommonDebugPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Debug', 'ClearMessagesButtonCLcicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Debug', 'ClearMessagesButtonCLcicked', this.Debug.Typen.Page);
     }
   }
 }

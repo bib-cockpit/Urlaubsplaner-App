@@ -53,7 +53,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'App Component', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'App Component', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -77,7 +77,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'App Component', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'App Component', 'OnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -85,50 +85,45 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
     try {
 
-      //  this.StartApp(); // Muss wieder entfernt werden -> StartApp über MSAL
-
       if(this.AuthService.SecurityEnabled) {
 
         this.MSALBroadcastService.inProgress$
           .pipe(
             filter((status: InteractionStatus) => status === InteractionStatus.None),
             takeUntil(this.unsubscribe)
-          ).subscribe(() => {
+          ).subscribe((data: InteractionStatus) => {
 
-            console.log('Authentication status changed');
+            debugger;
+
+            this.Debug.ShowMessage('Authentication status changed', 'App Component', 'OnInit', this.Debug.Typen.Component);
 
           this.AuthService.SetAuthenticationStatus();
         });
-      }
 
+        this.MSALBroadcastService.msalSubject$.pipe(
+          filter((message: EventMessage) =>  message.eventType === EventType.LOGIN_SUCCESS),
+          takeUntil(this.unsubscribe)
+        ).subscribe((message: EventMessage) => {
 
+          debugger;
 
-      /*
+          const AuthResult = <AuthenticationResult>message.payload;
 
-      this.MSALBroadcastService.msalSubject$.pipe(
-        filter((message: EventMessage) =>  message.eventType === EventType.LOGIN_SUCCESS),
-        takeUntil(this.unsubscribe)
-      ).subscribe((message: EventMessage) => {
-
-        const AuthResult = <AuthenticationResult>message.payload;
-
-        this.MSALService.instance.setActiveAccount(AuthResult.account);
-      });
-
-       */
-
-      if(this.AuthService.SecurityEnabled) {
+          this.MSALService.instance.setActiveAccount(AuthResult.account);
+        });
 
         this.AuthSubscription = this.AuthService.AuthenticationChanged.subscribe(() => {
 
-          this.StartApp();
+          debugger;
 
-          // debugger;
+          this.StartApp();
         });
 
+      } else {
+
+        this.StartApp();
       }
 
-      if(this.AuthService.SecurityEnabled === false) this.StartApp();
 
       /*
 
@@ -156,7 +151,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'App Component', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'App Component', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -164,7 +159,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
     try {
 
-      console.log('Start App');
+      this.Debug.ShowMessage('Start App', 'App Component', 'StartApp', this.Debug.Typen.Component);
 
       await this.platform.ready();
 
@@ -174,6 +169,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
       debugger;
 
       if(this.AuthService.IsAuthenticated) {
+
+        this.Debug.ShowMessage('Benutzer ist authentifiziert', 'App Component', 'StartApp', this.Debug.Typen.Component);
 
         let token = await this.StorageService.GetSecurityToken();
 
@@ -187,6 +184,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
           // Databse not available
 
+          this.Debug.ShowErrorMessage('Lesen in der Mitarbeiter Datenbank fehlgeschlagen', 'App Component', 'StartApp', this.Debug.Typen.Component);
+
           this.Tools.SetRootPage(this.Const.Pages.TestPage);
         }
         else {
@@ -194,6 +193,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           if (result === null) {
 
             // Neuen Mitarbeiter registrieren
+
+            this.Debug.ShowMessage('Mitarbeiter ist neu und muss registriert werden', 'App Component', 'StartApp', this.Debug.Typen.Component);
 
 
             await this.Pool.ReadStandorteliste();
@@ -203,6 +204,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           else {
 
             // Mitarbeiter ist bereits registriert
+
+            this.Debug.ShowMessage('Mitarbeiter ist bereits registriert.', 'App Component', 'StartApp', this.Debug.Typen.Component);
+
 
             this.Pool.Mitarbeiterdaten     = this.Pool.InitMitarbeiter(result.Mitarbeiter);
             this.AuthService.SecurityToken = result.Token;
@@ -255,7 +259,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'App Component', 'StartApp', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'App Component', 'StartApp', this.Debug.Typen.Component);
     }
   }
 
@@ -267,7 +271,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Auswahl', 'function', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'function', this.Debug.Typen.Component);
     }
   }
 }

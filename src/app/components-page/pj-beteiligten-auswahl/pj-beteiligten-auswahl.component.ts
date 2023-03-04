@@ -79,7 +79,7 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Auswahl', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Auswahl', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -91,7 +91,7 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Auswahl', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Auswahl', 'OnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -107,7 +107,7 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Auswahl', 'function', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Auswahl', 'function', this.Debug.Typen.Component);
     }
   }
 
@@ -210,7 +210,7 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Auswahl', 'PrepareDaten', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Auswahl', 'PrepareDaten', this.Debug.Typen.Component);
     }
   }
 
@@ -233,7 +233,7 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Auswahl', 'GetBeteiligteAlphabetbuchstabe', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Auswahl', 'GetBeteiligteAlphabetbuchstabe', this.Debug.Typen.Component);
     }
   }
 
@@ -244,7 +244,7 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Auswahl', 'BeteiligteButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Auswahl', 'BeteiligteButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -259,7 +259,7 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Auswahl', 'AlphabetClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Auswahl', 'AlphabetClicked', this.Debug.Typen.Component);
     }
 
   }
@@ -295,7 +295,7 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Auswahl', 'CheckedChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Auswahl', 'CheckedChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -307,7 +307,7 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Auswahl', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Auswahl', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -329,7 +329,7 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Auswahl', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Auswahl', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -342,7 +342,7 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Auswahl', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Auswahl', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 }

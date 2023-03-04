@@ -84,7 +84,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'constructor', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'constructor', this.Debug.Typen.Page);
     }
   }
 
@@ -105,7 +105,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'OnDestroy', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'OnDestroy', this.Debug.Typen.Page);
     }
   }
 
@@ -127,7 +127,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'OnInit', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'OnInit', this.Debug.Typen.Page);
     }
   }
 
@@ -164,7 +164,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'ResetSucheButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'ResetSucheButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -182,7 +182,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'ionViewDidEnter', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'ionViewDidEnter', this.Debug.Typen.Page);
     }
   }
 
@@ -193,7 +193,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'ionViewDidLeave', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'ionViewDidLeave', this.Debug.Typen.Page);
     }
   }
 
@@ -206,7 +206,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'MitrabeiterButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'MitrabeiterButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -219,7 +219,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'AddMitarbeiterButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'AddMitarbeiterButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -234,7 +234,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Mitarbeiterliste', 'AlphabetClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message,  'Mitarbeiterliste', 'AlphabetClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -257,7 +257,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'GetMitarbeiterAlphabetbuchstabe', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'GetMitarbeiterAlphabetbuchstabe', this.Debug.Typen.Page);
     }
   }
 
@@ -399,7 +399,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'PrepareDaten', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'PrepareDaten', this.Debug.Typen.Page);
     }
   }
 
@@ -411,7 +411,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'EditorValidChanged', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'EditorValidChanged', this.Debug.Typen.Page);
     }
   }
 
@@ -430,7 +430,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'GetDialogTitel', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'GetDialogTitel', this.Debug.Typen.Page);
     }
   }
 
@@ -456,7 +456,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'StandortClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'StandortClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -489,7 +489,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
           }).catch((error) => {
 
-            this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+            this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
           });
 
           this.PrepareDaten();
@@ -501,7 +501,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -530,7 +530,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'StandortClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'StandortClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -571,7 +571,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'GetDialogTitelicon', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'GetDialogTitelicon', this.Debug.Typen.Page);
     }
   }
 
@@ -586,7 +586,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'SucheChanged', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'SucheChanged', this.Debug.Typen.Page);
     }
   }
 
@@ -623,7 +623,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'StandortFilterClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'StandortFilterClickedHandler', this.Debug.Typen.Page);
     }
   }
 }

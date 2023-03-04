@@ -74,7 +74,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Favoriten', 'constructor', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'constructor', this.Debug.Typen.Page);
     }
   }
 
@@ -87,7 +87,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Favoriten', 'OnDestroy', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'OnDestroy', this.Debug.Typen.Page);
     }
   }
 
@@ -134,7 +134,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Favoriten', 'PrepareData', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'PrepareData', this.Debug.Typen.Page);
     }
   }
 
@@ -149,7 +149,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Favoriten', 'ionViewDidEnter', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'ionViewDidEnter', this.Debug.Typen.Page);
     }
   }
 
@@ -172,7 +172,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Favoriten', 'ngOnInit', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'ngOnInit', this.Debug.Typen.Page);
     }
   }
 
@@ -185,7 +185,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Favoriten', 'AddFavoritenButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'AddFavoritenButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -202,7 +202,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Favoriten', 'GetFavoritenTitel', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'GetFavoritenTitel', this.Debug.Typen.Page);
     }
   }
 
@@ -215,7 +215,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Favoriten', 'FavoritButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'FavoritButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -230,7 +230,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Favoriten', 'ProjekteauswahlOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'ProjekteauswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -267,7 +267,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Favoriten', 'StandortfilterClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'StandortfilterClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -294,7 +294,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Favoriten', 'GetDialogTitelicon', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'GetDialogTitelicon', this.Debug.Typen.Page);
     }
   }
 
@@ -321,7 +321,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Favoriten', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -340,7 +340,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Favoriten', 'GetFavoritenanzahl', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'GetFavoritenanzahl', this.Debug.Typen.Page);
     }
   }
 
@@ -353,7 +353,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Favoriten', 'EditProjektlisteEventHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'EditProjektlisteEventHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -369,7 +369,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Favoriten', 'GetStandortname', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'GetStandortname', this.Debug.Typen.Page);
     }
   }
 }

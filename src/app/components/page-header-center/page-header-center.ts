@@ -24,7 +24,7 @@ export class PageHeaderCenterComponent implements OnInit {
     catch (error) {
 
 
-      this.Debug.ShowErrorMessage(error,  'Page Header', 'Construktor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Page Header', 'Construktor', this.Debug.Typen.Component);
     }
   }
 
@@ -36,7 +36,7 @@ export class PageHeaderCenterComponent implements OnInit {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Page Header', 'ngOnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Page Header', 'ngOnInit', this.Debug.Typen.Component);
     }
   }
 }

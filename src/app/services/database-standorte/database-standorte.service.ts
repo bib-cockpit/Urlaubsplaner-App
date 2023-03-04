@@ -45,7 +45,7 @@ export class DatabaseStandorteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Standorte', 'constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'constructor', this.Debug.Typen.Service);
     }
   }
 
@@ -70,7 +70,7 @@ export class DatabaseStandorteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Standorte', 'InitService', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'InitService', this.Debug.Typen.Service);
     }
   }
 
@@ -80,7 +80,7 @@ export class DatabaseStandorteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Standorte', 'FinishService', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'FinishService', this.Debug.Typen.Service);
     }
   }
 
@@ -100,7 +100,7 @@ export class DatabaseStandorteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'GetStandort', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'GetStandort', this.Debug.Typen.Component);
     }
   }
 
@@ -127,7 +127,7 @@ export class DatabaseStandorteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Standorte', 'GetEmptyStandort', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'GetEmptyStandort', this.Debug.Typen.Service);
     }
   }
 
@@ -145,7 +145,7 @@ export class DatabaseStandorteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Standorte', 'GetUniqueStandortID', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'GetUniqueStandortID', this.Debug.Typen.Service);
     }
   }
 
@@ -188,7 +188,7 @@ export class DatabaseStandorteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Standorte', 'AddStandort', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'AddStandort', this.Debug.Typen.Service);
     }
   }
 
@@ -204,11 +204,12 @@ export class DatabaseStandorteService {
 
         this.Pool.Standorteliste[Index] = standort;
 
-        console.log('Standortliste updated: ' + standort.Standort);
+        this.Debug.ShowMessage('Standortliste updated: ' + standort.Standort, 'Database Standorte', 'UpdateStandortliste', this.Debug.Typen.Service);
+
       }
       else {
 
-        console.log('Standort nicht gefunden -> neuen Standort hinzufügen');
+        this.Debug.ShowMessage('Standort nicht gefunden -> neuen Standort hinzufügen', 'Database Standorte', 'UpdateStandortliste', this.Debug.Typen.Service);
 
         this.Pool.Standorteliste.push(standort); // neuen
       }
@@ -223,7 +224,7 @@ export class DatabaseStandorteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Standorte', 'UpdateStandortliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'UpdateStandortliste', this.Debug.Typen.Service);
     }
   }
 
@@ -272,7 +273,7 @@ export class DatabaseStandorteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Standorte', 'UpdateStandort', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'UpdateStandort', this.Debug.Typen.Service);
     }
   }
   public DeleteStandort(): Promise<any> {
@@ -318,7 +319,7 @@ export class DatabaseStandorteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Standorte', 'DeleteStandort', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'DeleteStandort', this.Debug.Typen.Service);
     }
   }
 
@@ -331,7 +332,7 @@ export class DatabaseStandorteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Standorte', 'GetStandortfiller', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'GetStandortfiller', this.Debug.Typen.Service);
     }
   }
 }

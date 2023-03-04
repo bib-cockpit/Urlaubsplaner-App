@@ -57,7 +57,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste Filter', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste Filter', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -76,7 +76,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste Filter', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste Filter', 'OnInit', this.Debug.Typen.Component);
     }
 
   }
@@ -90,7 +90,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste Filter', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste Filter', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -106,7 +106,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste Filter', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste Filter', 'OnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -119,7 +119,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste Filter', 'ionViewDidEnter', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste Filter', 'ionViewDidEnter', this.Debug.Typen.Component);
     }
   }
 
@@ -131,7 +131,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste Filter', 'ionViewDidLeave', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste Filter', 'ionViewDidLeave', this.Debug.Typen.Component);
     }
   }
 
@@ -144,7 +144,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste Filter', 'PrepareData', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste Filter', 'PrepareData', this.Debug.Typen.Component);
     }
   }
 
@@ -157,7 +157,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste Filter', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste Filter', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -178,7 +178,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste Filter', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste Filter', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -189,7 +189,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste Filter', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste Filter', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -204,7 +204,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'file', 'function', this.Debug.Typen.Component);
     }
   }
 
@@ -218,7 +218,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste Filter', 'GetWochenstring', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste Filter', 'GetWochenstring', this.Debug.Typen.Component);
     }
   }
 
@@ -232,7 +232,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste Filter', 'GetMonatsstring', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste Filter', 'GetMonatsstring', this.Debug.Typen.Component);
     }
   }
 
@@ -268,7 +268,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste Filter', 'SetAufgabenTerminfiltervariante', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste Filter', 'SetAufgabenTerminfiltervariante', this.Debug.Typen.Component);
     }
   }
 
@@ -280,7 +280,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste Filter', 'TerminEndeDatumChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste Filter', 'TerminEndeDatumChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -292,7 +292,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste Filter', 'TerminStartDatumChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste Filter', 'TerminStartDatumChanged', this.Debug.Typen.Component);
     }
   }
 }

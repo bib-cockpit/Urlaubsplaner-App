@@ -76,7 +76,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'LOP Liste Date KW Picker', 'Construktor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'LOP Liste Date KW Picker', 'Construktor', this.Debug.Typen.Component);
     }
   }
 
@@ -137,7 +137,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'SetKalendertageliste', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'SetKalendertageliste', this.Debug.Typen.Component);
     }
   }
 
@@ -161,7 +161,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'LOP Liste Date KW Picker', 'ngOnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'LOP Liste Date KW Picker', 'ngOnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -191,7 +191,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'StichtagChangedEvent', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'StichtagChangedEvent', this.Debug.Typen.Component);
     }
   }
 
@@ -228,7 +228,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'GetGeschossliste', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'GetGeschossliste', this.Debug.Typen.Component);
     }
   }
 
@@ -261,7 +261,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'GetRaumIDValue', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'GetRaumIDValue', this.Debug.Typen.Component);
     }
   }
 
@@ -273,7 +273,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'function', this.Debug.Typen.Page);
     }
   }
 
@@ -309,7 +309,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'GetWindowWidth', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'GetWindowWidth', this.Debug.Typen.Component);
     }
   }
 
@@ -339,7 +339,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'GetWindowHeight', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'GetWindowHeight', this.Debug.Typen.Component);
     }
   }
 
@@ -352,7 +352,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -366,7 +366,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -376,9 +376,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
       debugger;
 
-      console.log('Ok  Button CLicked');
-
-
+      this.Debug.ShowErrorMessage('Ok  Button CLicked', 'LOP Liste Date KW Picker', 'OkButtonClicked', this.Debug.Typen.Component);
 
       this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt).then(() => {
 
@@ -386,12 +384,12 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
       }).catch((error: any) => {
 
-        this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'function', this.Debug.Typen.Component);
+        this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'function', this.Debug.Typen.Component);
       });
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'function', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'function', this.Debug.Typen.Component);
     }
 
   }
@@ -408,7 +406,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'CheckKalenderwoche', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'CheckKalenderwoche', this.Debug.Typen.Component);
     }
   }
 
@@ -433,7 +431,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'TerminStatusChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'TerminStatusChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -445,7 +443,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'GetEndemonatname', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'GetEndemonatname', this.Debug.Typen.Component);
     }
   }
 
@@ -470,7 +468,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'KalenderwocheMonatRueckwaerts', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'KalenderwocheMonatRueckwaerts', this.Debug.Typen.Component);
     }
   }
 
@@ -490,7 +488,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'KalenderwocheMonatVorwaerts', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'KalenderwocheMonatVorwaerts', this.Debug.Typen.Component);
     }
   }
 
@@ -513,7 +511,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'KalenderwocheClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'KalenderwocheClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -526,7 +524,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'ngOnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'ngOnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -540,7 +538,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date KW Picker', 'GetDatum', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'GetDatum', this.Debug.Typen.Component);
     }
   }
 }

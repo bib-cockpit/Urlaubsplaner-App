@@ -40,7 +40,7 @@ export class AlphabetComponent implements OnInit, OnChanges {
    }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Alphabet', 'Constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Alphabet', 'Constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -64,7 +64,7 @@ export class AlphabetComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Alphabet', 'InitScreen', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Alphabet', 'InitScreen', this.Debug.Typen.Component);
     }
   }
 
@@ -77,7 +77,7 @@ export class AlphabetComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Alphabet', 'ngOnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Alphabet', 'ngOnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -91,7 +91,7 @@ export class AlphabetComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Alphabet', 'AlphabetClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Alphabet', 'AlphabetClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -105,7 +105,7 @@ export class AlphabetComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Alphabet', 'SetFilterliste', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Alphabet', 'SetFilterliste', this.Debug.Typen.Component);
     }
   }
 
@@ -124,7 +124,7 @@ export class AlphabetComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Alphabet', 'ngOnChanges', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Alphabet', 'ngOnChanges', this.Debug.Typen.Component);
     }
   }
 }

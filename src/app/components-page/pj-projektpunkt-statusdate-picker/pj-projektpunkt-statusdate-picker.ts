@@ -80,7 +80,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'LOP Liste Date Status Picker', 'Construktor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'LOP Liste Date Status Picker', 'Construktor', this.Debug.Typen.Component);
     }
   }
 
@@ -92,7 +92,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'ngOnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'ngOnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -153,7 +153,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'SetKalendertageliste', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'SetKalendertageliste', this.Debug.Typen.Component);
     }
   }
 
@@ -177,7 +177,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'LOP Liste Date Status Picker', 'ngOnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'LOP Liste Date Status Picker', 'ngOnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -195,7 +195,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
     catch (error) {
 
 
-      this.Debug.ShowErrorMessage(error,  'LOP Liste Date Status Picker', 'StatusChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'LOP Liste Date Status Picker', 'StatusChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -225,7 +225,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'DateChangedEvent', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'DateChangedEvent', this.Debug.Typen.Component);
     }
   }
 
@@ -262,7 +262,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'GetGeschossliste', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'GetGeschossliste', this.Debug.Typen.Component);
     }
   }
 
@@ -295,7 +295,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'GetRaumIDValue', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'GetRaumIDValue', this.Debug.Typen.Component);
     }
   }
 
@@ -307,7 +307,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'function', this.Debug.Typen.Page);
     }
   }
 
@@ -343,7 +343,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'GetWindowWidth', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'GetWindowWidth', this.Debug.Typen.Component);
     }
   }
 
@@ -373,7 +373,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'GetWindowHeight', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'GetWindowHeight', this.Debug.Typen.Component);
     }
   }
 
@@ -386,7 +386,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -400,7 +400,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -437,12 +437,12 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
       }).catch((error: any) => {
 
-        this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'OkButtonClicked', this.Debug.Typen.Component);
+        this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'OkButtonClicked', this.Debug.Typen.Component);
       });
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -458,7 +458,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'CheckKalenderwoche', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'CheckKalenderwoche', this.Debug.Typen.Component);
     }
   }
 
@@ -483,7 +483,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'TerminStatusChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'TerminStatusChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -495,7 +495,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'GetEndemonatname', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'GetEndemonatname', this.Debug.Typen.Component);
     }
   }
 
@@ -520,7 +520,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'KalenderwocheMonatRueckwaerts', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'KalenderwocheMonatRueckwaerts', this.Debug.Typen.Component);
     }
   }
 
@@ -540,7 +540,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'KalenderwocheMonatVorwaerts', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'KalenderwocheMonatVorwaerts', this.Debug.Typen.Component);
     }
   }
 
@@ -563,7 +563,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Date Status Picker', 'KalenderwocheClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'KalenderwocheClicked', this.Debug.Typen.Component);
     }
   }
 }

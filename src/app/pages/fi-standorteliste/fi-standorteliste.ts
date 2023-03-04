@@ -74,7 +74,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'constructor', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Standorteliste', 'constructor', this.Debug.Typen.Page);
     }
   }
 
@@ -88,7 +88,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'OnDestroy', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Standorteliste', 'OnDestroy', this.Debug.Typen.Page);
     }
   }
 
@@ -103,7 +103,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'OnInit', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Standorteliste', 'OnInit', this.Debug.Typen.Page);
     }
   }
 
@@ -122,7 +122,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'ionViewDidEnter', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Standorteliste', 'ionViewDidEnter', this.Debug.Typen.Page);
     }
   }
 
@@ -133,7 +133,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'ionViewDidLeave', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Standorteliste', 'ionViewDidLeave', this.Debug.Typen.Page);
     }
   }
 
@@ -146,7 +146,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'MitrabeiterButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Standorteliste', 'MitrabeiterButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -160,7 +160,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'AddStandorteButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Standorteliste', 'AddStandorteButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -177,7 +177,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Standorteliste', 'AlphabetClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message,  'Standorteliste', 'AlphabetClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -200,7 +200,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'GetStandorteAlphabetbuchstabe', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Standorteliste', 'GetStandorteAlphabetbuchstabe', this.Debug.Typen.Page);
     }
   }
 
@@ -333,7 +333,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'PrepareDaten', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Standorteliste', 'PrepareDaten', this.Debug.Typen.Page);
     }
   }
 
@@ -345,7 +345,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'EditorValidChanged', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Standorteliste', 'EditorValidChanged', this.Debug.Typen.Page);
     }
   }
 
@@ -365,7 +365,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'GetDialogTitel', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Standorteliste', 'GetDialogTitel', this.Debug.Typen.Page);
     }
   }
 
@@ -381,7 +381,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'SucheChangedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Standorteliste', 'SucheChangedHandler', this.Debug.Typen.Page);
     }
 
   }

@@ -56,7 +56,7 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Login', 'constructor', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Login', 'constructor', this.Debug.Typen.Page);
     }
   }
 
@@ -68,7 +68,7 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Registrierung', 'GetDialogTitel', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Registrierung', 'GetDialogTitel', this.Debug.Typen.Page);
     }
   }
 
@@ -103,7 +103,7 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Registrierung', 'OnInit', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Registrierung', 'OnInit', this.Debug.Typen.Page);
     }
   }
 
@@ -114,7 +114,7 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Registrierung', 'ionViewDidEnter', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Registrierung', 'ionViewDidEnter', this.Debug.Typen.Page);
     }
   }
 
@@ -148,7 +148,7 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Registrierung', 'StandortClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Registrierung', 'StandortClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -174,7 +174,7 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Registrierung', 'StandortClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Registrierung', 'StandortClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -210,7 +210,7 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Registrierung', 'GetDialogTitelicon', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Registrierung', 'GetDialogTitelicon', this.Debug.Typen.Page);
     }
   }
 
@@ -237,7 +237,7 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Registrierung', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Registrierung', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -247,7 +247,7 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Registrierung', 'OnDestroy', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Registrierung', 'OnDestroy', this.Debug.Typen.Page);
     }
   }
 
@@ -263,7 +263,7 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Registrierung', 'EditorCancelButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Registrierung', 'EditorCancelButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -291,7 +291,7 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Registrierung', 'EditorOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Registrierung', 'EditorOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 }

@@ -57,7 +57,7 @@ export class ButtonValueComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Button Value', 'Constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Button Value', 'Constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -68,7 +68,7 @@ export class ButtonValueComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Button Value', 'ngOnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Button Value', 'ngOnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -143,7 +143,7 @@ export class ButtonValueComponent implements OnInit, OnChanges {
 
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Button Value', 'ngOnChanges', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Button Value', 'ngOnChanges', this.Debug.Typen.Component);
     }
   }
 
@@ -163,7 +163,7 @@ export class ButtonValueComponent implements OnInit, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Button Value', 'ButtonClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Button Value', 'ButtonClickedHandler', this.Debug.Typen.Component);
     }
   }
 }

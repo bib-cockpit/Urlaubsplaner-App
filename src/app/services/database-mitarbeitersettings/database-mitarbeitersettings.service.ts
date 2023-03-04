@@ -29,7 +29,7 @@ export class DatabaseMitarbeitersettingsService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeitersettings', 'constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeitersettings', 'constructor', this.Debug.Typen.Service);
     }
   }
 
@@ -39,7 +39,7 @@ export class DatabaseMitarbeitersettingsService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeitersettings', 'InitService', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeitersettings', 'InitService', this.Debug.Typen.Service);
     }
   }
 
@@ -49,7 +49,7 @@ export class DatabaseMitarbeitersettingsService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeitersettings', 'FinishService', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeitersettings', 'FinishService', this.Debug.Typen.Service);
     }
   }
 
@@ -116,7 +116,7 @@ export class DatabaseMitarbeitersettingsService {
 
   } catch (error) {
 
-    this.Debug.ShowErrorMessage(error, 'Database Standorte', 'SaveMitarbeitersettings', this.Debug.Typen.Service);
+    this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'SaveMitarbeitersettings', this.Debug.Typen.Service);
   }
 
   public UpdateMitarbeitersettings(settings: Mitarbeitersettingsstruktur) {
@@ -159,7 +159,7 @@ export class DatabaseMitarbeitersettingsService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeitersettings', 'UpdateMitarbeiter', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeitersettings', 'UpdateMitarbeiter', this.Debug.Typen.Page);
     }
   }
 
@@ -176,11 +176,12 @@ export class DatabaseMitarbeitersettingsService {
 
         this.Pool.Mitarbeitersettingsliste[Index] = settings; // aktualisieren
 
-        console.log('Mitarbeitersettingsliste updated: ' + settings.MitarbeiterID);
+        this.Debug.ShowMessage('Mitarbeitersettingsliste updated: ' + settings.MitarbeiterID, 'Database Mitarbeitersettings', 'UpdateMitarbeitersettingsliste', this.Debug.Typen.Service);
+
       }
       else {
 
-        console.log('Mitarbeitersetting nicht gefunden -> neuen Mitarbeiter hinzufügen');
+        this.Debug.ShowMessage('Mitarbeitersetting nicht gefunden -> neuen Mitarbeiter hinzufügen', 'Database Mitarbeitersettings', 'UpdateMitarbeitersettingsliste', this.Debug.Typen.Service);
 
         this.Pool.Mitarbeitersettingsliste.push(settings); // neuen
       }
@@ -196,7 +197,7 @@ export class DatabaseMitarbeitersettingsService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeitersettings', 'UpdateMitarbeiterliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeitersettings', 'UpdateMitarbeiterliste', this.Debug.Typen.Service);
     }
   }
 
@@ -240,7 +241,7 @@ export class DatabaseMitarbeitersettingsService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeitersettings', 'AddMitarbeiter', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeitersettings', 'AddMitarbeiter', this.Debug.Typen.Page);
     }
   }
   public DeleteMitarbeitersetting(setting: Mitarbeitersettingsstruktur): Promise<any> {
@@ -253,7 +254,7 @@ export class DatabaseMitarbeitersettingsService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Mitarbeitersettings', 'DeleteMitarbeiter', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeitersettings', 'DeleteMitarbeiter', this.Debug.Typen.Service);
     }
   }
 }

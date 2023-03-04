@@ -58,7 +58,7 @@ export class AuswahlDialogComponent implements OnInit, OnDestroy, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Auswahl Dialog', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Auswahl Dialog', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -70,7 +70,7 @@ export class AuswahlDialogComponent implements OnInit, OnDestroy, OnChanges {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Auswahl Dialog', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Auswahl Dialog', 'OnDestroy', this.Debug.Typen.Component);
     }
 
   }
@@ -83,7 +83,7 @@ export class AuswahlDialogComponent implements OnInit, OnDestroy, OnChanges {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Auswahl Dialog', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Auswahl Dialog', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -97,7 +97,7 @@ export class AuswahlDialogComponent implements OnInit, OnDestroy, OnChanges {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Auswahl Dialog', 'Setup', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Auswahl Dialog', 'Setup', this.Debug.Typen.Page);
     }
   }
 
@@ -118,7 +118,7 @@ export class AuswahlDialogComponent implements OnInit, OnDestroy, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Auswahl Dialog', 'Open', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Auswahl Dialog', 'Open', this.Debug.Typen.Component);
     }
   }
 
@@ -139,7 +139,7 @@ export class AuswahlDialogComponent implements OnInit, OnDestroy, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error,  'Auswahl Dialog', 'ngOnChanges', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message,  'Auswahl Dialog', 'ngOnChanges', this.Debug.Typen.Component);
     }
   }
 
@@ -160,7 +160,7 @@ export class AuswahlDialogComponent implements OnInit, OnDestroy, OnChanges {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Auswahl Dialog', 'IndexChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Auswahl Dialog', 'IndexChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -172,7 +172,7 @@ export class AuswahlDialogComponent implements OnInit, OnDestroy, OnChanges {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Auswahl Dialog', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Auswahl Dialog', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -184,7 +184,7 @@ export class AuswahlDialogComponent implements OnInit, OnDestroy, OnChanges {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Auswahl Dialog', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Auswahl Dialog', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -197,7 +197,7 @@ export class AuswahlDialogComponent implements OnInit, OnDestroy, OnChanges {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Auswahl Dialog', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Auswahl Dialog', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 }

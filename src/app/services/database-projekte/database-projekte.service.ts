@@ -76,7 +76,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'cosntructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'cosntructor', this.Debug.Typen.Service);
     }
   }
 
@@ -88,7 +88,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'GetProjektByID', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'GetProjektByID', this.Debug.Typen.Service);
     }
   }
 
@@ -236,7 +236,7 @@ export class DatabaseProjekteService {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'InitProjektauswahl', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'InitProjektauswahl', this.Debug.Typen.Service);
     }
   }
 
@@ -256,7 +256,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Meine Woche Editor', 'GetProjektFarbe', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'GetProjektFarbe', this.Debug.Typen.Service);
     }
   }
 
@@ -280,7 +280,7 @@ export class DatabaseProjekteService {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'SetProjektpunkteanzahl', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'SetProjektpunkteanzahl', this.Debug.Typen.Service);
     }
   }
 
@@ -292,7 +292,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'InitService', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'InitService', this.Debug.Typen.Service);
     }
   }
 
@@ -302,7 +302,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'FinishService', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'FinishService', this.Debug.Typen.Service);
     }
   }
 
@@ -331,7 +331,7 @@ export class DatabaseProjekteService {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'InitGesamtprojekteliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'InitGesamtprojekteliste', this.Debug.Typen.Service);
     }
   }
 
@@ -355,7 +355,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'GenerateProjektkey', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'GenerateProjektkey', this.Debug.Typen.Service);
     }
   }
 
@@ -395,7 +395,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'GetEmptyProjekt', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'GetEmptyProjekt', this.Debug.Typen.Service);
     }
   }
 
@@ -427,7 +427,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'GetProjektstatuscolor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'GetProjektstatuscolor', this.Debug.Typen.Service);
     }
   }
 
@@ -468,7 +468,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'AddProjekt', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'AddProjekt', this.Debug.Typen.Service);
     }
   }
 
@@ -512,7 +512,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'UpdateProjekt', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'UpdateProjekt', this.Debug.Typen.Service);
     }
   }
 
@@ -528,11 +528,12 @@ export class DatabaseProjekteService {
 
         this.Pool.Gesamtprojektliste[Index] = projekt;
 
-        console.log('Projektliste updated: ' + projekt.Projektname);
+        this.Debug.ShowMessage('Projektliste updated: ' + projekt.Projektname, 'Database Projekte', 'UpdateProjektliste', this.Debug.Typen.Service);
+
       }
       else {
 
-        console.log('Projekt nicht gefunden -> neues Projekt hinzufügen');
+        this.Debug.ShowMessage('Projekt nicht gefunden -> neues Projekt hinzufügen', 'Database Projekte', 'UpdateProjektliste', this.Debug.Typen.Service);
 
         this.Pool.Gesamtprojektliste.push(projekt); // neuen
       }
@@ -546,7 +547,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'UpdateProjektliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'UpdateProjektliste', this.Debug.Typen.Service);
     }
   }
 
@@ -591,7 +592,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'DeleteProjekt', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'DeleteProjekt', this.Debug.Typen.Service);
     }
   }
 
@@ -612,7 +613,7 @@ export class DatabaseProjekteService {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'SetProjekteliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'SetProjekteliste', this.Debug.Typen.Service);
     }
   }
 
@@ -677,7 +678,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'InitFavoritenliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'InitFavoritenliste', this.Debug.Typen.Service);
     }
   }
 
@@ -694,7 +695,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'GetEmptyProjektfavoriten', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'GetEmptyProjektfavoriten', this.Debug.Typen.Service);
     }
   }
 
@@ -737,7 +738,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'SaveProjektefavoriten', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'SaveProjektefavoriten', this.Debug.Typen.Service);
     }
   }
 
@@ -763,7 +764,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'function', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'function', this.Debug.Typen.Service);
     }
   }
 }

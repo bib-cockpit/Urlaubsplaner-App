@@ -46,7 +46,7 @@ export class DisplayService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Display', 'constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Display', 'constructor', this.Debug.Typen.Service);
     }
   }
 
@@ -58,7 +58,7 @@ export class DisplayService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Display', 'ResetDialogliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Display', 'ResetDialogliste', this.Debug.Typen.Service);
     }
   }
 
@@ -89,7 +89,7 @@ export class DisplayService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Dialog', 'AddDialog', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Dialog', 'AddDialog', this.Debug.Typen.Service);
     }
   }
 
@@ -104,12 +104,12 @@ export class DisplayService {
 
       if(this.Dialogliste.length === 0) {
 
-        console.log('Dialogliste ist leer.');
+        this.Debug.ShowMessage('Dialogliste ist leer.', 'Dialog', 'RemoveDialog', this.Debug.Typen.Service);
       }
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Dialog', 'RemoveDialog', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Dialog', 'RemoveDialog', this.Debug.Typen.Service);
     }
   }
 
@@ -133,7 +133,7 @@ export class DisplayService {
 
       if(Wert >= Maximum) {
 
-        console.log(Dialogname + ' ganz oben. Z-Index: ' + Wert);
+        this.Debug.ShowMessage(Dialogname + ' ganz oben. Z-Index: ' + Wert, 'Dialog', 'ShowOpacity', this.Debug.Typen.Service);
 
         return true;
       }
@@ -141,7 +141,7 @@ export class DisplayService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Dialog', 'ShowOpacity', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Dialog', 'ShowOpacity', this.Debug.Typen.Service);
     }
   }
 }

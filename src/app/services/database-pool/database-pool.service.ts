@@ -75,7 +75,7 @@ export class DatabasePoolService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'constructor', this.Debug.Typen.Service);
     }
   }
 
@@ -111,7 +111,7 @@ export class DatabasePoolService {
           },
           complete: () => {
 
-            console.log('Read Projektpunkte liste von ' + projekt.Projektkurzname + ' fertig.');
+            this.Debug.ShowMessage('Read Projektpunkte liste von ' + projekt.Projektkurzname + ' fertig.', 'Database Pool', 'ReadProjektpunkteliste', this.Debug.Typen.Service);
 
             this.Projektpunkteliste[projekt.Projektkey].forEach((Projektpunkt: Projektpunktestruktur) => {
 
@@ -141,7 +141,7 @@ export class DatabasePoolService {
       });
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'ReadProjektpunkteliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadProjektpunkteliste', this.Debug.Typen.Service);
     }
   }
 
@@ -180,7 +180,8 @@ export class DatabasePoolService {
 
              // debugger;
 
-            console.log('Read Protokollliste von ' + projekt.Projektkurzname + ' fertig.');
+            this.Debug.ShowMessage('Read Protokollliste von ' + projekt.Projektkurzname + ' fertig.', 'Database Pool', 'ReadProtokollliste', this.Debug.Typen.Service);
+
 
             resolve(true);
           },
@@ -194,7 +195,7 @@ export class DatabasePoolService {
       });
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'ReadProtokollliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadProtokollliste', this.Debug.Typen.Service);
     }
   }
 
@@ -246,7 +247,7 @@ export class DatabasePoolService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'ReadMitarbeiterliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadMitarbeiterliste', this.Debug.Typen.Service);
     }
   }
 
@@ -289,7 +290,7 @@ export class DatabasePoolService {
       });
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'ReadStandorteliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadStandorteliste', this.Debug.Typen.Service);
     }
   }
 
@@ -333,7 +334,7 @@ export class DatabasePoolService {
       });
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'ReadStandorteliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadStandorteliste', this.Debug.Typen.Service);
     }
   }
 
@@ -381,7 +382,7 @@ export class DatabasePoolService {
       });
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'ReadGesamtprojektliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadGesamtprojektliste', this.Debug.Typen.Service);
     }
   }
 
@@ -413,7 +414,7 @@ export class DatabasePoolService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'InitMitarbeiter', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'InitMitarbeiter', this.Debug.Typen.Service);
     }
   }
 
@@ -462,7 +463,7 @@ export class DatabasePoolService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'ReadProjektdaten', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadProjektdaten', this.Debug.Typen.Service);
     }
   }
 
@@ -484,7 +485,7 @@ export class DatabasePoolService {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'Init', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'Init', this.Debug.Typen.Service);
     }
   }
 
@@ -496,7 +497,7 @@ export class DatabasePoolService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'GetNewUniqueID', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'GetNewUniqueID', this.Debug.Typen.Service);
     }
   }
 
@@ -545,7 +546,7 @@ export class DatabasePoolService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'GetNewMitarbeitersettings', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'GetNewMitarbeitersettings', this.Debug.Typen.Service);
     }
   }
 
@@ -608,7 +609,7 @@ export class DatabasePoolService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'InitMitarbeitersettings', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'InitMitarbeitersettings', this.Debug.Typen.Service);
     }
   }
 
@@ -618,7 +619,7 @@ export class DatabasePoolService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'ReadMitarbeitersettings', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadMitarbeitersettings', this.Debug.Typen.Service);
     }
   }
 }

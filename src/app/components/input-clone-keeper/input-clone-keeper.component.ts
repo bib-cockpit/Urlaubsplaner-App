@@ -39,7 +39,7 @@ export class InputCloneKeeperComponent implements OnInit, AfterViewInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Input Clone Keeper', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Input Clone Keeper', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -51,7 +51,7 @@ export class InputCloneKeeperComponent implements OnInit, AfterViewInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Input Clone Keeper', 'ngOnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Input Clone Keeper', 'ngOnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -77,7 +77,7 @@ export class InputCloneKeeperComponent implements OnInit, AfterViewInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Input Clone Keeper', 'CheckValid', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Input Clone Keeper', 'CheckValid', this.Debug.Typen.Component);
     }
   }
 
@@ -89,7 +89,7 @@ export class InputCloneKeeperComponent implements OnInit, AfterViewInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Input Clone Keeper', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Input Clone Keeper', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 }

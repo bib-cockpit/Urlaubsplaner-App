@@ -57,7 +57,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projektpunkte', 'constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'constructor', this.Debug.Typen.Service);
     }
   }
 
@@ -78,7 +78,7 @@ export class DatabaseProjektpunkteService {
     }
     catch(error)
     {
-      this.Debug.ShowErrorMessage(error, 'Database Projektpunkte', 'InitStatustypen', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'InitStatustypen', this.Debug.Typen.Service);
     }
   }
 
@@ -95,7 +95,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projektpunkte', 'GetStatuscolor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'GetStatuscolor', this.Debug.Typen.Service);
     }
   }
 
@@ -116,7 +116,7 @@ export class DatabaseProjektpunkteService {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projektpunkte', 'GetProjektpunktstusByName', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'GetProjektpunktstusByName', this.Debug.Typen.Service);
     }
   }
 
@@ -158,7 +158,7 @@ export class DatabaseProjektpunkteService {
       });
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projektpunkte', 'DeleteProjektpunkt', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'DeleteProjektpunkt', this.Debug.Typen.Service);
     }
   }
 
@@ -199,7 +199,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projektpunkte', 'AddProjektpunkt', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'AddProjektpunkt', this.Debug.Typen.Service);
     }
   }
 
@@ -258,7 +258,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projektpunkte', 'UpdateProjektpunkt', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'UpdateProjektpunkt', this.Debug.Typen.Service);
     }
   }
 
@@ -293,7 +293,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projektpunkte', 'SaveProjektpunktliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'SaveProjektpunktliste', this.Debug.Typen.Service);
     }
   }
 
@@ -311,7 +311,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projektpunkte', 'DeleteProjektpunkteliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'DeleteProjektpunkteliste', this.Debug.Typen.Service);
     }
   }
 
@@ -333,7 +333,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Projektpunkte', 'CountPunkte', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'CountPunkte', this.Debug.Typen.Service);
     }
   }
 
@@ -433,7 +433,7 @@ export class DatabaseProjektpunkteService {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'GetNewProjektpunkt', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'GetNewProjektpunkt', this.Debug.Typen.Service);
     }
   }
 
@@ -521,7 +521,7 @@ export class DatabaseProjektpunkteService {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'GetNewProtokollpunkt', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'GetNewProtokollpunkt', this.Debug.Typen.Service);
     }
   }
 
@@ -550,7 +550,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'GetNewAnmerkung', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'GetNewAnmerkung', this.Debug.Typen.Service);
     }
 
   }
@@ -582,7 +582,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'BerechneArbeitstage', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'BerechneArbeitstage', this.Debug.Typen.Service);
     }
   }
 
@@ -639,7 +639,7 @@ export class DatabaseProjektpunkteService {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'CheckProjektpunktFaellig', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'CheckProjektpunktFaellig', this.Debug.Typen.Service);
     }
   }
 
@@ -684,7 +684,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'GetRestageanzahl', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'GetRestageanzahl', this.Debug.Typen.Service);
     }
   }
 
@@ -719,7 +719,7 @@ export class DatabaseProjektpunkteService {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'GetFaelligBackground', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'GetFaelligBackground', this.Debug.Typen.Service);
     }
   }
 
@@ -735,11 +735,11 @@ export class DatabaseProjektpunkteService {
 
         this.Pool.Projektpunkteliste[this.DBProjekt.CurrentProjekt.Projektkey][Index] = Projektpunkt; // aktualisieren
 
-        console.log('Projektpunktliste updated: "' + Projektpunkt.Aufgabe + '"');
+        this.Debug.ShowMessage('Projektpunktliste updated: "' + Projektpunkt.Aufgabe + '"', 'Projektpunkte', 'UpdateProjektpunkteliste', this.Debug.Typen.Service);
       }
       else {
 
-        console.log('Projektpunkt nicht gefunden -> neuen Projektpunkt hinzufügen');
+        this.Debug.ShowMessage('Projektpunkt nicht gefunden -> neuen Projektpunkt hinzufügen', 'Projektpunkte', 'UpdateProjektpunkteliste', this.Debug.Typen.Service);
 
         this.Pool.Projektpunkteliste[this.DBProjekt.CurrentProjekt.Projektkey].push(Projektpunkt); // neuen
       }
@@ -754,7 +754,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'UpdateProjektpunkteliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'UpdateProjektpunkteliste', this.Debug.Typen.Service);
     }
   }
 
@@ -780,7 +780,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'CheckIsMeintag', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'CheckIsMeintag', this.Debug.Typen.Service);
     }
   }
 
@@ -811,7 +811,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'GetMeintagCheckstatus', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'GetMeintagCheckstatus', this.Debug.Typen.Service);
     }
   }
 
@@ -936,7 +936,7 @@ export class DatabaseProjektpunkteService {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'CheckFilter', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'CheckFilter', this.Debug.Typen.Service);
     }
   }
 
@@ -972,7 +972,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'SetStatus', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'SetStatus', this.Debug.Typen.Service);
     }
   }
 
@@ -1006,7 +1006,7 @@ export class DatabaseProjektpunkteService {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'CheckFilterMeilenstein', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'CheckFilterMeilenstein', this.Debug.Typen.Service);
     }
   }
 
@@ -1072,7 +1072,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'PrepareWochenpunkteliste', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'PrepareWochenpunkteliste', this.Debug.Typen.Component);
     }
   }
 
@@ -1089,7 +1089,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'SortWochenpunkteliste', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'SortWochenpunkteliste', this.Debug.Typen.Component);
     }
   }
 
@@ -1117,7 +1117,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'CheckIsMeinewoche', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'CheckIsMeinewoche', this.Debug.Typen.Service);
     }
   }
 
@@ -1136,7 +1136,7 @@ export class DatabaseProjektpunkteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'GetEndedatumString', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'GetEndedatumString', this.Debug.Typen.Service);
     }
   }
 }

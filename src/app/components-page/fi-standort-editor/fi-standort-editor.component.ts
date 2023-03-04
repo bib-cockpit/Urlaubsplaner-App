@@ -59,7 +59,7 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Standort Editor', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -71,7 +71,7 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
 
       } catch (error) {
 
-        this.Debug.ShowErrorMessage(error, 'Standort Editor', 'OnDestroy', this.Debug.Typen.Component);
+        this.Debug.ShowErrorMessage(error.message, 'Standort Editor', 'OnDestroy', this.Debug.Typen.Component);
       }
   }
 
@@ -94,7 +94,7 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'SetupValidation', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Standort Editor', 'SetupValidation', this.Debug.Typen.Component);
     }
   }
 
@@ -108,7 +108,7 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Standort Editor', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -125,7 +125,7 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'ValidateInput', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Standort Editor', 'ValidateInput', this.Debug.Typen.Component);
     }
   }
 
@@ -137,7 +137,7 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'TextChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Standort Editor', 'TextChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -149,7 +149,7 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Standort Editor', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -164,7 +164,7 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Standort Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -188,7 +188,7 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'DeleteButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Standort Editor', 'DeleteButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -222,7 +222,7 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Standort Editor', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -235,7 +235,7 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Standort Editor', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -247,7 +247,7 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'CanDeleteCheckedChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Standort Editor', 'CanDeleteCheckedChanged', this.Debug.Typen.Component);
     }
 
   }

@@ -52,7 +52,7 @@ export class MenueService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Menue', 'constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Menue', 'constructor', this.Debug.Typen.Service);
     }
   }
 
@@ -65,7 +65,7 @@ export class MenueService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Menue', 'SetLoginPage', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Menue', 'SetLoginPage', this.Debug.Typen.Service);
     }
   }
 
@@ -77,7 +77,7 @@ export class MenueService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Menue', 'ShowRegistrierungPage', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Menue', 'ShowRegistrierungPage', this.Debug.Typen.Service);
     }
   }
 
@@ -140,7 +140,7 @@ export class MenueService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Menue', 'SetCurrentPage', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Menue', 'SetCurrentPage', this.Debug.Typen.Service);
     }
   }
 }

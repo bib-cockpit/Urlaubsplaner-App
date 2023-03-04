@@ -85,7 +85,7 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekte Auswahl', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekte Auswahl', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -103,7 +103,7 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekte Auswahl', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekte Auswahl', 'OnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -130,7 +130,7 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekte Auswahl', 'function', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekte Auswahl', 'function', this.Debug.Typen.Component);
     }
   }
 
@@ -285,7 +285,7 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekte Auswahl', 'PrepareDaten', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekte Auswahl', 'PrepareDaten', this.Debug.Typen.Component);
     }
   }
 
@@ -308,7 +308,7 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekte Auswahl', 'GetProjekteAlphabetbuchstabe', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekte Auswahl', 'GetProjekteAlphabetbuchstabe', this.Debug.Typen.Component);
     }
   }
 
@@ -323,7 +323,7 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekte Auswahl', 'AlphabetClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekte Auswahl', 'AlphabetClicked', this.Debug.Typen.Component);
     }
 
   }
@@ -359,7 +359,7 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekte Auswahl', 'CheckedChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekte Auswahl', 'CheckedChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -371,7 +371,7 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekte Auswahl', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekte Auswahl', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -393,7 +393,7 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekte Auswahl', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekte Auswahl', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -406,7 +406,7 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekte Auswahl', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekte Auswahl', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -419,7 +419,7 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekte Auswahl', 'StandortfilterButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekte Auswahl', 'StandortfilterButtonClicked', this.Debug.Typen.Component);
     }
 
   }
@@ -433,7 +433,7 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekte Auswahl', 'GetStandortfiller', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projekte Auswahl', 'GetStandortfiller', this.Debug.Typen.Component);
     }
   }
 }

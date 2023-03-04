@@ -40,7 +40,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'Constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'Constructor', this.Debug.Typen.Service);
     }
   }
 
@@ -53,7 +53,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'GetButtonvalueSize', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'GetButtonvalueSize', this.Debug.Typen.Service);
     }
   }
 
@@ -150,7 +150,7 @@ export class ToolsProvider {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'DeepCompareObjectarrays', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'DeepCompareObjectarrays', this.Debug.Typen.Service);
     }
   }
 
@@ -162,7 +162,7 @@ export class ToolsProvider {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'JSONCompareObjectarrays', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'JSONCompareObjectarrays', this.Debug.Typen.Service);
     }
   }
 
@@ -216,7 +216,7 @@ export class ToolsProvider {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'CompareObjectarrays', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'CompareObjectarrays', this.Debug.Typen.Service);
     }
   }
 
@@ -260,7 +260,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'ShowEntscheidungDialog', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'ShowEntscheidungDialog', this.Debug.Typen.Service);
     }
   }
 
@@ -329,7 +329,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'ShowAuswahlDialog', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'ShowAuswahlDialog', this.Debug.Typen.Service);
     }
   }
 
@@ -355,7 +355,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'RemoveNullFromObject', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'RemoveNullFromObject', this.Debug.Typen.Service);
     }
 
   }
@@ -454,7 +454,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'FormatValue', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'FormatValue', this.Debug.Typen.Service);
     }
   }
 
@@ -469,7 +469,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'GetUniqueID', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'GetUniqueID', this.Debug.Typen.Service);
     }
   }
 
@@ -497,7 +497,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'HexToRGB', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'HexToRGB', this.Debug.Typen.Component);
     }
   }
 
@@ -529,7 +529,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'SetRootPage', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'SetRootPage', this.Debug.Typen.Service);
     }
   }
 
@@ -553,7 +553,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'SetRootPage', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'SetRootPage', this.Debug.Typen.Service);
     }
   }
 
@@ -587,7 +587,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'SetRootPage', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'SetRootPage', this.Debug.Typen.Service);
     }
   }
 
@@ -600,7 +600,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'GetBogenmass', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'GetBogenmass', this.Debug.Typen.Service);
     }
   }
 
@@ -612,7 +612,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'GetGradmass', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'GetGradmass', this.Debug.Typen.Service);
     }
   }
 
@@ -624,7 +624,7 @@ export class ToolsProvider {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'IstGerade', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'IstGerade', this.Debug.Typen.Service);
     }
   }
 
@@ -636,7 +636,7 @@ export class ToolsProvider {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'IstUngerade', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'IstUngerade', this.Debug.Typen.Service);
     }
   }
 
@@ -650,7 +650,7 @@ export class ToolsProvider {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'file', 'function', this.Debug.Typen.Page);
     }
 
   }
@@ -665,7 +665,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'Runden', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'Runden', this.Debug.Typen.Service);
     }
   }
 
@@ -678,7 +678,7 @@ export class ToolsProvider {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'GetZeitstempel', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'GetZeitstempel', this.Debug.Typen.Service);
     }
   }
 
@@ -690,7 +690,7 @@ export class ToolsProvider {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'GetZeitstempel', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'GetZeitstempel', this.Debug.Typen.Service);
     }
   }
 
@@ -705,7 +705,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'GetTimebasedID', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'GetTimebasedID', this.Debug.Typen.Service);
     }
   }
 
@@ -724,7 +724,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'FormatLinebreaks', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'FormatLinebreaks', this.Debug.Typen.Service);
     }
   }
 
@@ -747,7 +747,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'ReplaceSonderzeichen', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'ReplaceSonderzeichen', this.Debug.Typen.Service);
     }
   }
 
@@ -764,7 +764,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'Runden', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'Runden', this.Debug.Typen.Service);
     }
   }
 
@@ -790,7 +790,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'CheckArray', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'CheckArray', this.Debug.Typen.Service);
     }
   }
 
@@ -823,7 +823,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'CheckObject', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'CheckObject', this.Debug.Typen.Service);
     }
   }
 
@@ -860,7 +860,7 @@ export class ToolsProvider {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'ShowHinweisDialog', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'ShowHinweisDialog', this.Debug.Typen.Service);
     }
   }
 
@@ -874,7 +874,7 @@ export class ToolsProvider {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Tools', 'CheckEmail', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'CheckEmail', this.Debug.Typen.Service);
     }
 
   }

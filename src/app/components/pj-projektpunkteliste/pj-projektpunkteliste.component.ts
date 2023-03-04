@@ -111,7 +111,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -128,7 +128,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Projektpunkteintrag', 'MeintagChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Projektpunkteintrag', 'MeintagChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -179,7 +179,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Projektpunkteintrag', 'MeintagDivClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Projektpunkteintrag', 'MeintagDivClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -213,7 +213,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Projektpunkteintrag', 'MeilensteinDivClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Projektpunkteintrag', 'MeilensteinDivClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -225,7 +225,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'OnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -238,7 +238,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'NotizMarkeClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'NotizMarkeClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -284,7 +284,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -296,7 +296,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -308,7 +308,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'AufgabeClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'AufgabeClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -320,7 +320,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'StartdatumClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'StartdatumClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -336,7 +336,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'EndeDatumChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'EndeDatumChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -351,7 +351,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'StartDatumChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'StartDatumChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -363,7 +363,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'GetStartdatum', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'GetStartdatum', this.Debug.Typen.Component);
     }
   }
 
@@ -377,7 +377,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'AnmerkungTextChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'AnmerkungTextChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -389,7 +389,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'DateClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'DateClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -433,7 +433,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'DeleteAnmerkung', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'DeleteAnmerkung', this.Debug.Typen.Component);
     }
   }
 
@@ -446,7 +446,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'GetAnmerkungdatum', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'GetAnmerkungdatum', this.Debug.Typen.Component);
     }
   }
 
@@ -471,7 +471,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'EditAnmerkungClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'EditAnmerkungClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -502,7 +502,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'AddAnmerkungClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'AddAnmerkungClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -521,7 +521,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'ShowAddNewDetail', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'ShowAddNewDetail', this.Debug.Typen.Component);
     }
   }
 
@@ -537,7 +537,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'ProjektpunktDetailtypChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'ProjektpunktDetailtypChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -550,7 +550,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'EndedatumClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'EndedatumClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -580,7 +580,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'ProtokollMarkeClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'ProtokollMarkeClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -607,7 +607,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'StatusCheckChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'StatusCheckChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -642,7 +642,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Projektpunkteintrag', 'SaveAnmerkung', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Projektpunkteintrag', 'SaveAnmerkung', this.Debug.Typen.Component);
     }
   }
 
@@ -656,7 +656,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'BemerkungMouseOver', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'BemerkungMouseOver', this.Debug.Typen.Component);
     }
   }
 
@@ -669,7 +669,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'BemerkungMouseOut', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'BemerkungMouseOut', this.Debug.Typen.Component);
     }
   }
 
@@ -688,7 +688,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'GetEndedatumstyle', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'GetEndedatumstyle', this.Debug.Typen.Component);
     }
   }
 
@@ -710,7 +710,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Projektpunkteintrag', 'GetZustaendigInternName', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'LOP Projektpunkteintrag', 'GetZustaendigInternName', this.Debug.Typen.Component);
     }
   }
 
@@ -723,7 +723,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ZustaendigExternZuweisenClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ZustaendigExternZuweisenClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -739,7 +739,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'GetEndedatumstyle', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'GetEndedatumstyle', this.Debug.Typen.Component);
     }
   }
 
@@ -751,7 +751,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'AddProjektpunktButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'AddProjektpunktButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -763,7 +763,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'FortschrittClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'FortschrittClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -777,7 +777,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'GetFortschritt', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'GetFortschritt', this.Debug.Typen.Component);
     }
 
   }
@@ -809,7 +809,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'GetZustaendigExternName', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'GetZustaendigExternName', this.Debug.Typen.Component);
     }
   }
 
@@ -822,7 +822,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'ZustaendigInternZuweisenClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'ZustaendigInternZuweisenClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -838,7 +838,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'TerminFilterAufsteigendClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'TerminFilterAufsteigendClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -855,7 +855,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'TerminFilterAbsteigendClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'TerminFilterAbsteigendClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -871,7 +871,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'function', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'function', this.Debug.Typen.Component);
     }
   }
 
@@ -883,7 +883,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'MeineWocheZuweisenClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'MeineWocheZuweisenClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -921,7 +921,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'GetMeineWocheTage', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'GetMeineWocheTage', this.Debug.Typen.Component);
     }
   }
 
@@ -948,7 +948,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'MeineWocheBearbeitenClickedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'MeineWocheBearbeitenClickedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -966,7 +966,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'DebugButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'DebugButtonClicked', this.Debug.Typen.Component);
     }
   }
 }

@@ -23,7 +23,7 @@ export class SecurityService implements CanLoad {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Security', 'constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Security', 'constructor', this.Debug.Typen.Service);
     }
   }
 
@@ -33,23 +33,22 @@ export class SecurityService implements CanLoad {
 
       if (this.CheckSecurity() === true) {
 
-        console.log('Security Service -> can load: ' + route.path);
-
+        this.Debug.ShowMessage('Security Service -> can load: ' + route.path, 'Security', 'canLoad', this.Debug.Typen.Service);
 
         return true;
       }
       else {
 
-        console.log('Security Service -> can not load: ' + route.path);
+        this.Debug.ShowMessage('Security Service -> can not load: ' + route.path, 'Security', 'canLoad', this.Debug.Typen.Service);
 
-        this.router.navigate([this.Const.Pages.HomePage]);
+        this.router.navigate([this.Const.Pages.LoginPage]);
 
         return false;
       }
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Security', 'canLoad', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Security', 'canLoad', this.Debug.Typen.Service);
     }
 
   }
@@ -62,7 +61,7 @@ export class SecurityService implements CanLoad {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Security', 'CheckSecurity', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Security', 'CheckSecurity', this.Debug.Typen.Service);
     }
   }
 }

@@ -59,7 +59,7 @@ export class PjGebaeudeRaumeditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Raum Editor', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Raum Editor', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -71,7 +71,7 @@ export class PjGebaeudeRaumeditorComponent implements OnInit, OnDestroy, AfterVi
 
       } catch (error) {
 
-        this.Debug.ShowErrorMessage(error, 'Raum Editor', 'OnDestroy', this.Debug.Typen.Component);
+        this.Debug.ShowErrorMessage(error.message, 'Raum Editor', 'OnDestroy', this.Debug.Typen.Component);
       }
 
     }
@@ -87,7 +87,7 @@ export class PjGebaeudeRaumeditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Raum Editor', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Raum Editor', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -101,7 +101,8 @@ export class PjGebaeudeRaumeditorComponent implements OnInit, OnDestroy, AfterVi
 
         this.Valid = false;
 
-        console.log(Result.error.message);
+        this.Debug.ShowErrorMessage(Result.error.message, 'Raum Editor', 'ValidateInput', this.Debug.Typen.Component);
+
       }
       else this.Valid = true;
 
@@ -109,7 +110,7 @@ export class PjGebaeudeRaumeditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Raum Editor', 'ValidateInput', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Raum Editor', 'ValidateInput', this.Debug.Typen.Component);
     }
   }
 
@@ -121,7 +122,7 @@ export class PjGebaeudeRaumeditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Raum Editor', 'TextChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Raum Editor', 'TextChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -135,7 +136,7 @@ export class PjGebaeudeRaumeditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Raum Editor', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Raum Editor', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -150,7 +151,7 @@ export class PjGebaeudeRaumeditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Raum Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Raum Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -169,7 +170,7 @@ export class PjGebaeudeRaumeditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Raum Editor', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Raum Editor', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -184,7 +185,7 @@ export class PjGebaeudeRaumeditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Raum Editor', 'LoeschenButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Raum Editor', 'LoeschenButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -197,7 +198,7 @@ export class PjGebaeudeRaumeditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Raum Editor', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Raum Editor', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -209,7 +210,7 @@ export class PjGebaeudeRaumeditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Raum Editor', 'ListenpostionTextChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Raum Editor', 'ListenpostionTextChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -221,7 +222,7 @@ export class PjGebaeudeRaumeditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Raum Editor', 'LoeschenCheckboxChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Raum Editor', 'LoeschenCheckboxChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -240,7 +241,7 @@ export class PjGebaeudeRaumeditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Raum Editor', 'SetupValidation', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Raum Editor', 'SetupValidation', this.Debug.Typen.Component);
     }
   }
 

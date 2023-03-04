@@ -55,7 +55,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Home', 'constructor', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'constructor', this.Debug.Typen.Page);
     }
   }
 
@@ -67,7 +67,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Home', 'OnInit', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'OnInit', this.Debug.Typen.Page);
     }
   }
 
@@ -91,7 +91,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Home', 'ionViewDidEnter', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'ionViewDidEnter', this.Debug.Typen.Page);
     }
   }
 
@@ -104,7 +104,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Home', 'ionViewDidLeave', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'ionViewDidLeave', this.Debug.Typen.Page);
     }
   }
 
@@ -114,7 +114,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Home', 'OnDestroy', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'OnDestroy', this.Debug.Typen.Page);
     }
   }
 
@@ -143,7 +143,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Home', 'FavoritChangedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'FavoritChangedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -155,7 +155,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Home', 'DebugButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'DebugButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -167,7 +167,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Home', 'EinstellungenButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'EinstellungenButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -179,7 +179,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Home', 'LogoutButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'LogoutButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -191,7 +191,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Home', 'StandorteButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'StandorteButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -203,7 +203,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Home', 'MitarbeiterButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'MitarbeiterButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -215,7 +215,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Home', 'ProjekteButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'ProjekteButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -227,7 +227,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Home', 'FavoritenButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'FavoritenButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -245,7 +245,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Home', 'PlayButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'PlayButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -264,7 +264,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Home', 'GetFavoritenlistehoehe', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'GetFavoritenlistehoehe', this.Debug.Typen.Page);
     }
   }
 }

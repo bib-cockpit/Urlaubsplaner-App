@@ -27,7 +27,7 @@ export class PageFooterComponent  implements OnInit {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Footer', 'ngOnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Footer', 'ngOnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -42,7 +42,7 @@ export class PageFooterComponent  implements OnInit {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Page Footer', 'InitMaximalhoehe', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Page Footer', 'InitMaximalhoehe', this.Debug.Typen.Component);
     }
   }
 }

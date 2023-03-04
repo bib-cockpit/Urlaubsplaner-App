@@ -79,7 +79,7 @@ export class DatabaseProtokolleService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Protokolle', 'cosntructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'cosntructor', this.Debug.Typen.Service);
     }
   }
 
@@ -122,7 +122,7 @@ export class DatabaseProtokolleService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Protokolle', 'GetEmptyProtokoll', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'GetEmptyProtokoll', this.Debug.Typen.Service);
     }
   }
 
@@ -187,7 +187,7 @@ export class DatabaseProtokolleService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Protokolle', 'SaveProtokoll', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'SaveProtokoll', this.Debug.Typen.Service);
     }
   }
 
@@ -202,7 +202,7 @@ export class DatabaseProtokolleService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Protokolle', 'DeleteProtokoll', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'DeleteProtokoll', this.Debug.Typen.Service);
     }
 
   }
@@ -296,7 +296,7 @@ export class DatabaseProtokolleService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Protokolle', 'SetZeitspannenfilter', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'SetZeitspannenfilter', this.Debug.Typen.Service);
     }
   }
 
@@ -311,7 +311,7 @@ export class DatabaseProtokolleService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Protokolle', 'GetProtokollByID', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'GetProtokollByID', this.Debug.Typen.Service);
     }
   }
 
@@ -345,7 +345,7 @@ export class DatabaseProtokolleService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Protokolle', 'GetLetzteProtokollnummer', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'GetLetzteProtokollnummer', this.Debug.Typen.Service);
     }
 
   }
@@ -404,7 +404,7 @@ export class DatabaseProtokolleService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Protokolle', 'UpdateProtokoll', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'UpdateProtokoll', this.Debug.Typen.Service);
     }
   }
 
@@ -445,7 +445,7 @@ export class DatabaseProtokolleService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Protokolle', 'AddProtokoll', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'AddProtokoll', this.Debug.Typen.Service);
     }
   }
 
@@ -461,11 +461,11 @@ export class DatabaseProtokolleService {
 
         this.Pool.Protokollliste[this.DBProjekt.CurrentProjekt.Projektkey][Index] = Protokoll; // aktualisieren
 
-        console.log('Protokollliste updated: "' + Protokoll.Titel + '"');
+        this.Debug.ShowMessage('Protokollliste updated: "' + Protokoll.Titel + '"', 'Database Protokolle', 'UpdateProtokollliste', this.Debug.Typen.Service);
       }
       else {
 
-        console.log('Protokoll nicht gefunden -> neues Protokoll hinzufügen');
+        this.Debug.ShowMessage('Protokoll nicht gefunden -> neues Protokoll hinzufügen', 'Database Protokolle', 'UpdateProtokollliste', this.Debug.Typen.Service);
 
         this.Pool.Protokollliste[this.DBProjekt.CurrentProjekt.Projektkey].push(Protokoll); // neuen
       }
@@ -480,7 +480,7 @@ export class DatabaseProtokolleService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Protokolle', 'UpdateProjektpunkteliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'UpdateProjektpunkteliste', this.Debug.Typen.Service);
     }
   }
 }

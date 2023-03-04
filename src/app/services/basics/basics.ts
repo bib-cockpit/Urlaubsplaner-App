@@ -418,6 +418,7 @@ export class BasicsProvider {
 
       this.InnerContenthoehe = this.Contenthoehe - this.Headerhoehe - this.Footerhoehe;
 
+
       console.log('Basics MeassureScreen -> Screenbreite: ' + this.platform.width() + ' / Screenhoehe: ' + this.platform.height());
       console.log('Basics MeassureScreen -> Headerhoehe: ' + this.Headerhoehe + ' / Footerhoehe: ' + this.Footerhoehe);
       console.log('Basics MeassureScreen -> InnerContenthoehe: ' + this.InnerContenthoehe);

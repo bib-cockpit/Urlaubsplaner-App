@@ -58,7 +58,7 @@ export class AuswahlDialogService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Dialog Auswahl', 'constructor', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Dialog Auswahl', 'constructor', this.Debug.Typen.Service);
     }
   }
 }

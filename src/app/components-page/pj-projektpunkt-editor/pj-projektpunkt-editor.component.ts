@@ -119,7 +119,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -131,7 +131,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'OnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -147,7 +147,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -158,7 +158,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'PrepareData', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'PrepareData', this.Debug.Typen.Component);
     }
   }
 
@@ -174,7 +174,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -187,7 +187,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'CanDeleteCheckedChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'CanDeleteCheckedChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -203,7 +203,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'SetupValidation', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'SetupValidation', this.Debug.Typen.Component);
     }
   }
 
@@ -218,7 +218,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'ValidateInput', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'ValidateInput', this.Debug.Typen.Component);
     }
   }
 
@@ -234,7 +234,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'TextChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'TextChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -248,7 +248,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'LoeschenCheckboxChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'LoeschenCheckboxChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -260,7 +260,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'ResetEditor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'ResetEditor', this.Debug.Typen.Component);
     }
   }
 
@@ -278,7 +278,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'LoeschenButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'LoeschenButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -292,7 +292,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -376,7 +376,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -389,7 +389,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -402,7 +402,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetStartdatum', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'GetStartdatum', this.Debug.Typen.Component);
     }
   }
 
@@ -414,7 +414,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetEndedatum', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'GetEndedatum', this.Debug.Typen.Component);
     }
   }
 
@@ -427,7 +427,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'ProjektButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'ProjektButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -441,7 +441,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'AufgabeTextChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'AufgabeTextChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -505,7 +505,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'ProjektstatusButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'ProjektstatusButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -520,7 +520,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'StartdatumChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'StartdatumChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -535,7 +535,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'EndedatumChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'EndedatumChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -547,7 +547,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'ZeitansatzeinheitChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'ZeitansatzeinheitChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -560,7 +560,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'OpenFestlegungCheckChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'OpenFestlegungCheckChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -585,7 +585,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetZustaendigInternListe', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'GetZustaendigInternListe', this.Debug.Typen.Component);
     }
   }
 
@@ -618,7 +618,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetZustaendigExternListe', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'GetZustaendigExternListe', this.Debug.Typen.Component);
     }
 
   }
@@ -634,7 +634,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetAnmerkungdatum', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'GetAnmerkungdatum', this.Debug.Typen.Component);
     }
 
 
@@ -648,7 +648,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, '', 'AnmerkungTextChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, '', 'AnmerkungTextChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -667,7 +667,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'DeleteAnmerkungClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'DeleteAnmerkungClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -683,7 +683,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'AddAnmerkungClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'AddAnmerkungClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -700,7 +700,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetLinienanzahl', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'GetLinienanzahl', this.Debug.Typen.Component);
     }
   }
 
@@ -721,7 +721,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'MeilensteinCheckChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'MeilensteinCheckChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -743,7 +743,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'ZeitansatzChangedHandler', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'ZeitansatzChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -765,7 +765,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'DeleteButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'DeleteButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -784,7 +784,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetTerminWert', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'GetTerminWert', this.Debug.Typen.Component);
     }
 
   }

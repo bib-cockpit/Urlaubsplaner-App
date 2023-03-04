@@ -3,6 +3,7 @@ import { BasicsProvider } from '../basics/basics';
 import {ConstProvider} from '../const/const';
 import {NavController} from '@ionic/angular';
 import {ErrorService} from "../error/error.service";
+import {Debugmmessagestruktur} from "../../dataclasses/Debummessagestruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -19,14 +20,12 @@ export class DebugProvider {
     Service: 'Service'
   };
 
-  public Debugmessageliste: any[];
-
+  public Debugmessageliste: Debugmmessagestruktur[];
 
   constructor( public Basics: BasicsProvider,
                private nav: NavController,
                private Fehlerservice: ErrorService,
                private Const: ConstProvider){
-
     try {
 
       this.Debugmessageliste = [];
@@ -41,7 +40,7 @@ export class DebugProvider {
     this.Debugmessageliste.push(message);
   }
 
-  public ShowErrorMessage(error, script, funktion, typ)
+  public ShowErrorMessage(message, script, funktion, typ)
   {
     try {
 
@@ -50,10 +49,16 @@ export class DebugProvider {
       console.log('Function: ' + funktion);
       console.log('Typ:      ' + typ);
       console.log('Error:');
-      console.log(error.message);
+      console.log(message);
       console.log('---------------------------------------------------------------------------');
 
-      debugger;
+      this.Debugmessageliste.push({
+
+        Skript: script,
+        Message: message,
+        Function: funktion,
+        Color: 'red'
+      });
 
       if(this.Basics.ShowFehlerbericht) {
 
@@ -66,7 +71,7 @@ export class DebugProvider {
           Sql: [],
           Stack: "",
           Script: script,
-          Error: error,
+          Error: message,
           Funktion: funktion,
           Scripttype: typ,
           Type : this.Const.Fehlermeldungtypen.Script
@@ -111,6 +116,13 @@ export class DebugProvider {
       console.log(message);
       console.log('---------------------------------------------------------------------------');
 
+      this.Debugmessageliste.push({
+
+        Skript: script,
+        Message: message,
+        Function: funktion,
+        Color: 'blue'
+      });
 
       if(this.Basics.ShowFehlerbericht) {
 
@@ -141,140 +153,12 @@ export class DebugProvider {
 
         this.PushPage(this.Const.Pages.ErrorPage);
       }
-
     }
     catch (error) {
 
       debugger;
     }
   }
-
-  public ShowFirebaseErrorMessage(error, script, funktion, typ)
-  {
-    try {
-
-      if(this.Basics.ShowFehlerbericht) {
-
-        /*
-        this.NavParameter.Fehlermeldung.Script = script;
-        this.NavParameter.Fehlermeldung.Error = error;
-        this.NavParameter.Fehlermeldung.Funktion = funktion;
-        this.NavParameter.Fehlermeldung.Scripttype = typ;
-        this.NavParameter.Fehlermeldung.Type = this.Constclass.Fehlermeldungtypen.Firebase;
-
-         */
-
-        this.Fehlerservice.Fehlermeldung.push({
-          Callingfunction: "",
-          Callingscript: "",
-          Commonscript: "",
-          Errorcode: 0,
-          Errormessage: "",
-          Sql: [],
-          Stack: "",
-          Script: script,
-          Error: error,
-          Funktion: funktion,
-          Scripttype: typ,
-          Type : this.Const.Fehlermeldungtypen.Script
-        });
-
-
-        this.PushPage(this.Const.Pages.ErrorPage);
-
-      }
-
-    }
-    catch (error2) {
-
-      debugger;
-    }
-  }
-
-  public ShowSqlErrorMessage(sql: string[], errormessage: string, errorcode: number, commonscript: string, callingscript: string, callingfunction: string)
-  {
-    try {
-
-      if(this.Basics.ShowFehlerbericht) {
-
-        /*
-        this.NavParameter.Fehlermeldung.Sql = sql;
-        this.NavParameter.Fehlermeldung.Errormessage = errormessage;
-        this.NavParameter.Fehlermeldung.Errorcode = errorcode;
-        this.NavParameter.Fehlermeldung.Commonscript = commonscript;
-        this.NavParameter.Fehlermeldung.Callingscript = callingscript;
-        this.NavParameter.Fehlermeldung.Callingfunction = callingfunction;
-        this.NavParameter.Fehlermeldung.Stack = '';
-        this.NavParameter.Fehlermeldung.Type = this.Constclass.Fehlermeldungtypen.Sql;
-
-         */
-
-        this.Fehlerservice.Fehlermeldung.push({
-          Callingfunction: callingfunction,
-          Callingscript: callingscript,
-          Commonscript: commonscript,
-          Errorcode: errorcode,
-          Errormessage: errormessage,
-          Sql: sql,
-          Stack: '',
-          Script: '',
-          Error: '',
-          Funktion: '',
-          Scripttype: '',
-          Type : this.Const.Fehlermeldungtypen.Sql
-        });
-
-        this.PushPage(this.Const.Pages.ErrorPage);
-      }
-    }
-    catch (error) {
-
-      debugger;
-    }
-  }
-
-  public ShowTransactionErrorMessage(sql: string[], errormessage: string, errorcode: number, stack: string, commonscript: string, callingscript: string, callingfunction: string)
-  {
-    try {
-
-      if(this.Basics.ShowFehlerbericht) {
-
-        /*
-        this.NavParameter.Fehlermeldung.Sql = sql;
-        this.NavParameter.Fehlermeldung.Errormessage = errormessage;
-        this.NavParameter.Fehlermeldung.Errorcode = errorcode;
-        this.NavParameter.Fehlermeldung.Commonscript = commonscript;
-        this.NavParameter.Fehlermeldung.Callingscript = callingscript;
-        this.NavParameter.Fehlermeldung.Callingfunction = callingfunction;
-        this.NavParameter.Fehlermeldung.Stack = stack;
-        this.NavParameter.Fehlermeldung.Type = this.Constclass.Fehlermeldungtypen.Transaction;
-
-         */
-
-        this.Fehlerservice.Fehlermeldung.push({
-          Callingfunction: callingfunction,
-          Callingscript: callingscript,
-          Commonscript: commonscript,
-          Errorcode: errorcode,
-          Errormessage: errormessage,
-          Sql: sql,
-          Stack: stack,
-          Script: '',
-          Error: '',
-          Funktion: '',
-          Scripttype: '',
-          Type : this.Const.Fehlermeldungtypen.Sql
-        });
-
-        this.PushPage(this.Const.Pages.ErrorPage);
-      }
-    }
-    catch (error) {
-
-      debugger;
-    }
-  }
-
 
   private PushPage(page: string): Promise<any> {
 
@@ -299,5 +183,4 @@ export class DebugProvider {
       debugger;
     }
   }
-
 }

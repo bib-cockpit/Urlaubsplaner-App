@@ -72,7 +72,7 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Auswahl', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Auswahl', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -90,7 +90,7 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
 
       } catch (error) {
 
-        this.Debug.ShowErrorMessage(error, 'Favoriten Auswahl', 'OnDestroy', this.Debug.Typen.Component);
+        this.Debug.ShowErrorMessage(error.message, 'Favoriten Auswahl', 'OnDestroy', this.Debug.Typen.Component);
       }
 
     }
@@ -114,7 +114,7 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Auswahl', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Auswahl', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -127,7 +127,7 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Auswahl', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Auswahl', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -157,7 +157,7 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Auswahl', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Auswahl', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -195,7 +195,7 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Auswahl', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Auswahl', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -208,7 +208,7 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Auswahl', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Auswahl', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -246,7 +246,7 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Auswahl', 'PrepareData', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Auswahl', 'PrepareData', this.Debug.Typen.Component);
     }
   }
 
@@ -261,7 +261,7 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Auswahl', 'GetStandortname', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Auswahl', 'GetStandortname', this.Debug.Typen.Component);
     }
   }
 
@@ -273,7 +273,7 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Favoriten Auswahl', 'FavoritButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Favoriten Auswahl', 'FavoritButtonClicked', this.Debug.Typen.Component);
     }
   }
 }

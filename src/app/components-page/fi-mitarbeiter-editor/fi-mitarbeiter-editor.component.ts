@@ -65,7 +65,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -78,7 +78,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'OnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -90,7 +90,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'ResetEditor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'ResetEditor', this.Debug.Typen.Component);
     }
   }
 
@@ -104,7 +104,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -125,7 +125,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'SetupValidation', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'SetupValidation', this.Debug.Typen.Component);
     }
   }
 
@@ -142,7 +142,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'ValidateInput', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'ValidateInput', this.Debug.Typen.Component);
     }
   }
 
@@ -154,7 +154,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'TextChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'TextChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -166,7 +166,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -178,7 +178,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'StandortClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'StandortClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -192,7 +192,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'FachbereichClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'FachbereichClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -204,7 +204,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'LoeschenCheckboxChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'LoeschenCheckboxChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -221,7 +221,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'LoeschenButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'LoeschenButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -235,7 +235,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -278,7 +278,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -291,7 +291,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 }

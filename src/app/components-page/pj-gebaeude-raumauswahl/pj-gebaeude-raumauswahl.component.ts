@@ -61,7 +61,7 @@ export class PjGebaeudeRaumauswahlComponent implements OnInit, OnDestroy, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Gebaeude Raumauswahl', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Gebaeude Raumauswahl', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -73,7 +73,7 @@ export class PjGebaeudeRaumauswahlComponent implements OnInit, OnDestroy, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Gebaeude Raumauswahl', 'OnDestroy', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Gebaeude Raumauswahl', 'OnDestroy', this.Debug.Typen.Component);
     }
   }
 
@@ -88,7 +88,7 @@ export class PjGebaeudeRaumauswahlComponent implements OnInit, OnDestroy, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Gebaeude Raumauswahl', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Gebaeude Raumauswahl', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -140,7 +140,7 @@ export class PjGebaeudeRaumauswahlComponent implements OnInit, OnDestroy, AfterV
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Gebaeude Raumauswahl', 'PrepareData', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Gebaeude Raumauswahl', 'PrepareData', this.Debug.Typen.Page);
     }
   }
 
@@ -151,7 +151,7 @@ export class PjGebaeudeRaumauswahlComponent implements OnInit, OnDestroy, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Gebaeude Raumauswahl', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Gebaeude Raumauswahl', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -166,7 +166,7 @@ export class PjGebaeudeRaumauswahlComponent implements OnInit, OnDestroy, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Gebaeude Raumauswahl', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Gebaeude Raumauswahl', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -184,7 +184,7 @@ export class PjGebaeudeRaumauswahlComponent implements OnInit, OnDestroy, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Gebaeude Raumauswahl', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Gebaeude Raumauswahl', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -197,7 +197,7 @@ export class PjGebaeudeRaumauswahlComponent implements OnInit, OnDestroy, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Gebaeude Raumauswahl', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Gebaeude Raumauswahl', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -225,7 +225,7 @@ export class PjGebaeudeRaumauswahlComponent implements OnInit, OnDestroy, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Gebaeude Raumauswahl', 'BauteilIndexChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Gebaeude Raumauswahl', 'BauteilIndexChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -249,7 +249,7 @@ export class PjGebaeudeRaumauswahlComponent implements OnInit, OnDestroy, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Gebaeude Raumauswahl', 'GeschossIndexChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Gebaeude Raumauswahl', 'GeschossIndexChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -270,7 +270,7 @@ export class PjGebaeudeRaumauswahlComponent implements OnInit, OnDestroy, AfterV
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Gebaeude Raumauswahl', 'RaumIndexChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Gebaeude Raumauswahl', 'RaumIndexChanged', this.Debug.Typen.Component);
     }
   }
 }
