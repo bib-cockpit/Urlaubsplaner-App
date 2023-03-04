@@ -95,7 +95,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
             takeUntil(this.unsubscribe)
           ).subscribe(() => {
 
-            console.log('Authentication stataus changed');
+            console.log('Authentication status changed');
 
           this.AuthService.SetAuthenticationStatus();
         });
@@ -251,7 +251,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
       }
       else {
 
-        this.Menuservice.ShowLoginPage();
+        this.Tools.SetRootPage(this.Const.Pages.LoginPage);
       }
     } catch (error) {
 

@@ -42,7 +42,7 @@ export class SecurityService implements CanLoad {
 
         console.log('Security Service -> can not load: ' + route.path);
 
-        this.router.navigate([this.Const.Pages.LoginPage]);
+        this.router.navigate([this.Const.Pages.HomePage]);
 
         return false;
       }
@@ -58,7 +58,7 @@ export class SecurityService implements CanLoad {
 
     try {
 
-      return this.AuthenticationDB.HasActiveAccount();
+      return true; //  this.AuthenticationDB.HasActiveAccount();
 
     } catch (error) {
 

@@ -27,9 +27,11 @@ export const MSALInstanceFactory = (): IPublicClientApplication => new PublicCli
 
     clientId:    'dd260d53-6b48-4b65-b7bb-ea63e35b0db9',
     authority:   'https://login.microsoftonline.com/' + MandantenID,
-    redirectUri: 'https://lemon-moss-06aa32f03.2.azurestaticapps.net' // http://localhost'
+    redirectUri: 'http://localhost' // https://lemon-moss-06aa32f03.2.azurestaticapps.net/index.html' // http://localhost'
   }
 });
+
+// https://lemon-moss-06aa32f03.2.azurestaticapps.net/LoginPage
 
 
 
