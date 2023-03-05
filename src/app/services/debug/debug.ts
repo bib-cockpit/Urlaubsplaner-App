@@ -87,7 +87,6 @@ export class DebugProvider {
 
          */
 
-        this.PushPage(this.Const.Pages.ErrorPage);
       }
 
     }
@@ -122,60 +121,6 @@ export class DebugProvider {
         Message: message,
         Function: funktion,
         Color: 'blue'
-      });
-
-      if(this.Basics.ShowFehlerbericht) {
-
-        /*
-        this.NavParameter.Fehlermeldung.Script = script;
-        this.NavParameter.Fehlermeldung.Error = data;
-        this.NavParameter.Fehlermeldung.Funktion = funktion;
-        this.NavParameter.Fehlermeldung.Scripttype = typ;
-        this.NavParameter.Fehlermeldung.Type = this.Constclass.Fehlermeldungtypen.Script;
-
-         */
-
-
-        this.Fehlerservice.Fehlermeldung.push({
-          Callingfunction: "",
-          Callingscript: "",
-          Commonscript: "",
-          Errorcode: 0,
-          Errormessage: "",
-          Sql: [],
-          Stack: "",
-          Script: script,
-          Error: data,
-          Funktion: funktion,
-          Scripttype: typ,
-          Type : this.Const.Fehlermeldungtypen.Script
-        });
-
-        this.PushPage(this.Const.Pages.ErrorPage);
-      }
-    }
-    catch (error) {
-
-      debugger;
-    }
-  }
-
-  private PushPage(page: string): Promise<any> {
-
-    try {
-
-      return new Promise<any>(resolve => {
-
-        this.nav.navigateForward(page, {animated:false, }).then(() => {
-
-          // this.NavParameter.AddPage(page);
-
-          resolve(true);
-
-        }).catch((error: any) => {
-
-          console.log(error);
-        });
       });
     }
     catch (error) {

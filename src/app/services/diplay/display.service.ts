@@ -17,6 +17,7 @@ export class DisplayService {
     Beteiligteneditor:  'Beteiligteneditor',
     Mitarbeitereditor:  'Mitarbeitereditor',
     Standorteditor:     'Standorteditor',
+    Changelogeditor:    'Changelogeditor',
     Favoriteneditor:    'Favoriteneditor',
     Favoritenauswahl:   'Favoritenauswahl',
     Projekteauswahl:    'Projekteauswahl',

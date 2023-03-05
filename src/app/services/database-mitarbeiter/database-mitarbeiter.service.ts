@@ -410,14 +410,13 @@ export class DatabaseMitarbeiterService {
       let Daten: any;
       let Token:string = this.AuthService.GetAuthenticationToken();
 
+      // 'Access-Control-Allow-Origin': '*',
+
       let headers: HttpHeaders = new HttpHeaders({
 
-        'Access-Control-Allow-Origin': '*',
         'content-type': 'application/json',
         'authorization': Token,
       });
-
-      debugger;
 
       return new Promise<any>((resolve, reject) => {
 

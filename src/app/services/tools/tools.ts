@@ -505,10 +505,6 @@ export class ToolsProvider {
 
     try {
 
-      //  this.Basics.LastRootPage = page;
-
-      debugger;
-
       return new Promise<any>(resolve => {
 
         this.nav.navigateRoot(page, {animated : false}).then(() => {

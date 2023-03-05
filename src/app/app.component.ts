@@ -166,8 +166,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
       this.Basics.Contentbreite = this.platform.width();
       this.Basics.Contenthoehe  = this.platform.height();
 
-      debugger;
-
       if(this.AuthService.IsAuthenticated) {
 
         this.Debug.ShowMessage('Benutzer ist authentifiziert', 'App Component', 'StartApp', this.Debug.Typen.Component);
@@ -177,8 +175,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
         this.AuthService.SecurityToken = token;
 
         let result = await this.MitarbeiterDB.GetMitarbeiterRegistrierung(this.AuthService.ActiveUser.username);
-
-        debugger;
 
         if(result !== null && !lodash.isUndefined(result.error)) {
 

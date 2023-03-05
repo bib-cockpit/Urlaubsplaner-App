@@ -26,7 +26,7 @@ export class DatabaseAuthenticationService {
   ) {
     try {
 
-      this.SecurityEnabled = true;
+      this.SecurityEnabled = false;
       this.SecurityToken   = this.Const.NONE;
       this.IsAuthenticated = !this.SecurityEnabled; // Unbedingt auf false setzen
       this.ActiveUser      = null;

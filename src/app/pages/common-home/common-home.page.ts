@@ -10,6 +10,10 @@ import {MenueService} from "../../services/menue/menue.service";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 import * as lodash from "lodash-es";
 import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
+import {DatabaseChangelogService} from "../../services/database-changelog/database-changelog.service";
+import moment, {Moment} from "moment";
+import {Changelogstruktur} from "../../dataclasses/changelogstruktur";
+import {Subscription} from "rxjs";
 
 
 @Component({
@@ -30,14 +34,16 @@ export class CommonHomePage implements OnInit, OnDestroy {
   public PlayMouseOver: boolean;
   public BackgroundimageURL: string;
   public Backgroundinterval: any;
+  public ShowChangelogEditor: boolean;
+  private ChangelogSubscription: Subscription;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
               public Const: ConstProvider,
-              public fb: FormBuilder,
               public Pool: DatabasePoolService,
               public DBProjekte: DatabaseProjekteService,
+              public DBChangelog: DatabaseChangelogService,
               public AuthService: DatabaseAuthenticationService,
               private Menuservice: MenueService) {
     try
@@ -52,6 +58,8 @@ export class CommonHomePage implements OnInit, OnDestroy {
       this.PlayMouseOver          = false;
       this.BackgroundimageURL     = '../../../assets/background/' + lodash.random(1, 36, false).toString() + '.jpg';
       this.Backgroundinterval     = null;
+      this.ShowChangelogEditor    = false;
+      this.ChangelogSubscription  = null;
     }
     catch (error) {
 
@@ -63,6 +71,10 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     try {
 
+      this.ChangelogSubscription = this.Pool.ChangeloglisteChanged.subscribe(() => {
+
+        this.PrepareDaten();
+      });
 
 
     } catch (error) {
@@ -111,6 +123,8 @@ export class CommonHomePage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
 
     try {
+
+      this.ChangelogSubscription.unsubscribe();
 
     } catch (error) {
 
@@ -260,11 +274,79 @@ export class CommonHomePage implements OnInit, OnDestroy {
         Anzahl = this.Pool.Mitarbeiterdaten.Favoritenliste.length === 0 ? 2 : this.Pool.Mitarbeiterdaten.Favoritenliste.length;
       }
 
+      if(Anzahl === 0) Anzahl = 1;
+
       return  Anzahl * 50;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Home', 'GetFavoritenlistehoehe', this.Debug.Typen.Page);
+    }
+  }
+
+  AddChangelogClicked() {
+
+    try {
+
+      this.DBChangelog.CurrentChangelog = this.DBChangelog.GetEmptyChangelog();
+      this.ShowChangelogEditor          = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'AddChangelogClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  GetDatum(Zeitstempel: number): string {
+
+    try {
+
+      let Datum: Moment = moment(Zeitstempel);
+
+      return Datum.format('DD.MM.YYYY');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'GetDatum', this.Debug.Typen.Page);
+    }
+  }
+
+  ChangelogClicked(Changelog: Changelogstruktur) {
+
+    try {
+
+      this.DBChangelog.CurrentChangelog = lodash.cloneDeep(Changelog);
+      this.ShowChangelogEditor          = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'ChangelogClicked', this.Debug.Typen.Page);
+    }
+
+  }
+
+  private PrepareDaten() {
+
+    try {
+
+      let Changelog: Changelogstruktur;
+
+      if(this.Pool.Changlogliste.length > 0) {
+
+        Changelog = this.Pool.Changlogliste[0];
+
+        this.Basics.AppVersionName  = Changelog.Version;
+        this.Basics.AppVersionDatum = moment(Changelog.Zeitstempel).format('DD.MM.YYYY');
+
+      } else {
+
+        this.Basics.AppVersionName  = 'none';
+        this.Basics.AppVersionDatum = 'none';
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'PrepareDaten', this.Debug.Typen.Page);
     }
   }
 }

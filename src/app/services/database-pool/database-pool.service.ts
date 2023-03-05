@@ -15,6 +15,8 @@ import {BasicsProvider} from "../basics/basics";
 import {Mitarbeitersettingsstruktur} from "../../dataclasses/mitarbeitersettingsstruktur";
 import {Observable} from "rxjs";
 import {Projektpunktanmerkungstruktur} from "../../dataclasses/projektpunktanmerkungstruktur";
+import {Changelogstruktur} from "../../dataclasses/changelogstruktur";
+import {Bauteilstruktur} from "../../dataclasses/bauteilstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +37,7 @@ export class DatabasePoolService {
   public CurrentProgressValue: number;
   public ProgressMessage: string;
   private UseServerOnline: boolean;
+  public Changlogliste: Changelogstruktur[];
 
   public StandortelisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public MitarbeiterlisteChanged: EventEmitter<any> = new EventEmitter<any>();
@@ -47,6 +50,7 @@ export class DatabasePoolService {
   public ProtokolllisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public ProtokollprojektpunktChanged: EventEmitter<any> = new EventEmitter<any>();
   public ProjektpunktChanged: EventEmitter<any> = new EventEmitter<any>();
+  public ChangeloglisteChanged: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private Debug: DebugProvider,
               private Const: ConstProvider,
@@ -68,7 +72,8 @@ export class DatabasePoolService {
       this.Projektpunkteliste       = [];
       this.Projektpunkteliste       = [];
       this.Protokollliste           = [];
-      this.UseServerOnline          = true;
+      this.UseServerOnline          = false;
+      this.Changlogliste            = [];
       this.CockpitserverURL         = this.UseServerOnline ? 'https://bib-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
 
       // Test
@@ -211,8 +216,6 @@ export class DatabasePoolService {
         'authorization': this.AuthService.GetAuthenticationToken()
       });
 
-      debugger;
-
       return new Promise((resolve, reject) => {
 
         let MitarbeiterObservable = this.Http.get(this.CockpitserverURL + '/mitarbeiter', { headers: headers } );
@@ -248,6 +251,58 @@ export class DatabasePoolService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadMitarbeiterliste', this.Debug.Typen.Service);
+    }
+  }
+
+  public ReadChangelogliste(): Promise<any> {
+
+    try {
+
+      this.Changlogliste = [];
+
+      let headers: HttpHeaders = new HttpHeaders({
+
+        'content-type': 'application/json',
+        'authorization': this.AuthService.GetAuthenticationToken()
+      });
+
+      return new Promise((resolve, reject) => {
+
+        let ChangelogObservable = this.Http.get(this.CockpitserverURL + '/changelog', { headers: headers } );
+
+        ChangelogObservable.subscribe({
+
+          next: (data) => {
+
+            this.Changlogliste = <Changelogstruktur[]>data;
+
+          },
+          complete: () => {
+
+            this.Changlogliste.sort((a: Changelogstruktur, b: Changelogstruktur) => {
+
+              if (a.Zeitstempel > b.Zeitstempel) return -1;
+              if (a.Zeitstempel < b.Zeitstempel) return 1;
+              return 0;
+            });
+
+            this.ChangeloglisteChanged.emit();
+
+            resolve(true);
+
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadChangelogliste', this.Debug.Typen.Service);
     }
   }
 
@@ -477,6 +532,7 @@ export class DatabasePoolService {
         await this.ReadMitarbeiterliste();
         await this.ReadSettingsliste();
         await this.ReadGesamtprojektliste();
+        await this.ReadChangelogliste();
 
       }
       catch(error: any) {

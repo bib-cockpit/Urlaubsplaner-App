@@ -69,49 +69,35 @@
 </ion-header>
 <ion-content>
 
-  <ng-container *ngIf="AuthService.IsAuthenticated === false">
-
-    <ion-grid>
-      <ion-row>
-        <ion-col size="12">
-          <div style="height: 100px"></div>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <table style="width: 100%;">
-            <tr>
-              <td align="center">
-                <ion-icon name="airplane-outline" [color]="Basics.Ionicfarben.BurnicklGrau" style="font-size: 220px"></ion-icon>
-              </td>
-            </tr>
-            <tr>
-              <td style="text-align: center;">
-                <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 40px">BIB Cockpit</ion-text>
-              </td>
-            </tr>
-            <tr>
-              <td style="text-align: center; font-size: 90%; color: gray">
-                Version: {{Basics.AppVersionName}} / {{Basics.AppVersionDatum}}
-              </td>
-            </tr>
-            <tr>
-              <td style="text-align: center; vertical-align: center; height: 100px">
-                <ion-button [color]="Basics.Ionicfarben.BurnicklGruen" (click)="AuthService.Login()">Login</ion-button>
-              </td>
-            </tr>
-          </table>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-
-    <abstand-element-fixed></abstand-element-fixed>
-
-
-  </ng-container>
-
 
   <ng-container *ngIf="AuthService.IsAuthenticated === true">
+
+    <div class="changelogdiv">
+
+      <table class="paddingtable" style="font-size: 80%">
+        <tr>
+          <td colspan="3" style="font-size: 140%; font-weight: bold; color: #7b6a58">Change Log</td>
+        </tr>
+        <tr style="font-weight: bold; color: #7b6a58">
+          <td>Datum</td>
+          <td>Version</td>
+          <td>Beschreibung</td>
+        </tr>
+        <tr *ngFor="let Changelog of Pool.Changlogliste" style="color: #444444;">
+          <td><div style="width: 100%; cursor: pointer" (click)="ChangelogClicked(Changelog)">{{GetDatum(Changelog.Zeitstempel)}}</div></td>
+          <td><div style="width: 100%; cursor: pointer" (click)="ChangelogClicked(Changelog)">{{Changelog.Version}}</div> </td>
+          <td><div style="width: 100%; cursor: pointer" (click)="ChangelogClicked(Changelog)">{{Changelog.Beschreibung}}</div></td>
+        </tr>
+      </table>
+
+      <ion-button size="small" [color]="'burnicklbraun'"
+                  (click)="AddChangelogClicked()">
+        <ion-icon style="font-size: 90%" name="add-circle-outline" color="weiss" slot="start"></ion-icon>
+        <ion-text color="weiss" style="font-size: 80%">Neuer Eintrag</ion-text>
+      </ion-button>
+
+    </div>
+
     <div style="width: 100%; height: 100%; background: #354547">
       <div style="position: absolute; width: 100%; height: 100%; z-index: 1;">
 
@@ -384,3 +370,9 @@
 
 </page-footer>
 </ion-footer>
+
+<fi-changelog-editor *ngIf="ShowChangelogEditor"
+                     (OkClickedEvent)="ShowChangelogEditor = false"
+                     (CancelClickedEvent)="ShowChangelogEditor = false"
+                     (DeleteClickedEvent)="ShowChangelogEditor = false">
+</fi-changelog-editor>

@@ -7,6 +7,7 @@ import { CommonHomePage } from './common-home.page';
 import {PageHeaderModule} from "../../components/page-header/page-header.module";
 import {AbstandElementFixedModule} from "../../components/abstand-element-fixed/abstand-element-fixed.module";
 import {PageFooterModule} from "../../components/page-footer/page-footer.module";
+import {FiChangelogEditorModule} from "../../components-page/fi-changelog-editor/fi-changelog-editor.module";
 
 const routes: Routes = [
   {
@@ -16,16 +17,17 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RouterModule.forChild(routes),
-    PageHeaderModule,
-    AbstandElementFixedModule,
-    ReactiveFormsModule,
-    PageFooterModule,
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        RouterModule.forChild(routes),
+        PageHeaderModule,
+        AbstandElementFixedModule,
+        ReactiveFormsModule,
+        PageFooterModule,
+        FiChangelogEditorModule,
+    ],
   declarations: [CommonHomePage]
 })
 export class CommonHomePageModule {}

@@ -31,6 +31,22 @@
   background: white;
 }
 
+.changelogdiv {
+
+  border: 2px solid gray;
+  border-radius: 10px;
+  width: 400px;
+  height: 400px;
+  position: absolute;
+  position: absolute;
+  padding: 8px;
+  left: 20px;
+  top: 220px;
+  background: white;
+  z-index: 1000;
+  overflow: auto;
+}
+
 .buttonbigclass {
 
   display: flex;
