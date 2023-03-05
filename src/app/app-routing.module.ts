@@ -60,7 +60,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'TestPage',
+    redirectTo: 'HomePage',
     pathMatch:  'full'
   },
   {

@@ -186,7 +186,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
           this.Debug.ShowErrorMessage('Lesen in der Mitarbeiter Datenbank fehlgeschlagen', 'App Component', 'StartApp', this.Debug.Typen.Component);
 
-          this.Tools.SetRootPage(this.Const.Pages.TestPage);
+
+          this.Tools.SetRootPage(this.Const.Pages.HomePage);
         }
         else {
 
