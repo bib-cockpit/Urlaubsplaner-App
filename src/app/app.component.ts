@@ -121,6 +121,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
       } else {
 
+        debugger;
+
         this.StartApp();
       }
 
@@ -173,6 +175,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
         let token = await this.StorageService.GetSecurityToken();
 
         this.AuthService.SecurityToken = token;
+
+        debugger;
 
         let result = await this.MitarbeiterDB.GetMitarbeiterRegistrierung(this.AuthService.ActiveUser.username);
 
@@ -238,11 +242,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
               this.ProjekteDB.InitGesamtprojekteliste();
               this.ProjekteDB.InitProjektfavoritenliste();
 
+
+
               await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);
 
               this.ProjekteDB.InitMenuProjektauswahl();
 
               this.Menuservice.SetCurrentPage();
+
+
             }
 
             this.Pool.LoadingAllDataFinished.emit();

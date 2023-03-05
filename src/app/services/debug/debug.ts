@@ -44,13 +44,12 @@ export class DebugProvider {
   {
     try {
 
-      console.log('---------------------------------------------------------------------------');
+      console.log('----------------- ERROR -----------------------');
       console.log('File:     ' + script);
       console.log('Function: ' + funktion);
       console.log('Typ:      ' + typ);
       console.log('Error:');
       console.log(message);
-      console.log('---------------------------------------------------------------------------');
 
       this.Debugmessageliste.push({
 
@@ -59,36 +58,6 @@ export class DebugProvider {
         Function: funktion,
         Color: 'red'
       });
-
-      if(this.Basics.ShowFehlerbericht) {
-
-        this.Fehlerservice.Fehlermeldung.push({
-          Callingfunction: "",
-          Callingscript: "",
-          Commonscript: "",
-          Errorcode: 0,
-          Errormessage: "",
-          Sql: [],
-          Stack: "",
-          Script: script,
-          Error: message,
-          Funktion: funktion,
-          Scripttype: typ,
-          Type : this.Const.Fehlermeldungtypen.Script
-        });
-
-        /*
-
-        this.NavParameter.Fehlermeldung.Script = ;
-        this.NavParameter.Fehlermeldung.Error = error;
-        this.NavParameter.Fehlermeldung.Funktion = funktion;
-        this.NavParameter.Fehlermeldung.Scripttype = typ;
-        this.NavParameter.Fehlermeldung.Type = this.Constclass.Fehlermeldungtypen.Script;
-
-         */
-
-      }
-
     }
     catch (error2) {
 
@@ -107,13 +76,12 @@ export class DebugProvider {
         stack: ''
       };
 
-      console.log('---------------------------------------------------------------------------');
+      console.log('----------------- INFO -----------------------');
       console.log('File:     ' + script);
       console.log('Function: ' + funktion);
       console.log('Typ:      ' + typ);
       console.log('Message:');
       console.log(message);
-      console.log('---------------------------------------------------------------------------');
 
       this.Debugmessageliste.push({
 
