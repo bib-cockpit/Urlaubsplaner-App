@@ -61,13 +61,10 @@ const routes: Routes = [
     redirectTo: 'HomePage',
     pathMatch:  'full'
   },
-  /*
-
   {
-    path: 'auth',
-    component: MsalRedirectComponent
+    path: '**',
+    redirectTo: 'HomePage',
   },
-   */
   {
     path: 'PjAufgabenlistePage',
     loadChildren: () => import('./pages/pj-aufgaben-liste/pj-aufgaben-liste.module').then(m => m.PjAufgabenListePageModule)

@@ -18,7 +18,7 @@ export class BasicsProvider {
   public Waittime: number             = 300;
   public Svgpath: string              = 'assets/svgs/';
   public AppVersionName: string       = '1.01';
-  public AppVersionDatum: string      = '23.03.2023 06:40';
+  public AppVersionDatum: string      = '23.03.2023 06:48';
 
 
   public Farben = {
