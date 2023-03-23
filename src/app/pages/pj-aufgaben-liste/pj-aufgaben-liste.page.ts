@@ -77,6 +77,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   private MitarbeiterSubscription: Subscription;
   public Datenursprung: string;
   public ShowFavoritenauswahl: boolean;
+  public ShowSchnellAufgabeprojektauswahl: boolean;
   public ShowMeinewocheEditor: boolean;
   public Listenhoehe: number;
   private Minutenhoehe: number;
@@ -85,6 +86,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   public Heute: Moment;
   public Restarbeitszahl: number;
   public ProtokollSubscription: Subscription;
+
 
   constructor(public Displayservice: DisplayService,
               public Basics: BasicsProvider,
@@ -138,6 +140,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.Tagbreite                = 0;
       this.Headerhoehe              = 0;
       this.ShowDateKkPicker         = false;
+      this.ShowSchnellAufgabeprojektauswahl = true;
       this.Heute                    = moment().set({date: 6, month: 1, year: 2023, hour: 7, minute: 0, second: 0  }).locale('de'); // Month ist Zero based
 
     } catch (error) {
@@ -1543,6 +1546,19 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'ProtokollmarkeClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  SchnellaufgabeButtonClicked() {
+
+    try {
+
+      this.Auswahlhoehe = 0;
+      this.ShowSchnellAufgabeprojektauswahl = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'SchnellaufgabeButtonClicked', this.Debug.Typen.Page);
     }
   }
 }

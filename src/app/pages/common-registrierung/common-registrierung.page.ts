@@ -273,6 +273,8 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
 
       this.DB.RegisterMitarbeiter().then((result: any) => {
 
+        /*
+
         this.Pool.Mitarbeiterdaten     = result.Mitarbeiter;
         this.AuthService.SecurityToken = result.Token;
 
@@ -287,6 +289,8 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
             this.Tools.ShowHinweisDialog('Pool.Init: ' + error.message);
           });
         });
+
+         */
       });
 
     } catch (error) {

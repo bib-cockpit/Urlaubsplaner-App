@@ -24,6 +24,7 @@ export class DisplayService {
     Bauteileditor:      'Bauteileditor',
     Geschosseditor:     'Geschosseditor',
     Raumeditor:         'Raumeditor',
+    AufgabeProjektauswahl: 'AufgabeProjektauswahl',
     Projektpunteditor:  'Projektpunteditor',
     Beteiligteauswahl:  'Beteiligteauswahl',
     Protokolleditor:      'Protokolleditor',

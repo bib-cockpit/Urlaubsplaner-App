@@ -1,5 +1,5 @@
 
-<ng-container *ngIf="AuthService.IsAuthenticated">
+<ng-container *ngIf="AuthService.IsLoggedIn()">
   <table style="width: 100%">
     <tr>
       <td style="width: 100%">
@@ -349,7 +349,7 @@
 
 
     <!--
-    <tr *ngIf="AuthService.IsAuthenticated === true">
+    <tr *ngIf="AuthService.LoggedIn() === true">
       <td colspan="20" style="padding: 2px">{{AuthService.ActiveUsername}} </td>
     </tr>
     -->

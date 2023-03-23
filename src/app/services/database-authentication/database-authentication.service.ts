@@ -1,35 +1,67 @@
-import {EventEmitter, Injectable} from '@angular/core';
+import {EventEmitter, Inject, Injectable} from '@angular/core';
 import {DebugProvider} from "../debug/debug";
-import {MsalService} from "@azure/msal-angular";
-import {AccountInfo} from "@azure/msal-browser";
+import {MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService} from "@azure/msal-angular";
+import {
+  AccountInfo,
+  AuthenticationResult,
+  InteractionType,
+  PopupRequest,
+  PublicClientApplication, RedirectRequest
+} from "@azure/msal-browser";
 import {ConstProvider} from "../const/const";
 import {LocalstorageService} from "../localstorage/localstorage";
 import {environment} from "../../../environments/environment";
+import {Route, Router} from "@angular/router";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Graphuserstruktur} from "../../dataclasses/graphuserstruktur";
+import {catchError, map, Observable, of} from "rxjs";
+import {DomSanitizer} from "@angular/platform-browser";
+import Cookies from "js-cookie";
+
+const GRAPH_ENDPOINT          = 'https://graph.microsoft.com/v1.0/me';
+const GRAPH_ENDPOINT_PHOTO    = 'https://graph.microsoft.com/v1.0/me/photo/$value';
+const GRAPH_ENDPOINT_CALENDAR = 'https://graph.microsoft.com/v1.0/me/calendar';
+
+const Keys = {
+
+  AccessToken: 'AccessToken',
+};
 
 @Injectable({
   providedIn: 'root'
 })
 export class DatabaseAuthenticationService {
 
-  public AuthenticationChanged: EventEmitter<any> = new EventEmitter<any>();
-  public IsAuthenticated: boolean;
+  public LoginSuccessEvent: EventEmitter<any> = new EventEmitter<any>();
   public ActiveUsername: string;
   public ActiveUser: AccountInfo;
-  public SecurityToken: string;
+  public AccessToken: string;
   public SecurityEnabled: boolean;
   private DevelopmentUser: AccountInfo;
+  public ShowLogin: boolean;
+  public Graphuser: Graphuserstruktur;
+  public UserimageSRC: any;
 
-  constructor(private Debug: DebugProvider,
+  constructor(
+              @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
+              private Debug: DebugProvider,
+              private authService: MsalService,
               private Const: ConstProvider,
+              private http: HttpClient,
               private StorgeService: LocalstorageService,
+              private router: Router,
+              private domSanitizer: DomSanitizer,
+              private Storage: LocalstorageService,
               private MSALService: MsalService
   ) {
     try {
 
-      this.SecurityEnabled = false;
-      this.SecurityToken   = this.Const.NONE;
-      this.IsAuthenticated = !this.SecurityEnabled; // Unbedingt auf false setzen
+      this.SecurityEnabled = true;
+      this.AccessToken     = this.Const.NONE;
       this.ActiveUser      = null;
+      this.ShowLogin       = false;
+      this.Graphuser       = null;
+      this.UserimageSRC    = null;
 
       this.DevelopmentUser = {
 
@@ -40,131 +72,342 @@ export class DatabaseAuthenticationService {
         username: "p.hornburger@burnickl.com",
         name:     "Peter Hornburger"
       };
-
-      if(!this.SecurityEnabled) this.ActiveUser = this.DevelopmentUser;
-
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'constructor', this.Debug.Typen.Service);
     }
   }
 
-  public HasActiveAccount(): boolean {
+  public async SetActiveUser(): Promise<any> {
+
+    try {
+
+      let Account;
+
+      return new  Promise((resolve, reject) => {
+
+        if(this.SecurityEnabled) {
+
+          Account = this.MSALService.instance.getActiveAccount();
+
+          if(Account !== null) {
+
+            this.LoadAccessToken().then((token) => {
+
+              if(token !== this.Const.NONE) {
+
+                this.ActiveUser  = Account;
+                this.AccessToken = token;
+              }
+              else {
+
+                this.ActiveUser  = null;
+                this.AccessToken = null;
+              }
+
+              resolve(true);
+            });
+          }
+          else
+          {
+            this.ActiveUser  = null;
+            this.AccessToken = null;
+
+            resolve(true);
+          }
+        }
+        else {
+
+          this.ActiveUser  = this.DevelopmentUser;
+          this.AccessToken = null;
+
+          resolve(true);
+        }
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'SetActiveUser', this.Debug.Typen.Service);
+    }
+  }
+
+  public SetShowLoginStatus() {
+
+    try {
+
+      let message: string;
+      let acountliste: any[] = this.MSALService.instance.getAllAccounts();
+
+      if(acountliste.length === 0) {
+
+        this.ShowLogin   = true;
+        this.ActiveUser  = null;
+        this.AccessToken = null;
+      }
+
+      if(this.SecurityEnabled === false) this.ShowLogin = false;
+
+      message = this.ShowLogin === true ? 'Anmeldung anzeigen' : 'Hauptmenu anzeigen';
+
+      this.Debug.ShowMessage(message, 'Database Authentication', 'SetShowLogin', this.Debug.Typen.Service );
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'SetShowLoginStatus', this.Debug.Typen.Service );
+    }
+  }
+
+  Login() {
 
     try {
 
       if(this.SecurityEnabled) {
 
-        return this.MSALService.instance.getActiveAccount() !== null;
+        if (this.msalGuardConfig.interactionType === InteractionType.Popup) {
+          if (this.msalGuardConfig.authRequest) {
+            this.authService.loginPopup({ ...this.msalGuardConfig.authRequest } as PopupRequest)
+              .subscribe((response: AuthenticationResult) => {
+                this.authService.instance.setActiveAccount(response.account);
+              });
+          } else {
+            this.authService.loginPopup()
+              .subscribe((response: AuthenticationResult) => {
+
+                this.SaveAccessToken(response.accessToken);
+                this.authService.instance.setActiveAccount(response.account);
+              });
+          }
+        } else {
+          if (this.msalGuardConfig.authRequest) {
+            this.authService.loginRedirect({ ...this.msalGuardConfig.authRequest } as RedirectRequest);
+          } else {
+            this.authService.loginRedirect();
+          }
+        }
       }
-      else {
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'file', 'Login', this.Debug.Typen.Service);
+    }
+  }
+
+  public Logout() {
+
+    try {
+
+      if (this.msalGuardConfig.interactionType === InteractionType.Popup) {
+        this.authService.logoutPopup({
+          postLogoutRedirectUri: "/",
+          mainWindowRedirectUri: "/"
+        });
+      } else {
+        this.authService.logoutRedirect({
+          postLogoutRedirectUri: "/",
+        });
+
+      }
+
+      this.ActiveUser = null;
+      this.Graphuser  = null;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'Logout', this.Debug.Typen.Service);
+    }
+  }
+
+  canLoad(route: Route): boolean {
+
+    try {
+
+      if (this.CheckSecurity() === true) {
+
+        this.Debug.ShowMessage('Database Authentication -> can load: ' + route.path, 'Security', 'canLoad', this.Debug.Typen.Service);
 
         return true;
       }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'HasActiveAccount', this.Debug.Typen.Service);
-    }
-  }
-
-  public GetAuthenticationToken(): string {
-
-    try {
-
-      if(this.SecurityToken !== this.Const.NONE) return this.SecurityToken;
       else {
 
-        return environment.SecurityToken; // Einen Hilfstoken zur Verfügung stellen in Configfile.gespeichert.
+        this.Debug.ShowMessage('Database Authentication -> can not load: ' + route.path, 'Security', 'canLoad', this.Debug.Typen.Service);
+
+        this.router.navigate([this.Const.Pages.LoginPage]);
+
+        return false;
       }
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'GetAuthenticationToken', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'canLoad', this.Debug.Typen.Service);
     }
   }
 
-  public SetAuthenticationStatus(): void {
-
-    try {
-
-      // debugger;
-
-      let activeAccount: AccountInfo;
-
-      if(this.SecurityEnabled) {
-
-        activeAccount = this.MSALService.instance.getActiveAccount();
-
-        if(activeAccount === null && this.MSALService.instance.getAllAccounts().length > 0) {
-
-          activeAccount = this.MSALService.instance.getAllAccounts()[0];
-
-          this.MSALService.instance.setActiveAccount(activeAccount);
-        }
-
-        this.IsAuthenticated = activeAccount !== null ? true : false; // Im Construktor auf false setzren
-        this.ActiveUsername  = activeAccount !== null ? activeAccount.username : this.Const.NONE;
-        this.ActiveUser      = activeAccount;
-      }
-      else {
-
-        this.IsAuthenticated = true;
-        this.ActiveUser      = this.DevelopmentUser;
-        this.ActiveUsername  = this.ActiveUser.username;
-      }
-
-
-      this.AuthenticationChanged.emit();
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'SetAuthenticationStatus', this.Debug.Typen.Service);
-    }
-  }
-
-  public Login() {
-
-    try {
-
-      this.MSALService.instance.loginRedirect({
-
-        scopes: ["User.Read"]
-      });
-
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'Login', this.Debug.Typen.Service);
-    }
-  }
-
-  public Logout(): Promise<any> {
+  public GetUserinfo(): Promise<any> {
 
     try {
 
       return new Promise((resolve, reject) => {
 
-        this.StorgeService.RemoveSecurityToken().then(() => {
+        this.http.get(GRAPH_ENDPOINT).subscribe(profile => {
 
-          this.MSALService.instance.logoutRedirect().then(() => {
+            this.Graphuser = <Graphuserstruktur>profile;
 
             resolve(true);
-
-          }).catch((error: any) => {
-
-            reject(error);
           });
-
-        }).catch((error: any) => {
-
-          reject(error);
-        });
       });
+
+
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'Logout', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'GetUserinfo', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetUserimage(): Promise<any> {
+
+    try {
+
+      return new Promise((resolve, reject) => {
+
+
+        this.http.get(GRAPH_ENDPOINT_PHOTO, {
+            headers: {
+              'Authorization': `Bearer ${this.AccessToken}`,
+              'Content-Type': 'image/jpeg'
+            },
+            responseType: 'blob'
+
+          }).pipe(catchError(err => {
+
+            if(err) {
+
+              this.UserimageSRC = null;
+
+              reject();
+
+              return null;
+            }
+          })).subscribe((ergo: any) => {
+
+             this.UserimageSRC = this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(ergo));
+
+             resolve(true);
+          });
+      });
+
+    } catch (error) {
+
+      debugger;
+
+      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'GetUserinfo', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetUsercalendar(): Promise<any> {
+
+    try {
+
+      return new Promise((resolve, reject) => {
+
+
+        this.http.get(GRAPH_ENDPOINT_CALENDAR, {
+          headers: {
+            'Authorization': `Bearer ${this.AccessToken}`,
+            'Content-Type': 'application/json'
+          },
+
+        }).pipe(catchError(err => {
+
+          if(err) {
+
+            reject();
+
+            return null;
+          }
+        })).subscribe((ergo: any) => {
+
+          resolve(true);
+        });
+      });
+
+    } catch (error) {
+
+      debugger;
+
+      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'GetUserinfo', this.Debug.Typen.Service);
+    }
+  }
+
+  public CheckSecurity(): boolean {
+
+    try {
+
+      return true; //  this.AuthenticationDB.HasActiveAccount();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'CheckSecurity', this.Debug.Typen.Service);
+    }
+  }
+
+  private LoadAccessToken(): Promise<string> {
+
+    try {
+
+      return new Promise<string>((resolve, reject) => {
+
+        let Wert = Cookies.get(Keys.AccessToken);
+
+        console.log('Load Access Token: ' + Wert);
+
+        if(typeof Wert === 'undefined') {
+
+          resolve(this.Const.NONE);
+        }
+        else {
+
+          resolve(Wert);
+        }
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'LoadAccessToken', this.Debug.Typen.Service);
+    }
+  }
+
+  public SaveAccessToken(token: string): Promise<boolean> {
+
+    try {
+
+      return new Promise((resolve) => {
+
+        console.log('Save Access Token: ' + token);
+
+        Cookies.set(Keys.AccessToken, token);
+
+        resolve(true);
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'SaveAccessToken', this.Debug.Typen.Service);
+    }
+  }
+
+  public DeleteAccessToken(): Promise<boolean> {
+
+    try {
+
+      return new Promise((resolve, reject) => {
+
+        Cookies.remove(Keys.AccessToken);
+
+        resolve(true);
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'DeleteAccessToken', this.Debug.Typen.Service);
     }
   }
 }

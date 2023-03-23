@@ -7,7 +7,7 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-button (click)="ClearSecurityToken()">Security Token löschen</ion-button>
+        <ion-button (click)="ClearAccessToken()">Security Token löschen</ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -22,13 +22,13 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <b>Security Token:</b>
+        <b>Access Token:</b>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
         {{AuthService.ActiveUsername}}<br><br>
-        {{AuthService.SecurityToken}}
+        {{AuthService.AccessToken}}
       </ion-col>
     </ion-row>
     <ion-row>

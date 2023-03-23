@@ -1,7 +1,7 @@
 <ion-header>
   <page-header #PageHeader>
 
-    <ng-container *ngIf="AuthService.IsAuthenticated">
+    <ng-container *ngIf="AuthService.ShowLogin === false">
       <table>
         <tr>
           <td style="width: 10px"></td>
@@ -12,6 +12,13 @@
                  (click)="LogoutButtonClicked()">
               <table class="paddingsmalltable">
                 <tr>
+                  <ng-container *ngIf="AuthService.ShowLogin === false && AuthService.UserimageSRC !== null">
+                    <td style="padding-top: 4px">
+                      <img class="userimagesmall" [src]="AuthService.UserimageSRC">
+                    </td>
+                    <td style="width: 4px"></td>
+                  </ng-container>
+
                   <td>
                     <ion-icon name="log-out-outline"
                               [color]="LogoutMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
@@ -70,7 +77,34 @@
 <ion-content>
 
 
-  <ng-container *ngIf="AuthService.IsAuthenticated === true">
+  <ng-container *ngIf="AuthService.ShowLogin === false">
+
+    <div *ngIf="AuthService.Graphuser !== null;" class="graphuserdiv">
+
+      <table class="paddingtable" style="font-size: 80%">
+        <tr>
+          <td colspan="3" style="font-size: 140%; font-weight: bold; color: #7b6a58">User Info</td>
+        </tr>
+        <tr>
+          <td style="font-weight: bold; color: #7b6a58">Name</td><td style="color: #444444;">{{AuthService.Graphuser.displayName}}</td>
+        </tr><tr>
+          <td style="font-weight: bold; color: #7b6a58">Email</td><td style="color: #444444;">{{AuthService.Graphuser.mail}}</td>
+        </tr><tr>
+          <td style="font-weight: bold; color: #7b6a58">Job</td><td style="color: #444444;">{{AuthService.Graphuser.jobTitle}}</td>
+        </tr><tr>
+          <td style="font-weight: bold; color: #7b6a58">Büro</td><td style="color: #444444;">{{AuthService.Graphuser.officeLocation}}</td>
+        </tr>
+        <tr *ngIf="AuthService.UserimageSRC !== null">
+          <td style="font-weight: bold; color: #7b6a58">Image</td><td><img class="userimage" [src]="AuthService.UserimageSRC"></td>
+        </tr>
+        <!--
+        <tr>
+          <td style="font-weight: bold; color: #7b6a58">Token</td><td style="color: #444444;">{{AuthService.AccessToken}}</td>
+        </tr>
+        -->
+      </table>
+
+    </div>
 
     <div class="changelogdiv">
 
@@ -209,7 +243,7 @@
                                     </td>
                                     <td style="width: 4px"></td>
                                     <td style="text-align: center;">
-                                      <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">Projekte</ion-text>
+                                      <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">{{Pool.Gesamtprojektliste.length !== 1 ? 'Projekte' : 'Projekt'}}</ion-text>
                                     </td>
                                   </tr>
                                 </table>
@@ -236,7 +270,19 @@
                             </tr>
                             <tr>
                               <td style="text-align: center;">
-                                <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">Favoriten</ion-text>
+
+                                <table *ngIf="Pool.Mitarbeiterdaten !== null">
+                                  <tr>
+                                    <td style="font-size: 22px; font-weight: bold; color: #c7d304">
+                                      {{Pool.Mitarbeiterdaten.Favoritenliste.length}}
+                                    </td>
+                                    <td style="width: 4px"></td>
+                                    <td style="text-align: center;">
+                                      <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">{{Pool.Mitarbeiterdaten.Favoritenliste.length === 1 ? 'Favorit' : 'Favoriten'}}</ion-text>
+                                    </td>
+                                  </tr>
+                                </table>
+
                               </td>
                             </tr>
                           </table>
@@ -362,14 +408,56 @@
 
 
   </ng-container>
+  <ng-container *ngIf="AuthService.ShowLogin === true">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <div style="height: 100px"></div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <table style="width: 100%;">
+            <tr>
+              <td align="center">
+                <ion-icon name="airplane-outline" [color]="Basics.Ionicfarben.BurnicklGrau" style="font-size: 220px"></ion-icon>
+              </td>
+            </tr>
+            <tr>
+              <td style="text-align: center;">
+                <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 40px">BIB Cockpit</ion-text>
+              </td>
+            </tr>
+            <tr>
+              <td style="text-align: center; font-size: 90%; color: gray">
+                Version: {{Basics.AppVersionName}} / {{Basics.AppVersionDatum}}
+              </td>
+            </tr>
+            <tr>
+              <td style="text-align: center; vertical-align: center; height: 100px">
+                <ion-button [color]="Basics.Ionicfarben.BurnicklGruen" (click)="AuthService.Login()">Login</ion-button>
+              </td>
+            </tr>
+          </table>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
 
 
 </ion-content>
 <ion-footer>
 <page-footer #PageFooter>
 
+  <ion-button *ngIf="AuthService.ShowLogin === false" (click)="GetUserClicked()">Userinfo</ion-button>
+  <ion-button *ngIf="AuthService.ShowLogin === false" (click)="GetUserimageClicked()">Userimage</ion-button>
+  <ion-button *ngIf="AuthService.ShowLogin === false" (click)="GetUsercalendarClicked()">Kalender</ion-button>
+  <ion-button *ngIf="AuthService.ShowLogin === false" (click)="TestServerClicked()">Test Server</ion-button>
+  <ion-button *ngIf="AuthService.ShowLogin === false" (click)="LoggoutClicked()">Logout</ion-button>
+
 </page-footer>
 </ion-footer>
+
 
 <fi-changelog-editor *ngIf="ShowChangelogEditor"
                      (OkClickedEvent)="ShowChangelogEditor = false"

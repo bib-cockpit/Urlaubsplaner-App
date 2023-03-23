@@ -20,6 +20,9 @@ import {PjFavoritenAuswahlModule} from "../../components-page/pj-favoriten-auswa
 import {PjMeinewocheEditorModule} from "../../components-page/pj-meinewoche-editor/pj-meinewoche-editor.module";
 import {PjProjektpunktStatusdatePickerModule} from "../../components-page/pj-projektpunkt-statusdate-picker/pj-projektpunkt-statusdate-picker.module";
 import {PjProjektpunktDateKwPickerModule} from "../../components-page/pj-projektpunkt-date-kw-picker/pj-projektpunkt-date-kw-picker.module";
+import {
+  PjAufgabenProjektauswahlModule
+} from "../../components-page/pj-aufgaben-projektauswahl/pj-aufgaben-projektauswahl.module";
 
 const routes: Routes = [
   {
@@ -29,31 +32,32 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        IonicModule,
-        PageHeaderModule,
-        RouterModule.forChild(routes),
-        PageHeaderMenuModule,
-        PageFooterModule,
-        AuswahlDialogModule,
-        FiMitarbeiterAuswahlModule,
-        PjBeteiligtenAuswahlModule,
-        PjProtokollEditorModule,
-        PjProjektpunktEditorModule,
-        PjKostengruppenAuswahlModule,
-        PjGebaeudeRaumauswahlModule,
-        PjProtokollListefilterModule,
-        PjProjektpunktelisteModule,
-        PjProjektpunktStatusdatePickerModule,
-        PjAufgabenListefilterModule,
-        PjFavoritenAuswahlModule,
-        PjMeinewocheEditorModule,
-        PjProjektpunktStatusdatePickerModule,
-        PjProjektpunktDateKwPickerModule,
+  imports: [
+    CommonModule,
+    IonicModule,
+    PageHeaderModule,
+    RouterModule.forChild(routes),
+    PageHeaderMenuModule,
+    PageFooterModule,
+    AuswahlDialogModule,
+    FiMitarbeiterAuswahlModule,
+    PjBeteiligtenAuswahlModule,
+    PjProtokollEditorModule,
+    PjProjektpunktEditorModule,
+    PjKostengruppenAuswahlModule,
+    PjGebaeudeRaumauswahlModule,
+    PjProtokollListefilterModule,
+    PjProjektpunktelisteModule,
+    PjProjektpunktStatusdatePickerModule,
+    PjAufgabenListefilterModule,
+    PjFavoritenAuswahlModule,
+    PjMeinewocheEditorModule,
+    PjProjektpunktStatusdatePickerModule,
+    PjProjektpunktDateKwPickerModule,
+    PjAufgabenProjektauswahlModule,
 
 
-    ],
+  ],
   declarations: [PjAufgabenListePage],
   exports: [
     PjAufgabenListePage

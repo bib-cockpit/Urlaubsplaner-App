@@ -45,11 +45,8 @@ export class DebugProvider {
     try {
 
       console.log('----------------- ERROR -----------------------');
-      console.log('File:     ' + script);
-      console.log('Function: ' + funktion);
-      console.log('Typ:      ' + typ);
-      console.log('Error:');
       console.log(message);
+      console.log('File: ' + script + ' | Function: ' + funktion + ' | Typ: ' + typ);
 
       this.Debugmessageliste.push({
 
@@ -77,11 +74,8 @@ export class DebugProvider {
       };
 
       console.log('----------------- INFO -----------------------');
-      console.log('File:     ' + script);
-      console.log('Function: ' + funktion);
-      console.log('Typ:      ' + typ);
-      console.log('Message:');
       console.log(message);
+      console.log('File: ' + script + ' | Function: ' + funktion + ' | Typ: ' + typ);
 
       this.Debugmessageliste.push({
 

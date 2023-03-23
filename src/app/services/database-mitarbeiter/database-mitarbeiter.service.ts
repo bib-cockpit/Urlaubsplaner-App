@@ -367,7 +367,7 @@ export class DatabaseMitarbeiterService {
       let headers: HttpHeaders = new HttpHeaders({
 
         'content-type': 'application/json',
-        'authorization': this.AuthService.GetAuthenticationToken()
+        // 'authorization': this.AuthService.AccessToken
       });
 
       return new Promise((resolve, reject) => {
@@ -408,30 +408,33 @@ export class DatabaseMitarbeiterService {
       let Observer: Observable<any>;
       let Params = new HttpParams({ fromObject: { email: email }} );
       let Daten: any;
-      let Token:string = this.AuthService.GetAuthenticationToken();
-
-      debugger;
-
-      // 'Access-Control-Allow-Origin': '*',
+      // let Token:string = this.AuthService.AccessToken;
 
       let headers: HttpHeaders = new HttpHeaders({
 
+        // 'authorization': Token,
         'content-type': 'application/json',
-        'authorization': Token,
       });
+
 
       return new Promise<any>((resolve, reject) => {
 
         Observer = this.http.get(this.ServerRegistrierungUrl, { params: Params, headers: headers });
 
+        debugger;
+
         Observer.subscribe({
 
           next: (result) => {
+
+            debugger;
 
             Daten = result;
           },
 
           complete: () => {
+
+            debugger;
 
             resolve(Daten);
           },

@@ -35,13 +35,47 @@
 
   border: 2px solid gray;
   border-radius: 10px;
-  width: 400px;
+  width: 360px;
   height: 400px;
   position: absolute;
   position: absolute;
   padding: 8px;
   left: 20px;
-  top: 220px;
+  top: 240px;
+  background: white;
+  z-index: 1000;
+  overflow: auto;
+}
+
+.userimagesmall {
+
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userimage {
+
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.graphuserdiv {
+
+  border: 2px solid gray;
+  border-radius: 10px;
+  width: 360px;
+  height: 200px;
+  position: absolute;
+  position: absolute;
+  padding: 8px;
+  left: 20px;
+  top: 20px;
   background: white;
   z-index: 1000;
   overflow: auto;

@@ -72,7 +72,7 @@ export class DatabasePoolService {
       this.Projektpunkteliste       = [];
       this.Projektpunkteliste       = [];
       this.Protokollliste           = [];
-      this.UseServerOnline          = true;
+      this.UseServerOnline          = false;
       this.Changlogliste            = [];
       this.CockpitserverURL         = this.UseServerOnline ? 'https://bib-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
 
@@ -100,7 +100,7 @@ export class DatabasePoolService {
         Headers = new HttpHeaders({
 
           'content-type': 'application/json',
-          'authorization': this.AuthService.GetAuthenticationToken()
+          // 'authorization': this.AuthService.AccessToken
         });
 
         ProjektpunkteObservable = this.Http.get(this.CockpitserverURL + '/projektpunkte', { headers: Headers, params: Params } );
@@ -165,7 +165,7 @@ export class DatabasePoolService {
         Headers = new HttpHeaders({
 
           'content-type': 'application/json',
-          'authorization': this.AuthService.GetAuthenticationToken()
+          // 'authorization': this.AuthService.AccessToken
         });
 
         ProtokollObservable = this.Http.get(this.CockpitserverURL + '/protokolle', { headers: Headers, params: Params } );
@@ -211,7 +211,7 @@ export class DatabasePoolService {
       let headers: HttpHeaders = new HttpHeaders({
 
         'content-type': 'application/json',
-        'authorization': this.AuthService.GetAuthenticationToken()
+        // 'authorization': this.AuthService.AccessToken
       });
 
       return new Promise((resolve, reject) => {
@@ -252,6 +252,52 @@ export class DatabasePoolService {
     }
   }
 
+  public TestServerconnection(): Promise<any> {
+
+    try {
+
+      this.Changlogliste = [];
+
+      let headers: HttpHeaders = new HttpHeaders({
+
+        'content-type': 'application/json',
+        // 'authorization': `Bearer ${this.AuthService.AccessToken}`
+      });
+
+      return new Promise((resolve, reject) => {
+
+        let TestObservable = this.Http.get(this.CockpitserverURL + '/', { headers: headers } );
+
+        TestObservable.subscribe({
+
+          next: (data) => {
+
+            debugger;
+
+          },
+          complete: () => {
+
+
+            debugger;
+
+            resolve(true);
+
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'TestServerconnection', this.Debug.Typen.Service);
+    }
+  }
+
   public ReadChangelogliste(): Promise<any> {
 
     try {
@@ -261,7 +307,7 @@ export class DatabasePoolService {
       let headers: HttpHeaders = new HttpHeaders({
 
         'content-type': 'application/json',
-        'authorization': this.AuthService.GetAuthenticationToken()
+        // 'authorization': this.AuthService.AccessToken
       });
 
       return new Promise((resolve, reject) => {
@@ -313,7 +359,7 @@ export class DatabasePoolService {
       let headers: HttpHeaders = new HttpHeaders({
 
         'content-type': 'application/json',
-        'authorization': this.AuthService.GetAuthenticationToken()
+        // 'authorization': this.AuthService.AccessToken
       });
 
       return new Promise((resolve, reject) => {
@@ -357,7 +403,7 @@ export class DatabasePoolService {
       let headers: HttpHeaders = new HttpHeaders({
 
         'content-type': 'application/json',
-        'authorization': this.AuthService.GetAuthenticationToken()
+        // 'authorization': this.AuthService.AccessToken
       });
 
       return new Promise((resolve, reject) => {
@@ -400,7 +446,7 @@ export class DatabasePoolService {
       let headers: HttpHeaders = new HttpHeaders({
 
         'content-type': 'application/json',
-        'authorization': this.AuthService.GetAuthenticationToken()
+        // 'authorization': this.AuthService.AccessToken
       });
 
       return new Promise((resolve, reject) => {

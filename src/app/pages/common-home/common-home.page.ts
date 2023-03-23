@@ -13,7 +13,10 @@ import {DatabaseProjekteService} from "../../services/database-projekte/database
 import {DatabaseChangelogService} from "../../services/database-changelog/database-changelog.service";
 import moment, {Moment} from "moment";
 import {Changelogstruktur} from "../../dataclasses/changelogstruktur";
-import {Subscription} from "rxjs";
+import {filter, Subscription} from "rxjs";
+import {MsalBroadcastService, MsalService} from "@azure/msal-angular";
+import {AuthenticationResult, EventMessage, EventType, InteractionStatus} from "@azure/msal-browser";
+import {LocalstorageService} from "../../services/localstorage/localstorage";
 
 
 @Component({
@@ -42,6 +45,9 @@ export class CommonHomePage implements OnInit, OnDestroy {
               public Tools: ToolsProvider,
               public Const: ConstProvider,
               public Pool: DatabasePoolService,
+              private Storage: LocalstorageService,
+              private authService: MsalService,
+              private msalBroadcastService: MsalBroadcastService,
               public DBProjekte: DatabaseProjekteService,
               public DBChangelog: DatabaseChangelogService,
               public AuthService: DatabaseAuthenticationService,
@@ -71,11 +77,26 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     try {
 
-      this.ChangelogSubscription = this.Pool.ChangeloglisteChanged.subscribe(() => {
+      this.msalBroadcastService.msalSubject$
+        .pipe(
+          filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS),
+        )
+        .subscribe((result: EventMessage) => {
 
-        this.PrepareDaten();
-      });
+          const payload = result.payload as AuthenticationResult;
 
+          this.AuthService.SaveAccessToken(payload.accessToken).then(() => {
+
+            this.authService.instance.setActiveAccount(payload.account);
+
+            this.AuthService.ActiveUser  = payload.account;
+            this.AuthService.AccessToken = payload.accessToken;
+
+            this.AuthService.SetShowLoginStatus();
+
+            this.AuthService.LoginSuccessEvent.emit();
+          });
+        });
 
     } catch (error) {
 
@@ -137,8 +158,6 @@ export class CommonHomePage implements OnInit, OnDestroy {
     try {
 
       this.DBProjekte.CurrentFavorit = lodash.find(this.Pool.Mitarbeiterdaten.Favoritenliste, {FavoritenID: event.detail.value});
-
-      debugger;
 
       if(lodash.isUndefined(this.DBProjekte.CurrentFavorit)) this.DBProjekte.CurrentFavorit = null;
 
@@ -245,7 +264,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
     }
   }
 
-  PlayButtonClicked() {
+  public async PlayButtonClicked() {
 
     try {
 
@@ -253,6 +272,10 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
         this.Menuservice.MainMenuebereich     = this.Menuservice.MainMenuebereiche.Projekte;
         this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.LOPListe;
+
+        await this.Pool.ReadProjektdaten(this.DBProjekte.Projektliste);
+
+        this.DBProjekte.InitMenuProjektauswahl();
 
         this.Tools.SetRootPage(this.Const.Pages.PjAufgabenlistePage);
       }
@@ -347,6 +370,67 @@ export class CommonHomePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Home', 'PrepareDaten', this.Debug.Typen.Page);
+    }
+  }
+
+  LoggoutClicked() {
+
+    try {
+
+      this.AuthService.Logout();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'LoggoutClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  GetUserClicked() {
+
+    try {
+
+
+      this.AuthService.GetUserinfo();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'GetUserClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  GetUserimageClicked() {
+
+    try {
+
+      this.AuthService.GetUserimage();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'GetUserimageClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  GetUsercalendarClicked() {
+
+    try {
+
+      this.AuthService.GetUsercalendar();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'GetUsercalendarClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  TestServerClicked() {
+
+    try {
+
+      this.Pool.TestServerconnection();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'TestServerClicked', this.Debug.Typen.Page);
     }
   }
 }

@@ -8,7 +8,7 @@ import Cookies from 'js-cookie';
 
 const Keys = {
 
-  SecutityToken: 'SecurityToken',
+  AccessToken: 'AccessToken',
 };
 
 @Injectable()
@@ -29,83 +29,5 @@ export class LocalstorageService {
     }
   }
 
-  public GetSecurityToken(): Promise<string> {
 
-    try {
-
-      return new Promise<string>((resolve, reject) => {
-
-        let Wert = Cookies.get(Keys.SecutityToken);
-
-        if(typeof Wert === 'undefined') {
-
-          resolve(this.Const.NONE);
-        }
-        else {
-
-          resolve(Wert);
-        }
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LocalstorageService', 'GetSecurityToken', this.Debug.Typen.Service);
-    }
-  }
-
-  public SetSecurityToken(token: string): Promise<boolean> {
-
-    try {
-
-      return new Promise((resolve, reject) => {
-
-        Cookies.set(Keys.SecutityToken, token);
-
-        resolve(true);
-        /*
-        .then(() => {
-
-          resolve(true);
-
-        }).catch((error) => {
-
-          reject(error);
-        });
-
-         */
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LocalstorageService', 'SetSecurityToken', this.Debug.Typen.Service);
-    }
-  }
-
-  public RemoveSecurityToken(): Promise<boolean> {
-
-    try {
-
-      return new Promise((resolve, reject) => {
-
-        Cookies.remove(Keys.SecutityToken);
-
-        resolve(true);
-        /*
-        this.MyStorage.remove(Keys.SecutityToken).then(() => {
-
-          resolve(true);
-
-        }).catch((error) => {
-
-          reject(error);
-        });
-
-         */
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LocalstorageService', 'ClearSecurityToken', this.Debug.Typen.Service);
-    }
-  }
 }

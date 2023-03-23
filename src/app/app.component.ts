@@ -26,7 +26,9 @@ import * as lodash from "lodash-es";
 export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
   private AuthSubscription: Subscription;
-  private unsubscribe = new Subject<void>();
+  // private unsubscribe = new Subject<void>();
+  private isIframe: boolean;
+  private readonly Destroying = new Subject<void>();
 
   constructor(private platform: Platform,
               private Pool: DatabasePoolService,
@@ -34,10 +36,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
               private AuthService: DatabaseAuthenticationService,
               private changeDetector: ChangeDetectorRef,
               private MSALService: MsalService,
-              private MSALBroadcastService: MsalBroadcastService,
               private Basics: BasicsProvider,
               private Tools: ToolsProvider,
               private Const: ConstProvider,
+              private authService: MsalService,
+              private msalBroadcastService: MsalBroadcastService,
               private MitarbeiterDB: DatabaseMitarbeiterService,
               private MitarbeitersettingsDB: DatabaseMitarbeitersettingsService,
               private StandortDB: DatabaseStandorteService,
@@ -48,8 +51,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
     try {
 
       this.AuthSubscription = null;
-
-      // Test
+      this.isIframe         = false;
 
     } catch (error) {
 
@@ -61,15 +63,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
     try {
 
-      this.unsubscribe.next(undefined);
-      this.unsubscribe.complete();
-
-      if(this.AuthSubscription !== null) {
-
-        this.AuthSubscription.unsubscribe();
-
-        this.AuthSubscription = null;
-      }
+      this.Destroying.next(undefined);
+      this.Destroying.complete();
 
       this.StandortDB.FinishService();
       this.MitarbeiterDB.FinishService();
@@ -87,69 +82,30 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
       if(this.AuthService.SecurityEnabled) {
 
-        this.MSALBroadcastService.inProgress$
+        this.isIframe = window !== window.parent && !window.opener;
+
+        this.msalBroadcastService.inProgress$
           .pipe(
-            filter((status: InteractionStatus) => status === InteractionStatus.None),
-            takeUntil(this.unsubscribe)
-          ).subscribe((data: InteractionStatus) => {
+            filter((status_a: InteractionStatus) => {
 
-            debugger;
+              this.Debug.ShowMessage('Interaction Status: ' + status_a, 'App Component', 'StartApp', this.Debug.Typen.Component);
 
-            this.Debug.ShowMessage('Authentication status changed', 'App Component', 'OnInit', this.Debug.Typen.Component);
+              return status_a === InteractionStatus.None;
+            }),
+            takeUntil(this.Destroying)
+          )
+          .subscribe((status_b: InteractionStatus) => {
 
-          this.AuthService.SetAuthenticationStatus();
-        });
+            this.AuthService.SetShowLoginStatus();
+          });
 
-        this.MSALBroadcastService.msalSubject$.pipe(
-          filter((message: EventMessage) =>  message.eventType === EventType.LOGIN_SUCCESS),
-          takeUntil(this.unsubscribe)
-        ).subscribe((message: EventMessage) => {
-
-          debugger;
-
-          const AuthResult = <AuthenticationResult>message.payload;
-
-          this.MSALService.instance.setActiveAccount(AuthResult.account);
-        });
-
-        this.AuthSubscription = this.AuthService.AuthenticationChanged.subscribe(() => {
-
-          debugger;
+        this.AuthService.LoginSuccessEvent.subscribe(() => {
 
           this.StartApp();
         });
-
-      } else {
-
-        debugger;
-
-        this.StartApp();
       }
 
-
-      /*
-
-
-      this.MSALService.instance.handleRedirectPromise().then((res: AuthenticationResult) => {
-
-        debugger;
-
-        if(res !== null && res.account !== null) {
-
-          this.MSALService.instance.setActiveAccount(res.account);
-        }
-        else {
-
-          this.MSALService.instance.setActiveAccount(null);
-        }
-
-        this.SetPage();
-      });
-
-       */
-
-
-
+      this.StartApp();
 
     } catch (error) {
 
@@ -164,28 +120,31 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
       this.Debug.ShowMessage('Start App', 'App Component', 'StartApp', this.Debug.Typen.Component);
 
       await this.platform.ready();
+      await this.AuthService.SetActiveUser();
 
       this.Basics.Contentbreite = this.platform.width();
       this.Basics.Contenthoehe  = this.platform.height();
 
-      if(this.AuthService.IsAuthenticated) {
+      if(this.AuthService.ActiveUser !== null) {
 
-        this.Debug.ShowMessage('Benutzer ist authentifiziert', 'App Component', 'StartApp', this.Debug.Typen.Component);
+        // Benutzer ist angemeldet
 
-        let token = await this.StorageService.GetSecurityToken();
-
-        this.AuthService.SecurityToken = token;
+        await this.AuthService.GetUserinfo();
+        await this.AuthService.GetUserimage();
 
         debugger;
 
+        this.Debug.ShowMessage('Benutzer ist angemeldet: ' + this.AuthService.ActiveUser.username, 'App Component', 'StartApp', this.Debug.Typen.Component);
+
+
         let result = await this.MitarbeiterDB.GetMitarbeiterRegistrierung(this.AuthService.ActiveUser.username);
+
 
         if(result !== null && !lodash.isUndefined(result.error)) {
 
           // Databse not available
 
           this.Debug.ShowErrorMessage('Lesen in der Mitarbeiter Datenbank fehlgeschlagen', 'App Component', 'StartApp', this.Debug.Typen.Component);
-
 
           this.Tools.SetRootPage(this.Const.Pages.HomePage);
         }
@@ -197,22 +156,20 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
             this.Debug.ShowMessage('Mitarbeiter ist neu und muss registriert werden', 'App Component', 'StartApp', this.Debug.Typen.Component);
 
-
             await this.Pool.ReadStandorteliste();
 
             this.Menuservice.ShowRegistrierungPage();
           }
           else {
 
+            debugger;
+
             // Mitarbeiter ist bereits registriert
 
             this.Debug.ShowMessage('Mitarbeiter ist bereits registriert.', 'App Component', 'StartApp', this.Debug.Typen.Component);
 
+            this.Pool.Mitarbeiterdaten = this.Pool.InitMitarbeiter(result.Mitarbeiter);
 
-            this.Pool.Mitarbeiterdaten     = this.Pool.InitMitarbeiter(result.Mitarbeiter);
-            this.AuthService.SecurityToken = result.Token;
-
-            await this.StorageService.SetSecurityToken(this.AuthService.SecurityToken);
             await this.Pool.Init();
 
             this.Pool.Mitarbeitersettings = this.Pool.InitMitarbeitersettings();
@@ -243,15 +200,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
               this.ProjekteDB.InitGesamtprojekteliste();
               this.ProjekteDB.InitProjektfavoritenliste();
 
+              // await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);
+              // this.ProjekteDB.InitMenuProjektauswahl();
+              // this.Menuservice.SetCurrentPage();
 
-
-              await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);
-
-              this.ProjekteDB.InitMenuProjektauswahl();
-
-              this.Menuservice.SetCurrentPage();
-
-
+              this.Tools.SetRootPage(this.Const.Pages.HomePage);
             }
 
             this.Pool.LoadingAllDataFinished.emit();
@@ -260,7 +213,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
       }
       else {
 
-        this.Tools.SetRootPage(this.Const.Pages.LoginPage);
+        // Benutzer ist nicht angemeldet -> der Login wird angezeigt
+
+        this.Debug.ShowMessage('Benutzer ist nicht angemeldet', 'App Component', 'StartApp', this.Debug.Typen.Component);
+
       }
     } catch (error) {
 

@@ -84,18 +84,18 @@ export class CommonDebugPage implements OnInit, OnDestroy {
     }
   }
 
-  ClearSecurityToken() {
+  ClearAccessToken() {
 
     try {
 
-      this.AuthService.SecurityToken = this.Const.NONE;
-      this.AuthService.ActiveUser    = null;
+      this.AuthService.AccessToken = null;
+      this.AuthService.ActiveUser  = null;
 
-      this.StorageService.SetSecurityToken(this.Const.NONE);
+      this.AuthService.DeleteAccessToken();
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Debug', 'ClearSecurityToken', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Debug', 'ClearAccessToken', this.Debug.Typen.Page);
     }
   }
 
@@ -108,7 +108,7 @@ export class CommonDebugPage implements OnInit, OnDestroy {
       let headers: HttpHeaders = new HttpHeaders({
 
         'content-type': 'application/json',
-        'authorization': this.AuthService.SecurityToken
+        // 'authorization': this.AuthService.AccessToken
       });
 
       Observer = this.http.get(this.ServerUrl, { headers: headers } ); // { headers: {'Authorization' : this.AuthService.SecurityToken} }

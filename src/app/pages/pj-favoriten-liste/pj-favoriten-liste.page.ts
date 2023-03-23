@@ -85,6 +85,8 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
       this.DataSubscription.unsubscribe();
       this.MitarbeiterSubscription.unsubscribe();
 
+      debugger;
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'OnDestroy', this.Debug.Typen.Page);
@@ -135,6 +137,19 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'PrepareData', this.Debug.Typen.Page);
+    }
+  }
+  ionViewDidLeave() {
+
+    try {
+
+      debugger;
+
+
+    }
+    catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'ionViewDidLeave', this.Debug.Typen.Page);
     }
   }
 

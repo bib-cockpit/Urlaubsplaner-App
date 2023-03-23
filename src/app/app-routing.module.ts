@@ -1,27 +1,29 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import {SecurityService} from "./services/security/security.service";
 import {MsalRedirectComponent} from "@azure/msal-angular";
 
 const routes: Routes = [
   {
     path: 'TestPage',
     loadChildren: () => import('./pages/common-testseite/common-testseite.module').then(m => m.CommonTestseitePageModule),
-    canLoad: [SecurityService]
+    // canLoad: [SecurityService]
   },
   {
     path: 'RegistrierungPage',
     loadChildren: () => import('./pages/common-registrierung/common-registrierung.module').then(m => m.CommonRegistrierungPageModule),
-    canLoad: [SecurityService]
+    // canLoad: [SecurityService]
   },
+  /*
   {
     path: 'LoginPage',
     loadChildren: () => import('./pages/common-login/common-login.module').then(m => m.CommonLoginPageModule),
   },
+
+   */
   {
     path: 'HomePage',
     loadChildren: () => import('./pages/common-home/common-home.module').then(m => m.CommonHomePageModule),
-    canLoad: [SecurityService]
+    // canLoad: [SecurityService]
   },
   {
     path: 'DebugPage',
@@ -37,32 +39,35 @@ const routes: Routes = [
   {
     path: 'FiStandortelistePage',
     loadChildren: () => import('./pages/fi-standorteliste/fi-standorteliste.module').then(m => m.FiStandortelistePageModule),
-    canLoad: [SecurityService]
+    // canLoad: [SecurityService]
   },
   {
     path: 'FiMitarbeiterlistePage',
     loadChildren: () => import('./pages/fi-mitarbeiterliste/fi-mitarbeiterliste.module').then(m => m.FIMitarbeiterlistePageModule),
-    canLoad: [SecurityService]
+    // canLoad: [SecurityService]
   },
   {
     path: 'PjListePage',
     loadChildren: () => import('./pages/pj-projekt-liste/pj-projekt-liste.module').then(m => m.PjProjektListePageModule),
-    canLoad: [SecurityService]
+    // canLoad: [SecurityService]
   },
   {
     path: 'PjFavoritenlistePage',
     loadChildren: () => import('./pages/pj-favoriten-liste/pj-favoriten-liste.module').then(m => m.PjFavoritenListePageModule),
-    canLoad: [SecurityService]
-  },
-  {
-    path: 'auth',
-    component: MsalRedirectComponent
+    // canLoad: [SecurityService]
   },
   {
     path: '',
     redirectTo: 'HomePage',
     pathMatch:  'full'
   },
+  /*
+
+  {
+    path: 'auth',
+    component: MsalRedirectComponent
+  },
+   */
   {
     path: 'PjAufgabenlistePage',
     loadChildren: () => import('./pages/pj-aufgaben-liste/pj-aufgaben-liste.module').then(m => m.PjAufgabenListePageModule)
@@ -94,6 +99,6 @@ const routes: Routes = [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
   ],
   exports: [RouterModule],
-  providers: [SecurityService]
+  // providers: [SecurityService]
 })
 export class AppRoutingModule { }
