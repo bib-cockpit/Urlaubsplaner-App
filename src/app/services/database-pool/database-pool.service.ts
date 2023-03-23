@@ -72,7 +72,7 @@ export class DatabasePoolService {
       this.Projektpunkteliste       = [];
       this.Projektpunkteliste       = [];
       this.Protokollliste           = [];
-      this.UseServerOnline          = false;
+      this.UseServerOnline          = true;
       this.Changlogliste            = [];
       this.CockpitserverURL         = this.UseServerOnline ? 'https://bib-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
 
