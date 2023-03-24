@@ -61,30 +61,9 @@ const routes: Routes = [
     loadChildren: () => import('./pages/common-home/common-home.module').then(m => m.CommonHomePageModule),
   },
   {
-    path: '**',
-    pathMatch: 'full',
-    redirectTo: 'HomePage',
-  },
-  {
     path: 'PjAufgabenlistePage',
     loadChildren: () => import('./pages/pj-aufgaben-liste/pj-aufgaben-liste.module').then(m => m.PjAufgabenListePageModule)
   },
-  /*
-  {
-    path: 'PjAufgabenlisteMeintagPage',
-    loadChildren: () => import('./pages/pj-aufgaben-meintagliste/pj-aufgaben-meintagliste.module').then(m => m.PjAufgabenMeintagListePageModule)
-  },
-
-  {
-    path: 'PjAufgabenlisteAllePage',
-    loadChildren: () => import('./pages/pj-aufgabenliste-alle/pj-aufgabenliste-alle.module').then(m => m.PjAufgabenlisteAllePageModule)
-  },
-  {
-    path: 'PjAufgabenlisteEinzelprojektPage',
-    loadChildren: () => import('./pages/pj-aufgabenliste-einzelprojekt/pj-aufgabenliste-einzelprojekt.module').then(m => m.PjAufgabenlisteEinzelprojektPageModule)
-  },
-
-   */
   {
     path: 'PjProtokolleListePage',
     loadChildren: () => import('./pages/pj-protokolle-liste/pj-protokolle-liste.module').then(m => m.PjProtokolleListePageModule)
