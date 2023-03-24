@@ -58,8 +58,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'HomePage',
-    pathMatch:  'full'
+    loadChildren: () => import('./pages/common-home/common-home.module').then(m => m.CommonHomePageModule),
   },
   {
     path: '**',
