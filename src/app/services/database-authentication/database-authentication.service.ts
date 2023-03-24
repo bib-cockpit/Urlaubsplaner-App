@@ -39,8 +39,6 @@ export class DatabaseAuthenticationService {
   public SecurityEnabled: boolean;
   private DevelopmentUser: AccountInfo;
   public ShowLogin: boolean;
-  public Graphuser: Graphuserstruktur;
-  public UserimageSRC: any;
 
   constructor(
               @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
@@ -60,8 +58,6 @@ export class DatabaseAuthenticationService {
       this.AccessToken     = this.Const.NONE;
       this.ActiveUser      = null;
       this.ShowLogin       = false;
-      this.Graphuser       = null;
-      this.UserimageSRC    = null;
 
       this.DevelopmentUser = {
 
@@ -208,7 +204,6 @@ export class DatabaseAuthenticationService {
       }
 
       this.ActiveUser = null;
-      this.Graphuser  = null;
 
     } catch (error) {
 
@@ -238,102 +233,6 @@ export class DatabaseAuthenticationService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'canLoad', this.Debug.Typen.Service);
-    }
-  }
-
-  public GetUserinfo(): Promise<any> {
-
-    try {
-
-      return new Promise((resolve, reject) => {
-
-        this.http.get(GRAPH_ENDPOINT).subscribe(profile => {
-
-            this.Graphuser = <Graphuserstruktur>profile;
-
-            resolve(true);
-          });
-      });
-
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'GetUserinfo', this.Debug.Typen.Service);
-    }
-  }
-
-  public GetUserimage(): Promise<any> {
-
-    try {
-
-      return new Promise((resolve, reject) => {
-
-
-        this.http.get(GRAPH_ENDPOINT_PHOTO, {
-            headers: {
-              'Authorization': `Bearer ${this.AccessToken}`,
-              'Content-Type': 'image/jpeg'
-            },
-            responseType: 'blob'
-
-          }).pipe(catchError(err => {
-
-            if(err) {
-
-              this.UserimageSRC = null;
-
-              reject();
-
-              return null;
-            }
-          })).subscribe((ergo: any) => {
-
-             this.UserimageSRC = this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(ergo));
-
-             resolve(true);
-          });
-      });
-
-    } catch (error) {
-
-      debugger;
-
-      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'GetUserinfo', this.Debug.Typen.Service);
-    }
-  }
-
-  public GetUsercalendar(): Promise<any> {
-
-    try {
-
-      return new Promise((resolve, reject) => {
-
-
-        this.http.get(GRAPH_ENDPOINT_CALENDAR, {
-          headers: {
-            'Authorization': `Bearer ${this.AccessToken}`,
-            'Content-Type': 'application/json'
-          },
-
-        }).pipe(catchError(err => {
-
-          if(err) {
-
-            reject();
-
-            return null;
-          }
-        })).subscribe((ergo: any) => {
-
-          resolve(true);
-        });
-      });
-
-    } catch (error) {
-
-      debugger;
-
-      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'GetUserinfo', this.Debug.Typen.Service);
     }
   }
 

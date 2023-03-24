@@ -17,6 +17,7 @@ import {DatabaseProjekteService} from "./services/database-projekte/database-pro
 import {DatabaseMitarbeitersettingsService} from "./services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {LocalstorageService} from "./services/localstorage/localstorage";
 import * as lodash from "lodash-es";
+import {Graphservice} from "./services/graph/graph";
 
 @Component({
   selector: 'app-root',
@@ -46,6 +47,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
               private StandortDB: DatabaseStandorteService,
               private ProjekteDB: DatabaseProjekteService,
               private StorageService: LocalstorageService,
+              public GraphService: Graphservice,
               private Debug: DebugProvider) {
 
     try {
@@ -129,8 +131,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         // Benutzer ist angemeldet
 
-        await this.AuthService.GetUserinfo();
-        await this.AuthService.GetUserimage();
+        await this.GraphService.GetUserinfo();
+        await this.GraphService.GetUserimage();
 
         debugger;
 

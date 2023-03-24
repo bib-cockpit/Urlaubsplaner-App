@@ -17,6 +17,7 @@ import {filter, Subscription} from "rxjs";
 import {MsalBroadcastService, MsalService} from "@azure/msal-angular";
 import {AuthenticationResult, EventMessage, EventType, InteractionStatus} from "@azure/msal-browser";
 import {LocalstorageService} from "../../services/localstorage/localstorage";
+import {Graphservice} from "../../services/graph/graph";
 
 
 @Component({
@@ -49,6 +50,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
               private authService: MsalService,
               private msalBroadcastService: MsalBroadcastService,
               public DBProjekte: DatabaseProjekteService,
+              public GraphService: Graphservice,
               public DBChangelog: DatabaseChangelogService,
               public AuthService: DatabaseAuthenticationService,
               private Menuservice: MenueService) {
@@ -390,7 +392,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
     try {
 
 
-      this.AuthService.GetUserinfo();
+      this.GraphService.GetUserinfo();
 
     } catch (error) {
 
@@ -402,7 +404,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     try {
 
-      this.AuthService.GetUserimage();
+      this.GraphService.GetUserimage();
 
     } catch (error) {
 
@@ -414,7 +416,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     try {
 
-      this.AuthService.GetUsercalendar();
+
 
     } catch (error) {
 

@@ -12,9 +12,9 @@
                  (click)="LogoutButtonClicked()">
               <table class="paddingsmalltable">
                 <tr>
-                  <ng-container *ngIf="AuthService.ShowLogin === false && AuthService.UserimageSRC !== null">
+                  <ng-container *ngIf="AuthService.ShowLogin === false && GraphService.UserimageSRC !== null">
                     <td style="padding-top: 4px">
-                      <img class="userimagesmall" [src]="AuthService.UserimageSRC">
+                      <img class="userimagesmall" [src]="GraphService.UserimageSRC">
                     </td>
                     <td style="width: 4px"></td>
                   </ng-container>
@@ -79,23 +79,23 @@
 
   <ng-container *ngIf="AuthService.ShowLogin === false">
 
-    <div *ngIf="AuthService.Graphuser !== null;" class="graphuserdiv">
+    <div *ngIf="GraphService.Graphuser !== null;" class="graphuserdiv">
 
       <table class="paddingtable" style="font-size: 80%">
         <tr>
           <td colspan="3" style="font-size: 140%; font-weight: bold; color: #7b6a58">User Info</td>
         </tr>
         <tr>
-          <td style="font-weight: bold; color: #7b6a58">Name</td><td style="color: #444444;">{{AuthService.Graphuser.displayName}}</td>
+          <td style="font-weight: bold; color: #7b6a58">Name</td><td style="color: #444444;">{{GraphService.Graphuser.displayName}}</td>
         </tr><tr>
-          <td style="font-weight: bold; color: #7b6a58">Email</td><td style="color: #444444;">{{AuthService.Graphuser.mail}}</td>
+          <td style="font-weight: bold; color: #7b6a58">Email</td><td style="color: #444444;">{{GraphService.Graphuser.mail}}</td>
         </tr><tr>
-          <td style="font-weight: bold; color: #7b6a58">Job</td><td style="color: #444444;">{{AuthService.Graphuser.jobTitle}}</td>
+          <td style="font-weight: bold; color: #7b6a58">Job</td><td style="color: #444444;">{{GraphService.Graphuser.jobTitle}}</td>
         </tr><tr>
-          <td style="font-weight: bold; color: #7b6a58">Büro</td><td style="color: #444444;">{{AuthService.Graphuser.officeLocation}}</td>
+          <td style="font-weight: bold; color: #7b6a58">Büro</td><td style="color: #444444;">{{GraphService.Graphuser.officeLocation}}</td>
         </tr>
-        <tr *ngIf="AuthService.UserimageSRC !== null">
-          <td style="font-weight: bold; color: #7b6a58">Image</td><td><img class="userimage" [src]="AuthService.UserimageSRC"></td>
+        <tr *ngIf="GraphService.UserimageSRC !== null">
+          <td style="font-weight: bold; color: #7b6a58">Image</td><td><img class="userimage" [src]="GraphService.UserimageSRC"></td>
         </tr>
         <!--
         <tr>
