@@ -22,6 +22,7 @@ import moment, {Moment} from "moment";
 import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {Graphservice} from "../../services/graph/graph";
 
 @Component({
   selector: 'page-header-menu',
@@ -44,8 +45,9 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   @Output()  StandortfilterClicked = new EventEmitter<string>();
   @Output()  ZeitspanneFilterClicked = new EventEmitter<string>();
   @Output()  LeistungsphaseFilterClicked = new EventEmitter<any>();
-  @Output()  FavoritenClicked = new EventEmitter<number>();
   @Output()  FilterChanged = new EventEmitter<string>();
+  @Output()  ShowProjektauswahlEvent = new EventEmitter<any>();
+
 
   private SuchleisteInputSubscription: Subscription;
   private SuchleisteClearSubscription: Subscription;
@@ -56,6 +58,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   public Tagbreite: number;
   public HomeMouseOver: boolean;
 
+
   constructor(private Debug: DebugProvider,
               public Basics: BasicsProvider,
               public Const: ConstProvider,
@@ -65,10 +68,10 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
               public  DBStandort: DatabaseStandorteService,
               public DBProjekte: DatabaseProjekteService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
+              public GraphService: Graphservice,
               public  AuthService: DatabaseAuthenticationService,
               public  Pool: DatabasePoolService,
               public  Menuservice: MenueService) {
-
     try {
 
       this.ShowSuchleiste               = false;
@@ -258,8 +261,6 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
-
-
   StandortButtonClicked() {
 
     try {
@@ -269,77 +270,6 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'StandortButtonClicked', this.Debug.Typen.Component);
-    }
-  }
-
-  FavoritenClickedHandler(settings: Projektauswahlmenuestruktur) {
-
-    try {
-
-      this.DBProjekte.CurrentFavoritprojektindex = settings.Index;
-
-      switch (settings.Index) {
-
-        case 1000: // = Favoriten
-
-          break;
-
-        case 1500: // = Meilensteine
-
-          break;
-
-        case 2000: // = Mein Tag
-
-          // this.Menuservice.SetCurrentPage();
-
-          break;
-
-        case 3000: // = Meine Woche
-
-          // this.Menuservice.SetCurrentPage();
-
-          break;
-
-        default:
-
-          this.DBProjekte.CurrentProjekt = lodash.find(this.Pool.Gesamtprojektliste, (projekt: Projektestruktur) => {
-
-            return projekt.Projektkey === settings.Projektkey;
-          });
-
-          this.Pool.Mitarbeitersettings.ProjektID = this.DBProjekte.CurrentProjekt._id;
-
-          break;
-      }
-
-      if(settings.Index !== 1000) this.Pool.Mitarbeitersettings.Favoritprojektindex = settings.Index;
-
-      this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
-
-      this.FavoritenClicked.emit(this.DBProjekte.CurrentFavoritprojektindex);
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'FavoritenClickedHandler', this.Debug.Typen.Component);
-    }
-  }
-
-  GetProjektbuttoncolor(settings: Projektauswahlmenuestruktur) {
-
-    try {
-
-      switch (settings.Index) {
-
-        default:
-
-          return settings.Index === this.DBProjekte.CurrentFavoritprojektindex ? this.Basics.Farben.Burnicklgruen : 'white';
-
-          break;
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'GetProjektbuttoncolor', this.Debug.Typen.Component);
     }
   }
 
@@ -599,15 +529,140 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
-  MainMenueHomeButtonClicked() {
+
+  MeintagClicked() {
 
     try {
 
-
+      this.Menuservice.Aufgabenlisteansicht = this.Menuservice.Aufgabenlisteansichten.Mein_Tag;
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'MainMenueHomeButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'MeintagClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  MeilensteineClicked() {
+
+    try {
+
+      this.Menuservice.Aufgabenlisteansicht = this.Menuservice.Aufgabenlisteansichten.Meilensteine;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'MeilensteineClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  ProjektClicked() {
+
+    try {
+
+      if(this.Menuservice.Aufgabenlisteansicht !== this.Menuservice.Aufgabenlisteansichten.Projekt) {
+
+        this.Menuservice.Aufgabenlisteansicht = this.Menuservice.Aufgabenlisteansichten.Projekt;
+      }
+      else {
+
+        this.ShowProjektauswahlEvent.emit();
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ProjektClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  MeineWocheClicked() {
+
+    try {
+
+      this.Menuservice.Aufgabenlisteansicht = this.Menuservice.Aufgabenlisteansichten.Meine_Woche;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'MeineWocheClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  ProjektGoBackClicked() {
+
+    try {
+
+      if(this.DBProjekte.CurrentProjektindex > 0) {
+
+        this.DBProjekte.CurrentProjektindex--;
+
+        this.DBProjekte.CurrentProjekt                    = this.DBProjekte.Projektliste[this.DBProjekte.CurrentProjektindex];
+        this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
+        this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
+
+        this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+
+        this.DBProjekte.CurrentFavoritenProjektChanged.emit();
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ProjektGoBackClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  ProjektGoForwardClicked() {
+
+    try {
+
+      if(this.DBProjekte.CurrentProjektindex < this.DBProjekte.Projektliste.length - 1) {
+
+        this.DBProjekte.CurrentProjektindex++;
+        this.DBProjekte.CurrentProjekt = this.DBProjekte.Projektliste[this.DBProjekte.CurrentProjektindex];
+
+        this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
+        this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
+
+        this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+
+        this.DBProjekte.CurrentFavoritenProjektChanged.emit();
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ProjektGoForwardClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  GetProjektBackButtoncolor(): string {
+
+    try {
+
+      if(this.Menuservice.Aufgabenlisteansicht === this.Menuservice.Aufgabenlisteansichten.Projekt && this.DBProjekte.CurrentProjektindex > 0) {
+
+        return 'burnicklbraun';
+      }
+      else {
+
+        return 'grau';
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetProjektBackButtoncolor', this.Debug.Typen.Component);
+    }
+  }
+
+  GetProjektForwardButtoncolor(): string {
+
+    try {
+
+      if(this.Menuservice.Aufgabenlisteansicht === this.Menuservice.Aufgabenlisteansichten.Projekt && this.DBProjekte.CurrentProjektindex < this.DBProjekte.Projektliste.length - 1) {
+
+        return 'burnicklbraun';
+      }
+      else {
+
+        return 'grau';
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetProjektForwardButtoncolor', this.Debug.Typen.Component);
     }
   }
 }

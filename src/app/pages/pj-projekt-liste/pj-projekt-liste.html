@@ -112,11 +112,11 @@
                     (EditGeschossClickedEvent)="EditGeschossClickedHandler($event)"
                     (EditRaumClickedEvent)="EditRaumClickedHandler($event)"></pj-projekt-editor>
 
-<pj-beteiligten-editor *ngIf="ShowBeteiligteneditor" [Dialogbreite]="600" [Dialoghoehe]="640" [PositionY]="200" [Titel]="GetBerteiligteeditorTitel()" Iconname="color-filter-outline"
+<pj-beteiligten-editor *ngIf="ShowBeteiligteneditor" [Dialogbreite]="600" [Dialoghoehe]="700" [PositionY]="200" [Titel]="GetBerteiligteeditorTitel()" Iconname="color-filter-outline"
                        (CancelClickedEvent)="ShowBeteiligteneditor = false"
                        (OkClickedEvent)="ShowBeteiligteneditor = false"
                        (DeleteClickedEvent)="ShowBeteiligteneditor = false"
-                       (FachbereichClickedEvent)="BeteiligteFachbereichClickedEventHandler()">
+                       (FachbereichClickedEvent)="BeteiligteFachbereichClickedEventHandler()" (FachfirmaClickedEvent)="BeteiligteFachfirmaClickedEventHandler()">
 </pj-beteiligten-editor>
 
 <pj-gebaeude-bauteileditor *ngIf="ShowBauteilEditor" [PositionY]="200" [Dialoghoehe]="200" [Dialogbreite]="300" Iconname="hammer-outline" [Titel]="GetBauteileditorTitel()"

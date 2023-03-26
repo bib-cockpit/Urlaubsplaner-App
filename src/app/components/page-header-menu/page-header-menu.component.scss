@@ -13,6 +13,19 @@
   border-radius: 4px;
 }
 
+.planungheaderdiv {
+
+  width: 100%;
+  height: 20px;
+  background: #7b6a58;
+  margin-top: 4px;
+  color: white;
+  font-size: 90%;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+}
+
 .trennertdclass {
 
   width: 30px;
@@ -22,6 +35,14 @@
 
   width: 1px;
   min-height: 30px;
+  height: 100%;
+  background: silver;
+}
+
+.trennerbigdivclass {
+
+  width: 1px;
+  min-height: 64px;
   height: 100%;
   background: silver;
 }
@@ -50,8 +71,8 @@ ion-searchbar {
   display: flex;
   justify-content: center; // horizontal
   align-items: center; // vertikal
-  width: 100%;
-  min-height: 44px;
+  width: 140px;
+  min-height: 34px;
   height: 100%;
   padding: 2px;
   border: 1px solid white;
@@ -76,5 +97,15 @@ ion-searchbar {
   justify-content: center; // horizontal
   align-items: center; // vertikal
   // font-weight: bold;
+}
+
+.userimagesmall {
+
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin-top: 4px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 

@@ -21,6 +21,9 @@ import moment, {Moment} from "moment";
 import {Mitarbeitersettingsstruktur} from "../../dataclasses/mitarbeitersettingsstruktur";
 import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
 import {Meinewochestruktur} from "../../dataclasses/meinewochestruktur";
+import {
+  DatabaseMitarbeitersettingsService
+} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 
 @Component({
   selector:    'pj-aufgaben-liste-page',
@@ -38,6 +41,12 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     MeineWoche:       'MeineWoche',
     Meilensteine:     'Meilenstein',
     Favoritenprojekt: 'Favoritenprojekt'
+  };
+
+  public Projektschnellauswahlursprungvarianten = {
+
+    Schnelle_Aufgabe: 'Schnelle Aufgabe',
+    Projektfavoriten: 'Projektfavoriten'
   };
 
   public Auswahlliste: Auswahldialogstruktur[];
@@ -77,7 +86,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   private MitarbeiterSubscription: Subscription;
   public Datenursprung: string;
   public ShowFavoritenauswahl: boolean;
-  public ShowSchnellAufgabeprojektauswahl: boolean;
+  public ShowProjektschnellauswahl: boolean;
   public ShowMeinewocheEditor: boolean;
   public Listenhoehe: number;
   private Minutenhoehe: number;
@@ -86,6 +95,8 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   public Heute: Moment;
   public Restarbeitszahl: number;
   public ProtokollSubscription: Subscription;
+  public Projektschenllauswahltitel: string;
+  public Projektschnellauswahlursprung: string;
 
 
   constructor(public Displayservice: DisplayService,
@@ -96,6 +107,8 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
               private DBProtokolle: DatabaseProtokolleService,
               public DBProjekte: DatabaseProjekteService,
               public DBMitarbeiter: DatabaseMitarbeiterService,
+              private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
+              public Menuservice: MenueService,
               public Const: ConstProvider,
               public Pool: DatabasePoolService,
               public Debug: DebugProvider) {
@@ -106,6 +119,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.Auswahlliste             = [{ Index: 0, FirstColumn: '', SecoundColumn: '', Data: null}];
       this.Auswahlindex             = 0;
       this.Auswahltitel             = '';
+      this.Projektschenllauswahltitel = '';
       this.ShowAuswahl              = false;
       this.Auswahldialogorigin      = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Standort;
       this.ShowMitarbeiterauswahl   = false;
@@ -140,7 +154,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.Tagbreite                = 0;
       this.Headerhoehe              = 0;
       this.ShowDateKkPicker         = false;
-      this.ShowSchnellAufgabeprojektauswahl = true;
+      this.ShowProjektschnellauswahl = false;
       this.Heute                    = moment().set({date: 6, month: 1, year: 2023, hour: 7, minute: 0, second: 0  }).locale('de'); // Month ist Zero based
 
     } catch (error) {
@@ -1554,11 +1568,63 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     try {
 
       this.Auswahlhoehe = 0;
-      this.ShowSchnellAufgabeprojektauswahl = true;
+      this.ShowProjektschnellauswahl = true;
+      this.Projektschenllauswahltitel       = 'Schnelle Aufgabe - Projektauswahl';
+      this.Projektschnellauswahlursprung    = this.Projektschnellauswahlursprungvarianten.Schnelle_Aufgabe;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'SchnellaufgabeButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  ShowProjektauswahlEventHandler() {
+
+    try {
+
+      this.Projektschnellauswahlursprung = this.Projektschnellauswahlursprungvarianten.Projektfavoriten;
+      this.ShowProjektschnellauswahl     = true;
+      this.Projektschenllauswahltitel    = 'Projekt wechseln';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'ShowProjektauswahlEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  public ProjektSchnellauswahlProjektClickedEventHandler(projekt: Projektestruktur) {
+
+    try {
+
+      switch (this.Projektschnellauswahlursprung) {
+
+        case this.Projektschnellauswahlursprungvarianten.Projektfavoriten:
+
+          debugger;
+
+          this.DBProjekte.CurrentProjekt      = projekt;
+          this.DBProjekte.CurrentProjektindex = lodash.findIndex(this.DBProjekte.Projektliste, {_id: projekt._id});
+
+          this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
+          this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
+
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+
+          // Update der Mitarbeitersettings lösen PrepareDaten() aus
+
+          break;
+
+        case this.Projektschnellauswahlursprungvarianten.Schnelle_Aufgabe:
+
+
+          break;
+      }
+
+      this.ShowProjektschnellauswahl = false;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'ProjektSchnellauswahlProjektClickedEventHandler', this.Debug.Typen.Page);
     }
   }
 }

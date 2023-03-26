@@ -17,6 +17,7 @@ import {Observable} from "rxjs";
 import {Projektpunktanmerkungstruktur} from "../../dataclasses/projektpunktanmerkungstruktur";
 import {Changelogstruktur} from "../../dataclasses/changelogstruktur";
 import {Bauteilstruktur} from "../../dataclasses/bauteilstruktur";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,6 @@ export class DatabasePoolService {
   public MaxProgressValue: number;
   public CurrentProgressValue: number;
   public ProgressMessage: string;
-  private UseServerOnline: boolean;
   public Changlogliste: Changelogstruktur[];
 
   public StandortelisteChanged: EventEmitter<any> = new EventEmitter<any>();
@@ -55,9 +55,7 @@ export class DatabasePoolService {
   constructor(private Debug: DebugProvider,
               private Const: ConstProvider,
               private Http:  HttpClient,
-              private Basics: BasicsProvider,
-              private AuthService: DatabaseAuthenticationService,
-              private Tools: ToolsProvider) {
+              private Basics: BasicsProvider) {
     try {
 
       this.Mitarbeiterdaten         = null;
@@ -72,9 +70,8 @@ export class DatabasePoolService {
       this.Projektpunkteliste       = [];
       this.Projektpunkteliste       = [];
       this.Protokollliste           = [];
-      this.UseServerOnline          = true;
       this.Changlogliste            = [];
-      this.CockpitserverURL         = this.UseServerOnline ? 'https://bib-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
+      this.CockpitserverURL         = environment.production === true ? 'https://bib-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
 
       // Test
 
@@ -464,6 +461,11 @@ export class DatabasePoolService {
             for(let Projekt of this.Gesamtprojektliste) {
 
               if(lodash.isUndefined(Projekt.Projektfarbe)) Projekt.Projektfarbe = 'Burnicklgruen';
+
+              for(let Beteiligter of Projekt.Beteiligtenliste) {
+
+                if(lodash.isUndefined(Beteiligter.Fachfirmentyp)) Beteiligter.Fachfirmentyp = 0;
+              }
             }
 
             this.GesamtprojektelisteChanged.emit();

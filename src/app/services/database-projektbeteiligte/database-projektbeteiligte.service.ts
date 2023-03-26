@@ -7,6 +7,7 @@ import * as lodash from "lodash-es";
 import {DatabaseProjekteService} from "../database-projekte/database-projekte.service";
 import {DatabaseMitarbeiterService} from "../database-mitarbeiter/database-mitarbeiter.service";
 import {DatabasePoolService} from "../database-pool/database-pool.service";
+import {Fachfirmenypenstruktur} from "../../dataclasses/fachfirmenypenstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ import {DatabasePoolService} from "../database-pool/database-pool.service";
 export class DatabaseProjektbeteiligteService {
 
   public Beteiligtentypenliste: Projektbeteiligtetypenstruktur[];
+  public Fachfirmentypenliste: Fachfirmenypenstruktur[];
 
   public CurrentBeteiligte: Projektbeteiligtestruktur;
   public BeteiligtenlisteChanged: EventEmitter<any> = new EventEmitter();
@@ -40,6 +42,23 @@ export class DatabaseProjektbeteiligteService {
       }
 
       this.Beteiligtentypenliste.sort( (a: Projektbeteiligtetypenstruktur, b: Projektbeteiligtetypenstruktur) => {
+
+        if (a.Name < b.Name) return -1;
+        if (a.Name > b.Name) return 1;
+
+        return 0;
+      });
+
+      this.Fachfirmentypenliste = [];
+
+      for(const key of Object.keys(this.Const.Fachfirmentypen)) {
+
+        Eintrag = this.Const.Fachfirmentypen[key];
+
+        this.Fachfirmentypenliste.push(Eintrag);
+      }
+
+      this.Fachfirmentypenliste.sort( (a: Fachfirmenypenstruktur, b: Fachfirmenypenstruktur) => {
 
         if (a.Name < b.Name) return -1;
         if (a.Name > b.Name) return 1;
@@ -115,6 +134,7 @@ export class DatabaseProjektbeteiligteService {
         BeteiligtenID: null,
         Beteiligteneintragtyp: this.Const.Beteiligteneintragtypen.Person,
         Beteiligtentyp: 0,
+        Fachfirmentyp: 0,
         Email: "",
         Firma: "",
         Anrede: this.Const.Anredevariante.Frau,
@@ -137,6 +157,21 @@ export class DatabaseProjektbeteiligteService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Projektbeteiligte', 'GetEmptyProjektbeteiligte', this.Debug.Typen.Service);
+    }
+  }
+
+  GetBeteiligtenFachfirmaname(fachfirmentypnummer: number): string {
+
+    try {
+
+      let Typ: Fachfirmenypenstruktur = lodash.find(this.Fachfirmentypenliste, {Typnummer: fachfirmentypnummer });
+
+      if(lodash.isUndefined(Typ) === false) return Typ.Name;
+      else return 'Unbekannt';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektbeteiligte', 'GetBeteiligtenFachfirmaname', this.Debug.Typen.Service);
     }
   }
 }

@@ -4,6 +4,7 @@ export type Projektbeteiligtestruktur = {
 
     BeteiligtenID: string;
     Beteiligtentyp: number;
+    Fachfirmentyp: number;
     Beteiligteneintragtyp: string;
     Name: string;
     Anrede: string;

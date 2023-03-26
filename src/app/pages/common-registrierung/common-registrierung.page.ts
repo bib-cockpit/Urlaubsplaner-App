@@ -257,9 +257,7 @@ export class CommonRegistrierungPage implements OnInit, OnDestroy {
 
     try {
 
-      this.ShowEditor = false;
-
-      this.Menueservice.ShowLoginPage();
+      debugger;
 
     } catch (error) {
 

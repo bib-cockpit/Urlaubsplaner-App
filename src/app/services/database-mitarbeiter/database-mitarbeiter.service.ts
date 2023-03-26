@@ -416,25 +416,22 @@ export class DatabaseMitarbeiterService {
         'content-type': 'application/json',
       });
 
-
       return new Promise<any>((resolve, reject) => {
 
         Observer = this.http.get(this.ServerRegistrierungUrl, { params: Params, headers: headers });
-
-        debugger;
 
         Observer.subscribe({
 
           next: (result) => {
 
-            debugger;
+            // debugger;
 
             Daten = result;
           },
 
           complete: () => {
 
-            debugger;
+            // debugger;
 
             resolve(Daten);
           },

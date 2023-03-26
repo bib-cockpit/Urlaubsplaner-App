@@ -6,7 +6,7 @@
   <page-header #PageHeader>
     <page-header-menu
       [Filterorigin]="Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Zeitfilter"
-      (FavoritenClicked)="FavoritenClickedHandler($event)"
+      (ShowProjektauswahlEvent)="ShowProjektauswahlEventHandler()"
       (FilterChanged)="FilterChangedHandler($event)"
       (ZeitspanneFilterClicked)="ZeitspanneFilterClickedHandler()"></page-header-menu>
   </page-header>
@@ -19,7 +19,7 @@
 
   <!-- Meilensteine Projektpunkte  -->
 
-  <ng-container *ngIf="DBProjekte.CurrentFavoritprojektindex === 1500">
+  <ng-container *ngIf="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meilensteine">
     <ng-container  *ngFor="let Datenliste of this.Meilensteineprojektpunkteliste; let projektindex = index">
 
       <div style="padding: 4px;">
@@ -54,7 +54,7 @@
 
   <!-- Mein Tag Projektpunkte  -->
 
-  <ng-container *ngIf="DBProjekte.CurrentFavoritprojektindex === 2000">
+  <ng-container *ngIf="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Mein_Tag">
 
     <ng-container  *ngFor="let Datenliste of this.Meintagprojektpunkteliste; let projektindex = index">
 
@@ -90,7 +90,7 @@
 
   <!-- Meine Woche --->
 
-  <ng-container *ngIf="DBProjekte.CurrentFavoritprojektindex === 3000">
+  <ng-container *ngIf="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meine_Woche">
 
     <div style="width: 100%; background: red; overflow: hidden">
       <table style="width: 100%">
@@ -213,9 +213,9 @@
 
   <!-- Meine Woche Ende --->
 
-  <!-- Favoritenprojektpunkte  -->
+  <!-- Projekt  -->
 
-  <div *ngIf="DBProjekte.CurrentFavoritprojektindex !== 1500 && DBProjekte.CurrentFavoritprojektindex !== 2000 && DBProjekte.CurrentFavoritprojektindex !== 3000" style="padding: 4px">
+  <div *ngIf="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt" style="padding: 4px">
 
     <pj-projektpunkteliste [Datenliste]="FavoritenProjektpunkteliste"
                            [ShowProjektnamen]="true"
@@ -345,14 +345,15 @@
                       (OkClickedEvent)="ShowFavoritenauswahl = false">
 </pj-favoriten-auswahl>
 
-<pj-aufgaben-projektauswahl *ngIf="ShowSchnellAufgabeprojektauswahl"
+<pj-projekte-schnellauswahl *ngIf="ShowProjektschnellauswahl"
                             [ZIndex]="5000"
                             [Dialogbreite]="800"
                             [Dialoghoehe]="Auswahlhoehe"
-                            [PositionY]="200" [Titel]="'Schnelle Aufgabe - Projekt wählen'" [Iconname]="'star-outline'"
-                            (CancelClickedEvent)="ShowSchnellAufgabeprojektauswahl = false"
-                            (OkClickedEvent)="ShowSchnellAufgabeprojektauswahl = false">
-</pj-aufgaben-projektauswahl>
+                            [PositionY]="200" [Titel]="Projektschenllauswahltitel" [Iconname]="'star-outline'"
+                            (ProjektClickedEvent)="ProjektSchnellauswahlProjektClickedEventHandler($event)"
+                            (CancelClickedEvent)="ShowProjektschnellauswahl = false"
+                            (OkClickedEvent)="ShowProjektschnellauswahl = false">
+</pj-projekte-schnellauswahl>
 
 <pj-meinewoche-editor *ngIf="ShowMeinewocheEditor"
                       [ZIndex]="5000"

@@ -186,7 +186,7 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
 
       await this.Pool.ReadProjektdaten(this.DBProjekte.Projektliste);
 
-      this.DBProjekte.InitMenuProjektauswahl();
+      // this.DBProjekte.InitMenuProjektauswahl();
 
       this.Pool.LoadingAllDataFinished.emit();
       this.DBProjekte.CurrentFavoritenChanged.emit();

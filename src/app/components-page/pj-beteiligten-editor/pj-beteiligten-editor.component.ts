@@ -33,6 +33,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
   @Output() OkClickedEvent             = new EventEmitter<any>();
   @Output() DeleteClickedEvent         = new EventEmitter<any>();
   @Output() FachbereichClickedEvent    = new EventEmitter<any>();
+  @Output() FachfirmaClickedEvent      = new EventEmitter<any>();
 
   @Input() Titel: string;
   @Input() Iconname: string;

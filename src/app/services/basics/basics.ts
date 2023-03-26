@@ -17,8 +17,8 @@ export class BasicsProvider {
   public InnerContenthoehe: number    = 0;
   public Waittime: number             = 300;
   public Svgpath: string              = 'assets/svgs/';
-  public AppVersionName: string       = '1.01';
-  public AppVersionDatum: string      = '23.03.2023 06:48';
+  public AppVersionName: string       = '1.02';
+  public AppVersionDatum: string      = '26.03.2023 16:181';
 
 
   public Farben = {

@@ -9,8 +9,8 @@ import {AbstandElementFixedModule} from "../../components/abstand-element-fixed/
 import {PageFooterModule} from "../../components/page-footer/page-footer.module";
 import {FiChangelogEditorModule} from "../../components-page/fi-changelog-editor/fi-changelog-editor.module";
 import {
-    PjAufgabenProjektauswahlModule
-} from "../../components-page/pj-aufgaben-projektauswahl/pj-aufgaben-projektauswahl.module";
+    PjProjekteSchnellauswahlModule
+} from "../../components-page/pj-projekte-schnellauswahl/pj-projekte-schnellauswahl.module";
 
 const routes: Routes = [
   {
@@ -30,7 +30,7 @@ const routes: Routes = [
         ReactiveFormsModule,
         PageFooterModule,
         FiChangelogEditorModule,
-        PjAufgabenProjektauswahlModule,
+        PjProjekteSchnellauswahlModule,
     ],
   declarations: [CommonHomePage]
 })

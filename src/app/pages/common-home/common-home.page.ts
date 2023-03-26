@@ -18,6 +18,9 @@ import {MsalBroadcastService, MsalService} from "@azure/msal-angular";
 import {AuthenticationResult, EventMessage, EventType, InteractionStatus} from "@azure/msal-browser";
 import {LocalstorageService} from "../../services/localstorage/localstorage";
 import {Graphservice} from "../../services/graph/graph";
+import {
+  DatabaseMitarbeitersettingsService
+} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 
 
 @Component({
@@ -53,6 +56,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
               public GraphService: Graphservice,
               public DBChangelog: DatabaseChangelogService,
               public AuthService: DatabaseAuthenticationService,
+              private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               private Menuservice: MenueService) {
     try
     {
@@ -160,6 +164,8 @@ export class CommonHomePage implements OnInit, OnDestroy {
     try {
 
       this.DBProjekte.CurrentFavorit = lodash.find(this.Pool.Mitarbeiterdaten.Favoritenliste, {FavoritenID: event.detail.value});
+
+      debugger;
 
       if(lodash.isUndefined(this.DBProjekte.CurrentFavorit)) this.DBProjekte.CurrentFavorit = null;
 
@@ -273,11 +279,22 @@ export class CommonHomePage implements OnInit, OnDestroy {
       if(this.DBProjekte.CurrentFavorit !== null) {
 
         this.Menuservice.MainMenuebereich     = this.Menuservice.MainMenuebereiche.Projekte;
-        this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.LOPListe;
+        this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Aufgabenliste;
+        this.Menuservice.Aufgabenlisteansicht = this.Menuservice.Aufgabenlisteansichten.Projekt;
+
+        this.DBProjekte.SetProjekteliste(this.DBProjekte.CurrentFavorit.Projekteliste);
+
+        debugger;
 
         await this.Pool.ReadProjektdaten(this.DBProjekte.Projektliste);
 
-        this.DBProjekte.InitMenuProjektauswahl();
+        this.DBProjekte.CurrentProjektindex = 0;
+        this.DBProjekte.CurrentProjekt      = this.DBProjekte.Projektliste[this.DBProjekte.CurrentProjektindex];
+
+        this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
+        this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
+
+        await this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
 
         this.Tools.SetRootPage(this.Const.Pages.PjAufgabenlistePage);
       }
@@ -416,7 +433,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     try {
 
-
+      this.GraphService.GetUsercalendar();
 
     } catch (error) {
 
@@ -433,6 +450,20 @@ export class CommonHomePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Home', 'TestServerClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  TestDrivesClicked() {
+
+    try {
+
+      this.GraphService.GetUserdrives();
+
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
     }
   }
 }

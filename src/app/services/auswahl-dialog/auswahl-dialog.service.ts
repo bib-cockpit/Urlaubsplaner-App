@@ -15,7 +15,8 @@ export class AuswahlDialogService {
     Projekte_Editor_Mitarbeiterauswahl_Stellvertreter: 'Projekte_Editor_Mitarbeiterauswahl_Stellvertreter',
     Projekte_Editor_Mitarbeiterauswahl_Standortfilter: 'Projekte_Editor_Mitarbeiterauswahl_Standortfilter',
     Projekte_Editor_Projektstatus:                     'Projekte_Editor_Projektstatus',
-    Projekte_Editor_Beteiligteneditor:                 'Projekte_Editor_Beteiligteneditor',
+    Projekte_Editor_Beteiligteneditor_Fachbereich:     'Projekte_Editor_Beteiligteneditor_Fachbereich',
+    Projekte_Editor_Beteiligteneditor_Fachfirma:       'Projekte_Editor_Beteiligteneditor_Fachfirma',
 
     Favoriten_Editor_Projekteauswahl_Standortfilter:  'Favoriten_Editor_Projekteauswahl_Standortfilter',
 

@@ -6,7 +6,7 @@ import {
   AuthenticationResult,
   InteractionType,
   PopupRequest,
-  PublicClientApplication, RedirectRequest
+  PublicClientApplication, RedirectRequest, SilentRequest
 } from "@azure/msal-browser";
 import {ConstProvider} from "../const/const";
 import {LocalstorageService} from "../localstorage/localstorage";
@@ -36,6 +36,7 @@ export class DatabaseAuthenticationService {
   public ActiveUsername: string;
   public ActiveUser: AccountInfo;
   public AccessToken: string;
+  public AccessTokenExpired: boolean;
   public SecurityEnabled: boolean;
   private DevelopmentUser: AccountInfo;
   public ShowLogin: boolean;
@@ -54,10 +55,11 @@ export class DatabaseAuthenticationService {
   ) {
     try {
 
-      this.SecurityEnabled = true;
-      this.AccessToken     = this.Const.NONE;
-      this.ActiveUser      = null;
-      this.ShowLogin       = false;
+      this.SecurityEnabled    = true;
+      this.AccessToken        = this.Const.NONE;
+      this.AccessTokenExpired = false;
+      this.ActiveUser         = null;
+      this.ShowLogin          = false;
 
       this.DevelopmentUser = {
 
@@ -74,13 +76,29 @@ export class DatabaseAuthenticationService {
     }
   }
 
+  public UnsetActiveUser() {
+
+    try {
+
+      this.ActiveUser  = null;
+      this.AccessToken = null;
+      this.ShowLogin   = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'UnsetActiveUser', this.Debug.Typen.Service);
+    }
+  }
+
   public async SetActiveUser(): Promise<any> {
 
     try {
 
       let Account;
 
-      return new  Promise((resolve, reject) => {
+      return new  Promise((resolve) => {
+
+        this.AccessTokenExpired = false;
 
         if(this.SecurityEnabled) {
 
@@ -97,8 +115,7 @@ export class DatabaseAuthenticationService {
               }
               else {
 
-                this.ActiveUser  = null;
-                this.AccessToken = null;
+                this.UnsetActiveUser();
               }
 
               resolve(true);
@@ -106,8 +123,7 @@ export class DatabaseAuthenticationService {
           }
           else
           {
-            this.ActiveUser  = null;
-            this.AccessToken = null;
+            this.UnsetActiveUser();
 
             resolve(true);
           }
@@ -153,6 +169,28 @@ export class DatabaseAuthenticationService {
     }
   }
 
+  public async RequestToken(scope: string): Promise<any> {
+
+    try {
+
+      const accessTokenRequest: SilentRequest = {
+        scopes: [scope],
+        account: this.ActiveUser,
+      };
+
+      return new Promise((resolve, reject) => {
+
+        this.authService.acquireTokenSilent(accessTokenRequest).subscribe((response: AuthenticationResult) => {
+
+          resolve(response.accessToken);
+        });
+      });
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'RequestToken', this.Debug.Typen.Service);
+    }
+  }
+
   Login() {
 
     try {
@@ -173,10 +211,16 @@ export class DatabaseAuthenticationService {
                 this.authService.instance.setActiveAccount(response.account);
               });
           }
-        } else {
+        }
+        else {
           if (this.msalGuardConfig.authRequest) {
+
             this.authService.loginRedirect({ ...this.msalGuardConfig.authRequest } as RedirectRequest);
-          } else {
+          }
+          else {
+
+            debugger;
+
             this.authService.loginRedirect();
           }
         }
@@ -225,7 +269,7 @@ export class DatabaseAuthenticationService {
 
         this.Debug.ShowMessage('Database Authentication -> can not load: ' + route.path, 'Security', 'canLoad', this.Debug.Typen.Service);
 
-        this.router.navigate([this.Const.Pages.LoginPage]);
+        this.router.navigate([this.Const.Pages.HomePage]);
 
         return false;
       }

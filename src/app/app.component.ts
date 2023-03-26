@@ -27,7 +27,6 @@ import {Graphservice} from "./services/graph/graph";
 export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
   private AuthSubscription: Subscription;
-  // private unsubscribe = new Subject<void>();
   private isIframe: boolean;
   private readonly Destroying = new Subject<void>();
 
@@ -134,8 +133,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
         await this.GraphService.GetUserinfo();
         await this.GraphService.GetUserimage();
 
-        debugger;
-
         this.Debug.ShowMessage('Benutzer ist angemeldet: ' + this.AuthService.ActiveUser.username, 'App Component', 'StartApp', this.Debug.Typen.Component);
 
 
@@ -163,8 +160,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
             this.Menuservice.ShowRegistrierungPage();
           }
           else {
-
-            debugger;
 
             // Mitarbeiter ist bereits registriert
 

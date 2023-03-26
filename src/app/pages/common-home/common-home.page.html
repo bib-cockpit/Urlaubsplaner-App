@@ -2,73 +2,85 @@
   <page-header #PageHeader>
 
     <ng-container *ngIf="AuthService.ShowLogin === false">
-      <table>
-        <tr>
-          <td style="width: 10px"></td>
-          <td>
-            <div class="menubuttonclass"
-                 (mouseenter)="LogoutMouseOver = true"
-                 (mouseleave)="LogoutMouseOver = false"
-                 (click)="LogoutButtonClicked()">
-              <table class="paddingsmalltable">
-                <tr>
-                  <ng-container *ngIf="AuthService.ShowLogin === false && GraphService.UserimageSRC !== null">
-                    <td style="padding-top: 4px">
-                      <img class="userimagesmall" [src]="GraphService.UserimageSRC">
-                    </td>
-                    <td style="width: 4px"></td>
-                  </ng-container>
 
-                  <td>
-                    <ion-icon name="log-out-outline"
-                              [color]="LogoutMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
-                    </ion-icon>
-                  </td>
-                  <td [style.color]="LogoutMouseOver ? '#c7d304' : 'white'">Abmelden</td>
-                </tr>
-              </table>
-            </div>
+      <table style="width: 100%;">
+        <tr>
+          <td style="width: 50%">
+            <table>
+              <tr>
+                <td style="width: 10px"></td>
+                <td>
+                  <div class="menubuttonclass"
+                       (mouseenter)="LogoutMouseOver = true"
+                       (mouseleave)="LogoutMouseOver = false"
+                       (click)="LogoutButtonClicked()">
+                    <table class="paddingsmalltable">
+                      <tr>
+                        <td>
+                          <ion-icon name="log-out-outline"
+                                    [color]="LogoutMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
+                          </ion-icon>
+                        </td>
+                        <td [style.color]="LogoutMouseOver ? '#c7d304' : 'white'">Abmelden</td>
+                      </tr>
+                    </table>
+                  </div>
+                </td>
+                <td style="width: 10px"></td>
+                <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
+                <td style="width: 10px"></td>
+                <td>
+                  <div class="menubuttonclass"
+                       (mouseenter)="DebugMouseOver = true"
+                       (mouseleave)="DebugMouseOver = false"
+                       (click)="DebugButtonClicked()">
+                    <table class="paddingsmalltable">
+                      <tr>
+                        <td>
+                          <ion-icon name="bug-outline"
+                                    [color]="DebugMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
+                          </ion-icon>
+                        </td>
+                        <td [style.color]="DebugMouseOver ? '#c7d304' : 'white'">Debug</td>
+                      </tr>
+                    </table>
+                  </div>
+                </td>
+                <td style="width: 10px"></td>
+                <td>
+                  <div class="menubuttonclass"
+                       (mouseenter)="EinstellungenMouseOver = true"
+                       (mouseleave)="EinstellungenMouseOver = false"
+                       (click)="EinstellungenButtonClicked()">
+                    <table class="paddingsmalltable">
+                      <tr>
+                        <td>
+                          <ion-icon name="settings-outline"
+                                    [color]="EinstellungenMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
+                          </ion-icon>
+                        </td>
+                        <td [style.color]="EinstellungenMouseOver ? '#c7d304' : 'white'">Einstellungen</td>
+                      </tr>
+                    </table>
+                  </div>
+                </td>
+
+            </tr>
+          </table>
+
           </td>
-          <td style="width: 10px"></td>
-          <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
-          <td style="width: 10px"></td>
-          <td>
-            <div class="menubuttonclass"
-                 (mouseenter)="DebugMouseOver = true"
-                 (mouseleave)="DebugMouseOver = false"
-                 (click)="DebugButtonClicked()">
-              <table class="paddingsmalltable">
-                <tr>
-                  <td>
-                    <ion-icon name="bug-outline"
-                              [color]="DebugMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
-                    </ion-icon>
-                  </td>
-                  <td [style.color]="DebugMouseOver ? '#c7d304' : 'white'">Debug</td>
-                </tr>
-              </table>
-            </div>
+          <td align="right" valign="middle" style="width: 50%">
+            <table *ngIf="AuthService.ShowLogin === false && GraphService.UserimageSRC !== null">
+              <tr>
+                <td>
+                  <img class="userimagesmall" [src]="GraphService.UserimageSRC">
+                </td>
+                <td style="width: 10px"></td>
+              </tr>
+            </table>
           </td>
-          <td style="width: 10px"></td>
-          <td>
-            <div class="menubuttonclass"
-                 (mouseenter)="EinstellungenMouseOver = true"
-                 (mouseleave)="EinstellungenMouseOver = false"
-                 (click)="EinstellungenButtonClicked()">
-              <table class="paddingsmalltable">
-                <tr>
-                  <td>
-                    <ion-icon name="settings-outline"
-                              [color]="EinstellungenMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
-                    </ion-icon>
-                  </td>
-                  <td [style.color]="EinstellungenMouseOver ? '#c7d304' : 'white'">Einstellungen</td>
-                </tr>
-              </table>
-            </div>
-          </td>
-      </tr>
-    </table>
+        </tr>
+      </table>
 
     </ng-container>
 
@@ -94,10 +106,10 @@
         </tr><tr>
           <td style="font-weight: bold; color: #7b6a58">Büro</td><td style="color: #444444;">{{GraphService.Graphuser.officeLocation}}</td>
         </tr>
+        <!--
         <tr *ngIf="GraphService.UserimageSRC !== null">
           <td style="font-weight: bold; color: #7b6a58">Image</td><td><img class="userimage" [src]="GraphService.UserimageSRC"></td>
         </tr>
-        <!--
         <tr>
           <td style="font-weight: bold; color: #7b6a58">Token</td><td style="color: #444444;">{{AuthService.AccessToken}}</td>
         </tr>
@@ -449,6 +461,7 @@
 <ion-footer>
 <page-footer #PageFooter>
 
+  <ion-button *ngIf="AuthService.ShowLogin === false" (click)="TestDrivesClicked()">Test Drives</ion-button>
   <ion-button *ngIf="AuthService.ShowLogin === false" (click)="GetUserClicked()">Userinfo</ion-button>
   <ion-button *ngIf="AuthService.ShowLogin === false" (click)="GetUserimageClicked()">Userimage</ion-button>
   <ion-button *ngIf="AuthService.ShowLogin === false" (click)="GetUsercalendarClicked()">Kalender</ion-button>

@@ -611,9 +611,15 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
           break;
 
-        case this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor:
+        case this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachbereich:
 
           this.DBBeteiligte.CurrentBeteiligte.Beteiligtentyp = data.Typnummer;
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachfirma:
+
+          this.DBBeteiligte.CurrentBeteiligte.Fachfirmentyp = data.Typnummer;
 
           break;
 
@@ -776,7 +782,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
       let Index: number = 0;
 
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor;
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachbereich;
 
 
       this.Auswahltitel  = 'Fachbereich festlegen';
@@ -927,4 +933,30 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     }
   }
 
+  BeteiligteFachfirmaClickedEventHandler() {
+
+    try {
+
+      let Index: number = 0;
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachfirma;
+
+      this.Auswahltitel  = 'Fachfirmentypen festlegen';
+      this.Auswahlliste  = [];
+      this.Auswahlindex  = -1;
+
+      for(let Eintrag of this.DBBeteiligte.Fachfirmentypenliste) {
+
+        this.Auswahlliste.push({ Index: Index, FirstColumn: Eintrag.Name, SecoundColumn: '', Data: Eintrag });
+        Index++;
+      }
+
+      this.Auswahlindex = lodash.findIndex(this.DBBeteiligte.Fachfirmentypenliste, { Typnummer: this.DBBeteiligte.CurrentBeteiligte.Fachfirmentyp } );
+      this.ShowAuswahl  = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'BeteiligteFachfirmaClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
 }

@@ -200,7 +200,7 @@ export class CommonEinstellungenPage implements OnInit {
 
       this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
 
-        this.ProjekteDB.InitMenuProjektauswahl();
+        // this.ProjekteDB.InitMenuProjektauswahl();
 
         this.ProjekteDB.CurrentFavoritenChanged.emit();
 

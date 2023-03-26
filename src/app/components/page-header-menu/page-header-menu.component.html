@@ -1,8 +1,10 @@
 
 <ng-container *ngIf="AuthService.ActiveUser !== null">
   <table style="width: 100%">
+
+    <!-- Erste Mnüzeile -->
     <tr>
-      <td style="width: 100%">
+      <td style="width: auto">
 
         <!-- Erste Menuezeile --->
 
@@ -25,62 +27,10 @@
                 </table>
               </div>
             </td>
-            <!--
-            <td style="width: 10px"></td>
-            <td>
-              <div class="menubuttonclass" (click)="MainMenueButtonClicked(Menuservice.MainMenuebereiche.Debug)">
-                <table class="paddingsmalltable">
-                  <tr>
-                    <td>
-                      <ion-icon name="bug-outline"
-                                [color]="GetMainMenueColor(Menuservice.MainMenuebereiche.Debug)">
-                      </ion-icon>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </td>
-            <td style="width: 10px"></td>
-            <td>
-              <div class="menubuttonclass" (click)="MainMenueButtonClicked(Menuservice.MainMenuebereiche.Einstellungen)">
-                <table class="paddingsmalltable">
-                  <tr>
-                    <td>
-                      <ion-icon name="settings-outline"
-                                [color]="GetMainMenueColor(Menuservice.MainMenuebereiche.Einstellungen)">
-                      </ion-icon>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </td>
-            <td style="width: 20px"></td>
-            <td>
-              <div class="menubuttonclass" (click)="MainMenueButtonClicked(Menuservice.MainMenuebereiche.Firma)">
-                <table class="paddingsmalltable">
-                  <tr>
-                    <td>
-                      <ion-icon name="apps-outline" [color]="GetMainMenueColor(Menuservice.MainMenuebereiche.Firma)"></ion-icon>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </td>
-            <td style="width: 20px"></td>
-            <td>
-              <div class="menubuttonclass" (click)="MainMenueButtonClicked(Menuservice.MainMenuebereiche.Projekte)">
-                <table class="paddingsmalltable">
-                  <tr>
-                    <td>
-                      <ion-icon name="airplane-outline" [color]="GetMainMenueColor(Menuservice.MainMenuebereiche.Projekte)"></ion-icon>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </td>
-            -->
-            <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
 
+            <td align="center" class="trennertdclass">
+              <div [class]="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte ? 'trennerbigdivclass' : 'trennerdivclass'"></div>
+            </td>
               <td *ngIf="ShowStandorttitle === true">
                 <div class="menubuttonclass">
                   <table class="paddingsmalltable">
@@ -129,99 +79,168 @@
 
             <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte">
               <td>
-                <div  class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.LOPListe)">
-                  <table class="paddingsmalltable">
-                    <tr>
-                      <td><ion-icon name="list-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.LOPListe)"></ion-icon></td>
-                      <td style="white-space: nowrap;" [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.LOPListe)">LOP Liste</td>
-                    </tr>
-                  </table>
-                </div>
-              </td>
-              <td style="width: 20px"></td>
-              <td>
-                <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Protokolle)">
-                  <table class="paddingsmalltable">
-                    <tr>
-                      <td><ion-icon name="book-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Protokolle)"></ion-icon></td>
-                      <td [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Protokolle)">Protokolle</td>
-                    </tr>
-                  </table>
-                </div>
-              </td>
-              <td style="width: 20px"></td>
-              <td>
-                <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Festlegungen)">
-                  <table class="paddingsmalltable">
-                    <tr>
-                      <td><ion-icon name="file-tray-full-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Festlegungen)"></ion-icon></td>
-                      <td [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Festlegungen)">Festlegungen</td>
-                    </tr>
-                  </table>
-                </div>
-              </td>
+                <table>
+                  <tr>
+                    <td colspan="3">
+                      <div class="planungheaderdiv">Planung</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div  class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Aufgabenliste)">
+                        <table class="paddingsmalltable">
+                          <tr>
+                            <td><ion-icon name="list-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Aufgabenliste)"></ion-icon></td>
+                            <td style="white-space: nowrap;" [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Aufgabenliste)">Aufgabenliste</td>
+                          </tr>
+                        </table>
+                      </div>
+                    </td>
+                    <td style="width: 20px"></td>
+                    <td>
+                      <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Protokolle)">
+                        <table class="paddingsmalltable">
+                          <tr>
+                            <td><ion-icon name="book-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Protokolle)"></ion-icon></td>
+                            <td [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Protokolle)">Protokolle</td>
+                          </tr>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
 
+              </td>
+              <td align="center" class="trennertdclass"><div class="trennerbigdivclass"></div></td>
+              <td>
+                <table>
+                  <tr>
+                    <td colspan="3">
+                      <div class="planungheaderdiv">Ausführung</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div  class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.LOPListe)">
+                        <table class="paddingsmalltable">
+                          <tr>
+                            <td><ion-icon name="hammer-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.LOPListe)"></ion-icon></td>
+                            <td style="white-space: nowrap;" [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.LOPListe)">LOP Liste</td>
+                          </tr>
+                        </table>
+                      </div>
+                    </td>
+                    <td style="width: 20px"></td>
+                    <td>
+                      <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Bautagebuch)">
+                        <table class="paddingsmalltable">
+                          <tr>
+                            <td><ion-icon name="time-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Bautagebuch)"></ion-icon></td>
+                            <td [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Bautagebuch)">Bautagebuch</td>
+                          </tr>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+
+              </td>
+              <td align="center" class="trennertdclass"><div class="trennerbigdivclass"></div></td>
+              <td>
+
+                <table>
+                  <tr>
+                    <td colspan="3">
+                      <div class="planungheaderdiv">Allgemein</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Festlegungen)">
+                        <table class="paddingsmalltable">
+                          <tr>
+                            <td><ion-icon name="file-tray-full-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Festlegungen)"></ion-icon></td>
+                            <td [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Festlegungen)">Festlegungen</td>
+                          </tr>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
 
               <!--
 
                *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte"
               -->
-
-
-              <ng-container>
-                <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
+              <ng-container *ngIf="Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste">
+                <td align="center" class="trennertdclass"><div class="trennerbigdivclass"></div></td>
                 <td>
-                  <div style="height: auto; padding: 4px;" [style.width.px]="Projektauswahlbreite">
-
-                    <table style=" width: 100%;">
-                      <tr *ngFor="let zi of [].constructor(this.DBProjekte.FavoritenZeilenanzahl); let zindex = index">
-
-                        <td *ngFor="let si of [].constructor(this.DBProjekte.FavoritenSpaltenanzahl); let sindex = index" style="padding: 2px" [style.width.%]="DBProjekte.FavoritenCellbreite">
-                          <ng-container *ngIf="DBProjekte.Projektauswahlsettings[zindex][sindex] !== null">
-                            <div *ngIf="DBProjekte.Projektauswahlsettings[zindex][sindex].ShowInLOPListeOnly === false ||
-                                        (DBProjekte.Projektauswahlsettings[zindex][sindex].ShowInLOPListeOnly === true &&
-                                        Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.LOPListe)" class="buttonclass"
-                                 (click)="FavoritenClickedHandler(DBProjekte.Projektauswahlsettings[zindex][sindex])"
-                                 [style.border-color]="GetProjektbuttoncolor(DBProjekte.Projektauswahlsettings[zindex][sindex])">
-                              <table>
-                                <tr>
-                                  <td *ngIf="DBProjekte.Projektauswahlsettings[zindex][sindex].Background !== Const.NONE">
-                                    <div style="width: 18px; height: 18px; border-radius: 50%" [style.background]="DBProjekte.Projektauswahlsettings[zindex][sindex].Background"></div>
-                                  </td>
-                                  <td>
-                                    <table [style.color]="GetProjektbuttoncolor(DBProjekte.Projektauswahlsettings[zindex][sindex])">
-                                      <tr>
-                                        <td align="center">{{DBProjekte.Projektauswahlsettings[zindex][sindex].Projektkuerzel}}</td>
-                                      </tr>
-                                      <tr *ngIf="(sindex !== 0 && zindex === 0) || (zindex > 0)">
-                                        <td align="center"style="font-size: 85%;">
-                                          <table class="paddingtable">
-                                            <tr>
-                                              <td>
-                                                {{DBProjekte.Projektauswahlsettings[zindex][sindex].Projektnummer}}
-                                              </td>
-                                              <td *ngIf="DBProjekte.Projektauswahlsettings[zindex][sindex].Projektpunkteanzahl > 0">
-                                                [{{DBProjekte.Projektauswahlsettings[zindex][sindex].Projektpunkteanzahl}}]
-                                              </td>
-                                            </tr>
-                                          </table>
-                                        </td>
-                                      </tr>
-                                    </table>
-
-                                  </td>
-                                </tr>
-                              </table>
-
-                            </div>
-
-                          </ng-container>
+                  <div (click)="MeintagClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Mein_Tag ? '#c7d304' : 'white'"  class="buttonclass">
+                    <table>
+                      <tr>
+                        <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Mein_Tag ? '#c7d304' : 'white'">
+                          Mein Tag
                         </td>
                       </tr>
                     </table>
-
                   </div>
                 </td>
+                <td style="width: 10px"></td>
+                <td>
+                  <div (click)="MeineWocheClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meine_Woche ? '#c7d304' : 'white'"  class="buttonclass">
+                    <table>
+                      <tr>
+                        <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meine_Woche ? '#c7d304' : 'white'">
+                          Meine Woche
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </td>
+                <td style="width: 10px"></td>
+                <td>
+                  <div (click)="MeilensteineClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meilensteine ? '#c7d304' : 'white'"  class="buttonclass">
+                    <table>
+                      <tr>
+                        <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meilensteine ? '#c7d304' : 'white'">
+                          Meilensteine
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </td>
+                <td style="width: 10px"></td>
+                <td *ngIf="DBProjekte.CurrentProjekt !== null">
+                  <table class="paddingtable">
+                    <tr>
+                      <td>
+                        <ion-button (click)="ProjektGoBackClicked()" slot="icon-only"
+                                    [color]="GetProjektBackButtoncolor()" size="small">
+                          <ion-icon name="arrow-back-circle" style="font-size: 22px"></ion-icon>
+                        </ion-button>
+                      </td>
+                      <td>
+                        <div (click)="ProjektClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt ? '#c7d304' : 'white'"  class="buttonclass">
+                          <table>
+                            <tr>
+                              <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt ? '#c7d304' : 'white'">
+                                {{DBProjekte.CurrentProjekt.Projektkurzname}}
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
+                      </td>
+                      <td>
+                        <ion-button (click)="ProjektGoForwardClicked()" slot="icon-only"
+                                    [color]="GetProjektForwardButtoncolor()" size="small">
+                          <ion-icon name="arrow-forward-circle" style="font-size: 22px"></ion-icon>
+                        </ion-button>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+
               </ng-container>
 
             </ng-container>
@@ -250,18 +269,26 @@
 
 
       </td>
+      <td style="width: 50px;">
+
+        <table *ngIf="AuthService.ShowLogin === false && GraphService.UserimageSRC !== null">
+          <tr>
+            <td>
+              <img class="userimagesmall" [src]="GraphService.UserimageSRC">
+            </td>
+            <td style="width: 10px"></td>
+          </tr>
+        </table>
+
+      </td>
     </tr>
 
-    <!--
+    <!-- Meine Woche 2. Menüzeile -->
 
-    Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte &&
-
-    --->
-
-    <ng-container *ngIf="Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.LOPListe && DBProjekte.CurrentFavoritprojektindex === 3000">
+    <ng-container *ngIf="Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste && Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meine_Woche">
 
       <tr>
-        <td style="padding-left: 8px; padding-right: 8px">
+        <td colspan="2" style="padding-left: 8px; padding-right: 8px">
           <div style="width: 100%; height: 1px; background: white"></div>
         </td>
       </tr>
@@ -291,25 +318,31 @@
             </tr>
           </table>
         </td>
+        <td><!-- Bild --></td>
       </tr>
 
 
     </ng-container>
 
-    <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte && Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.LOPListe && DBProjekte.CurrentFavoritprojektindex !== 3000">
+
+    <!-- Einzelprojekt 2. Menüzeile -->
+
+    <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Projekte &&
+                         Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste &&
+                         Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt &&
+                         DBProjekte.CurrentProjekt        !== null">
       <tr>
-        <td style="padding-left: 8px; padding-right: 8px">
+        <td colspan="2" style="padding-left: 8px; padding-right: 8px">
           <div style="width: 100%; height: 1px; background: white"></div>
         </td>
       </tr>
       <tr>
-        <td> <!--  style="padding: 4px" -->
+        <td>
 
           <div style="width: 100%; height: 100%; background: none">
 
-            <!-- Zweite Menuezeile --->
 
-            <table *ngIf="DBProjekte.CurrentProjekt !== null && DBProjekte.CurrentFavoritprojektindex !== 3000" class="paddingtable">
+            <table class="paddingtable">
               <tr>
                 <td style="width: 360px;">
                   <button-value [Buttontext]="GetZeitfilterButtontext()"
@@ -344,15 +377,11 @@
           </div>
 
         </td>
+        <td><!-- Bild --></td>
       </tr>
     </ng-container>
 
 
-    <!--
-    <tr *ngIf="AuthService.LoggedIn() === true">
-      <td colspan="20" style="padding: 2px">{{AuthService.ActiveUsername}} </td>
-    </tr>
-    -->
 
   </table>
 

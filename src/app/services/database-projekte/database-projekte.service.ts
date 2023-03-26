@@ -33,6 +33,8 @@ export class DatabaseProjekteService {
   public Projektliste:            Projektestruktur[];
 
   public CurrentFavoritenChanged = new EventEmitter<any>();
+  public CurrentFavoritenProjektChanged = new EventEmitter<any>();
+
   public  FavoritenZeilenanzahl: number;
   public FavoritenSpaltenanzahl: number;
   public  FavoritenCellbreite: number;
@@ -91,6 +93,8 @@ export class DatabaseProjekteService {
       this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'GetProjektByID', this.Debug.Typen.Service);
     }
   }
+
+
 
   public InitMenuProjektauswahl() {
 
@@ -597,7 +601,7 @@ export class DatabaseProjekteService {
   }
 
 
-  SetProjekteliste(idliste: string[]) {
+  public SetProjekteliste(idliste: string[]) {
 
     try {
 

@@ -21,8 +21,8 @@ import {PjMeinewocheEditorModule} from "../../components-page/pj-meinewoche-edit
 import {PjProjektpunktStatusdatePickerModule} from "../../components-page/pj-projektpunkt-statusdate-picker/pj-projektpunkt-statusdate-picker.module";
 import {PjProjektpunktDateKwPickerModule} from "../../components-page/pj-projektpunkt-date-kw-picker/pj-projektpunkt-date-kw-picker.module";
 import {
-  PjAufgabenProjektauswahlModule
-} from "../../components-page/pj-aufgaben-projektauswahl/pj-aufgaben-projektauswahl.module";
+  PjProjekteSchnellauswahlModule
+} from "../../components-page/pj-projekte-schnellauswahl/pj-projekte-schnellauswahl.module";
 
 const routes: Routes = [
   {
@@ -54,7 +54,7 @@ const routes: Routes = [
     PjMeinewocheEditorModule,
     PjProjektpunktStatusdatePickerModule,
     PjProjektpunktDateKwPickerModule,
-    PjAufgabenProjektauswahlModule,
+    PjProjekteSchnellauswahlModule,
 
 
   ],

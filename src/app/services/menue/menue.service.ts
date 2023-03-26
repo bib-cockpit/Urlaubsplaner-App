@@ -23,9 +23,20 @@ export class MenueService {
   public ProjekteMenuebereich: string;
   public ProjekteMenuebereiche = {
 
-    LOPListe:     'LOP Liste',
-    Protokolle:   'Protokolle',
-    Festlegungen: 'Festlegungen',
+    Aufgabenliste: 'Aufgabenliste',
+    Protokolle:    'Protokolle',
+    LOPListe:      'LOP Liste',
+    Bautagebuch:   'Bautagebuch',
+    Festlegungen:  'Festlegungen',
+  };
+
+  public Aufgabenlisteansicht: string;
+  public Aufgabenlisteansichten = {
+
+    Mein_Tag:     'Mein Tag',
+    Meine_Woche:  'Meine Woche',
+    Meilensteine: 'Meilensteine',
+    Projekt:      'Projekt'
   };
 
   public FirmaMenuebereich: string;
@@ -48,24 +59,12 @@ export class MenueService {
 
       this.MainMenuebereich     = this.MainMenuebereiche.Projekte;
       this.FirmaMenuebereich    = this.FirmaMenuebereiche.Projekte;
-      this.ProjekteMenuebereich = this.ProjekteMenuebereiche.LOPListe;
+      this.ProjekteMenuebereich = this.ProjekteMenuebereiche.Aufgabenliste;
+      this.Aufgabenlisteansicht = this.Aufgabenlisteansichten.Mein_Tag;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Menue', 'constructor', this.Debug.Typen.Service);
-    }
-  }
-
-
-  public ShowLoginPage() {
-
-    try {
-
-      this.Tools.SetRootPage(this.Const.Pages.LoginPage);
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Menue', 'SetLoginPage', this.Debug.Typen.Service);
     }
   }
 
@@ -97,23 +96,23 @@ export class MenueService {
 
           switch (this.ProjekteMenuebereich) {
 
-            case this.ProjekteMenuebereiche.LOPListe:
+            case this.ProjekteMenuebereiche.Aufgabenliste:
 
-              switch (this.DBProjekte.CurrentFavoritprojektindex) {
+              switch (this.Aufgabenlisteansicht) {
 
-                case 1000: // = Favoriten
+                case this.Aufgabenlisteansichten.Mein_Tag:
 
                     this.Tools.SetRootPage(this.Const.Pages.PjAufgabenlistePage);
 
                   break;
 
-                case 2000: // = Mein Tag
+                case this.Aufgabenlisteansichten.Meilensteine:
 
                   this.Tools.SetRootPage(this.Const.Pages.PjAufgabenlistePage);
 
                   break;
 
-                default:
+                case this.Aufgabenlisteansichten.Projekt:
 
                   this.Tools.SetRootPage(this.Const.Pages.PjAufgabenlistePage);
 
@@ -125,6 +124,18 @@ export class MenueService {
             case this.ProjekteMenuebereiche.Protokolle:
 
               this.Tools.SetRootPage(this.Const.Pages.PjProtokolleListePage);
+
+              break;
+
+            case this.ProjekteMenuebereiche.LOPListe:
+
+
+
+              break;
+
+            case this.ProjekteMenuebereiche.Bautagebuch:
+
+
 
               break;
 

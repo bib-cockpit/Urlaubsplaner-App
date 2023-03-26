@@ -177,7 +177,6 @@ const _Pages = {
 
   // Allgemein
 
-  LoginPage: 'LoginPage',
   HomePage: 'HomePage',
   RegistrierungPage: 'RegistrierungPage',
   EinstellungenPage: 'EinstellungenPage',
@@ -189,7 +188,6 @@ const _Pages = {
   TestPage: 'TestPage',
   ErrorPage: 'ErrorPage',
   DebugPage: 'DebugPage',
-
 
   // Firma
 
@@ -335,6 +333,100 @@ const _Beteiligteneintragtypen = {
 
   Person: 'Person',
   Firma:  'Firma'
+};
+
+const _Fachfirmentypen: any = {
+
+  Unbekannt:  {
+
+    Typnummer: 0,
+    Name: 'Unbekannt',
+    Color: '#ff6600'
+  },
+  Elektroinstallateur: {
+
+    Typnummer: 1,
+    Name: 'Elektroinstallateur',
+    Color: '#ff6600'
+  },
+  Heizungsinstallateur: {
+
+    Typnummer: 2,
+    Name: 'Heizungsinstallateur',
+    Color: '#ff6600'
+  },
+  Lueftungsinstallateur: {
+
+    Typnummer: 3,
+    Name: 'Lüftungsinstallateur',
+    Color: '#ff6600'
+  },
+  Sanitaerinstallateur: {
+
+    Typnummer: 4,
+    Name: 'Sanitärinstallateur',
+    Color: '#ff6600'
+  },
+  Rohbaufirma: {
+
+    Typnummer: 5,
+    Name: 'Rohbaufirma',
+    Color: '#ff6600'
+  },
+  Tiefbaufirma: {
+
+    Typnummer: 6,
+    Name: 'Tiefbaufirma',
+    Color: '#ff6600'
+  },
+  Blitschutzbauer: {
+
+    Typnummer: 7,
+    Name: 'Blitschutzbauer',
+    Color: '#ff6600'
+  },
+  Dachdecker: {
+
+    Typnummer: 8,
+    Name: 'Dachdecker',
+    Color: '#ff6600'
+  },
+  Zimmerei: {
+
+    Typnummer: 9,
+    Name: 'Zimmerei',
+    Color: '#ff6600'
+  },
+  Schreiner: {
+
+    Typnummer: 10,
+    Name: 'Schreiner',
+    Color: '#ff6600'
+  },
+  Medientechnik: {
+
+    Typnummer: 11,
+    Name: 'Medientechnik',
+    Color: '#ff6600'
+  },
+  Fussbodenlegen: {
+
+    Typnummer: 12,
+    Name: 'Fußbodenlegen',
+    Color: '#ff6600'
+  },
+  Estrichleger: {
+
+    Typnummer: 13,
+    Name: 'Estrichleger',
+    Color: '#ff6600'
+  },
+  Fliesenleger: {
+
+    Typnummer: 14,
+    Name: 'Fliesenleger',
+    Color: '#ff6600'
+  },
 };
 
 
@@ -755,6 +847,7 @@ export class ConstProvider {
   public readonly Projektstatusvarianten        = _Projektstatusvarianten;
   public readonly Faelligkeitsstatus            = _Faelligkeitsstatus;
   public readonly Beteiligtentypen              = _Beteiligtentypen;
+  public readonly Fachfirmentypen               = _Fachfirmentypen;
   public readonly Beteiligteneintragtypen       = _Beteiligteneintragtypen;
   public readonly Anredevariante                = _Anredevariante;
   public readonly Zeitansatzeinheitvarianten    = _Zeitansatzeinheitvarianten;
