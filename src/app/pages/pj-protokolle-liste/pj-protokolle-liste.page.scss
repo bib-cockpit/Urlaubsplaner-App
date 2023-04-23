@@ -12,3 +12,13 @@
   font-weight: bold;
 }
 
+.maildivclass {
+
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+}
+

@@ -164,9 +164,35 @@ ion-searchbar {
 
   height: 630px;
   width: 360px;
-  background: black;
+  background: #FF9333;
   position: relative;
   overflow: auto;
+}
+
+a {
+  text-decoration: none;
+  color: #FF9333;
+}
+
+a:link {
+  text-decoration: none;
+  color: #FF9333;
+}
+
+a:visited {
+  text-decoration: none;
+  color: #FF9333;
+}
+
+a:hover {
+  text-decoration: underline;
+  cursor: pointer;
+  color: #FF9333;
+}
+
+a:active {
+  text-decoration: none;
+  color: #FF9333;
 }
 
 

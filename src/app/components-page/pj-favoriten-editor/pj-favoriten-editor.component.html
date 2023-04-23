@@ -83,6 +83,20 @@
 
 
                 </div>
+                <div class="deletebuttonclass">
+                  <table>
+                    <tr>
+                      <td><checkbox-clon [Checked]="CanDelete" (CheckChanged)="CanDeleteCheckedChanged($event)"></checkbox-clon></td>
+                      <td style="width: 6px"></td>
+                      <td>
+                        <ion-button size="small" color="rot" [disabled]="!CanDelete" (click)="DeleteButtonClicked()">
+                          <ion-icon name="trash-outline" style="font-size: 20px"></ion-icon>
+                          <ion-text>Favorit löschen</ion-text>
+                        </ion-button>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
                 <div class="projektebuttonclass">
                   <table>
                     <tr>

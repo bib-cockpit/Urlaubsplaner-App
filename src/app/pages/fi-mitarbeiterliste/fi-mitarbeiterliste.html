@@ -2,6 +2,15 @@
   <page-header #PageHeader>
     <page-header-menu [ShowSuchleiste]="true" [ShowSandortfilter]="true" [ShowMitarbeitertitle]="true"
                       (SucheChanged)="SucheChanged($event)" (StandortfilterClicked)="StandortFilterClickedHandler()"></page-header-menu>
+    <table class="paddingtable">
+      <tr>
+        <td><checkbox-clon [Checked]="ShowMeOnly" (CheckChanged)="ShowMeCheckedChanged($event)"></checkbox-clon></td>
+        <td>Nur meinen Eintrag anzeigen</td>
+        <td style="width: 6px"></td>
+        <td><checkbox-clon [Checked]="ShowArchivierte" (CheckChanged)="ShowArchivierteChanged($event)"></checkbox-clon></td>
+        <td>Archivierte Einträge anzeigen</td>
+      </tr>
+    </table>
   </page-header>
 </ion-header>
 <ion-content no-shadow no-border>
@@ -20,13 +29,19 @@
                 <table class="paddingsmalltable" width="100%">
                   <tr>
                     <td>
-                      <table cellspacing="0" cellpadding="0">
+                      <table *ngIf="Mitarbeiter !== null && Pool.Mitarbeiterdaten !== null" cellspacing="0" cellpadding="0">
                         <tr *ngIf="!Mitarbeiter.Filtered">
+                          <td *ngIf="Mitarbeiter.Email === Pool.Mitarbeiterdaten.Email && Mitarbeiter.Kuerzel === '' || Mitarbeiter.StandortID === ''">
+                            <img  src="/assets/svgs/alert.svg" style="height: 26px"/>
+                          </td>
                           <td>
                             {{Mitarbeiter.Name}} {{Mitarbeiter.Vorname}} / {{Mitarbeiter.Kuerzel}}
                           </td>
                         </tr>
                         <tr *ngIf="Mitarbeiter.Filtered">
+                          <td *ngIf="Mitarbeiter.Email === Pool.Mitarbeiterdaten.Email && Mitarbeiter.Kuerzel === '' || Mitarbeiter.StandortID === ''">
+                            <img src="/assets/svgs/alert.svg" style="height: 26px"/>
+                          </td>
                           <td>
                             <span>{{Mitarbeiter.Text_A}}</span><span style="color: green">{{Mitarbeiter.Text_B}}</span><span>{{Mitarbeiter.Text_C}}</span> / {{Mitarbeiter.Kuerzel}}
                           </td>
@@ -101,14 +116,25 @@
 <ion-footer>
   <page-footer #PageFooter>
 
-    <div class="rootbuttonclass" (click)="AddMitarbeiterButtonClicked()">
-      <ion-icon style="font-size: 28px" color="burnicklgruen" name="add-circle-outline"></ion-icon>
-    </div>
+    <table style="width: 100%">
+      <tr>
+        <td style="width: 50%">
+          {{Mitarbeiterliste.length}} Einträge
+        </td>
+        <td style="width: 50%" align="right">
+          <div class="rootbuttonclass" (click)="AddMitarbeiterButtonClicked()">
+            <ion-icon style="font-size: 28px" color="burnicklgruen" name="add-circle-outline"></ion-icon>
+          </div>
+        </td>
+      </tr>
+
+    </table>
+
 
   </page-footer>
 </ion-footer>
 
-<fi-mitarbeiter-editor *ngIf="ShowEditor" [Dialogbreite]="600" [Dialoghoehe]="660" [PositionY]="100"  [Titel]="GetDialogTitel()" Iconname="people-outline"
+<fi-mitarbeiter-editor *ngIf="ShowEditor" [Dialogbreite]="600" [Dialoghoehe]="800" [PositionY]="100"  [Titel]="GetDialogTitel()" Iconname="people-outline"
                        (StandortClickedEvent)="StandortClickedHandler()"
                        (CancelClickedEvent)="ShowEditor = false"
                        (OkClickedEvent)="ShowEditor = false" (DeleteClickedEvent)="ShowEditor = false"

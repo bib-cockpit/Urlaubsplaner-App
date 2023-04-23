@@ -21,6 +21,10 @@ import {Graphservice} from "../../services/graph/graph";
 import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import {DatabaseProtokolleService} from "../../services/database-protokolle/database-protokolle.service";
+import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
+import {Projektestruktur} from "../../dataclasses/projektestruktur";
 
 
 @Component({
@@ -53,6 +57,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
               private authService: MsalService,
               private msalBroadcastService: MsalBroadcastService,
               public DBProjekte: DatabaseProjekteService,
+              private DBProtokolle: DatabaseProtokolleService,
               public GraphService: Graphservice,
               public DBChangelog: DatabaseChangelogService,
               public AuthService: DatabaseAuthenticationService,
@@ -165,8 +170,6 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
       this.DBProjekte.CurrentFavorit = lodash.find(this.Pool.Mitarbeiterdaten.Favoritenliste, {FavoritenID: event.detail.value});
 
-      debugger;
-
       if(lodash.isUndefined(this.DBProjekte.CurrentFavorit)) this.DBProjekte.CurrentFavorit = null;
 
       if(this.DBProjekte.CurrentFavorit === null) {
@@ -276,15 +279,13 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     try {
 
-      if(this.DBProjekte.CurrentFavorit !== null) {
+      if(this.DBProjekte.CurrentFavorit !== null && this.DBProjekte.GesamtprojektlisteHasDatenerror === false) {
 
         this.Menuservice.MainMenuebereich     = this.Menuservice.MainMenuebereiche.Projekte;
         this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Aufgabenliste;
         this.Menuservice.Aufgabenlisteansicht = this.Menuservice.Aufgabenlisteansichten.Projekt;
 
         this.DBProjekte.SetProjekteliste(this.DBProjekte.CurrentFavorit.Projekteliste);
-
-        debugger;
 
         await this.Pool.ReadProjektdaten(this.DBProjekte.Projektliste);
 
@@ -386,6 +387,8 @@ export class CommonHomePage implements OnInit, OnDestroy {
         this.Basics.AppVersionDatum = 'none';
       }
 
+
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Home', 'PrepareDaten', this.Debug.Typen.Page);
@@ -401,31 +404,6 @@ export class CommonHomePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Home', 'LoggoutClicked', this.Debug.Typen.Page);
-    }
-  }
-
-  GetUserClicked() {
-
-    try {
-
-
-      this.GraphService.GetUserinfo();
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Home', 'GetUserClicked', this.Debug.Typen.Page);
-    }
-  }
-
-  GetUserimageClicked() {
-
-    try {
-
-      this.GraphService.GetUserimage();
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Home', 'GetUserimageClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -453,17 +431,116 @@ export class CommonHomePage implements OnInit, OnDestroy {
     }
   }
 
-  TestDrivesClicked() {
+
+  TestGraphClicked() {
 
     try {
 
-      this.GraphService.GetUserdrives();
+      this.GraphService.TestGraph();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'TestGraphClicked', this.Debug.Typen.Page);
+    }
+  }
+
+
+  SendMailClicked() {
+
+    try {
+
+      this.GraphService.SendMail();
 
 
 
     } catch (error) {
 
+      this.Debug.ShowErrorMessage(error, 'Home', 'SendMailClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  TestSites() {
+
+    try {
+
+      this.GraphService.TestSites();
+
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'TestSites', this.Debug.Typen.Page);
+    }
+  }
+
+
+  PDFDownloadAvaiableHandler() {
+
+    try {
+
+      this.Tools.PushPage(this.Const.Pages.PDFViewerPage);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'PDFDownloadAvaiableHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  async SaveProtokokllClicked() {
+
+    try {
+
+      // await this.DBProtokolle.SaveProtokollInTeams();
+
+    } catch (error) {
+
       this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
+    }
+  }
+
+  async SendProtokokllClicked() {
+
+    try {
+
+      // await this.DBProtokolle.SendProtojollFromTeams();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
+    }
+  }
+
+  CountMitarbeiter(): string {
+
+    try {
+
+      return lodash.filter(this.Pool.Mitarbeiterliste, (Mitarbeiter: Mitarbeiterstruktur) => {
+
+        return !Mitarbeiter.Archiviert;
+
+      }).length.toString();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'CountMitarbeiter', this.Debug.Typen.Page);
+    }
+  }
+
+  CountProjekte(): number {
+
+    try {
+
+      let Liste: Projektestruktur[] =  lodash.filter(this.DBProjekte.Gesamtprojektliste, (Projekt: Projektestruktur) => {
+
+        return Projekt.ProjektIsReal === true;
+
+      });
+
+      return Liste.length;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'CountProjekte', this.Debug.Typen.Page);
     }
   }
 }

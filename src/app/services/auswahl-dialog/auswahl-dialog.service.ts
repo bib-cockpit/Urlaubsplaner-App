@@ -39,11 +39,22 @@ export class AuswahlDialogService {
 
     Aufgabenliste_Meintageintrag_Status:                 'Aufgabenliste_Meintageintrag_Status',
 
+    Fesrlegungsliste_Editor_Leistungsphase:                 'Fesrlegungsliste_Editor_Leistungsphase',
+
+    Bautagebuchliste_Emaileditor_Intern_Empfaenger:         'Bautagebuchliste_Emaileditor_Intern_Empfaenger',
+    Bautagebuchliste_Emaileditor_Intern_CcEmpfaenger:       'Bautagebuchliste_Emaileditor_Intern_CcEmpfaenger',
+    Bautagebuchliste_Emaileditor_Extern_Empfaenger:         'Bautagebuchliste_Emaileditor_Extern_Empfaenger',
+    Bautagebuchliste_Emaileditor_Extern_CcEmpfaenger:       'Bautagebuchliste_Emaileditor_Extern_CcEmpfaenger',
+
     Protokollliste_Editor_Leistungsphase:                   'Protokollliste_Editor_Leistungsphase',
     Protokollliste_Protokolleditor_Teamteilnehmer:          'Protokollliste_Protokolleditor_Teamteilnehmer',
     Protokollliste_Projektpunkteditor_Teamteilnehmer:       'Protokollliste_Projektpunkteditor_Teamteilnehmer',
     Protokollliste_Protokolleditor_Beteilgtenteilnehmer:    'Protokollliste_Protokolleditor_Beteilgtenteilnehmer',
     Protokollliste_Projektpunkteditor_Beteilgtenteilnehmer: 'Protokollliste_Projektpunkteditor_Beteilgtenteilnehmer',
+    Protokollliste_Emaileditor_Intern_Empfaenger:           'Protokollliste_Emaileditor_Intern_Empfaenger',
+    Protokollliste_Emaileditor_Intern_CcEmpfaenger:         'Protokollliste_Emaileditor_Intern_CcEmpfaenger',
+    Protokollliste_Emaileditor_Extern_Empfaenger:           'Protokollliste_Emaileditor_Extern_Empfaenger',
+    Protokollliste_Emaileditor_Extern_CcEmpfaenger:         'Protokollliste_Emaileditor_Extern_CcEmpfaenger',
 
 
     Protokollliste_Projektpunkteditor_Status:          'Protokollliste_Projektpunkteditor_Status',

@@ -200,7 +200,10 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
 
         for(let BeteiligteID of this.AuswahlIDliste) {
 
-          Beteiligte = <Projektbeteiligtestruktur>lodash.find(Liste, {_id: BeteiligteID});
+          Beteiligte = lodash.find(Liste, (beteiligter: Projektbeteiligtestruktur) => {
+
+            return beteiligter.BeteiligtenID === BeteiligteID;
+          });
 
           if(!lodash.isUndefined(Beteiligte)) Beteiligte.Selected = true;
         }

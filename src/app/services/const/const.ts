@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import {PjProtokolleListePage} from "../../pages/pj-protokolle-liste/pj-protokolle-liste.page";
 import {CommonHomePage} from "../../pages/common-home/common-home.page";
+import {PjBaustelleLoplistePage} from "../../pages/pj-baustelle-lopliste/pj-baustelle-lopliste.page";
+import {PjBaustelleTagebuchlistePage} from "../../pages/pj-baustelle-tagebuchliste/pj-baustelle-tagebuchliste.page";
+import {
+  PjFestlegungslistePage
+} from "../../pages/pj-festlegungsliste/pj-festlegungsliste.page";
 
 const _MitarbeiterdatenKeys = {
 
@@ -188,6 +193,7 @@ const _Pages = {
   TestPage: 'TestPage',
   ErrorPage: 'ErrorPage',
   DebugPage: 'DebugPage',
+  PDFViewerPage: 'PDFViewerPage',
 
   // Firma
 
@@ -218,7 +224,6 @@ const _Pages = {
 
   PjProtokollSendeberichtPage: 'PjProtokollSendeberichtPage',
 
-  PjFestlegungListePage:           'PjFestlegungListePage',
   PjFestlegungkategorieeditorPage: 'PjFestlegungkategorieeditorPage',
 
 
@@ -227,7 +232,13 @@ const _Pages = {
   PjAufgabenlistePage: 'PjAufgabenlistePage',
 
 
-  PjProtokolleListePage: 'PjProtokolleListePage'
+  PjProtokolleListePage: 'PjProtokolleListePage',
+
+  PjFilebrowserPage: 'PjFilebrowserPage',
+
+  PjBaustelleLoplistePage: 'PjBaustelleLoplistePage',
+  PjBaustelleTagebuchlistePage: 'PjBaustelleTagebuchlistePage',
+  PjFestlegungslistePage: 'PjFestlegungslistePage',
 };
 
 const _Treeitemtypvarianten = {
@@ -541,7 +552,25 @@ const _Fachbereiche = {
   Klimatisierung: 'Klimatisierung',
   MSR: 'MSR',
   Geschaeftsfuehrung: 'Geschäftsfuehrung',
-  Assistenz: 'Assistenz',
+  Assistenz:          'Assistenz',
+  Prokurist:          'Prokurist',
+  Planer: 'Planer',
+  Teamleitung: 'Teamleitung',
+  Projektleitung: 'Projektleitung',
+  Studentin: 'Student/in',
+  Auszubildende: 'Auszubildende/r',
+  Objektueberwachung: 'Objektüberwachung',
+  Buchhaltung: 'Buchhaltung',
+  Marketing: 'Marketing',
+  Praktikantin: 'Praktikant/in',
+  IT: 'IT',
+  Controlling: 'Controlling',
+  Techniker: 'Techniker/in',
+  Facilitymanager: 'Facilitymanager',
+  Niederlassungsleitung: 'Niederlassungsleitung',
+  Architektin: 'Architekt/in',
+  Kauffrau: 'Kauffrau',
+  HR: 'HR',
 };
 
 

@@ -12,20 +12,15 @@
               <td><ion-icon [name]="Iconname" color="burnicklgruen"></ion-icon></td>
               <td [style.color]="'white'">{{Titel}}</td>
             </tr>
+            <tr>
+              <td colspan="3">
+                <ion-button size="small" color="burnicklbraun" (click)="StandortfilterButtonClicked()">
+                  <ion-icon name="funnel-outline"></ion-icon>
+                  {{GetStandortfiller()}}
+                </ion-button>
+              </td>
+            </tr>
           </table>
-
-          <td style="width: 20px"></td>
-          <td>
-            <div class="menufilterbuttonclass" (click)="StandortfilterButtonClicked()">
-              <table class="paddingsmalltable">
-                <tr>
-                  <td><ion-icon name="funnel-outline"></ion-icon></td>
-                  <td [innerHTML]="GetStandortfiller()"></td>
-                </tr>
-              </table>
-            </div>
-          </td>
-
         </page-header>
       </ion-header>
 
@@ -48,7 +43,7 @@
                         <table class="paddingsmalltable" width="100%">
                           <tr>
                             <td>
-                              <table cellspacing="0" cellpadding="0">
+                              <table *ngIf="Mitarbeiter !== null" cellspacing="0" cellpadding="0">
                                 <tr>
                                   <td><checkbox-clon [Index]="i" (CheckChanged)="CheckedChanged($event)" [Checked]="Mitarbeiter.Selected"></checkbox-clon></td>
                                   <td *ngIf="!Mitarbeiter.Filtered">

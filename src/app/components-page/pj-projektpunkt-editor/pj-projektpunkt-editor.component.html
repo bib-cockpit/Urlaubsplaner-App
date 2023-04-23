@@ -73,9 +73,31 @@
                   </ion-row>
                   <ion-row *ngIf="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name">
                     <ion-col size="6">
-                      <button-value [Buttontext]="'Kostengruppe'"
-                                    [Wert_A]="KostenService.GetKostengruppenname(this.DB.CurrentProjektpunkt)" (ButtonClicked)="KostengruppeClicked.emit()"></button-value>
+                      <table style="width: 100%">
+                        <tr>
+                          <td>
+                            <button-value [Buttontext]="'Kostengruppe'"
+                                          [Wert_A]="KostenService.GetKostengruppenname(this.DB.CurrentProjektpunkt)" (ButtonClicked)="KostengruppeClicked.emit()">
+                            </button-value>
+                          </td>
+                        </tr>
+                        <tr *ngIf="Kostengruppenpunkteliste.length > 0">
+                          <td>
+                            <table class="paddingsmalltable">
+                              <tr>
+                                <td colspan="2">Letzte {{Kostengruppenpunkteliste.length === 1 ? 'Kostengruppe:' : 'Kostengruppen:'}}</td>
+                              </tr>
+                              <tr *ngFor="let Punkt of Kostengruppenpunkteliste">
+                                <td style="color: #FF9333; font-weight: bold;">
+                                  <a (click)="LastKostengruppeClicked(Punkt)">{{KostenService.GetKostengruppenname(Punkt)}}</a></td>
+                              </tr>
+                            </table>
+
+                          </td>
+                        </tr>
+                      </table>
                     </ion-col>
+
                   </ion-row>
                   <ion-row *ngIf="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name">
                     <ion-col size="6">

@@ -1,4 +1,23 @@
+.projektbuttoniconclass {
 
+  height: 90px;
+  width: 100px;
+  z-index: 100;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}.projektbuttoniconerrorclass {
+
+   height: 90px;
+   width: 100px;
+  z-index: 200;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 
 .trennerdiv {
@@ -25,7 +44,7 @@
   align-items: center; // vertikal
   border: 2px solid gray;
   border-radius: 10px;
-  width: 140px;
+  width: 160px;
   height: 140px;
   cursor: pointer;
   background: white;
@@ -36,12 +55,28 @@
   border: 2px solid gray;
   border-radius: 10px;
   width: 360px;
-  height: 400px;
+  height: 300px;
   position: absolute;
   position: absolute;
   padding: 8px;
   left: 20px;
   top: 240px;
+  background: white;
+  z-index: 1000;
+  overflow: auto;
+}
+
+.outputdiv {
+
+  border: 2px solid gray;
+  border-radius: 10px;
+  width: 500px;
+  height: 600px;
+  position: absolute;
+  position: absolute;
+  padding: 8px;
+  left: 20px;
+  top: 560px;
   background: white;
   z-index: 1000;
   overflow: auto;
@@ -66,20 +101,19 @@
   object-fit: cover;
 }
 
-.graphuserdiv {
+.userkuerzelsmall {
 
-  border: 2px solid gray;
-  border-radius: 10px;
-  width: 360px;
-  height: 200px;
-  position: absolute;
-  position: absolute;
-  padding: 8px;
-  left: 20px;
-  top: 20px;
-  background: white;
-  z-index: 1000;
-  overflow: auto;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin-right: 4px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  background: #7b6a58;
+  color: white;
+  font-weight: bold;
 }
 
 .buttonbigclass {

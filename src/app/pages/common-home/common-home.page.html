@@ -10,7 +10,7 @@
               <tr>
                 <td style="width: 10px"></td>
                 <td>
-                  <div class="menubuttonclass"
+                  <div class="menubuttonclass" [style.cursor]="LogoutMouseOver ? 'pointer': 'default'"
                        (mouseenter)="LogoutMouseOver = true"
                        (mouseleave)="LogoutMouseOver = false"
                        (click)="LogoutButtonClicked()">
@@ -30,7 +30,7 @@
                 <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
                 <td style="width: 10px"></td>
                 <td>
-                  <div class="menubuttonclass"
+                  <div class="menubuttonclass" [style.cursor]="DebugMouseOver ? 'pointer': 'default'"
                        (mouseenter)="DebugMouseOver = true"
                        (mouseleave)="DebugMouseOver = false"
                        (click)="DebugButtonClicked()">
@@ -48,7 +48,7 @@
                 </td>
                 <td style="width: 10px"></td>
                 <td>
-                  <div class="menubuttonclass"
+                  <div class="menubuttonclass" [style.cursor]="EinstellungenMouseOver ? 'pointer': 'default'"
                        (mouseenter)="EinstellungenMouseOver = true"
                        (mouseleave)="EinstellungenMouseOver = false"
                        (click)="EinstellungenButtonClicked()">
@@ -70,14 +70,19 @@
 
           </td>
           <td align="right" valign="middle" style="width: 50%">
-            <table *ngIf="AuthService.ShowLogin === false && GraphService.UserimageSRC !== null">
-              <tr>
-                <td>
-                  <img class="userimagesmall" [src]="GraphService.UserimageSRC">
-                </td>
-                <td style="width: 10px"></td>
-              </tr>
-            </table>
+            <ng-container *ngIf="AuthService.ShowLogin === false">
+              <table *ngIf="GraphService.UserimageSRC !== null">
+                <tr>
+                  <td>
+                    <img class="userimagesmall" [src]="GraphService.UserimageSRC">
+                  </td>
+                  <td style="width: 10px"></td>
+                </tr>
+              </table>
+              <div *ngIf="GraphService.UserimageSRC === null" class="userkuerzelsmall">
+                {{Pool.Mitarbeiterdaten !==  null ? Pool.Mitarbeiterdaten.Kuerzel : '---'}}
+              </div>
+            </ng-container>
           </td>
         </tr>
       </table>
@@ -91,34 +96,8 @@
 
   <ng-container *ngIf="AuthService.ShowLogin === false">
 
-    <div *ngIf="GraphService.Graphuser !== null;" class="graphuserdiv">
 
-      <table class="paddingtable" style="font-size: 80%">
-        <tr>
-          <td colspan="3" style="font-size: 140%; font-weight: bold; color: #7b6a58">User Info</td>
-        </tr>
-        <tr>
-          <td style="font-weight: bold; color: #7b6a58">Name</td><td style="color: #444444;">{{GraphService.Graphuser.displayName}}</td>
-        </tr><tr>
-          <td style="font-weight: bold; color: #7b6a58">Email</td><td style="color: #444444;">{{GraphService.Graphuser.mail}}</td>
-        </tr><tr>
-          <td style="font-weight: bold; color: #7b6a58">Job</td><td style="color: #444444;">{{GraphService.Graphuser.jobTitle}}</td>
-        </tr><tr>
-          <td style="font-weight: bold; color: #7b6a58">Büro</td><td style="color: #444444;">{{GraphService.Graphuser.officeLocation}}</td>
-        </tr>
-        <!--
-        <tr *ngIf="GraphService.UserimageSRC !== null">
-          <td style="font-weight: bold; color: #7b6a58">Image</td><td><img class="userimage" [src]="GraphService.UserimageSRC"></td>
-        </tr>
-        <tr>
-          <td style="font-weight: bold; color: #7b6a58">Token</td><td style="color: #444444;">{{AuthService.AccessToken}}</td>
-        </tr>
-        -->
-      </table>
-
-    </div>
-
-    <div class="changelogdiv">
+    <div *ngIf="Basics.ShowHomeScreenInfos" class="changelogdiv">
 
       <table class="paddingtable" style="font-size: 80%">
         <tr>
@@ -143,6 +122,7 @@
       </ion-button>
 
     </div>
+
 
     <div style="width: 100%; height: 100%; background: #354547">
       <div style="position: absolute; width: 100%; height: 100%; z-index: 1;">
@@ -208,7 +188,19 @@
                           <table>
                             <tr>
                               <td align="center">
-                                <ion-icon name="people-outline" [color]="MitarbeiterMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
+
+                                <div style="height: 90px; width: 100px; background: none; position: relative">
+                                  <div class="projektbuttoniconclass">
+                                    <ion-icon name="people-outline" [color]="MitarbeiterMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
+                                  </div>
+                                  <ng-container *ngIf="Pool.Mitarbeiterdaten !== null">
+                                    <div *ngIf="Pool.Mitarbeiterdaten.Kuerzel === '' || Pool.Mitarbeiterdaten.StandortID === ''" class="projektbuttoniconerrorclass">
+                                      <img src="/assets/svgs/alert.svg" style="height: 44px"/>
+                                    </div>
+                                  </ng-container>
+                                </div>
+
+
                               </td>
                             </tr>
                             <tr>
@@ -216,7 +208,8 @@
                                 <table>
                                   <tr>
                                     <td style="font-size: 22px; font-weight: bold; color: #c7d304">
-                                      {{Pool.Mitarbeiterliste.length}}
+
+                                      {{CountMitarbeiter()}}
                                     </td>
                                     <td style="width: 4px"></td>
                                     <td style="text-align: center;">
@@ -243,7 +236,14 @@
                           <table>
                             <tr>
                               <td align="center">
-                                <ion-icon name="business-outline" [color]="ProjekteMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
+                                <div style="height: 90px; width: 100px; background: none; position: relative">
+                                  <div class="projektbuttoniconclass">
+                                    <ion-icon name="business-outline" [color]="ProjekteMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
+                                  </div>
+                                  <div *ngIf="DBProjekte.GesamtprojektlisteHasDatenerror" class="projektbuttoniconerrorclass">
+                                    <img src="/assets/svgs/alert.svg" style="height: 44px"/>
+                                  </div>
+                                </div>
                               </td>
                             </tr>
                             <tr>
@@ -251,11 +251,11 @@
                                 <table>
                                   <tr>
                                     <td style="font-size: 22px; font-weight: bold; color: #c7d304">
-                                      {{Pool.Gesamtprojektliste.length}}
+                                      {{CountProjekte()}}
                                     </td>
                                     <td style="width: 4px"></td>
                                     <td style="text-align: center;">
-                                      <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">{{Pool.Gesamtprojektliste.length !== 1 ? 'Projekte' : 'Projekt'}}</ion-text>
+                                      <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">{{CountProjekte() !== 1 ? 'Projekte' : 'Projekt'}}</ion-text>
                                     </td>
                                   </tr>
                                 </table>
@@ -371,7 +371,7 @@
                             <table style="width: 100%;">
                               <tr>
                                 <td align="center">
-                                  <ion-icon name="airplane-outline" [color]="PlayMouseOver && DBProjekte.CurrentFavorit ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 120px"></ion-icon>
+                                  <ion-icon name="airplane-outline" [color]="PlayMouseOver && DBProjekte.CurrentFavorit && DBProjekte.GesamtprojektlisteHasDatenerror === false ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 120px"></ion-icon>
                                 </td>
                               </tr>
                               <tr>
@@ -461,12 +461,19 @@
 <ion-footer>
 <page-footer #PageFooter>
 
-  <ion-button *ngIf="AuthService.ShowLogin === false" (click)="TestDrivesClicked()">Test Drives</ion-button>
-  <ion-button *ngIf="AuthService.ShowLogin === false" (click)="GetUserClicked()">Userinfo</ion-button>
-  <ion-button *ngIf="AuthService.ShowLogin === false" (click)="GetUserimageClicked()">Userimage</ion-button>
-  <ion-button *ngIf="AuthService.ShowLogin === false" (click)="GetUsercalendarClicked()">Kalender</ion-button>
-  <ion-button *ngIf="AuthService.ShowLogin === false" (click)="TestServerClicked()">Test Server</ion-button>
-  <ion-button *ngIf="AuthService.ShowLogin === false" (click)="LoggoutClicked()">Logout</ion-button>
+  <ng-container *ngIf="Basics.ShowHomeScreenInfos">
+    <!--
+    <ion-button *ngIf="AuthService.ShowLogin === false" (click)="SendProtokokllClicked()">Send Protokoll</ion-button>
+    <ion-button *ngIf="AuthService.ShowLogin === false" (click)="SaveProtokokllClicked()">Save Protokoll</ion-button>
+    <ion-button *ngIf="AuthService.ShowLogin === false" (click)="SendMailClicked()">Send Mail</ion-button>
+    -->
+    <ion-button *ngIf="AuthService.ShowLogin === false" (click)="TestSites()">Test Sites</ion-button>
+    <ion-button *ngIf="AuthService.ShowLogin === false" (click)="TestGraphClicked()">Test Graph</ion-button>
+    <ion-button *ngIf="AuthService.ShowLogin === false" (click)="GetUsercalendarClicked()">Kalender</ion-button>
+    <ion-button *ngIf="AuthService.ShowLogin === false" (click)="TestServerClicked()">Test Server</ion-button>
+    <ion-button *ngIf="AuthService.ShowLogin === false" (click)="LoggoutClicked()">Logout</ion-button>
+  </ng-container>
+
 
 </page-footer>
 </ion-footer>

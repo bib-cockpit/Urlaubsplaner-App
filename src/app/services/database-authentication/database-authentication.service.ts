@@ -150,11 +150,16 @@ export class DatabaseAuthenticationService {
       let message: string;
       let acountliste: any[] = this.MSALService.instance.getAllAccounts();
 
+
       if(acountliste.length === 0) {
 
         this.ShowLogin   = true;
-        this.ActiveUser  = null;
-        this.AccessToken = null;
+        // this.ActiveUser  = null;
+        // this.AccessToken = null;
+      }
+      else {
+
+        this.ShowLogin = false;
       }
 
       if(this.SecurityEnabled === false) this.ShowLogin = false;
@@ -180,11 +185,35 @@ export class DatabaseAuthenticationService {
 
       return new Promise((resolve, reject) => {
 
-        this.authService.acquireTokenSilent(accessTokenRequest).subscribe((response: AuthenticationResult) => {
+        this.authService.acquireTokenSilent(accessTokenRequest).pipe(catchError(err => {
 
-          resolve(response.accessToken);
+          if(err) {
+
+            switch (err.errorCode) {
+
+              case 'login_required':
+
+                this.Login();
+
+                break;
+            }
+
+          }
+
+          return of(err != null);
+
+        })).subscribe((response: AuthenticationResult) => {
+
+          if(response.accessToken) {
+
+            resolve(response.accessToken);
+          }
+          else resolve(null);
+
         });
       });
+
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Authentication', 'RequestToken', this.Debug.Typen.Service);
@@ -201,6 +230,7 @@ export class DatabaseAuthenticationService {
           if (this.msalGuardConfig.authRequest) {
             this.authService.loginPopup({ ...this.msalGuardConfig.authRequest } as PopupRequest)
               .subscribe((response: AuthenticationResult) => {
+
                 this.authService.instance.setActiveAccount(response.account);
               });
           } else {
@@ -218,8 +248,6 @@ export class DatabaseAuthenticationService {
             this.authService.loginRedirect({ ...this.msalGuardConfig.authRequest } as RedirectRequest);
           }
           else {
-
-            debugger;
 
             this.authService.loginRedirect();
           }

@@ -10,6 +10,11 @@ import {DatabaseStandorteService} from "../../services/database-standorte/databa
 import * as Joi from "joi";
 import {ObjectSchema} from "joi";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
+import {BasicsProvider} from "../../services/basics/basics";
+import {Subscription} from "rxjs";
+import {Graphservice} from "../../services/graph/graph";
+import {Teamsstruktur} from "../../dataclasses/teamsstruktur";
+import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 
 @Component({
   selector: 'fi-mitarbeiter-editor',
@@ -40,14 +45,18 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
   @Input() EmailinputEnabled: boolean;
 
   public DeleteEnabled: boolean;
+  public Teamsliste: Teamsstruktur[];
   private JoiShema: ObjectSchema;
 
   constructor(public Debug: DebugProvider,
               public Tools: ToolsProvider,
               public Pool: DatabasePoolService,
               public Const: ConstProvider,
+              public Basics: BasicsProvider,
               public Displayservice: DisplayService,
+              private GraphService: Graphservice,
               public StandortDB: DatabaseStandorteService,
+              public ProjekteDB: DatabaseProjekteService,
               public DB: DatabaseMitarbeiterService) {
 
     try {
@@ -62,6 +71,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
       this.ZIndex             = 2000;
       this.SkipOkButtonAction = false;
       this.EmailinputEnabled  = true;
+      this.Teamsliste         = [];
 
     } catch (error) {
 
@@ -138,6 +148,8 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
       if(Result.error) this.Valid = false;
       else             this.Valid = true;
 
+      if(this.DB.CurrentMitarbeiter.StandortID === '') this.Valid = false;
+
       this.ValidChanged.emit(this.Valid);
 
     } catch (error) {
@@ -163,6 +175,18 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
     try {
 
       this.ValidateInput();
+
+      this.GraphService.GetOtherUserteams(this.DB.CurrentMitarbeiter.Email).then((teamsliste: Teamsstruktur[]) => {
+
+        this.Teamsliste = teamsliste;
+
+        this.ProjekteDB.SyncronizeGesamtprojektlisteWithTeams(this.Teamsliste);
+
+      }).catch((error: any) => {
+
+        debugger;
+
+      });
 
     } catch (error) {
 
@@ -292,6 +316,18 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'ContentClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  ArchivierenCheckboxChanged(event: {status: boolean; index: number; event: any}) {
+
+    try {
+
+      this.DB.CurrentMitarbeiter.Archiviert = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'ArchivierenCheckboxChanged', this.Debug.Typen.Component);
     }
   }
 }

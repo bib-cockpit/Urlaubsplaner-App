@@ -28,6 +28,7 @@ export class MenueService {
     LOPListe:      'LOP Liste',
     Bautagebuch:   'Bautagebuch',
     Festlegungen:  'Festlegungen',
+    Fileliste:     'Fileliste',
   };
 
   public Aufgabenlisteansicht: string;
@@ -49,6 +50,16 @@ export class MenueService {
     Play:        'Play'
   };
 
+  public FilelisteAufrufer: string;
+  public FilelisteAufrufervarianten = {
+
+    Aufgabenliste: 'Aufgabenliste',
+    Protokollliste: 'Protokollliste',
+    LOPListe:      'LOP Liste',
+    Bautagebuch:   'Bautagebuch',
+    Festlegungen:  'Festlegungen',
+  };
+
   constructor(private Debug: DebugProvider,
               private Tools: ToolsProvider,
               private DBProjekte: DatabaseProjekteService,
@@ -60,7 +71,8 @@ export class MenueService {
       this.MainMenuebereich     = this.MainMenuebereiche.Projekte;
       this.FirmaMenuebereich    = this.FirmaMenuebereiche.Projekte;
       this.ProjekteMenuebereich = this.ProjekteMenuebereiche.Aufgabenliste;
-      this.Aufgabenlisteansicht = this.Aufgabenlisteansichten.Mein_Tag;
+      this.Aufgabenlisteansicht = this.Aufgabenlisteansichten.Projekt;
+      this.FilelisteAufrufer    = this.FilelisteAufrufervarianten.Aufgabenliste;
 
     } catch (error) {
 
@@ -68,17 +80,6 @@ export class MenueService {
     }
   }
 
-  public ShowRegistrierungPage() {
-
-    try {
-
-      this.Tools.SetRootPage(this.Const.Pages.RegistrierungPage);
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Menue', 'ShowRegistrierungPage', this.Debug.Typen.Service);
-    }
-  }
 
   public SetCurrentPage() {
 
@@ -121,6 +122,12 @@ export class MenueService {
 
               break;
 
+            case this.ProjekteMenuebereiche.Fileliste:
+
+              this.Tools.PushPage(this.Const.Pages.PjFilebrowserPage);
+
+              break;
+
             case this.ProjekteMenuebereiche.Protokolle:
 
               this.Tools.SetRootPage(this.Const.Pages.PjProtokolleListePage);
@@ -129,19 +136,19 @@ export class MenueService {
 
             case this.ProjekteMenuebereiche.LOPListe:
 
-
+              this.Tools.SetRootPage(this.Const.Pages.PjBaustelleLoplistePage);
 
               break;
 
             case this.ProjekteMenuebereiche.Bautagebuch:
 
-
+              this.Tools.SetRootPage(this.Const.Pages.PjBaustelleTagebuchlistePage);
 
               break;
 
             case this.ProjekteMenuebereiche.Festlegungen:
 
-              this.Tools.SetRootPage(this.Const.Pages.TestPage);
+              this.Tools.SetRootPage(this.Const.Pages.PjFestlegungslistePage);
 
               break;
           }

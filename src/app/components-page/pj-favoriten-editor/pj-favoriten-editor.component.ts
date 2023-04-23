@@ -17,6 +17,8 @@ import * as Joi from "joi";
 import {ObjectSchema} from "joi";
 import {Favoritenstruktur} from "../../dataclasses/favoritenstruktur";
 import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
+import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
+import {ToolsProvider} from "../../services/tools/tools";
 
 @Component({
   selector: 'pj-favoriten-editor',
@@ -33,6 +35,7 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
 
   @Output() CancelClickedEvent    = new EventEmitter<any>();
   @Output() OkClickedEvent        = new EventEmitter<any>();
+  @Output() FavoritDeletedEvent   = new EventEmitter<any>();
   @Output() EditProjektlisteEvent = new EventEmitter<any>();
 
   @Input() Titel: string;
@@ -42,10 +45,14 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
   @Input() PositionY: number;
   @Input() ZIndex: number;
 
+  public CanDelete: boolean;
+
   constructor(public Debug: DebugProvider,
               public Displayservice: DisplayService,
               public Const: ConstProvider,
               private Pool: DatabasePoolService,
+              private Tools: ToolsProvider,
+              private MitarbeiterDB: DatabaseMitarbeiterService,
               public DBStandort: DatabaseStandorteService,
               public DBProjekte: DatabaseProjekteService) {
     try {
@@ -59,6 +66,7 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
       this.PositionY         = 100;
       this.ZIndex            = 2000;
       this.Projektliste      = [];
+      this.CanDelete         = false;
 
       this.ProjektlisteSubscription = null;
 
@@ -246,7 +254,7 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
 
       for(let currentid of this.DBProjekte.CurrentFavorit.Projekteliste) {
 
-        Projekt = <Projektestruktur>lodash.find(this.Pool.Gesamtprojektliste, {_id: currentid});
+        Projekt = <Projektestruktur>lodash.find(this.DBProjekte.Gesamtprojektliste, {_id: currentid});
 
         if(!lodash.isUndefined(Projekt)) this.Projektliste.push(Projekt);
       }
@@ -256,6 +264,54 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Favoriten Editor', 'PrepareData', this.Debug.Typen.Component);
+    }
+  }
+
+  CanDeleteCheckedChanged(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.CanDelete = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Favoriten Editor', 'CanDeleteCheckedChanged', this.Debug.Typen.Component);
+    }
+
+  }
+
+  DeleteButtonClicked() {
+
+    try {
+
+      this.Pool.Mitarbeiterdaten.Favoritenliste = lodash.filter(this.Pool.Mitarbeiterdaten.Favoritenliste, (Favorit: Favoritenstruktur) => {
+
+        return Favorit.FavoritenID !== this.DBProjekte.CurrentFavorit.FavoritenID;
+      });
+
+      if(this.DBProjekte.CurrentFavoritenlisteindex !== null) {
+
+        if(this.Pool.Mitarbeiterdaten.Favoritenliste.length > 0) {
+
+          this.DBProjekte.CurrentFavoritenlisteindex = 0;
+          this.DBProjekte.CurrentFavorit             = this.Pool.Mitarbeiterdaten.Favoritenliste[0];
+        }
+        else {
+
+          this.DBProjekte.CurrentFavoritenlisteindex = null;
+          this.DBProjekte.CurrentFavorit             = null;
+        }
+      }
+
+      this.MitarbeiterDB.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
+
+        this.Pool.MitarbeiterdatenChanged.emit();
+        this.FavoritDeletedEvent.emit();
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Favoriten Editor', 'DeleteButtonClicked', this.Debug.Typen.Component);
     }
   }
 }

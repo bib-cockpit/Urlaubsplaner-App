@@ -24,6 +24,16 @@ export type Projektestruktur = {
   Verfasser:            Verfasserstruktur;
   Bauteilliste:         Bauteilstruktur[];
 
+  ProjektIsNew:         boolean;
+  ProjektIsReal:        boolean;
+
+  TeamsID:              string;
+  TeamsDescription:     string;
+  TeamsName:            string;
+  ProtokolleFolderID:    string;
+  BautagebuchFolderID:   string;
+  BaustellenLOPFolderID: string;
+
   Selected?: boolean;
   Filtered?: boolean;
   Text_A?: string;

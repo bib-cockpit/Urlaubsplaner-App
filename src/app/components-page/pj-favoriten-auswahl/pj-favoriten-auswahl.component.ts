@@ -186,7 +186,6 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
 
       await this.Pool.ReadProjektdaten(this.DBProjekte.Projektliste);
 
-      // this.DBProjekte.InitMenuProjektauswahl();
 
       this.Pool.LoadingAllDataFinished.emit();
       this.DBProjekte.CurrentFavoritenChanged.emit();
@@ -232,7 +231,7 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
 
           for (let ProjektID of this.Pool.Mitarbeiterdaten.Favoritenliste[Favoritenindex].Projekteliste) {
 
-            Projekt = lodash.find(this.Pool.Gesamtprojektliste, {_id: this.Pool.Mitarbeiterdaten.Favoritenliste[Favoritenindex].Projekteliste[Projektindex]});
+            Projekt = lodash.find(this.DBProjekte.Gesamtprojektliste, {_id: this.Pool.Mitarbeiterdaten.Favoritenliste[Favoritenindex].Projekteliste[Projektindex]});
 
             if (!lodash.isUndefined(Projekt)) this.Datenliste[Favoritenindex].push(Projekt);
 

@@ -6,6 +6,8 @@ import {ConstProvider} from '../const/const';
 import * as lodash from 'lodash-es';
 import {Platform} from '@ionic/angular';
 import MyMoment from "moment";
+import {Navparameter} from "../navparameter/navparameter";
+import moment, {Moment} from "moment/moment";
 
 @Injectable({
 
@@ -15,8 +17,6 @@ export class ToolsProvider {
 
   private UID_Counter: number;
   private IsRunningOnDeviceFirstTime: boolean;
-  private ClickAudio: any;
-  private NachrichtenAudio: any;
   public ShowMessage: boolean;
   public DialogMessage: string;
   private IsRunningOnDeviceValue: boolean;
@@ -24,7 +24,7 @@ export class ToolsProvider {
   constructor(public  Basics: BasicsProvider,
               private Debug: DebugProvider,
               public  Const: ConstProvider,
-              // private Anruffunktion: CallNumber,
+              private NavParameter: Navparameter,
               private nav: NavController,
               private platform: Platform,
               public alertCtrl: AlertController) {
@@ -54,6 +54,57 @@ export class ToolsProvider {
     catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Tools', 'GetButtonvalueSize', this.Debug.Typen.Service);
+    }
+  }
+
+  GetDatumFromZeitstempel(GesendetZeitstempel: number): string {
+
+    try {
+
+      let Zeitpunkt: Moment = moment(GesendetZeitstempel);
+
+      return Zeitpunkt.format('DD.MM.YYYY');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Tools', 'GetDatumFromZeitstempel', this.Debug.Typen.Service);
+    }
+  }
+
+  GetZeitFromZeitstempel(GesendetZeitstempel: number): string {
+    try {
+
+      let Zeitpunkt: Moment = moment(GesendetZeitstempel);
+
+      return Zeitpunkt.format('HH:mm');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Tools', 'GetZeitFromZeitstempel', this.Debug.Typen.Service);
+    }
+  }
+
+  public GenerateFilename(name: string, extention: string): string {
+
+    try {
+
+      let key: string = name; // .toUpperCase();
+
+      key = key.replace(/ /g, '_');
+      key = key.replace(/ä/g, 'ae');
+      key = key.replace(/Ä/g, 'AE');
+      key = key.replace(/ö/g, 'oe');
+      key = key.replace(/Ö/g, 'OE');
+      key = key.replace(/ü/g, 'ue');
+      key = key.replace(/Ü/g, 'UE');
+      key = key.replace(/ß/g, 'ss');
+      key = key.replace(/[^a-zA-Z0-9 ]/g, '_'); // /[&\/\\#,+()$~%.'§=^!`´;":.,*-?<>{}]/g, '_');
+
+      return key + '.' + extention;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'GenerateProjektkey', this.Debug.Typen.Service);
     }
   }
 
@@ -509,9 +560,7 @@ export class ToolsProvider {
 
         this.nav.navigateRoot(page, {animated : false}).then(() => {
 
-          // this.NavParameter.SetRootpage(page);
-
-          // debugger;
+          this.NavParameter.SetRootpage(page);
 
           resolve(true);
 
@@ -537,7 +586,7 @@ export class ToolsProvider {
 
         this.nav.navigateForward(page, {animated:true }).then(() => {
 
-          // this.NavParameter.AddPage(page);
+          this.NavParameter.AddPage(page);
 
           resolve(true);
 
@@ -561,7 +610,7 @@ export class ToolsProvider {
 
       return new Promise<any>(resolve => {
 
-        // Lastpage = this.NavParameter.RemovePage();
+        Lastpage = this.NavParameter.RemovePage();
 
         if(Lastpage !== null) {
 

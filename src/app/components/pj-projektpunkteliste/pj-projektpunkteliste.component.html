@@ -79,7 +79,7 @@
               <table>
                 <tr *ngIf="Projektpunkt.ProtokollID !== null" style="height: inherit;">
                   <td style=" width: 30px">
-                    <div class="protokollmarkedivclass" [style.background]="'green'" (click)="ProtokollMarkeClicked(Projektpunkt)">P</div>
+                    <ion-button size="small" [color]="Basics.Ionicfarben.BurnicklBraun" (click)="ProtokollMarkeClicked(Projektpunkt)">P</ion-button>
                   </td>
                 </tr>
                 <tr *ngIf="Projektpunkt.NotizenID !== null " style="height: inherit; ">

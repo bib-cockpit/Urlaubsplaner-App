@@ -82,6 +82,19 @@
     border:  1px solid var(--ion-color-schwarz);
   }
 
+  .docinnertablenew {
+
+  }
+
+  .docinnertablenew td {
+
+    padding: 4px;
+    border-left:   1px solid var(--ion-color-schwarz);
+    border-right:  1px solid var(--ion-color-schwarz);
+    border-bottom: 1px solid var(--ion-color-schwarz);
+    border-top:    none;
+  }
+
   .docinnertablesmallfont {
 
     border:  1px solid #000000;

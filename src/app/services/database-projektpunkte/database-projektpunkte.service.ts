@@ -29,6 +29,7 @@ import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 export class DatabaseProjektpunkteService {
 
   public CurrentProjektpunkt: Projektpunktestruktur;
+  public CurrentProjektpunkteliste: Projektpunktestruktur[];
   public Statustypenliste: Projektpunktstatustypenstruktur[];
   private ServerProjektpunkteUrl: string;
   public LiveEditorOpen: boolean;
@@ -46,12 +47,13 @@ export class DatabaseProjektpunkteService {
 
     try {
 
-      this.CurrentProjektpunkt     = null;
-      this.Statustypenliste        = [];
-      this.ServerProjektpunkteUrl  = this.Pool.CockpitserverURL + '/projektpunkte';
-      this.Heute                   = moment().locale('de');
-      this.LiveEditorOpen          = false;
-      this.Wochenpunkteliste       = [];
+      this.CurrentProjektpunkt       = null;
+      this.Statustypenliste          = [];
+      this.ServerProjektpunkteUrl    = this.Pool.CockpitserverURL + '/projektpunkte';
+      this.Heute                     = moment().locale('de');
+      this.LiveEditorOpen            = false;
+      this.Wochenpunkteliste         = [];
+      this.CurrentProjektpunkteliste = [];
 
       this.InitStatustypen();
 

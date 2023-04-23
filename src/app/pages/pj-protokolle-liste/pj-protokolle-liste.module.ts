@@ -17,6 +17,10 @@ import {PjProtokollListefilterModule} from "../../components-page/pj-protokoll-l
 import {
     PjProjektpunktDateKwPickerModule
 } from "../../components-page/pj-projektpunkt-date-kw-picker/pj-projektpunkt-date-kw-picker.module";
+import {PjEmailSendModule} from "../../components-page/pj-email-send/pj-email-send.module";
+import {
+    PjProjekteSchnellauswahlModule
+} from "../../components-page/pj-projekte-schnellauswahl/pj-projekte-schnellauswahl.module";
 
 
 const routes: Routes = [
@@ -43,6 +47,8 @@ const routes: Routes = [
         PjGebaeudeRaumauswahlModule,
         PjProtokollListefilterModule,
         PjProjektpunktDateKwPickerModule,
+        PjEmailSendModule,
+        PjProjekteSchnellauswahlModule,
 
 
     ],

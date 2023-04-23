@@ -120,9 +120,9 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
         this.PrepareDaten();
       });
 
-      if(this.Pool.Gesamtprojektliste !== null) {
+      if(this.DB.Gesamtprojektliste !== null) {
 
-        this.Projekteliste = lodash.cloneDeep(this.Pool.Gesamtprojektliste);
+        this.Projekteliste = lodash.cloneDeep(this.DB.Gesamtprojektliste);
       }
       else this.Projekteliste = [];
 
@@ -151,11 +151,21 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
       let Suchtext: string;
       let Projekte: Projektestruktur;
 
-      Liste = lodash.cloneDeep(this.Pool.Gesamtprojektliste);
+      Liste = lodash.cloneDeep(this.DB.Gesamtprojektliste);
 
       // Nach Namen sortieren
 
       this.Lastletter = '';
+
+      Liste = lodash.filter(Liste, (currenta: Projektestruktur) => {
+
+        return currenta.ProjektIsReal;
+      });
+
+      Liste = lodash.filter(Liste, (currentb: Projektestruktur) => {
+
+        return this.DB.CheckProjektmembership(currentb);
+      });
 
       Liste.sort( (a: Projektestruktur, b: Projektestruktur) => {
 
@@ -166,14 +176,14 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
 
       // Standort Filter anwenden
 
-      if(this.DBStandort.ProjekteauswahlStandortfilter !== null) {
+      if(this.DBStandort.CurrentStandortfilter !== null) {
 
         Merker = lodash.cloneDeep(Liste);
         Liste  = [];
 
         for(let Eintrag of Merker) {
 
-          if(Eintrag.StandortID === this.DBStandort.ProjekteauswahlStandortfilter._id) Liste.push(Eintrag);
+          if(Eintrag.StandortID === this.DBStandort.CurrentStandortfilter._id) Liste.push(Eintrag);
         }
       }
 
@@ -428,8 +438,8 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
 
     try {
 
-      if(this.DBStandort.ProjekteauswahlStandortfilter === null) return 'kein Standortfilter';
-      else return this.DBStandort.ProjekteauswahlStandortfilter.Kuerzel + ' / ' + this.DBStandort.ProjekteauswahlStandortfilter.Standort;
+      if(this.DBStandort.CurrentStandortfilter === null) return 'kein Standortfilter';
+      else return this.DBStandort.CurrentStandortfilter.Kuerzel + ' / ' + this.DBStandort.CurrentStandortfilter.Standort;
 
     } catch (error) {
 

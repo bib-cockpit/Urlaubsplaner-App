@@ -11,6 +11,7 @@ import {PageFooterModule} from "../../components/page-footer/page-footer.module"
 import {PageHeaderMenuModule} from "../../components/page-header-menu/page-header-menu.module";
 import {FiMitarbeiterEditorModule} from "../../components-page/fi-mitarbeiter-editor/fi-mitarbeiter-editor.module";
 import {AuswahlDialogModule} from "../../components/auswahl-dialog/auswahl-dialog.module";
+import {CheckboxClonModule} from "../../components/checkbox-clon/checkbox-clon.module";
 
 const routes: Routes = [
   {
@@ -20,20 +21,21 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    IonicModule,
-    RouterModule.forChild(routes),
-    PageHeaderModule,
-    PageFooterModule,
-    AbstandElementFixedModule,
-    AlphabetModule,
-    PageHeaderMenuModule,
-    FiMitarbeiterEditorModule,
-    AuswahlDialogModule,
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        IonicModule,
+        RouterModule.forChild(routes),
+        PageHeaderModule,
+        PageFooterModule,
+        AbstandElementFixedModule,
+        AlphabetModule,
+        PageHeaderMenuModule,
+        FiMitarbeiterEditorModule,
+        AuswahlDialogModule,
+        CheckboxClonModule,
+    ],
   declarations: [FiMitarbeiterlistePage]
 })
 export class FIMitarbeiterlistePageModule {}

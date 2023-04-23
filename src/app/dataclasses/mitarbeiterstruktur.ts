@@ -5,7 +5,10 @@ import {Meinewochestruktur} from "./meinewochestruktur";
 export interface Mitarbeiterstruktur  {
 
     _id: string;
-    StandortID:     string;
+    UserID: string;
+    StandortID:  string;
+    Jobtitel:   string;
+    Location: string;
     Vorname: string;
     Name: string;
     Kuerzel: string;
@@ -20,7 +23,7 @@ export interface Mitarbeiterstruktur  {
     Meintagliste:    Meintagstruktur[];
     Meinewocheliste: Meinewochestruktur[];
     Favoritenliste:  Favoritenstruktur[];
-
+    Archiviert: boolean;
     Filtered?: boolean;
     Text_A?: string;
     Text_B?: string;

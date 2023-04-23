@@ -31,6 +31,7 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
 
 
   @Input() public Titel: string;
+  @Input() public Titelcolor: string;
   @Input() public Value: string;
   @Input() Debouncetime: number;
   @Output() ValueChange = new EventEmitter<string>();
@@ -44,15 +45,19 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() public Required: boolean;
   @Input() public Lines: number;
   @Input() public DisabledColor: string;
+  @Input() public OkBorderColor: string;
+  @Input() public ParseToFloat: boolean;
+  @Input() public Textcolor: string;
 
   @Output() TextChanged = new EventEmitter<{ Titel: string; Text: string; Valid: boolean }>();
 
-  public OkBorder: string;
   public RequiredBorder: string;
   public DisabledBorder: string;
-  public EnabledColor: string;
   public Valid: boolean;
   private JoiShema: ObjectSchema;
+  public OkBorder: string;
+
+
 
   constructor(private Debug: DebugProvider,
               public Basics: BasicsProvider,
@@ -63,8 +68,9 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
       let Border: number = 1;
 
 
+      this.OkBorderColor   = this.Basics.Farben.Burnicklgrau;
       this.DisabledColor   = this.Basics.Farben.Blau;
-      this.OkBorder        = Border + 'px solid ' + this.Basics.Farben.Burnicklgrau;
+      this.OkBorder        = Border + 'px solid ' + this.OkBorderColor;
       this.RequiredBorder  = Border + 'px solid ' + this.Basics.Farben.Orange;
       this.DisabledBorder  = Border + 'px solid ' + this.DisabledColor;
       this.Valid           = true;
@@ -79,6 +85,9 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
       this.Debouncetime    = 0;
       this.Clickable       = false;
       this.Required        = false;
+      this.Titelcolor      = 'gray';
+      this.ParseToFloat    = false;
+      this.Textcolor       = this.Basics.Ionicfarben.Schwarz;
 
     } catch (error) {
 
@@ -103,6 +112,7 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
 
     try {
 
+      let Border: number = 1;
       let schema: StringSchema | NumberSchema;
 
       if(this.Inputtype === 'text' || this.Inputtype === 'email') {
@@ -172,7 +182,7 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
 
     try {
 
-      let Text = this.Inputtype === 'text' || this.Inputtype === 'email' ? event.detail.value : parseInt(event.detail.value);
+      let Text = this.Inputtype === 'text' || this.Inputtype === 'email' ? event.detail.value : this.ParseToFloat ? parseFloat(event.detail.value) : parseInt(event.detail.value);
 
       if(this.Enabled === true) {
 
@@ -222,6 +232,7 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
       }
 
       this.DisabledBorder  = Border + 'px solid ' + this.DisabledColor;
+      this.OkBorder        = Border + 'px solid ' + this.OkBorderColor;
     }
     catch (error) {
 

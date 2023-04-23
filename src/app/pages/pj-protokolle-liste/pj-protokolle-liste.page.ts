@@ -16,6 +16,14 @@ import {Subscription} from "rxjs";
 import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 import {Protokollstruktur} from "../../dataclasses/protokollstruktur";
 import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
+import moment, {Moment} from "moment";
+import {Graphservice} from "../../services/graph/graph";
+import {Projektestruktur} from "../../dataclasses/projektestruktur";
+import {MenueService} from "../../services/menue/menue.service";
+import {
+  DatabaseMitarbeitersettingsService
+} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {ToolsProvider} from "../../services/tools/tools";
 
 @Component({
   selector:    'pj-protokolle-liste-page',
@@ -52,6 +60,12 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
   public ShowDateKkPicker: boolean;
   public Headerhoehe: number;
   public Listenhoehe: number;
+  public EmailDialogbreite: number;
+  public EmailDialoghoehe: number;
+  public ShowEmailSenden: boolean;
+  public ProjektSubscription: Subscription;
+  public ShowProjektschnellauswahl: boolean;
+  public Auswahlhoehe: number;
 
   constructor(public Displayservice: DisplayService,
               public Basics: BasicsProvider,
@@ -60,8 +74,12 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public DBStandort: DatabaseStandorteService,
               public DBProjekte: DatabaseProjekteService,
+              public GraphService: Graphservice,
               public Const: ConstProvider,
+              public Menuservice: MenueService,
               public Pool: DatabasePoolService,
+              public Tools: ToolsProvider,
+              private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public Debug: DebugProvider) {
 
     try {
@@ -90,8 +108,12 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       this.Protokollliste           = [];
       this.ShowDateKkPicker         = false;
       this.Headerhoehe              = 0;
+      this.Auswahlhoehe             = 200;
       this.Listenhoehe              = 0;
-
+      this.EmailDialogbreite        = 800;
+      this.EmailDialoghoehe         = 600;
+      this.ShowEmailSenden          = false;
+      this.ShowProjektschnellauswahl = false;
 
     } catch (error) {
 
@@ -104,6 +126,11 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
     try {
 
       this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
+
+      this.ProjektSubscription = this.DBProjekte.CurrentFavoritenProjektChanged.subscribe(() => {
+
+        this.PrepareData();
+      });
 
       this.ProtokollSubscription = this.Pool.ProtokolllisteChanged.subscribe(() => {
 
@@ -128,6 +155,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
     try {
 
       this.ProtokollSubscription.unsubscribe();
+      this.ProjektSubscription.unsubscribe();
 
     } catch (error) {
 
@@ -214,6 +242,8 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
           this.DBProjektpunkte.CurrentProjektpunkt.Status = data;
 
+          this.Pool.ProjektpunktStatusChanged.emit();
+
           break;
 
         case  this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Projektpunkteditor_Fachbereich:
@@ -291,9 +321,9 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
         Index++;
       }
 
-      if(this.DBStandort.MitarbeiterauswahlStandortfilter !== null) {
+      if(this.DBStandort.CurrentStandortfilter !== null) {
 
-        this.Auswahlindex = lodash.findIndex(this.Pool.Standorteliste, {_id: this.DBStandort.MitarbeiterauswahlStandortfilter._id});
+        this.Auswahlindex = lodash.findIndex(this.Pool.Standorteliste, {_id: this.DBStandort.CurrentStandortfilter._id});
       }
       else this.Auswahlindex = 0;
 
@@ -321,7 +351,21 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
           this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeInternIDListe = idliste;
 
           break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Emaileditor_Intern_Empfaenger:
+
+          this.DB.CurrentProtokoll.EmpfaengerInternIDListe = idliste;
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Emaileditor_Intern_CcEmpfaenger:
+
+          this.DB.CurrentProtokoll.CcEmpfaengerInternIDListe = idliste;
+
+          break;
       }
+
+      this.Pool.EmailempfaengerChanged.emit();
 
       this.ShowMitarbeiterauswahl = false;
 
@@ -348,9 +392,23 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
         this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeExternIDListe = idliste;
 
         break;
+
+      case this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Emaileditor_Extern_Empfaenger:
+
+        this.DB.CurrentProtokoll.EmpfaengerExternIDListe = idliste;
+
+        break;
+
+      case this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Emaileditor_Extern_CcEmpfaenger:
+
+        this.DB.CurrentProtokoll.CcEmpfaengerExternIDListe = idliste;
+
+        break;
     }
 
       this.ShowBeteiligteauswahl = false;
+
+      this.Pool.EmailempfaengerChanged.emit();
 
     } catch (error) {
 
@@ -403,8 +461,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     try {
 
-      this.AuswahlIDliste = lodash.cloneDeep(this.DB.CurrentProtokoll.BeteiligExternIDListe);
-
+      this.AuswahlIDliste         = lodash.cloneDeep(this.DB.CurrentProtokoll.BeteiligExternIDListe);
       this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Protokolleditor_Beteilgtenteilnehmer;
       this.ShowBeteiligteauswahl  = true;
 
@@ -678,6 +735,41 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
     }
   }
 
+  ShowProjektauswahlEventHandler() {
+
+    try {
+
+      this.ShowProjektschnellauswahl     = true;
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'ShowProjektauswahlEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  public ProjektSchnellauswahlProjektClickedEventHandler(projekt: Projektestruktur) {
+
+    try {
+
+      this.DBProjekte.CurrentProjekt      = projekt;
+      this.DBProjekte.CurrentProjektindex = lodash.findIndex(this.DBProjekte.Projektliste, {_id: projekt._id});
+
+      this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
+      this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
+
+      this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+
+      this.ShowProjektschnellauswahl = false;
+
+      this.PrepareData();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'ProjektSchnellauswahlProjektClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
   ProtokollpunktClickedHandler(projetpunkt: Projektpunktestruktur) {
 
     try {
@@ -688,6 +780,131 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'ProtokollpunktClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  EmailSendenOkButtonClicked(event: any) {
+
+    try {
+
+      this.ShowEmailSenden = false;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'EmailSendenOkButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+
+  SendMailButtonClicked(event: MouseEvent, Protokoll: Protokollstruktur) {
+
+    try {
+
+      let Betreff, Nachricht, Filename;
+
+      event.stopPropagation();
+      event.preventDefault();
+
+      this.Pool.Emailcontent   = this.Pool.Emailcontentvarinaten.Protokoll;
+      this.EmailDialogbreite   = 1100;
+      this.EmailDialoghoehe    = this.Basics.InnerContenthoehe - 200;
+      this.DB.CurrentProtokoll = lodash.cloneDeep(Protokoll);
+
+      Filename = moment(this.DB.CurrentProtokoll.Endestempel).format('YYMMDD_') + this.Tools.GenerateFilename(this.DB.CurrentProtokoll.Titel, 'pdf');
+
+      Betreff    = 'Protokoll zur ' + this.DB.CurrentProtokoll.Titel + ' vom ' + moment(this.DB.CurrentProtokoll.Endestempel).format('DD.MM.YYYY');
+
+      Nachricht  = 'Sehr geehrte Damen und Herren,\n\n';
+      Nachricht += 'anbei übersende ich Ihnen das Protokoll "' + this.DB.CurrentProtokoll.Titel + '" vom ' + moment(this.DB.CurrentProtokoll.Endestempel).format('DD.MM.YYYY') + '\n';
+      Nachricht += 'mit der Protokollnummer ' + this.DB.CurrentProtokoll.Protokollnummer + '.\n\n';
+
+      this.DB.CurrentProtokoll.EmpfaengerExternIDListe   = this.DB.CurrentProtokoll.BeteiligExternIDListe;
+      this.DB.CurrentProtokoll.CcEmpfaengerInternIDListe = this.DB.CurrentProtokoll.BeteiligtInternIDListe;
+      this.DB.CurrentProtokoll.Betreff                   = Betreff;
+      this.DB.CurrentProtokoll.Nachricht                 = Nachricht;
+      this.DB.CurrentProtokoll.Filename                  = Filename;
+
+      this.ShowEmailSenden     = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'SendMailButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  ShowProjektfilesHandler() {
+
+    try {
+
+      this.Menuservice.FilelisteAufrufer    = this.Menuservice.FilelisteAufrufervarianten.Protokollliste;
+      this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Fileliste;
+
+      this.Menuservice.SetCurrentPage();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'ShowProjektfilesHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  EmpfaengerExternClickedHandler() {
+
+    try {
+
+
+      this.Auswahldialogorigin   = this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Emaileditor_Extern_Empfaenger;
+      this.AuswahlIDliste        = this.DB.CurrentProtokoll.EmpfaengerExternIDListe;
+      this.ShowBeteiligteauswahl = true;
+      this.Dialoghoehe           = this.Basics.InnerContenthoehe - 200;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll List', 'EmpfaengerExternClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  CcEmpfaengerExternClickedHandler() {
+
+    try {
+
+      this.Auswahldialogorigin   = this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Emaileditor_Extern_CcEmpfaenger;
+      this.AuswahlIDliste        = this.DB.CurrentProtokoll.CcEmpfaengerExternIDListe;
+      this.ShowBeteiligteauswahl = true;
+      this.Dialoghoehe           = this.Basics.InnerContenthoehe - 200;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll List', 'EmpfaengerExternClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  EmpfaengerBurnicklClickedHandler() {
+
+    try {
+
+      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Emaileditor_Intern_Empfaenger;
+      this.AuswahlIDliste        = this.DB.CurrentProtokoll.EmpfaengerInternIDListe;
+      this.ShowMitarbeiterauswahl = true;
+      this.Dialoghoehe            = this.Basics.InnerContenthoehe - 200;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll List', 'EmpfaengerExternClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  CcEmpfaengerBurnicklClickedHandler() {
+
+    try {
+
+      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Emaileditor_Intern_CcEmpfaenger;
+      this.AuswahlIDliste         = this.DB.CurrentProtokoll.CcEmpfaengerInternIDListe;
+      this.ShowMitarbeiterauswahl = true;
+      this.Dialoghoehe            = this.Basics.InnerContenthoehe - 200;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Bautagebuch List', 'CcEmpfaengerBurnicklClickedHandler', this.Debug.Typen.Page);
     }
   }
 }

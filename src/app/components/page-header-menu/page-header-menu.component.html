@@ -77,7 +77,7 @@
             {{Menuservice.MainMenuebereich}}
             -->
 
-            <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte">
+            <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte && Menuservice.ProjekteMenuebereich !== Menuservice.ProjekteMenuebereiche.Fileliste">
               <td>
                 <table>
                   <tr>
@@ -169,12 +169,52 @@
                 </table>
               </td>
 
-              <!--
 
-               *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte"
-              -->
-              <ng-container *ngIf="Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste">
                 <td align="center" class="trennertdclass"><div class="trennerbigdivclass"></div></td>
+                <td *ngIf="DBProjekte.CurrentProjekt !== null">
+                  <table class="paddingtable">
+                    <tr>
+                      <td>
+                        <ion-button (click)="ProjektGoBackClicked()" slot="icon-only"
+                                    [color]="GetProjektBackButtoncolor()" size="small">
+                          <ion-icon name="arrow-back-circle" style="font-size: 22px"></ion-icon>
+                        </ion-button>
+                      </td>
+                      <td>
+                        <div (click)="ProjektClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt ? '#c7d304' : 'white'"  class="buttonclass">
+                          <table>
+                            <tr>
+                              <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt ? '#c7d304' : 'white'">
+                                {{DBProjekte.CurrentProjekt.Projektkurzname}}
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
+                      </td>
+                      <td>
+                        <div (click)="ProjektfilesClicked()" (mouseover)="FilesMouseOver = true" (mouseleave)="FilesMouseOver = false" [style.border-color]="FilesMouseOver === true ? '#c7d304' : 'white'"  class="buttonsmallclass">
+                          <table>
+                            <tr>
+                              <td>
+                                <ion-icon name="folder-outline" style="font-size: 18px" [color]="FilesMouseOver === true ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss"></ion-icon>
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
+                      </td>
+                      <td>
+                        <ion-button (click)="ProjektGoForwardClicked()" slot="icon-only"
+                                    [color]="GetProjektForwardButtoncolor()" size="small">
+                          <ion-icon name="arrow-forward-circle" style="font-size: 22px"></ion-icon>
+                        </ion-button>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+
+
+              <ng-container *ngIf="Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste">
+
                 <td>
                   <div (click)="MeintagClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Mein_Tag ? '#c7d304' : 'white'"  class="buttonclass">
                     <table>
@@ -211,35 +251,7 @@
                   </div>
                 </td>
                 <td style="width: 10px"></td>
-                <td *ngIf="DBProjekte.CurrentProjekt !== null">
-                  <table class="paddingtable">
-                    <tr>
-                      <td>
-                        <ion-button (click)="ProjektGoBackClicked()" slot="icon-only"
-                                    [color]="GetProjektBackButtoncolor()" size="small">
-                          <ion-icon name="arrow-back-circle" style="font-size: 22px"></ion-icon>
-                        </ion-button>
-                      </td>
-                      <td>
-                        <div (click)="ProjektClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt ? '#c7d304' : 'white'"  class="buttonclass">
-                          <table>
-                            <tr>
-                              <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt ? '#c7d304' : 'white'">
-                                {{DBProjekte.CurrentProjekt.Projektkurzname}}
-                              </td>
-                            </tr>
-                          </table>
-                        </div>
-                      </td>
-                      <td>
-                        <ion-button (click)="ProjektGoForwardClicked()" slot="icon-only"
-                                    [color]="GetProjektForwardButtoncolor()" size="small">
-                          <ion-icon name="arrow-forward-circle" style="font-size: 22px"></ion-icon>
-                        </ion-button>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
+
 
               </ng-container>
 
@@ -271,14 +283,19 @@
       </td>
       <td style="width: 50px;">
 
-        <table *ngIf="AuthService.ShowLogin === false && GraphService.UserimageSRC !== null">
-          <tr>
-            <td>
-              <img class="userimagesmall" [src]="GraphService.UserimageSRC">
-            </td>
-            <td style="width: 10px"></td>
-          </tr>
-        </table>
+        <ng-container *ngIf="AuthService.ShowLogin === false">
+          <table *ngIf="GraphService.UserimageSRC !== null">
+            <tr>
+              <td>
+                <img class="userimagesmall" [src]="GraphService.UserimageSRC">
+              </td>
+              <td style="width: 10px"></td>
+            </tr>
+          </table>
+          <div *ngIf="GraphService.UserimageSRC === null" class="userkuerzelsmall">
+            {{Pool.Mitarbeiterdaten !== null ? Pool.Mitarbeiterdaten.Kuerzel : '---'}}
+          </div>
+        </ng-container>
 
       </td>
     </tr>

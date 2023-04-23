@@ -35,6 +35,11 @@ export class DisplayService {
     Meinewocheeditor:     'Meinewocheeditor',
     ProjektpunktStatusDatePicker: 'ProjektpunktStatusDatePicker',
     ProjektpunktDateKwPicker: 'ProjektpunktDateKwPicker',
+    Verzeichnisauswahl: 'Verzeichnisauswahl',
+    Outlookkontakteauswahl: 'Outlookkontakteauswahl',
+    ProjektSendeEmail: 'ProjektSendeEmail',
+    Bautagebucheditor: 'Bautagebucheditor',
+    Bautagebucheintrageditor: 'Bautagebucheintrageditor'
 
   };
 
@@ -135,7 +140,7 @@ export class DisplayService {
 
       if(Wert >= Maximum) {
 
-        this.Debug.ShowMessage(Dialogname + ' ganz oben. Z-Index: ' + Wert, 'Dialog', 'ShowOpacity', this.Debug.Typen.Service);
+        // this.Debug.ShowMessage(Dialogname + ' ganz oben. Z-Index: ' + Wert, 'Dialog', 'ShowOpacity', this.Debug.Typen.Service);
 
         return true;
       }

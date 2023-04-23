@@ -2,10 +2,21 @@
   <page-header #PageHeader>
     <page-header-menu
       (LeistungsphaseFilterClicked)="LeistungsphaseFilterClickedHanlder()"
+      (ShowProjektfilesEvent)="ShowProjektfilesHandler()"
+      (ShowProjektauswahlEvent)="ShowProjektauswahlEventHandler()"
       (ZeitspanneFilterClicked)="ZeitspanneFilterClickedHandler()"></page-header-menu>
   </page-header>
 </ion-header>
 <ion-content>
+
+  <table *ngIf="DBProjekte.CurrentProjekt !== null" class="paddingtable" width="100%">
+    <tr>
+      <td>
+        <ion-text color="burnicklgruen" style="font-size: 120%"><b>{{DBProjekte.CurrentProjekt.Projektname}}</b></ion-text>
+      </td>
+    </tr>
+  </table>
+
 
   <div style="height: 100%; width: 100%;">
     <div  [style.height.px]="Headerhoehe" style="width: 100%; padding-left: 8px; padding-right: 8px; padding-top: 8px">
@@ -17,6 +28,7 @@
           <td style="width: auto; font-weight: bold">Titel</td>
           <td style="width: 80px; font-weight: bold">Einträge</td>
           <td style="width: 60px; font-weight: bold">Offen</td>
+          <td style="width: 80px; font-weight: bold">Status</td>
         </tr>
       </table>
 
@@ -24,7 +36,7 @@
     <div [style.height.px]="Listenhoehe" style="width: 100%; height: 100%; overflow: auto;">
 
       <div  *ngFor="let Protokoll of Protokollliste;" (click)="ProtokollClicked(Protokoll)" style="width: 100%; cursor: pointer; padding-left: 8px; padding-right: 8px">
-        <table width="100%" class="docinnertable">
+        <table width="100%" class="docinnertablenew">
           <tr>
             <td style="width: 60px; height: 40px">{{Protokoll.Protokollnummer}}</td>
             <td style="width: 100px;">{{Protokoll.Zeitstring}}</td>
@@ -40,6 +52,26 @@
 
             <td style="width: 80px;">{{Protokoll.ProjektpunkteIDListe.length !== 0 ? Protokoll.ProjektpunkteIDListe.length : 'leer'}}</td>
             <td style="width: 60px;" [style.color]="Protokoll.Punkteanzahl > 0 ? 'red' : 'green'">{{Protokoll.Punkteanzahl > 0 ? Protokoll.Punkteanzahl  : '0'}}</td>
+            <td style="width: 80px;">
+              <div *ngIf="Protokoll.ProjektpunkteIDListe.length > 0"class="maildivclass" (click)="SendMailButtonClicked($event, Protokoll)">
+                <table class="nobordersmalltable">
+                  <tr>
+                    <td align="center">
+                       <ion-icon  name="mail" [color]="Protokoll.GesendetZeitstempel !== null ? 'gruen' : 'rot'"></ion-icon>
+                    </td>
+                  </tr>
+                  <ng-container *ngIf="Protokoll.GesendetZeitstempel !== null">
+                    <tr>
+                      <td style="text-align: center; font-size: 80%">{{Tools.GetDatumFromZeitstempel(Protokoll.GesendetZeitstempel)}}</td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: center; font-size: 80%">{{Tools.GetZeitFromZeitstempel(Protokoll.GesendetZeitstempel)}}</td>
+                    </tr>
+                  </ng-container>
+                </table>
+
+              </div>
+            </td>
           </tr>
         </table>
 
@@ -134,6 +166,31 @@
 <pj-protokoll-listefilter *ngIf="ShowZeitspannefilter" [PositionY]="140" [Dialoghoehe]="514" [Dialogbreite]="580" Iconname="filter-circle-outline" [Titel]="'Zeitspanne festlegen'"
                           (CancelClickedEvent)="ShowZeitspannefilter = false"
                           (OkClickedEvent)="ShowZeitspannefilter = false"></pj-protokoll-listefilter>
+
+<pj-email-send *ngIf="ShowEmailSenden"
+                        [Titel]="'Protokoll senden'"
+                        [Dialogbreite]="EmailDialogbreite"
+                        [Dialoghoehe]="EmailDialoghoehe"
+                        [PositionY]="DialogPosY"
+                        [ZIndex]="4000"
+                        Iconname="mail-outline"
+                       (EmpfaengerBurnicklClicked)="EmpfaengerBurnicklClickedHandler()"
+                       (CcEmpfaengerBurnicklClicked)="CcEmpfaengerBurnicklClickedHandler()"
+                       (EmpfaengerExternClicked)="EmpfaengerExternClickedHandler()"
+                       (CcEmpfaengerExternClicked)="CcEmpfaengerExternClickedHandler()"
+                        (CancelClickedEvent)="ShowEmailSenden = false"
+                        (OkClickedEvent)="EmailSendenOkButtonClicked($event)"></pj-email-send>
+
+<pj-projekte-schnellauswahl *ngIf="ShowProjektschnellauswahl"
+                            [ZIndex]="5000"
+                            [Dialogbreite]="800"
+                            [Dialoghoehe]="Auswahlhoehe"
+                            [PositionY]="200" [Titel]="'Projekt wechsel'" [Iconname]="'star-outline'"
+                            (ProjektClickedEvent)="ProjektSchnellauswahlProjektClickedEventHandler($event)"
+                            (CancelClickedEvent)="ShowProjektschnellauswahl = false"
+                            (OkClickedEvent)="ShowProjektschnellauswahl = false">
+</pj-projekte-schnellauswahl>
+
 
 <auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"
                 [Dialogbreite]="200" [Dialoghoehe]="280" [PositionY]="200"

@@ -4,11 +4,20 @@
                       [ShowSandortfilter]="ShowMitarbeiterauswahl === false" (StandortfilterClicked)="StandortfilterClickedHandler()"
                       (SucheChanged)="SucheChanged($event)">
     </page-header-menu>
+    <table class="paddingtable">
+      <tr>
+        <td><checkbox-clon [Checked]="ShowRealProjekteOnly" (CheckChanged)="ShowRealProjekteCheckedChanged($event)"></checkbox-clon></td>
+        <td>Nur reale Projekte anzeigen</td>
+        <td style="width: 40px"></td>
+        <td><checkbox-clon [Checked]="ShowOwnProjekteOnly" (CheckChanged)="ShowOwnProjekteCheckedChanged($event)"></checkbox-clon></td>
+        <td>Nur eigene Projekte anzeigen</td>
+      </tr>
+    </table>
   </page-header>
 </ion-header>
 <ion-content>
   <ion-list>
-    <ion-item class="ion-text-wrap" class="ion-no-padding" *ngFor="let Projekt of Liste, let i = index"  (click)="ProjektButtonClicked(i)">
+    <ion-item class="ion-text-wrap" class="ion-no-padding" *ngFor="let Projekt of Liste, let i = index"  (click)="ProjektButtonClicked(Projekt)">
       <ion-grid class="maingridclass">
         <ion-row  *ngIf="Buchstabenliste[i] !== ''">
           <ion-col size="12">
@@ -32,16 +41,22 @@
                           <div class="kontaktclass">
                             <table class="paddingsmalltable">
                               <tr>
-                                <td style="width: 30px"><div style="height: 30px; width: 30px; border-radius: 4px" [style.background]="DB.GetProjektfarbeByName(Projekt.Projektfarbe).Background"></div></td>
+                                <td style="width: 30px">
+                                  <div class="projecticonclass" [style.background]="DB.GetProjektfarbeByProjekt(Projekt).Background">
+                                    <img  *ngIf="DB.CheckProjektdaten(Projekt) === false" src="/assets/svgs/alert.svg" style="height: 26px"/>
+                                  </div>
+                                </td>
                                 <td>
                                   <table>
                                     <tr *ngIf="!Projekt.Filtered">
-                                      <td>{{Projekt.Projektname}} / {{Projekt.Projektkurzname}}</td>
+                                      <td>{{Projekt.Projektname}} {{Projekt.Projektkurzname !== '' ? '/ ' + Projekt.Projektkurzname : '' }}</td>
+                                      <td>Key: {{Projekt.Projektkey}}</td>
                                     </tr>
                                     <tr *ngIf="Projekt.Filtered">
                                       <td>
                                         <span>{{Projekt.Text_A}}</span><span style="color: green">{{Projekt.Text_B}}</span><span>{{Projekt.Text_C}}</span> / {{Projekt.Projektkurzname}}
                                       </td>
+                                      <td></td>
                                     </tr>
                                   </table>
                                 </td>
@@ -56,6 +71,9 @@
                                       <td class="ergonametextclass">Stellvertreter:</td><td>{{DBMitarbeiter.GetMitarbeitername(Projekt.StellvertreterID)}}</td><td style="width: 20px"></td>
                                       <td class="ergonametextclass">Standort:</td><td>{{DBStandort.GetStandort(Projekt.StandortID)}}</td><td style="width: 20px"></td>
                                       <td class="ergonametextclass">Status:</td><td [style.color]="DB.GetProjektstatuscolor(Projekt.Status)">{{Projekt.Status}}</td><td style="width: 20px"></td>
+                                    </tr>
+                                    <tr *ngIf="Projekt.ProjektIsReal === false">
+                                      <td colspan="5" style="color: #2f6299; font-weight: bold">kein reales Projekt</td>
                                     </tr>
                                   </table>
 
@@ -96,7 +114,10 @@
 </ion-footer>
 
 <pj-projekt-editor *ngIf="ShowEditor"
-                   [Dialogbreite]="StrukturDialogbreite" [Dialoghoehe]="StrukturDialoghoehe" [PositionY]="DialogPosY" [Titel]="GetProjekteditorTitel()" Iconname="business-outline"
+                   [Dialogbreite]="StrukturDialogbreite"
+                   [Dialoghoehe]="StrukturDialoghoehe"
+                   [PositionY]="DialogPosY"
+                   [Titel]="GetProjekteditorTitel()" Iconname="business-outline"
                     (StatusClickedEvent)="StatusClickedHandler()"
                     (StandortClickedEvent)="StandortClickedHandler()"
                     (ProjektleiterClickedEvent)="ProjektleiterClickedHandler()"
@@ -110,9 +131,14 @@
                     (AddRaumClickedEvent)="AddRaumClickedHandler()"
                     (EditBauteilClickedEvent)="EditBauteilClickedHandler($event)"
                     (EditGeschossClickedEvent)="EditGeschossClickedHandler($event)"
-                    (EditRaumClickedEvent)="EditRaumClickedHandler($event)"></pj-projekt-editor>
+                    (SelectBaustelleLOPListefolderEvent)="SelectBaustelleLOPListefolderHandler()"
+                    (SelectBautagebuchfolderEvent)="SelectBautagebuchfolderHandler()"
+                    (SelectProtokollfolderEvent)="SelectProtokollfolderHandler()"
+                    (EditRaumClickedEvent)="EditRaumClickedHandler($event)"
+                   (ImportOutlookKontakteEvent)="ShowOutlookkontakteAuswahl = true">
+</pj-projekt-editor>
 
-<pj-beteiligten-editor *ngIf="ShowBeteiligteneditor" [Dialogbreite]="600" [Dialoghoehe]="700" [PositionY]="200" [Titel]="GetBerteiligteeditorTitel()" Iconname="color-filter-outline"
+<pj-beteiligten-editor *ngIf="ShowBeteiligteneditor" [Dialogbreite]="600" [Dialoghoehe]="720" [PositionY]="200" [Titel]="GetBerteiligteeditorTitel()" Iconname="color-filter-outline"
                        (CancelClickedEvent)="ShowBeteiligteneditor = false"
                        (OkClickedEvent)="ShowBeteiligteneditor = false"
                        (DeleteClickedEvent)="ShowBeteiligteneditor = false"
@@ -143,10 +169,26 @@
                         [AuswahlIDliste]="AuswahlIDliste"
                         (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
                         (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
-                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
+                        (StandortfilterClickedEvent)="MitarbeiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
+
+<fi-outlookkontakte-auswahl *ngIf="ShowOutlookkontakteAuswahl"
+                        [Titel]="MitarbeiterauswahlTitel"
+                        [ZIndex]="2000"
+                        [Dialogbreite]="800" [Dialoghoehe]="800" [PositionY]="DialogPosY"
+                        (CancelClickedEvent)="ShowOutlookkontakteAuswahl = false"
+                        (OkClickedEvent)="OutlookkontakteOkButtonClicked($event)"></fi-outlookkontakte-auswahl>
+
+<pj-projekte-selectfilefolder *ngIf="ShowFolderAuswahl"
+  [ZIndex]="2000"
+  [Titel]="Folderauswahltitel"
+  [Dialogbreite]="700"
+  [Dialoghoehe]="800"
+  [PositionY]="100"
+  [ShowFiles]="false" (OkClickedEvent)="FolderAuswahlOKClicked($event)" (CancelClickedEvent)="ShowFolderAuswahl = false">
+</pj-projekte-selectfilefolder>
 
 <auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex"
-                [Dialogbreite]="200" [Dialoghoehe]="200" [PositionY]="200"
+                [Dialogbreite]="AuswahlDialogBreite" [Dialoghoehe]="AuswahlDialogHoehe" [PositionY]="200"
                 [Titel]="Auswahltitel" [Iconname]="GetDialogTitelicon()"
                 (OkClickedEvent)="AuswahlOkButtonClicked($event)"
                 (CancelClickedEvent)="ShowAuswahl = false"></auswahl-dialog>

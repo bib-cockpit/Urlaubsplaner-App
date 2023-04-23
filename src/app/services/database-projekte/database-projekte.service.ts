@@ -6,7 +6,7 @@ import {ConstProvider} from "../const/const";
 import {BasicsProvider} from "../basics/basics";
 import {DatabasePoolService} from "../database-pool/database-pool.service";
 import {Observable} from "rxjs";
-import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import * as lodash from "lodash-es";
 import {Mitarbeitersettingsstruktur} from "../../dataclasses/mitarbeitersettingsstruktur";
 import {Favoritenstruktur} from "../../dataclasses/favoritenstruktur";
@@ -16,6 +16,11 @@ import {Projektauswahlmenuestruktur} from "../../dataclasses/projektauswahlmenue
 import {Projektfarbenstruktur} from "../../dataclasses/projektfarbenstruktur";
 import {reportUnhandledError} from "rxjs/internal/util/reportUnhandledError";
 import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
+import {Graphservice} from "../graph/graph";
+import {assignWith, forEach} from "lodash-es";
+import {Teamsstruktur} from "../../dataclasses/teamsstruktur";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import {Protokollstruktur} from "../../dataclasses/protokollstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -31,19 +36,24 @@ export class DatabaseProjekteService {
   public Favoritenprojekteanzahl: number;
   public Projektauswahlsettings: Projektauswahlmenuestruktur[][];
   public Projektliste:            Projektestruktur[];
+  public GesamtprojektlisteHasDatenerror: boolean;
 
   public CurrentFavoritenChanged = new EventEmitter<any>();
   public CurrentFavoritenProjektChanged = new EventEmitter<any>();
+  public GesamtprojektelisteChanged: EventEmitter<any> = new EventEmitter<any>();
+  public TeamsPathesChanged: EventEmitter<Teamsfilesstruktur> = new EventEmitter<Teamsfilesstruktur>();
 
   public  FavoritenZeilenanzahl: number;
   public FavoritenSpaltenanzahl: number;
   public  FavoritenCellbreite: number;
   public Projektfarbenliste: Projektfarbenstruktur[];
+  public Gesamtprojektliste:      Projektestruktur[];
 
   constructor(private Debug: DebugProvider,
               private Basics: BasicsProvider,
               private Pool: DatabasePoolService,
               private http: HttpClient,
+              private GraphService: Graphservice,
               private MitarbeiterDB: DatabaseMitarbeiterService,
               private Const: ConstProvider) {
     try {
@@ -54,11 +64,13 @@ export class DatabaseProjekteService {
       this.CurrentFavoritprojektindex = null;
       this.CurrentFavoritenlisteindex = null;
       this.Projektliste               = [];
+      this.Gesamtprojektliste         = [];
       this.Projektauswahlsettings     = [];
       this.FavoritenZeilenanzahl      = 1;
       this.FavoritenSpaltenanzahl     = 0;
       this.FavoritenCellbreite        = 100;
       this.Projektfarbenliste         = [];
+      this.GesamtprojektlisteHasDatenerror = false;
 
       this.Projektfarbenliste.push({Name: 'Grau',          Background: '#444444', Foreground: 'white'});
       this.Projektfarbenliste.push({Name: 'Hellblau',      Background: '#2554C7', Foreground: ''});
@@ -94,164 +106,96 @@ export class DatabaseProjekteService {
     }
   }
 
-
-
-  public InitMenuProjektauswahl() {
+  public CheckProjektmembership(Projekt: Projektestruktur): boolean {
 
     try {
 
-      let Index: number;
-      let Projekt: Projektestruktur;
-      let ProjektID: string;
-      let Spaltenindexsoll: number;
-      let Projekteanzahl: number = 0;
-      let Buttonanzahl: number;
-      let Farbe: Projektfarbenstruktur;
+      let Index = lodash.findIndex(this.GraphService.Teamsliste, {id: Projekt.TeamsID});
 
-      this.FavoritenZeilenanzahl     = 1;
-      this.FavoritenSpaltenanzahl    = 1;
-      this.Projektauswahlsettings    = [];
-      this.Projektauswahlsettings[0] = [];
+      return Index !== -1;
 
-      if(this.Pool.Mitarbeiterdaten !== null &&
-        this.Pool.Mitarbeitersettings !== null &&
-        !lodash.isUndefined(this.Pool.Mitarbeiterdaten.Favoritenliste[this.CurrentFavoritenlisteindex])) {
 
-        Projekteanzahl  = this.Pool.Mitarbeiterdaten.Favoritenliste[this.CurrentFavoritenlisteindex].Projekteliste.length;
-        Buttonanzahl    = Projekteanzahl + 3;
+    } catch (error) {
 
-        this.FavoritenSpaltenanzahl = this.Pool.Mitarbeitersettings.HeadermenueMaxFavoriten;
-        this.FavoritenZeilenanzahl  = Math.ceil(Buttonanzahl / this.FavoritenSpaltenanzahl);
-        this.FavoritenCellbreite    = 100 / this.FavoritenSpaltenanzahl;
-        Index                       = 0;
+      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'CheckProjektmembership', this.Debug.Typen.Service);
+    }
+  }
 
-        for(let Zeilenindex = 0; Zeilenindex < this.FavoritenZeilenanzahl; Zeilenindex++) {
+  public ReadGesamtprojektliste(): Promise<any> {
 
-          this.Projektauswahlsettings[Zeilenindex] = [];
+    try {
 
-          if(Zeilenindex === 0) Spaltenindexsoll = 3;
-          else                  Spaltenindexsoll = 0;
+      this.Gesamtprojektliste = [];
 
-          for(let Spaltenindex = Spaltenindexsoll; Spaltenindex < this.FavoritenSpaltenanzahl; Spaltenindex++) {
+      let headers: HttpHeaders = new HttpHeaders({
 
-            if(Zeilenindex === 0 && Spaltenindex === 3) Index = 0;
+        'content-type': 'application/json',
+      });
 
-            if(lodash.isUndefined(this.Projektauswahlsettings[Zeilenindex][Spaltenindex])) {
+      return new Promise((resolve, reject) => {
 
-              this.Projektauswahlsettings[Zeilenindex][Spaltenindex] = {
+        let StandortObservable = this.http.get(this.Pool.CockpitserverURL + '/projekte', { headers: headers });
 
-                Index:               Index,
-                Projektkuerzel:      "",
-                Projektname:         "",
-                Projektnummer:       "",
-                Projektkey:          "",
-                Projektpunkteanzahl: 0,
-                Background:          this.Const.NONE,
-                Foreground:          this.Const.NONE,
-                ShowInLOPListeOnly:  false
-              };
-            }
+        StandortObservable.subscribe({
 
-            if(lodash.isUndefined(this.Pool.Mitarbeiterdaten.Favoritenliste[this.CurrentFavoritenlisteindex].Projekteliste[Index]) === false) {
+          next: (data) => {
 
-              this.Projektauswahlsettings[Zeilenindex][Spaltenindex].Index = Index;
+            this.Gesamtprojektliste = <Projektestruktur[]>data;
+          },
+          complete: () => {
 
-              ProjektID = this.Pool.Mitarbeiterdaten.Favoritenliste[this.CurrentFavoritenlisteindex].Projekteliste[Index];
-              Projekt   = <Projektestruktur>lodash.find(this.Pool.Gesamtprojektliste, {_id: ProjektID});
+            for(let Projekt of this.Gesamtprojektliste) {
 
-              if(!lodash.isUndefined(Projekt)) {
+              if(lodash.isUndefined(Projekt.Projektfarbe))  Projekt.Projektfarbe  = 'Burnicklgruen';
+              if(lodash.isUndefined(Projekt.ProjektIsReal)) Projekt.ProjektIsReal = true;
 
-                this.Projektauswahlsettings[Zeilenindex][Spaltenindex].Projektname    = Projekt.Projektname;
-                this.Projektauswahlsettings[Zeilenindex][Spaltenindex].Projektkuerzel = Projekt.Projektkurzname;
-                this.Projektauswahlsettings[Zeilenindex][Spaltenindex].Projektnummer  = Projekt.Projektnummer;
-                this.Projektauswahlsettings[Zeilenindex][Spaltenindex].Projektkey     = Projekt.Projektkey;
+              if(lodash.isUndefined(Projekt.BaustellenLOPFolderID)) Projekt.BaustellenLOPFolderID = this.Const.NONE;
+              if(lodash.isUndefined(Projekt.ProtokolleFolderID))    Projekt.ProtokolleFolderID    = this.Const.NONE;
+              if(lodash.isUndefined(Projekt.BautagebuchFolderID))   Projekt.BautagebuchFolderID   = this.Const.NONE;
 
-                Farbe = this.GetProjektfarbeByName(Projekt.Projektfarbe);
+              for(let Beteiligter of Projekt.Beteiligtenliste) {
 
-                this.Projektauswahlsettings[Zeilenindex][Spaltenindex].Background = Farbe.Background;
-                this.Projektauswahlsettings[Zeilenindex][Spaltenindex].Foreground = Farbe.Foreground;
+                if(lodash.isUndefined(Beteiligter.Fachfirmentyp)) Beteiligter.Fachfirmentyp = 0;
               }
             }
-            else {
 
-              this.Projektauswahlsettings[Zeilenindex][Spaltenindex] = null;
-            }
+            this.GesamtprojektelisteChanged.emit();
 
-            Index++;
+            resolve(true);
+
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
           }
-        }
-      }
+        });
+      });
+    } catch (error) {
 
-      /*
-
-      this.Projektauswahlsettings[0][0] = {
-        Index:          1000,
-        Projektkuerzel: "Favoriten",
-        Projektname:    "",
-        Projektnummer:  "",
-        Projektkey:     "",
-        Projektpunkteanzahl: 0,
-        Background:          this.Const.NONE,
-        Foreground:          this.Const.NONE,
-        ShowInLOPListeOnly: false,
-      };
-
-       */
-
-      if(Projekteanzahl > 0) {
-
-
-        this.Projektauswahlsettings[0][0] = {
-          Index:          2000,
-          Projektkuerzel: "Mein Tag",
-          Projektname:    "",
-          Projektnummer:  "",
-          Projektkey:     "",
-          Projektpunkteanzahl: 0,
-          Background:          this.Const.NONE,
-          Foreground:          this.Const.NONE,
-          ShowInLOPListeOnly: true
-        };
-
-        this.Projektauswahlsettings[0][1] = {
-          Index:          3000,
-          Projektkuerzel: "Meine Woche",
-          Projektname:    "",
-          Projektnummer:  "",
-          Projektkey:     "",
-          Projektpunkteanzahl: 0,
-          Background:          this.Const.NONE,
-          Foreground:          this.Const.NONE,
-          ShowInLOPListeOnly: true
-        };
-
-        this.Projektauswahlsettings[0][2] = {
-          Index:          1500,
-          Projektkuerzel: "Meilensteine",
-          Projektname:    "",
-          Projektnummer:  "",
-          Projektkey:     "",
-          Projektpunkteanzahl: 0,
-          Background:          this.Const.NONE,
-          Foreground:          this.Const.NONE,
-          ShowInLOPListeOnly: true
-        };
-      }
-    }
-    catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'InitProjektauswahl', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'ReadGesamtprojektliste', this.Debug.Typen.Service);
     }
   }
 
 
-  public GetProjektFarbe(Punkt: Projektpunktestruktur): Projektfarbenstruktur {
+  public GetProjektFarbeByProjektpunkt(Punkt: Projektpunktestruktur): Projektfarbenstruktur {
 
     try {
 
       let Projekt: Projektestruktur = this.GetProjektByID(Punkt.ProjektID);
 
-      if(!lodash.isUndefined(Projekt)) return this.GetProjektfarbeByName(Projekt.Projektfarbe);
+
+
+      if(!lodash.isUndefined(Projekt)) {
+
+        if(this.CheckProjektmembership(Projekt) === true) return this.GetProjektfarbeByProjektfarbnamen(Projekt.Projektfarbe);
+        else return {
+          Background: "silver",
+          Foreground: "white",
+          Name: ""
+        };
+      }
       else return {
         Background: "#444444",
         Foreground: "white",
@@ -260,9 +204,10 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'GetProjektFarbe', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'GetProjektFarbeByProjektpunkt', this.Debug.Typen.Service);
     }
   }
+
 
   public SetProjektpunkteanzahl(anzahl: number, projektkey: string) {
 
@@ -314,7 +259,7 @@ export class DatabaseProjekteService {
 
     try {
 
-      for(let Projekt of this.Pool.Gesamtprojektliste) {
+      for(let Projekt of this.Gesamtprojektliste) {
 
         if(lodash.isUndefined(Projekt.Projektkey)) Projekt.Projektkey = this.GenerateProjektkey(Projekt);
 
@@ -359,7 +304,7 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'GenerateProjektkey', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'GenerateFilename', this.Debug.Typen.Service);
     }
   }
 
@@ -376,9 +321,9 @@ export class DatabaseProjekteService {
         ProjektleiterID:  this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : this.Const.NONE,
         StellvertreterID: this.Const.NONE,
         Projektkey:       this.Const.NONE,
-        Projektname: "",
-        Projektkurzname: "",
-        Projektnummer: "",
+        Projektname:      "",
+        Projektkurzname:  "",
+        Projektnummer:    "",
         PLZ: "",
         Ort: "",
         Strasse: "",
@@ -394,7 +339,17 @@ export class DatabaseProjekteService {
         Deleted: false,
         Projektfarbe: this.Const.NONE,
         Beteiligtenliste: [],
-        Bauteilliste: []
+        Bauteilliste: [],
+        ProjektIsNew: true,
+        ProjektIsReal: true,
+
+        TeamsID:          this.Const.NONE,
+        TeamsDescription: this.Const.NONE,
+        TeamsName:        this.Const.NONE,
+
+        BaustellenLOPFolderID: this.Const.NONE,
+        ProtokolleFolderID:    this.Const.NONE,
+        BautagebuchFolderID:   this.Const.NONE,
       };
 
     } catch (error) {
@@ -435,7 +390,7 @@ export class DatabaseProjekteService {
     }
   }
 
-  public AddProjekt(): Promise<any> {
+  public AddProjekt(projekt: Projektestruktur): Promise<any> {
 
     try {
 
@@ -446,11 +401,13 @@ export class DatabaseProjekteService {
 
         // POST für neuen Eintrag
 
-        Observer = this.http.post(this.ServerUrl, this.CurrentProjekt);
+        Observer = this.http.post(this.ServerUrl, projekt);
 
         Observer.subscribe({
 
           next: (result) => {
+
+            debugger;
 
             Projekt = result.data;
 
@@ -458,7 +415,9 @@ export class DatabaseProjekteService {
           complete: () => {
 
             this.UpdateProjektliste(Projekt);
-            this.Pool.GesamtprojektelisteChanged.emit();
+            this.GesamtprojektelisteChanged.emit();
+
+            debugger;
 
             resove(true);
 
@@ -476,20 +435,20 @@ export class DatabaseProjekteService {
     }
   }
 
-  public UpdateProjekt(): Promise<any> {
+  public UpdateProjekt(projekt: Projektestruktur): Promise<any> {
 
     try {
 
       let Observer: Observable<any>;
       let Params = new HttpParams();
 
-      Params.set('id', this.CurrentProjekt._id);
+      Params.set('id', projekt._id);
 
       return new Promise<any>((resove, reject) => {
 
         // PUT für update
 
-        Observer = this.http.put(this.ServerUrl, this.CurrentProjekt);
+        Observer = this.http.put(this.ServerUrl, projekt);
 
         Observer.subscribe({
 
@@ -498,9 +457,9 @@ export class DatabaseProjekteService {
           },
           complete: () => {
 
-            this.UpdateProjektliste(this.CurrentProjekt);
+            this.UpdateProjektliste(projekt);
 
-            this.Pool.GesamtprojektelisteChanged.emit();
+            this.GesamtprojektelisteChanged.emit();
 
             resove(true);
 
@@ -526,11 +485,11 @@ export class DatabaseProjekteService {
 
       let Index: number;
 
-      Index = lodash.findIndex(this.Pool.Gesamtprojektliste, {_id : this.CurrentProjekt._id});
+      Index = lodash.findIndex(this.Gesamtprojektliste, {_id : projekt._id});
 
       if(Index !== -1) {
 
-        this.Pool.Gesamtprojektliste[Index] = projekt;
+        this.Gesamtprojektliste[Index] = projekt;
 
         this.Debug.ShowMessage('Projektliste updated: ' + projekt.Projektname, 'Database Projekte', 'UpdateProjektliste', this.Debug.Typen.Service);
 
@@ -539,15 +498,17 @@ export class DatabaseProjekteService {
 
         this.Debug.ShowMessage('Projekt nicht gefunden -> neues Projekt hinzufügen', 'Database Projekte', 'UpdateProjektliste', this.Debug.Typen.Service);
 
-        this.Pool.Gesamtprojektliste.push(projekt); // neuen
+        this.Gesamtprojektliste.push(projekt); // neuen
       }
 
       // Gelöscht markiert Einträge entfernen
 
-      this.Pool.Gesamtprojektliste = lodash.filter(this.Pool.Gesamtprojektliste, (currentprojekt: Projektestruktur) => {
+      this.Gesamtprojektliste = lodash.filter(this.Gesamtprojektliste, (currentprojekt: Projektestruktur) => {
 
         return currentprojekt.Deleted === false;
       });
+
+      this.CheckMyProjektdaten();
 
     } catch (error) {
 
@@ -580,7 +541,7 @@ export class DatabaseProjekteService {
 
             this.UpdateProjektliste(this.CurrentProjekt);
 
-            this.Pool.GesamtprojektelisteChanged.emit();
+            this.GesamtprojektelisteChanged.emit();
 
             resove(true);
 
@@ -611,13 +572,13 @@ export class DatabaseProjekteService {
 
       for(let ProjektID of idliste) {
 
-        Projekt = lodash.find(this.Pool.Gesamtprojektliste, {_id: ProjektID});
+        Projekt = lodash.find(this.Gesamtprojektliste, {_id: ProjektID});
 
         if(!lodash.isUndefined(Projekt)) this.Projektliste.push(Projekt);
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'SetProjekteliste', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'SetProjekteliste', this.Debug.Typen.Service);
     }
   }
 
@@ -746,7 +707,27 @@ export class DatabaseProjekteService {
     }
   }
 
-  GetProjektfarbeByName(name: string) {
+  GetProjektfarbeByProjekt(projekt: Projektestruktur): Projektfarbenstruktur {
+
+    try {
+
+      let Farbe = this.GetProjektfarbeByProjektfarbnamen(projekt.Projektfarbe);
+
+      if(this.CheckProjektmembership(projekt)) return Farbe;
+      else return {
+        Background: "silver",
+        Foreground: "black",
+        Name: ""
+      };
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'GetProjektfarbeByProjekt', this.Debug.Typen.Service);
+    }
+
+  }
+
+  GetProjektfarbeByProjektfarbnamen(name: string) {
 
     try {
 
@@ -754,21 +735,101 @@ export class DatabaseProjekteService {
 
       if(lodash.isUndefined(Farbe)) {
 
-        return  {
+        Farbe =  {
 
           Background: this.Basics.Farben.Burnicklgruen,
           Foreground: 'white',
           Name: ''
         };
       }
-      else {
 
-        return Farbe;
-      }
+      return Farbe;
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'function', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'GetProjektfarbeByProjektfarbnamen', this.Debug.Typen.Service);
+    }
+  }
+
+  public CheckProjektdaten(projekt: Projektestruktur): boolean {
+
+    try {
+
+      let Team: Teamsstruktur;
+      let DatenOk: boolean = true;
+
+      // Wenn die Angaben im Projekt fehlen und das Projekt dem Nutzer (Teams) gehört dann Fehler
+
+      if(projekt.Projektnummer === '' || projekt.Projektname === '' || projekt.Projektkurzname === '') {
+
+        Team = lodash.find(this.GraphService.Teamsliste, {id: projekt.TeamsID});
+
+        if (!lodash.isUndefined(Team)) DatenOk = false;
+      }
+
+      return DatenOk;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'CheckProjektdaten', this.Debug.Typen.Service);
+    }
+  }
+
+  public CheckMyProjektdaten(): boolean {
+
+    try {
+
+      let DatenOk: boolean = true;
+      let Liste: Projektestruktur[] = lodash.filter(this.Gesamtprojektliste, (projekt: Projektestruktur) => {
+
+        for(let Team of this.GraphService.Teamsliste) {
+
+          if(Team.id === projekt.TeamsID) return true;
+        }
+
+        return false;
+      });
+
+      Liste.forEach((projekt: Projektestruktur) => {
+
+        if(this.CheckProjektdaten(projekt) === false) DatenOk = false;
+      });
+
+      this.GesamtprojektlisteHasDatenerror = !DatenOk;
+
+      return DatenOk;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'CheckMyProjektdaten', this.Debug.Typen.Service);
+    }
+  }
+
+  async SyncronizeGesamtprojektlisteWithTeams(teamsliste: Teamsstruktur[]): Promise<any> {
+
+    try {
+
+      let Projekt: Projektestruktur;
+
+        for(let Team of teamsliste) {
+
+          Projekt = lodash.find(this.Gesamtprojektliste, { TeamsID : Team.id});
+
+          if(lodash.isUndefined(Projekt)) {
+
+            Projekt = this.GetEmptyProjekt();
+
+            Projekt.TeamsID          = Team.id;
+            Projekt.TeamsDescription = Team.description;
+            Projekt.TeamsName        = Team.displayName;
+
+            await this.AddProjekt(Projekt);
+          }
+        }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'SyncronizeGesamtprojektlisteWithTeams', this.Debug.Typen.Service);
     }
   }
 }

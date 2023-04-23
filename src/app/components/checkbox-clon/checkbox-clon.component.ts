@@ -30,11 +30,24 @@ export class CheckboxClonComponent implements OnInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'file', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Checkbox', 'constructor', this.Debug.Typen.Component);
     }
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+
+    try {
+
+      if(this.Enabled === false) {
+
+        this.Background = '#B2BABB';
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Checkbox', 'ngOnInit', this.Debug.Typen.Component);
+    }
+  }
 
   DivClickedHnadler(event: MouseEvent) {
 
@@ -50,7 +63,7 @@ export class CheckboxClonComponent implements OnInit {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'file', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Checkbox', 'DivClickedHnadler', this.Debug.Typen.Component);
     }
   }
 }

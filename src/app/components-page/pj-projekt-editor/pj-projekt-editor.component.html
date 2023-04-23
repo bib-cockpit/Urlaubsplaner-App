@@ -56,139 +56,320 @@
 
           <ng-container [ngSwitch]="Bereich">
 
+            <ng-container *ngSwitchCase="Bereiche.Allgemein">
 
-            <table *ngSwitchCase="Bereiche.Allgemein">
-                <tr>
-                  <td valign="top">
-                    <div class="contentleftinnerclass">
+              <div *ngIf="OtherUserinfo !== null" class="otheruserinfodivclass">
+                <table style="width: 100%">
+                  <tr>
+                    <td>
+                      <table class="paddingtable">
+                        <tr>
+                          <td colspan="2">
+                            <ion-text color="burnicklgruen"><b>Mitgliedinformationen</b></ion-text>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Name</td><td>{{OtherUserinfo.displayName}}</td>
+                        </tr>
+                        <tr>
+                          <td>Standort</td><td>{{OtherUserinfo.officeLocation}}</td>
+                        </tr>
+                        <tr>
+                          <td>Position</td><td>{{OtherUserinfo.jobTitle}}</td>
+                        </tr>
+                        <tr>
+                          <td>Email</td><td>{{OtherUserinfo.mail}}</td>
+                        </tr>
+                        <tr>
+                          <td>Telefon</td><td>{{OtherUserinfo.businessPhones[0]}}</td>
+                        </tr>
+                        <tr>
+                          <td>Mobil</td><td>{{OtherUserinfo.mobilePhone}}</td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="background: #354547" colspan="2">
+                      <table class="paddingsmalltable" width="100%">
+                        <tr>
+                          <td>
+                            <div style="cursor: pointer" (click)="CloseOtherUserinfo()">
+                              <ion-icon style="font-size: 28px" color="burnicklgruen" name="close-outline"></ion-icon>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <table>
+                  <tr>
+                    <td valign="top">
+                      <div class="contentleftinnerclass">
+                        <ion-grid *ngIf="DB.CurrentProjekt">
+                          <ion-row>
+                            <ion-col>
+                              <ion-text color="burnicklgruen"><b>Projekt</b></ion-text>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col [size]="Tools.GetButtonvalueSize()">
+                              <input-clone (TextChanged)="TextChanged($event)" [Required]="true" [MaxLength]="100" Titel="Projektname" [(Value)]="DB.CurrentProjekt.Projektname"></input-clone>
+                            </ion-col>
+                            <ion-col [size]="Tools.GetButtonvalueSize()">
+                              <input-clone (TextChanged)="TextChanged($event)" [Required]="true" [MaxLength]="20" Titel="Projektnummer" [(Value)]="DB.CurrentProjekt.Projektnummer"></input-clone>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col [size]="Tools.GetButtonvalueSize()">
+                              <input-clone (TextChanged)="TextChanged($event)" [Enabled]="DB.CurrentProjekt.ProjektIsNew === true" [Required]="true" [MinLength]="3" [MaxLength]="20" Titel="Projektkurzname" [Value]="DB.CurrentProjekt.Projektkurzname"></input-clone>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col [size]="Tools.GetButtonvalueSize()">
+                              <input-clone [Value]="DB.CurrentProjekt.Zeitpunkt" [Enabled]="false" Titel="Startdatum" [DisabledColor]="'black'" [Clickable]="true"></input-clone>
+                            </ion-col>
+                            <ion-col [size]="Tools.GetButtonvalueSize()">
+                              <input-clone (click)="StandortClicked()" [Value]="DBStandort.GetStandort(DB.CurrentProjekt.StandortID)" [Enabled]="false" Titel="Standort" [DisabledColor]="'black'" [Clickable]="true"></input-clone>
+                            </ion-col>
+                          </ion-row>
+
+                          <ion-row>
+                            <ion-col>
+                              <ion-text color="burnicklgruen"><b>Projektanschrift</b></ion-text>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col [size]="Tools.GetButtonvalueSize()">
+                              <input-clone (TextChanged)="TextChanged($event)"Titel="Strasse" [(Value)]="DB.CurrentProjekt.Strasse"></input-clone>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col [size]="Tools.GetButtonvalueSize()">
+                              <input-clone (TextChanged)="TextChanged($event)"Titel="PLZ"  [(Value)]="DB.CurrentProjekt.PLZ"></input-clone>
+                            </ion-col>
+                            <ion-col [size]="Tools.GetButtonvalueSize()">
+                              <input-clone (TextChanged)="TextChanged($event)"Titel="Ort"  [(Value)]="DB.CurrentProjekt.Ort"></input-clone>
+                            </ion-col>
+                          </ion-row>
+
+                          <ion-row>
+                            <ion-col [size]="Tools.GetButtonvalueSize()">
+                              <ion-text color="burnicklgruen"><b>Projektleitung</b></ion-text>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col [size]="Tools.GetButtonvalueSize()">
+                              <input-clone (click)="ProjektleiterClicked()"
+                                           [Value]="DBMitarbeiter.GetMitarbeitername(DB.CurrentProjekt.ProjektleiterID)"
+                                           [Enabled]="false" Titel="Projektleiter" [DisabledColor]="'black'" [Clickable]="true"></input-clone>
+                            </ion-col>
+                            <ion-col [size]="Tools.GetButtonvalueSize()">
+                              <input-clone (click)="StellvertreterClicked()"
+                                           [Value]="DBMitarbeiter.GetMitarbeitername(DB.CurrentProjekt.StellvertreterID)"
+                                           [Enabled]="false" Titel="Stellvertreter" [DisabledColor]="'black'" [Clickable]="true"></input-clone>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col [size]="Tools.GetButtonvalueSize()">
+                              <ion-text color="burnicklgruen"><b>Projektstatus</b></ion-text>
+                            </ion-col>
+                          </ion-row>
+
+                          <ion-row>
+                            <ion-col [size]="Tools.GetButtonvalueSize()">
+                              <input-clone (click)="StatusClicked()"
+                                           [Value]="DB.CurrentProjekt.Status"
+                                           [Enabled]="false" Titel="Status"
+                                           [DisabledColor]="DB.GetProjektstatuscolor(DB.CurrentProjekt.Status)"
+                                           [Clickable]="true"></input-clone>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col>
+                              <div style="height: 40px"></div>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col>
+                              <table>
+                                <tr>
+                                  <td>
+                                    <ion-text color="burnicklgruen"><b>Teams</b></ion-text>
+                                  </td>
+                                  <td style="width: 10px"></td>
+                                    <img src="assets/svgs/teamsicon.svg" style="width: 40px">
+                                  <td>
+                                  </td>
+                                </tr>
+                              </table>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col [size]="12">
+                              <input-clone [Value]="DB.CurrentProjekt.TeamsName"
+                                           [Enabled]="false" Titel="Name"></input-clone>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col [size]="12">
+                              <input-clone [Value]="DB.CurrentProjekt.TeamsDescription"
+                                           [Enabled]="false" Titel="Beschreibung"></input-clone>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col [size]="12">
+                              <input-clone [Value]="DB.CurrentProjekt.TeamsID"
+                                           [Enabled]="false" Titel="Teams ID"></input-clone>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col [size]="12">
+                              <table style="width: 100%">
+                                <tr>
+                                  <td style="width: auto">
+                                    <input-clone [Value]="Protokollfolder"
+                                                 [Enabled]="false" Titel="Speicherort Protokolle" [DisabledColor]="DB.CurrentProjekt.ProtokolleFolderID !== Const.NONE ? '#354547' : 'orange'">
+                                    </input-clone>
+                                  </td>
+                                  <td style="width: 4px"></td>
+                                  <td style="width: 46px">
+                                    <ion-button (click)="SelectProtokollfolderClicked()" size="small" color="burnicklbraun">
+                                      <ion-icon name="folder"></ion-icon>
+                                    </ion-button>
+                                  </td>
+                                </tr>
+                              </table>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col [size]="12">
+                              <table style="width: 100%">
+                                <tr>
+                                  <td style="width: auto">
+                                    <input-clone [Value]="Bautagebuchfolder"
+                                                 [Enabled]="false" Titel="Speicherort Bautagebücher" [DisabledColor]="DB.CurrentProjekt.BautagebuchFolderID !== Const.NONE ? '#354547' : 'orange'">
+                                    </input-clone>
+                                  </td>
+                                  <td style="width: 4px"></td>
+                                  <td style="width: 46px">
+                                    <ion-button (click)="SelectBautagebuchfolderClicked()" size="small" color="burnicklbraun">
+                                      <ion-icon name="folder"></ion-icon>
+                                    </ion-button>
+                                  </td>
+                                </tr>
+                              </table>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col [size]="12">
+                              <table style="width: 100%">
+                                <tr>
+                                  <td style="width: auto">
+                                    <input-clone [Value]="BaustelleLOPListefolder"
+                                                 [Enabled]="false" Titel="Speicherort LOP-Liste Baustelle" [DisabledColor]="DB.CurrentProjekt.BaustellenLOPFolderID !== Const.NONE ? '#354547' : 'orange'">
+                                    </input-clone>
+                                  </td>
+                                  <td style="width: 4px"></td>
+                                  <td style="width: 46px">
+                                    <ion-button (click)="SelectBaustelleLOPListefolderClicked()" size="small" color="burnicklbraun">
+                                      <ion-icon name="folder"></ion-icon>
+                                    </ion-button>
+                                  </td>
+                                </tr>
+                              </table>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col [size]="12">
+                              <table  class="paddingtable">
+                                <tr>
+                                  <td><checkbox-clon [Checked]="DB.CurrentProjekt.ProjektIsReal" (CheckChanged)="ProjektIsRealCheckChanged($event)"></checkbox-clon></td><td>Reales Projekt</td>
+                                </tr>
+                              </table>
+                            </ion-col>
+                          </ion-row>
+
+                          <!--
+                          <ion-row *ngIf="DB.CurrentProjekt._id !== null">
+                            <ion-col>
+                              <table>
+                                <tr>
+                                  <td><checkbox-clon [Checked]="DeleteEnabled" (CheckChanged)="LoeschenCheckboxChanged($event)"></checkbox-clon></td>
+                                  <td style="width: 6px"></td>
+                                  <td>
+                                    <ion-button size="small" color="rot" [disabled]="!DeleteEnabled" (click)="LoeschenButtonClicked()">
+                                      <ion-icon name="trash-outline" style="font-size: 20px"></ion-icon>
+                                      <ion-text>Eintrag löschen</ion-text>
+                                    </ion-button>
+                                  </td>
+                                </tr>
+                              </table>
+                            </ion-col>
+                          </ion-row>
+                          -->
+
+                        </ion-grid>
+
+                      </div>
+
+                    </td>
+                    <td valign="top">
                       <ion-grid *ngIf="DB.CurrentProjekt">
                         <ion-row>
                           <ion-col>
-                            <ion-text color="burnicklgruen"><b>Projekt</b></ion-text>
-                          </ion-col>
-                        </ion-row>
-                        <ion-row>
-                          <ion-col [size]="Tools.GetButtonvalueSize()">
-                            <input-clone (TextChanged)="TextChanged($event)" [Required]="true" [MaxLength]="100" Titel="Projektname" [(Value)]="DB.CurrentProjekt.Projektname"></input-clone>
-                          </ion-col>
-                          <ion-col [size]="Tools.GetButtonvalueSize()">
-                            <input-clone (TextChanged)="TextChanged($event)" [Required]="true" [MaxLength]="20" Titel="Projektnummer" [(Value)]="DB.CurrentProjekt.Projektnummer"></input-clone>
-                          </ion-col>
-                        </ion-row>
-                        <ion-row>
-                          <ion-col [size]="Tools.GetButtonvalueSize()">
-                            <input-clone (TextChanged)="TextChanged($event)" [Enabled]="DB.CurrentProjekt._id === null" [Required]="true" [MaxLength]="20" Titel="Projektkurzname" [Value]="DB.CurrentProjekt.Projektkurzname"></input-clone>
-                          </ion-col>
-                        </ion-row>
-                        <ion-row>
-                          <ion-col [size]="Tools.GetButtonvalueSize()">
-                            <input-clone [Value]="DB.CurrentProjekt.Zeitpunkt" [Enabled]="false" Titel="Startdatum" [DisabledColor]="'black'" [Clickable]="true"></input-clone>
-                          </ion-col>
-                          <ion-col [size]="Tools.GetButtonvalueSize()">
-                            <input-clone (click)="StandortClicked()" [Value]="DBStandort.GetStandort(DB.CurrentProjekt.StandortID)" [Enabled]="false" Titel="Standort" [DisabledColor]="'black'" [Clickable]="true"></input-clone>
-                          </ion-col>
-                        </ion-row>
-
-                        <ion-row>
-                          <ion-col>
-                            <ion-text color="burnicklgruen"><b>Projektanschrift</b></ion-text>
-                          </ion-col>
-                        </ion-row>
-                        <ion-row>
-                          <ion-col [size]="Tools.GetButtonvalueSize()">
-                            <input-clone (TextChanged)="TextChanged($event)"Titel="Strasse" [(Value)]="DB.CurrentProjekt.Strasse"></input-clone>
-                          </ion-col>
-                        </ion-row>
-                        <ion-row>
-                          <ion-col [size]="Tools.GetButtonvalueSize()">
-                            <input-clone (TextChanged)="TextChanged($event)"Titel="PLZ"  [(Value)]="DB.CurrentProjekt.PLZ"></input-clone>
-                          </ion-col>
-                          <ion-col [size]="Tools.GetButtonvalueSize()">
-                            <input-clone (TextChanged)="TextChanged($event)"Titel="Ort"  [(Value)]="DB.CurrentProjekt.Ort"></input-clone>
-                          </ion-col>
-                        </ion-row>
-
-                        <ion-row>
-                          <ion-col [size]="Tools.GetButtonvalueSize()">
-                            <ion-text color="burnicklgruen"><b>Projektleitung</b></ion-text>
-                          </ion-col>
-                        </ion-row>
-                        <ion-row>
-                          <ion-col [size]="Tools.GetButtonvalueSize()">
-                            <input-clone (click)="ProjektleiterClicked()"
-                                         [Value]="DBMitarbeiter.GetMitarbeitername(DB.CurrentProjekt.ProjektleiterID)"
-                                         [Enabled]="false" Titel="Projektleiter" [DisabledColor]="'black'" [Clickable]="true"></input-clone>
-                          </ion-col>
-                          <ion-col [size]="Tools.GetButtonvalueSize()">
-                            <input-clone (click)="StellvertreterClicked()"
-                                         [Value]="DBMitarbeiter.GetMitarbeitername(DB.CurrentProjekt.StellvertreterID)"
-                                         [Enabled]="false" Titel="Stellvertreter" [DisabledColor]="'black'" [Clickable]="true"></input-clone>
-                          </ion-col>
-                        </ion-row>
-                        <ion-row>
-                          <ion-col [size]="Tools.GetButtonvalueSize()">
-                            <ion-text color="burnicklgruen"><b>Projektstatus</b></ion-text>
-                          </ion-col>
-                        </ion-row>
-
-                        <ion-row>
-                          <ion-col [size]="Tools.GetButtonvalueSize()">
-                            <input-clone (click)="StatusClicked()"
-                                         [Value]="DB.CurrentProjekt.Status"
-                                         [Enabled]="false" Titel="Status"
-                                         [DisabledColor]="DB.GetProjektstatuscolor(DB.CurrentProjekt.Status)"
-                                         [Clickable]="true"></input-clone>
-                          </ion-col>
-                        </ion-row>
-                        <ion-row *ngIf="DB.CurrentProjekt._id !== null">
-                          <ion-col>
-                            <table>
-                              <tr>
-                                <td><checkbox-clon [Checked]="DeleteEnabled" (CheckChanged)="LoeschenCheckboxChanged($event)"></checkbox-clon></td>
-                                <td style="width: 6px"></td>
-                                <td>
-                                  <ion-button size="small" color="rot" [disabled]="!DeleteEnabled" (click)="LoeschenButtonClicked()">
-                                    <ion-icon name="trash-outline" style="font-size: 20px"></ion-icon>
-                                    <ion-text>Eintrag löschen</ion-text>
-                                  </ion-button>
-                                </td>
-                              </tr>
-                            </table>
-                          </ion-col>
-                        </ion-row>
-
-                      </ion-grid>
-
-                    </div>
-
-                  </td>
-                  <td>
-                    <ion-radio-group [value]="DB.CurrentProjekt.Projektfarbe" (ionChange)="ProjektfarbeChangedHandler($event)">
-                      <ion-grid *ngIf="DB.CurrentProjekt">
-                        <ion-row>
-                          <ion-col>
-                            <ion-text color="burnicklgruen"><b>Projektfarbe</b></ion-text>
+                            <ion-text color="burnicklgruen"><b>Mitglieder</b></ion-text>
                           </ion-col>
                         </ion-row>
                         <ion-row>
                           <ion-col>
-                            <table class="paddingtable">
-                              <tr *ngFor="let Farbe of DB.Projektfarbenliste">
-                                <td>
-                                  <ion-radio [value]="Farbe.Name"></ion-radio>
-                                </td>
-                                <td>
-                                  <div style="width: 40px; height: 40px; border-radius: 4px;" [style.background]="Farbe.Background"></div>
-                                </td>
-                              </tr>
-                            </table>
+                            <div style="background: none; width: 300px; height: 800px; overflow: auto">
+                              <table class="paddingtable">
+                                <tr *ngFor="let Mitglied of Mitgliederliste" style="height: 58px">
+                                  <td>
+                                    <a (click)="MitgliedClicked(Mitglied)">{{Mitglied.displayName}}</a>
+                                  </td>
+                                  <td>
+                                    <img *ngIf="Mitglied.UserImageSRC !== null" [src]="Mitglied.UserImageSRC" class="userimagesmall"/>
+                                  </td>
+                                </tr>
+                              </table>
+                            </div>
                           </ion-col>
                         </ion-row>
                       </ion-grid>
-                    </ion-radio-group>
-                  </td>
-                </tr>
-              </table>
+                    </td>
+                    <td valign="top">
+                      <ion-radio-group [value]="DB.CurrentProjekt.Projektfarbe" (ionChange)="ProjektfarbeChangedHandler($event)">
+                        <ion-grid *ngIf="DB.CurrentProjekt">
+                          <ion-row>
+                            <ion-col>
+                              <ion-text color="burnicklgruen"><b>Projektfarbe</b></ion-text>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
+                            <ion-col>
+                              <table class="paddingtable">
+                                <tr *ngFor="let Farbe of DB.Projektfarbenliste">
+                                  <td>
+                                    <ion-radio [value]="Farbe.Name"></ion-radio>
+                                  </td>
+                                  <td>
+                                    <div style="width: 40px; height: 40px; border-radius: 4px;" [style.background]="Farbe.Background"></div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </ion-col>
+                          </ion-row>
+                        </ion-grid>
+                      </ion-radio-group>
+                    </td>
+                  </tr>
+                </table>
+
+            </ng-container>
 
             <div *ngSwitchCase="Bereiche.Beteiligte" class="contentrightinnerclass">
             <!-- Projektbeteiligtenliste -->
@@ -268,12 +449,29 @@
 
                     <table>
                       <tr>
+                        <td colspan="3" style="height: 4px"></td>
+                      </tr>
+                      <tr>
                         <td>
-                          <ion-button size="small" [color]="'burnicklbraun'"
-                                      (click)="AddBeteiligteButtonClicked()">
-                            <ion-icon name="add-circle-outline" color="weiss" slot="start"></ion-icon>
-                            <ion-text color="weiss">Neuer Eintrag</ion-text>
-                          </ion-button>
+                          <div class="importoutlookbutton" (click)="AddBeteiligteButtonClicked()">
+                            <table class="paddingtable">
+                              <tr>
+                                <td><ion-icon name="add-circle-outline" color="weiss"></ion-icon></td>
+                                <td style="color: white; font-size: 100%">NEUER EINTRAG</td>
+                              </tr>
+                            </table>
+                          </div>
+                        </td>
+                        <td style="width: 4px"></td>
+                        <td>
+                          <div class="importoutlookbutton" (click)="ImportOutlookKontakteEvent.emit()">
+                            <table class="paddingtable">
+                              <tr>
+                                <td><img src="assets/svgs/outlookicon.svg" style="width: 60px"></td>
+                                <td style="color: white; font-size: 100%">OUTLOOK KONTAKTE IMPORTIEREN</td>
+                              </tr>
+                            </table>
+                          </div>
                         </td>
                       </tr>
                     </table>

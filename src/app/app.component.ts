@@ -7,7 +7,7 @@ import {BasicsProvider} from "./services/basics/basics";
 import {DatabaseAuthenticationService} from "./services/database-authentication/database-authentication.service";
 import {ToolsProvider} from "./services/tools/tools";
 import {HttpErrorResponse} from "@angular/common/http";
-import {filter, Subject, Subscription, takeUntil} from "rxjs";
+import {filter, Subject, Subscription, takeUntil, using} from "rxjs";
 import {MsalBroadcastService, MsalService} from "@azure/msal-angular";
 import {AuthenticationResult, EventMessage, EventType, InteractionStatus} from "@azure/msal-browser";
 import {ConstProvider} from "./services/const/const";
@@ -18,6 +18,8 @@ import {DatabaseMitarbeitersettingsService} from "./services/database-mitarbeite
 import {LocalstorageService} from "./services/localstorage/localstorage";
 import * as lodash from "lodash-es";
 import {Graphservice} from "./services/graph/graph";
+import {Mitarbeiterstruktur} from "./dataclasses/mitarbeiterstruktur";
+import {indexOf} from "lodash-es";
 
 @Component({
   selector: 'app-root',
@@ -118,6 +120,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
     try {
 
+      let Mitarbeiter: Mitarbeiterstruktur;
+
       this.Debug.ShowMessage('Start App', 'App Component', 'StartApp', this.Debug.Typen.Component);
 
       await this.platform.ready();
@@ -130,83 +134,100 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         // Benutzer ist angemeldet
 
-        await this.GraphService.GetUserinfo();
-        await this.GraphService.GetUserimage();
+        this.AuthService.SetShowLoginStatus();
 
         this.Debug.ShowMessage('Benutzer ist angemeldet: ' + this.AuthService.ActiveUser.username, 'App Component', 'StartApp', this.Debug.Typen.Component);
 
+        await this.GraphService.GetOwnUserinfo();
+        await this.GraphService.GetOwnUserimage();
+        await this.GraphService.GetOwnUserteams();
 
-        let result = await this.MitarbeiterDB.GetMitarbeiterRegistrierung(this.AuthService.ActiveUser.username);
+        await this.Pool.ReadChangelogliste();
+        await this.Pool.ReadStandorteliste();
+        await this.Pool.ReadMitarbeiterliste();
+        await this.ProjekteDB.ReadGesamtprojektliste();
+        let Liste = await this.GraphService.GetAllUsers();
 
+        for(let User of Liste) {
 
-        if(result !== null && !lodash.isUndefined(result.error)) {
+          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, (currentmitarbeiter: Mitarbeiterstruktur) => {
 
-          // Databse not available
+            return currentmitarbeiter.UserID === User.id;
+          });
 
-          this.Debug.ShowErrorMessage('Lesen in der Mitarbeiter Datenbank fehlgeschlagen', 'App Component', 'StartApp', this.Debug.Typen.Component);
+          if(lodash.isUndefined(Mitarbeiter)) {
+
+            if(User.mail.toLowerCase().indexOf('extern') === -1 && User.displayName.toLowerCase().indexOf('extern') === -1) {
+
+              Mitarbeiter = this.MitarbeiterDB.ConvertGraphuserToMitarbeiter(User);
+
+              await this.MitarbeiterDB.AddMitarbeiter(Mitarbeiter);
+            }
+          }
+        }
+
+        if(this.MitarbeiterDB.CheckMitarbeiterExists(this.GraphService.Graphuser.mail) === false) {
+
+          // Mitarbeiter neu Anlegen
+
+          this.Debug.ShowMessage('Mitarbeiter neu eingetragen.', 'App Component', 'StartApp', this.Debug.Typen.Component);
+
+          Mitarbeiter = this.MitarbeiterDB.ConvertGraphuserToMitarbeiter(this.GraphService.Graphuser);
+          Mitarbeiter = <Mitarbeiterstruktur>await this.MitarbeiterDB.AddMitarbeiter(Mitarbeiter);
+        }
+        else {
+
+          this.Debug.ShowMessage('Mitarbeiter ist bereits eingetragen.', 'App Component', 'StartApp', this.Debug.Typen.Component);
+
+          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {UserID: this.GraphService.Graphuser.id});
+        }
+
+        // Mitarbeiter ist bereits registriert
+
+        this.Pool.Mitarbeiterdaten = this.Pool.InitMitarbeiter(Mitarbeiter); // fehlende Mitarbeiterdaten initialisieren
+        this.Pool.CheckMitarbeiterdaten();
+
+        await this.Pool.ReadSettingsliste();
+
+        await this.ProjekteDB.SyncronizeGesamtprojektlisteWithTeams(this.GraphService.Teamsliste);
+
+        this.ProjekteDB.CheckMyProjektdaten();
+
+        this.Pool.Mitarbeitersettings = this.Pool.InitMitarbeitersettings(); // fehlende Settingseintraege initialisieren
+
+        await this.MitarbeitersettingsDB.SaveMitarbeitersettings();
+
+        this.Pool.MitarbeitersettingsChanged.emit();
+
+        if(this.Pool.Mitarbeiterdaten.SettingsID === null) {
+
+          this.Pool.Mitarbeiterdaten.SettingsID = this.Pool.Mitarbeitersettings._id;
+
+          await this.MitarbeiterDB.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten);
+        }
+
+        this.MitarbeiterDB.InitService();
+        this.StandortDB.InitService();
+        this.ProjekteDB.InitService();
+
+        if(this.Pool.Mitarbeiterdaten.Favoritenliste.length === 0) {
 
           this.Tools.SetRootPage(this.Const.Pages.HomePage);
         }
         else {
 
-          if (result === null) {
+          this.ProjekteDB.InitGesamtprojekteliste();
+          this.ProjekteDB.InitProjektfavoritenliste();
 
-            // Neuen Mitarbeiter registrieren
+          this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
+          await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);                 // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
 
-            this.Debug.ShowMessage('Mitarbeiter ist neu und muss registriert werden', 'App Component', 'StartApp', this.Debug.Typen.Component);
+          this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Festlegungen;
 
-            await this.Pool.ReadStandorteliste();
-
-            this.Menuservice.ShowRegistrierungPage();
-          }
-          else {
-
-            // Mitarbeiter ist bereits registriert
-
-            this.Debug.ShowMessage('Mitarbeiter ist bereits registriert.', 'App Component', 'StartApp', this.Debug.Typen.Component);
-
-            this.Pool.Mitarbeiterdaten = this.Pool.InitMitarbeiter(result.Mitarbeiter);
-
-            await this.Pool.Init();
-
-            this.Pool.Mitarbeitersettings = this.Pool.InitMitarbeitersettings();
-
-            await this.MitarbeitersettingsDB.SaveMitarbeitersettings();
-
-            // this.Pool.Mitarbeiterdaten.Favoritenliste = [];
-
-            this.Pool.MitarbeitersettingsChanged.emit();
-
-            if(this.Pool.Mitarbeiterdaten.SettingsID === null) {
-
-              this.Pool.Mitarbeiterdaten.SettingsID = this.Pool.Mitarbeitersettings._id;
-
-              await this.MitarbeiterDB.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten);
-            }
-
-            this.MitarbeiterDB.InitService();
-            this.StandortDB.InitService();
-            this.ProjekteDB.InitService();
-
-            if(this.Pool.Mitarbeiterdaten.Favoritenliste.length === 0) {
-
-              this.Tools.SetRootPage(this.Const.Pages.HomePage);
-            }
-            else {
-
-              this.ProjekteDB.InitGesamtprojekteliste();
-              this.ProjekteDB.InitProjektfavoritenliste();
-
-              // await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);
-              // this.ProjekteDB.InitMenuProjektauswahl();
-              // this.Menuservice.SetCurrentPage();
-
-              this.Tools.SetRootPage(this.Const.Pages.HomePage);
-            }
-
-            this.Pool.LoadingAllDataFinished.emit();
-          }
+          this.Tools.SetRootPage(this.Const.Pages.PjBaustelleTagebuchlistePage); // HomePage
         }
+
+        this.Pool.LoadingAllDataFinished.emit();
       }
       else {
 

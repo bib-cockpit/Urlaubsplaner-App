@@ -19,6 +19,11 @@ import {PjGebaeudeBauteileditorModule} from "../../components-page/pj-gebaeude-b
 import {PjGebaeudeGeschosseditorModule} from "../../components-page/pj-gebaeude-geschosseditor/pj-gebaeude-geschosseditor.module";
 import {PjGebaeudeRaumeditorModule} from "../../components-page/pj-gebaeude-raumeditor/pj-gebaeude-raumeditor.module";
 import {PjProtokollListefilterModule} from "../../components-page/pj-protokoll-listefilter/pj-protokoll-listefilter.module";
+import { PjProjekteSelectfilefolderModule
+} from "../../components-page/pj-projekte-selectfilefolder/pj-projekte-selectfilefolder.module";
+import {
+  FiOutlookkontakteAuswahlModule
+} from "../../components-page/fi-outlookkontakte-auswahl/fi-outlookkontakte-auswahl.module";
 
 const routes: Routes = [
   {
@@ -52,6 +57,8 @@ const routes: Routes = [
         PjGebaeudeGeschosseditorModule,
         PjGebaeudeRaumeditorModule,
         PjProtokollListefilterModule,
+        PjProjekteSelectfilefolderModule,
+        FiOutlookkontakteAuswahlModule
     ],
   exports: [
     PjProjektListePage

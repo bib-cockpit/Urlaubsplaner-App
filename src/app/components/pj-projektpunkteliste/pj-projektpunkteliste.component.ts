@@ -562,7 +562,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
       let Protokoll: Protokollstruktur;
       let Projekt: Projektestruktur;
 
-      Projekt = lodash.find(this.Pool.Gesamtprojektliste, {_id: Projektpunkt.ProjektID});
+      Projekt = lodash.find(this.ProjekteDB.Gesamtprojektliste, {_id: Projektpunkt.ProjektID});
 
       if(lodash.isUndefined(Projekt) === false) {
 

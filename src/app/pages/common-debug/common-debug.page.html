@@ -7,6 +7,34 @@
   <ion-grid>
     <ion-row>
       <ion-col>
+        <table class="paddingtable">
+          <tr>
+            <td>
+              <checkbox-clon [Checked]="Basics.ShowHomeScreenInfos" (CheckChanged)="ChangeShowHomeScreenInfos($event)"></checkbox-clon>
+            </td>
+            <td>
+              Zeige Homescreen Zusatzinformationen
+            </td>
+          </tr>
+        </table>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <table class="paddingtable">
+          <tr>
+            <td>
+              <checkbox-clon [Checked]="Basics.DebugNoExternalEmail" (CheckChanged)="DebugNoExternalEmailChanged($event)"></checkbox-clon>
+            </td>
+            <td>
+              Keine Emails nach außen senden -> nur an p.hornburger@gmail.com
+            </td>
+          </tr>
+        </table>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
         <ion-button (click)="ClearAccessToken()">Security Token löschen</ion-button>
       </ion-col>
     </ion-row>

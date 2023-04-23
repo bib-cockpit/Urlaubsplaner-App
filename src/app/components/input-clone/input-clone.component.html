@@ -3,7 +3,7 @@
      [style.min-height.px]="MinHeight"
      [style.border]="Enabled === true ? Valid === true ? OkBorder : RequiredBorder : DisabledBorder">
   <table width="100%">
-    <tr *ngIf="Titel !== null && Titel !== ''">
+    <tr *ngIf="Titel !== null && Titel !== ''" [style.color]="Titelcolor">
       <td class="uppercellclass">{{Titel}}</td>
       <td style="text-align: right" [hidden]="Clickable === false"><ion-icon color="burnicklgruen" name="list-outline" style="font-size: 20px"></ion-icon></td>
     </tr>
@@ -13,6 +13,7 @@
                    [debounce]="Debouncetime"
                     autocomplete="off"
                    [value]="Value"
+                   [color]="Textcolor"
                    (ionChange)="TextChangedHandler($event)"></ion-input>
         <ion-label *ngIf="Enabled === false">{{Value}}</ion-label>
       </td>

@@ -20,6 +20,10 @@ import {Subscription} from "rxjs";
 import * as Joi from "joi";
 import {ObjectSchema} from "joi";
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
+import {Graphservice} from "../../services/graph/graph";
+import {Teamsmitgliederstruktur} from "../../dataclasses/teamsmitgliederstruktur";
+import {Graphuserstruktur} from "../../dataclasses/graphuserstruktur";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 
 @Component({
   selector: 'pj-projekt-editor',
@@ -45,6 +49,11 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
   @Output() AddBauteilClickedEvent     = new EventEmitter<any>();
   @Output() AddGeschossClickedEvent    = new EventEmitter<any>();
   @Output() AddRaumClickedEvent        = new EventEmitter<any>();
+  @Output() ImportOutlookKontakteEvent = new EventEmitter<any>();
+
+  @Output() SelectBautagebuchfolderEvent       = new EventEmitter<any>();
+  @Output() SelectBaustelleLOPListefolderEvent = new EventEmitter<any>();
+  @Output() SelectProtokollfolderEvent         = new EventEmitter<any>();
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -67,7 +76,13 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
   public ShowRaumVerschieber: boolean;
   private PositionChanged: boolean;
   private BeteiligtenSubscription: Subscription;
+  private PathesSubscription: Subscription;
   private JoiShema: ObjectSchema;
+  public Mitgliederliste: Teamsmitgliederstruktur[];
+  public OtherUserinfo: Graphuserstruktur;
+  public Protokollfolder: string;
+  public Bautagebuchfolder: string;
+  public BaustelleLOPListefolder:string;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -78,6 +93,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
               public DBBeteiligte: DatabaseProjektbeteiligteService,
               public Displayservice: DisplayService,
               public Pool: DatabasePoolService,
+              private GraphService: Graphservice,
               public DBGebaeude: DatabaseGebaeudestrukturService,
               public Const: ConstProvider) {
     try {
@@ -94,6 +110,12 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       this.Bereich             = this.Bereiche.Allgemein;
       this.ShowRaumVerschieber = false;
       this.PositionChanged     = false;
+      this.Mitgliederliste     = [];
+      this.OtherUserinfo       = null;
+      this.PathesSubscription  = null;
+      this.Protokollfolder     = '/';
+      this.Bautagebuchfolder   = '/';
+      this.BaustelleLOPListefolder = '/';
 
       this.BeteiligtenSubscription = null;
 
@@ -112,6 +134,9 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       this.BeteiligtenSubscription.unsubscribe();
       this.BeteiligtenSubscription = null;
 
+      this.PathesSubscription.unsubscribe();
+      this.PathesSubscription = null;
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'OnDestroy', this.Debug.Typen.Component);
@@ -121,6 +146,12 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
   ngOnInit() {
 
     try {
+
+      this.PathesSubscription = this.DB.TeamsPathesChanged.subscribe((dir: Teamsfilesstruktur) => {
+
+        this.CheckTeamsPathes();
+      });
+
 
       this.BeteiligtenSubscription = this.DBBeteiligte.BeteiligtenlisteChanged.subscribe(() => {
 
@@ -150,7 +181,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
         Projektname:      Joi.string().required().max(100),
         Projektnummer:    Joi.string().required().max(20),
-        Projektkurzname:  Joi.string().required().max(20),
+        Projektkurzname:  Joi.string().required().min(3).max(20),
 
       }).options({ stripUnknown: true });
 
@@ -161,9 +192,72 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
     }
   }
 
-  private PrepareData() {
+  private async CheckTeamsPathes() {
 
     try {
+
+      let FileinfoA: Teamsfilesstruktur = null;
+      let FileinfoB: Teamsfilesstruktur = null;
+      let FileinfoC: Teamsfilesstruktur = null;
+      let RootFileinfo: Teamsfilesstruktur;
+
+
+      // Seicherpfade prüfen
+
+      RootFileinfo = await this.GraphService.GetTeamsRootDirectory(this.DB.CurrentProjekt.TeamsID);
+
+      debugger;
+
+      if(this.DB.CurrentProjekt.ProtokolleFolderID === this.Const.NONE || this.DB.CurrentProjekt.ProtokolleFolderID.startsWith('ROOT:')) {
+
+        this.DB.CurrentProjekt.ProtokolleFolderID = 'ROOT:' + RootFileinfo.id;
+        this.Protokollfolder                      = 'Dokumente/';
+      }
+      else {
+
+        FileinfoA = await this.GraphService.GetTeamsSubDirectory(this.DB.CurrentProjekt.TeamsID, this.DB.CurrentProjekt.ProtokolleFolderID);
+
+        this.Protokollfolder = 'Dokumente/' + FileinfoA.parentReference.path.split('root:')[1] + '/' + FileinfoA.name;
+      }
+
+      if(this.DB.CurrentProjekt.BautagebuchFolderID === this.Const.NONE || this.DB.CurrentProjekt.BautagebuchFolderID.startsWith('ROOT:')) {
+
+        this.DB.CurrentProjekt.BautagebuchFolderID = 'ROOT:' + RootFileinfo.id;
+        this.Bautagebuchfolder                     = 'Dokumente/';
+      }
+      else {
+        FileinfoB = await this.GraphService.GetTeamsSubDirectory(this.DB.CurrentProjekt.TeamsID, this.DB.CurrentProjekt.BautagebuchFolderID);
+
+        this.Bautagebuchfolder = 'Dokumente/' + FileinfoB.parentReference.path.split('root:')[1] + '/' + FileinfoB.name;
+      }
+
+      if(this.DB.CurrentProjekt.BaustellenLOPFolderID === this.Const.NONE || this.DB.CurrentProjekt.BaustellenLOPFolderID.startsWith('ROOT:')) {
+
+        this.DB.CurrentProjekt.BaustellenLOPFolderID = 'ROOT:' + RootFileinfo.id;
+        this.BaustelleLOPListefolder                 = 'Dokumente/';
+      }
+      else {
+
+        FileinfoC = await this.GraphService.GetTeamsSubDirectory(this.DB.CurrentProjekt.TeamsID, this.DB.CurrentProjekt.BaustellenLOPFolderID);
+
+        this.BaustelleLOPListefolder = 'Dokumente/' + FileinfoC.parentReference.path.split('root:')[1] + '/' + FileinfoC.name;
+      }
+
+      this.ValidateInput();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'CheckTeamsPathes', this.Debug.Typen.Page);
+    }
+  }
+
+  private async PrepareData() {
+
+    try {
+
+      await this.CheckTeamsPathes();
+
+      debugger;
 
       this.Beteiligtenliste = lodash.cloneDeep(this.DB.CurrentProjekt.Beteiligtenliste);
 
@@ -177,8 +271,19 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
       // Gebäudestruktur
 
+      try {
 
+        this.Mitgliederliste = await this.GraphService.GetTeamsMitglieder(this.DB.CurrentProjekt.TeamsID);
 
+        for(let Mitglied of this.Mitgliederliste) {
+
+          Mitglied.UserImageSRC = await this.GraphService.GetOtherUserimage(Mitglied.userId);
+        }
+
+      } catch(error) {
+
+        this.Mitgliederliste = [];
+      }
 
     } catch (error) {
 
@@ -208,10 +313,13 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
     try {
 
       let Result = this.JoiShema.validate(this.DB.CurrentProjekt);
-      let Projekt: Projektestruktur;
 
       if(Result.error) this.Valid = false;
       else             this.Valid = true;
+
+      if(this.DB.CurrentProjekt.ProtokolleFolderID    === this.Const.NONE) this.Valid = false;
+      if(this.DB.CurrentProjekt.BautagebuchFolderID   === this.Const.NONE) this.Valid = false;
+      if(this.DB.CurrentProjekt.BaustellenLOPFolderID === this.Const.NONE) this.Valid = false;
 
 
     } catch (error) {
@@ -233,14 +341,14 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
       if(event.Titel === 'Projektkurzname') {
 
-        if(this.DB.CurrentProjekt._id === null) { // Nur Eingabe wenn Projekt neu ist
+        if(this.DB.CurrentProjekt.ProjektIsNew) { // Nur Eingabe wenn Projekt neu ist
 
           Kurzname = event.Text.toUpperCase();
-          Projekt  = lodash.find(this.Pool.Gesamtprojektliste, {Projektkurzname: Kurzname });
+          Projekt  = lodash.find(this.DB.Gesamtprojektliste, {Projektkurzname: Kurzname });
 
           if(!lodash.isUndefined(Projekt)) {
 
-            this.Tools.ShowHinweisDialog('Der Projektkurzname ' + Kurzname + ' ist bereits vergeben.');
+            if(Kurzname !== '') this.Tools.ShowHinweisDialog('Der Projektkurzname ' + Kurzname + ' ist bereits vergeben.');
 
             this.Valid= false;
           }
@@ -273,6 +381,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
     try {
 
       this.DeleteEnabled = false;
+      this.OtherUserinfo = null;
 
     } catch (error) {
 
@@ -351,6 +460,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     this.ResetEditor();
 
+
     this.CancelClickedEvent.emit();
 
     try {
@@ -367,11 +477,14 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
       delete this.DB.CurrentProjekt.__v;
 
-      if(this.DB.CurrentProjekt._id === null) {
+      this.OtherUserinfo = null;
 
+      if(this.DB.CurrentProjekt._id === null) { // Diese Option ist hinfällig da Projekt über Teams erstellt wird
+
+        /*
         this.DB.CurrentProjekt.Projektkey = this.DB.GenerateProjektkey(this.DB.CurrentProjekt);
 
-        this.DB.AddProjekt().then((result: any) => {
+        this.DB.AddProjekt(this.DB.CurrentProjekt).then((result: any) => {
 
           this.OkClickedEvent.emit();
 
@@ -380,11 +493,19 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
           this.Tools.ShowHinweisDialog(error.error);
 
         });
+
+         */
       }
       else {
 
-        this.DB.UpdateProjekt().then(() => {
+        this.DB.CurrentProjekt.ProjektIsNew = false;
 
+        if(this.DB.CurrentProjekt.Projektkey === this.Const.NONE) {
+
+          this.DB.CurrentProjekt.Projektkey = this.DB.GenerateProjektkey(this.DB.CurrentProjekt);
+        }
+
+        this.DB.UpdateProjekt(this.DB.CurrentProjekt).then(() => {
 
           this.OkClickedEvent.emit();
 
@@ -646,6 +767,88 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'ProjektfarbeChangedHandler', this.Debug.Typen.Component);
+    }
+  }
+
+  ProjektIsRealCheckChanged(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.DB.CurrentProjekt.ProjektIsReal = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'ProjektIsRealCheckChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  async MitgliedClicked(Mitglied: Teamsmitgliederstruktur) {
+
+    try {
+
+      try {
+
+        this.OtherUserinfo = await this.GraphService.GetOtherUserinfo(Mitglied.userId);
+
+        debugger;
+      }
+      catch (error) {
+
+        this.Tools.ShowHinweisDialog('Informationen zu ' + Mitglied.displayName + ' konnten nicht abgerufen werden.');
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'MitgliedClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  CloseOtherUserinfo() {
+
+    try {
+
+      this.OtherUserinfo = null;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'CloseOtherUserinfo', this.Debug.Typen.Component);
+    }
+  }
+
+  SelectProtokollfolderClicked() {
+
+    try {
+
+      this.SelectProtokollfolderEvent.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'SelectProtokollfolderClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  SelectBautagebuchfolderClicked() {
+
+    try {
+
+      this.SelectBautagebuchfolderEvent.emit();
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'SelectBautagebuchfolderClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  SelectBaustelleLOPListefolderClicked() {
+
+    try {
+
+      this.SelectBaustelleLOPListefolderEvent.emit();
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'SelectBaustelleLOPListefolderClicked', this.Debug.Typen.Component);
     }
   }
 }

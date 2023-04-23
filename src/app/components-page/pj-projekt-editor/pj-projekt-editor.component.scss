@@ -1,3 +1,43 @@
+a {
+  text-decoration: none;
+  color: black;
+}
+
+a:link {
+  text-decoration: none;
+  color: black;
+}
+
+a:visited {
+  text-decoration: none;
+  color: black;
+}
+
+a:hover {
+  text-decoration: underline;
+  cursor: pointer;
+  color: black;
+}
+
+a:active {
+  text-decoration: none;
+  color: black;
+}
+
+.otheruserinfodivclass {
+
+  right: 0px;
+  top: 700px;
+  border: 3px solid #354547;
+  position: absolute;
+  z-index: 1000;
+  width: 400px;
+  background: white;
+}
+
+
+
+
 .strukturkeeperdiv {
 
   width: 100%;
@@ -291,4 +331,25 @@
   height: 2px;
   width: 680px;
   background: #444444;
+}
+
+.userimagesmall {
+
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin-top: 4px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.importoutlookbutton {
+
+  background: #7b6a58;
+  width: 200px;
+  height: 40px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
 }

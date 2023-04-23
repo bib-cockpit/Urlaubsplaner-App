@@ -93,12 +93,12 @@
                 </ion-row>
                 <ion-row>
                   <ion-col size="6">
-                    <input-clone [MinHeight]="44" [Lines]="DB.CurrentProtokoll.BeteiligtInternIDListe.length"
-                                 [Clickable]="true" [Enabled]="false" Titel="Teilnehmer Intern" [Value]="GetTeamteilnehmerliste()" (click)="TeamteilnehmerClicked.emit()"></input-clone>
+                    <input-clone [MinHeight]="44" [Lines]="LinesanzahlTeilnehmer"
+                                 [Clickable]="true" [Enabled]="false" Titel="Teilnehmer Intern" [Value]="DB.GetInterneTeilnehmerliste(false)" (click)="TeamteilnehmerClicked.emit()"></input-clone>
                   </ion-col>
                   <ion-col size="6">
-                    <input-clone [MinHeight]="44" [Lines]="DB.CurrentProtokoll.BeteiligExternIDListe.length"
-                                 [Clickable]="true" [Enabled]="false" Titel="Teilnehmer Extern" [Value]="GetBeteiligteteilnehmerliste()"
+                    <input-clone [MinHeight]="44" [Lines]="LinesanzahlTeilnehmer"
+                                 [Clickable]="true" [Enabled]="false" Titel="Teilnehmer Extern" [Value]="DB.GetExterneTeilnehmerliste(false)"
                                  (click)="BeteiligteteilnehmerClicked.emit()"></input-clone>
                   </ion-col>
                 </ion-row>
@@ -229,7 +229,7 @@
                                 <table class="nobordersmalltable" style="width: 100%">
                                   <tr  *ngFor="let ZustaendigID of Projektpunkt.ZustaendigeInternIDListe">
                                     <td style="text-align: center; color: black; font-size: 90%">
-                                      {{GetZustaendigInternName(ZustaendigID)}}
+                                      {{DB.GetZustaendigInternName(ZustaendigID)}}
                                     </td>
                                   </tr>
                                   <tr *ngIf="Projektpunkt.ZustaendigeExternIDListe.length > 0 && Projektpunkt.ZustaendigeInternIDListe.length > 0">
@@ -237,7 +237,7 @@
                                   </tr>
                                   <tr *ngFor="let ZustaendigID of Projektpunkt.ZustaendigeExternIDListe">
                                     <td style="text-align: center; color: black; font-size: 90%">
-                                      {{GetZustaendigExternName(ZustaendigID)}}
+                                      {{DB.GetZustaendigExternName(ZustaendigID)}}
                                     </td>
                                   </tr>
                                 </table>

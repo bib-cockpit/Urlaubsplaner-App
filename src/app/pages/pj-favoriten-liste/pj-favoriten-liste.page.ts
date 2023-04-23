@@ -85,8 +85,6 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
       this.DataSubscription.unsubscribe();
       this.MitarbeiterSubscription.unsubscribe();
 
-      debugger;
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'OnDestroy', this.Debug.Typen.Page);
@@ -114,7 +112,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
           for (let ProjektID of this.Pool.Mitarbeiterdaten.Favoritenliste[Favoritenindex].Projekteliste) {
 
-            Projekt = lodash.find(this.Pool.Gesamtprojektliste, {_id: this.Pool.Mitarbeiterdaten.Favoritenliste[Favoritenindex].Projekteliste[Projektindex]});
+            Projekt = lodash.find(this.DBProjekt.Gesamtprojektliste, {_id: this.Pool.Mitarbeiterdaten.Favoritenliste[Favoritenindex].Projekteliste[Projektindex]});
 
             if (!lodash.isUndefined(Projekt)) this.Datenliste[Favoritenindex].push(Projekt);
 
@@ -142,9 +140,6 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
   ionViewDidLeave() {
 
     try {
-
-      debugger;
-
 
     }
     catch (error) {
@@ -270,13 +265,13 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
         Index++;
       }
 
-      if(this.DBStandort.ProjekteauswahlStandortfilter === null) {
+      if(this.DBStandort.CurrentStandortfilter === null) {
 
         this.Auswahlindex = 0;
       }
       else {
 
-        this.Auswahlindex = lodash.findIndex(this.Pool.Standorteliste, {_id: this.DBStandort.ProjekteauswahlStandortfilter._id});
+        this.Auswahlindex = lodash.findIndex(this.Pool.Standorteliste, {_id: this.DBStandort.CurrentStandortfilter._id});
         this.Auswahlindex++;
       }
 
@@ -321,7 +316,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
         case this.Auswahlservice.Auswahloriginvarianten.Favoriten_Editor_Projekteauswahl_Standortfilter:
 
-          this.DBStandort.ProjekteauswahlStandortfilter = cloneDeep(data);
+          this.DBStandort.CurrentStandortfilter = cloneDeep(data);
 
           this.DBStandort.StandortfilterChanged.emit();
 

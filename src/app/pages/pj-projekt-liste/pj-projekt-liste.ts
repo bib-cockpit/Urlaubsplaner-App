@@ -23,6 +23,14 @@ import {Bauteilstruktur} from "../../dataclasses/bauteilstruktur";
 import {DatabaseGebaeudestrukturService} from "../../services/database-gebaeudestruktur/database-gebaeudestruktur";
 import {Geschossstruktur} from "../../dataclasses/geschossstruktur";
 import {Raumstruktur} from "../../dataclasses/raumstruktur";
+import {Graphservice} from "../../services/graph/graph";
+import {Teamsstruktur} from "../../dataclasses/teamsstruktur";
+import {LoadingAnimationService} from "../../services/loadinganimation/loadinganimation";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import {Outlookkontaktestruktur} from "../../dataclasses/outlookkontaktestruktur";
+import {
+  DatabaseMitarbeitersettingsService
+} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 
 
 @Component({
@@ -66,17 +74,34 @@ export class PjProjektListePage implements OnInit, OnDestroy {
   public StrukturDialogbreite: number;
   public StrukturDialoghoehe: number;
   public ListeSubscription: Subscription;
+  public ShowRealProjekteOnly: boolean;
+  public ShowOwnProjekteOnly: boolean;
+  public Folderauswahltitel: string;
+  public ShowFolderAuswahl: boolean;
+  public ShowOutlookkontakteAuswahl: boolean;
+  public FolderauswahlUrsprung: string;
+  public AuswahlDialogBreite: number;
+  public AuswahlDialogHoehe: number;
+  public FolderauswahlVarianten = {
+
+    Protokolle:        'Protokolle',
+    Bautagebuch:       'Bautagebuch',
+    BaustelleLOPListe: 'BaustelleLOPListe'
+  };
 
   constructor(public  Basics: BasicsProvider,
               public  Debug: DebugProvider,
               public  Tools: ToolsProvider,
               public  DB: DatabaseProjekteService,
               public  DBMitarbeiter: DatabaseMitarbeiterService,
+              public DBMitarbeiterstettings: DatabaseMitarbeitersettingsService,
               public  DBStandort: DatabaseStandorteService,
               private DBBeteiligte: DatabaseProjektbeteiligteService,
               public  Const: ConstProvider,
               public Auswahlservice: AuswahlDialogService,
               public Displayservice: DisplayService,
+              private GraphService: Graphservice,
+              private LoadingAnimation: LoadingAnimationService,
               public DBGebaeude: DatabaseGebaeudestrukturService,
               public  Pool: DatabasePoolService) {
 
@@ -109,6 +134,14 @@ export class PjProjektListePage implements OnInit, OnDestroy {
       this.ShowRaumEditor        = false;
       this.ShowAuswahl            = false;
       this.ShowMitarbeiterauswahl = false;
+      this.ShowRealProjekteOnly   = true;
+      this.ShowOwnProjekteOnly    = true;
+      this.Folderauswahltitel     = 'Verzeichnis auswählen';
+      this.ShowFolderAuswahl      = false;
+      this.FolderauswahlUrsprung  = this.FolderauswahlVarianten.Protokolle;
+      this.ShowOutlookkontakteAuswahl = false;
+      this.AuswahlDialogHoehe         = 300;
+      this.AuswahlDialogBreite        = 300;
 
 
     }
@@ -138,7 +171,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
       this.Displayservice.ResetDialogliste();
 
-      this.ListeSubscription = this.Pool.GesamtprojektelisteChanged.subscribe(() => {
+      this.ListeSubscription = this.DB.GesamtprojektelisteChanged.subscribe(() => {
 
         this.PrepareData();
       });
@@ -222,7 +255,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     try {
 
-      let Liste:  Projektestruktur[] = this.Pool.Gesamtprojektliste;
+      let Liste:  Projektestruktur[] = lodash.cloneDeep(this.DB.Gesamtprojektliste);
       let Merker: Projektestruktur[];
       let Buchstabe: string;
       let Laenge: number;
@@ -235,6 +268,21 @@ export class PjProjektListePage implements OnInit, OnDestroy {
       let Suchtext: string;
 
       this.Lastletter = '';
+
+      if(this.ShowRealProjekteOnly) Liste = lodash.filter(Liste, { ProjektIsReal : true});
+
+      if(this.ShowOwnProjekteOnly) {
+
+        Liste = lodash.filter(Liste, (Projekt: Projektestruktur) => {
+
+          return this.DB.CheckProjektmembership(Projekt);
+        });
+      }
+
+      for(let Projekt of Liste) {
+
+        if(Projekt.Projektname === '') Projekt.Projektname = Projekt.TeamsName;
+      }
 
       Liste.sort( (a: Projektestruktur, b: Projektestruktur) => {
 
@@ -289,7 +337,6 @@ export class PjProjektListePage implements OnInit, OnDestroy {
           PosA     = Suchtext.indexOf(Solltext);
 
           if(PosA !== -1) {
-
 
             Laenge     = Eintrag.Projektname.length;
             Teillaenge = Solltext.length;
@@ -363,12 +410,38 @@ export class PjProjektListePage implements OnInit, OnDestroy {
   }
 
 
-  ProjektButtonClicked(index: number) {
+  async ProjektButtonClicked(projekt: Projektestruktur) {
 
     try {
 
-      this.DB.CurrentProjekt = lodash.cloneDeep(this.Liste[index]);
-      this.ShowEditor        = true;
+      let Projekt = lodash.find(this.DB.Gesamtprojektliste, { _id: projekt._id });
+      let Teams: Teamsstruktur;
+      let Message: string;
+
+      if(this.DB.CheckProjektmembership(Projekt) === true) {
+
+        this.DB.CurrentProjekt = lodash.cloneDeep(Projekt);
+        this.ShowEditor        = true;
+      }
+      else {
+
+        Message = await this.Tools.ShowEntscheidungDialog('Team breitreten', 'Möchtest du ' + projekt.TeamsName + ' beitreten.');
+
+        if(Message === this.Const.Dialogmessages.ok) {
+
+          await this.LoadingAnimation.ShowLoadingAnimation('Team beitrenten', 'Der Team Beitritt läuft. Bitte kurz warten.');
+
+          await this.GraphService.JoinTeams(projekt.TeamsID, this.Pool.Mitarbeiterdaten.UserID);
+          Teams = await this.GraphService.GetOtherTeamsinfo(projekt.TeamsID);
+
+          this.GraphService.Teamsliste.push(Teams);
+
+          await this.LoadingAnimation.HideLoadingAnimation(true);
+
+          this.DB.CurrentProjekt = lodash.cloneDeep(Projekt);
+          this.ShowEditor        = true;
+        }
+      }
     }
     catch (error) {
 
@@ -578,6 +651,9 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     try {
 
+
+      debugger;
+
       switch (this.Auswahldialogorigin) {
 
         case this.Auswahlservice.Auswahloriginvarianten.Projekteliste_Standortfiler:
@@ -585,7 +661,25 @@ export class PjProjektListePage implements OnInit, OnDestroy {
           this.DBStandort.CurrentStandortfilter = cloneDeep(data);
           this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
 
-          this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
+          this.DBMitarbeiterstettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
+
+            this.DBStandort.StandortfilterChanged.emit();
+
+          }).catch((error) => {
+
+            this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+          });
+
+          this.PrepareData();
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Mitarbeiterauswahl_Standortfilter:
+
+          this.DBStandort.CurrentStandortfilter = cloneDeep(data);
+          this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
+
+          this.DBMitarbeiterstettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
 
             this.DBStandort.StandortfilterChanged.emit();
 
@@ -659,8 +753,10 @@ export class PjProjektListePage implements OnInit, OnDestroy {
       if(this.DB.CurrentProjekt.StellvertreterID !== this.Const.NONE) this.AuswahlIDliste = [this.DB.CurrentProjekt.StellvertreterID];
       else this.AuswahlIDliste = [];
 
-      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Mitarbeiterauswahl_Stellvertreter;
-      this.ShowMitarbeiterauswahl = true;
+      this.Auswahldialogorigin     = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Mitarbeiterauswahl_Stellvertreter;
+      this.ShowMitarbeiterauswahl  = true;
+      this.MitarbeiterauswahlTitel = 'Stellvertreter fetlegen';
+
 
     } catch (error) {
 
@@ -668,11 +764,15 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     }
   }
 
-  MitarebiterStandortfilterClickedHandler() {
+  MitarbeiterStandortfilterClickedHandler() {
 
     try {
 
       this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Mitarbeiterauswahl_Standortfilter;
+
+      this.AuswahlDialogBreite = 400;
+      this.AuswahlDialogHoehe  = 300;
+
 
       let Index = 0;
 
@@ -689,35 +789,25 @@ export class PjProjektListePage implements OnInit, OnDestroy {
         Index++;
       }
 
-      if(this.DBStandort.MitarbeiterauswahlStandortfilter !== null) {
+      if(this.DBStandort.CurrentStandortfilter !== null) {
 
-        this.Auswahlindex = lodash.findIndex(this.Pool.Standorteliste, {_id: this.DBStandort.MitarbeiterauswahlStandortfilter._id});
+        this.Auswahlindex = lodash.findIndex(this.Pool.Standorteliste, {_id: this.DBStandort.CurrentStandortfilter._id});
       }
       else this.Auswahlindex = 0;
 
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'MitarebiterStandortfilterClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'MitarbeiterStandortfilterClickedHandler', this.Debug.Typen.Page);
     }
   }
 
-  public GetOpacity(): boolean {
-
-    try {
-
-      return !this.ShowAuswahl && !this.ShowMitarbeiterauswahl && !this.ShowEditor;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'GetOpacity', this.Debug.Typen.Page);
-    }
-  }
 
   MitarbeiterauswahlOkButtonClicked(idliste: string[]) {
 
     try {
 
+      debugger;
 
 
       switch (this.Auswahldialogorigin) {
@@ -788,6 +878,8 @@ export class PjProjektListePage implements OnInit, OnDestroy {
       this.Auswahltitel  = 'Fachbereich festlegen';
       this.Auswahlliste  = [];
       this.Auswahlindex  = -1;
+      this.AuswahlDialogBreite = 300;
+      this.AuswahlDialogHoehe  = 300;
 
       for(let Eintrag of this.DBBeteiligte.Beteiligtentypenliste) {
 
@@ -945,6 +1037,9 @@ export class PjProjektListePage implements OnInit, OnDestroy {
       this.Auswahlliste  = [];
       this.Auswahlindex  = -1;
 
+      this.AuswahlDialogBreite = 300;
+      this.AuswahlDialogHoehe  = 300;
+
       for(let Eintrag of this.DBBeteiligte.Fachfirmentypenliste) {
 
         this.Auswahlliste.push({ Index: Index, FirstColumn: Eintrag.Name, SecoundColumn: '', Data: Eintrag });
@@ -957,6 +1052,147 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'BeteiligteFachfirmaClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  ShowRealProjekteCheckedChanged(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.ShowRealProjekteOnly = event.status;
+
+      this.PrepareData();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'ShowRealProjekteCheckedChanged', this.Debug.Typen.Page);
+    }
+
+  }
+
+  ShowOwnProjekteCheckedChanged(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.ShowOwnProjekteOnly = event.status;
+
+      this.PrepareData();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'ShowRealProjekteCheckedChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  SelectProtokollfolderHandler() {
+
+    try {
+
+      this.FolderauswahlUrsprung = this.FolderauswahlVarianten.Protokolle;
+      this.Folderauswahltitel    = 'Verzeichnis für Prtotokolle festlegen';
+      this.ShowFolderAuswahl     = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'SelectProtokollfolderHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  SelectBautagebuchfolderHandler() {
+
+    try {
+
+      this.FolderauswahlUrsprung = this.FolderauswahlVarianten.Bautagebuch;
+      this.Folderauswahltitel    = 'Verzeichnis für Bautagebücher festlegen';
+      this.ShowFolderAuswahl     = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'SelectBautagebuchfolderHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  SelectBaustelleLOPListefolderHandler() {
+
+    try {
+
+      this.FolderauswahlUrsprung = this.FolderauswahlVarianten.BaustelleLOPListe;
+      this.Folderauswahltitel    = 'Verzeichnis für Buastellen LOP-Liste festlegen';
+      this.ShowFolderAuswahl     = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'SelectBaustelleLOPListefolderHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  FolderAuswahlOKClicked(dir: Teamsfilesstruktur) {
+
+    try {
+
+      if(dir !== null) {
+
+        switch (this.FolderauswahlUrsprung) {
+
+          case this.FolderauswahlVarianten.Protokolle:
+
+            this.DB.CurrentProjekt.ProtokolleFolderID = dir.id;
+
+            break;
+
+          case this.FolderauswahlVarianten.Bautagebuch:
+
+            this.DB.CurrentProjekt.BautagebuchFolderID = dir.id;
+
+            break;
+
+          case this.FolderauswahlVarianten.BaustelleLOPListe:
+
+            this.DB.CurrentProjekt.BaustellenLOPFolderID = dir.id;
+
+            break;
+        }
+      }
+
+      this.ShowFolderAuswahl = false;
+
+      this.DB.TeamsPathesChanged.emit(dir);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'FolderAuswahlOKClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  OutlookkontakteOkButtonClicked(beteiligte: Projektbeteiligtestruktur[]) {
+
+    try {
+
+      for(let Beteiligter of beteiligte) {
+
+        if(lodash.isUndefined(lodash.find(this.DB.CurrentProjekt.Beteiligtenliste, { BeteiligtenID: Beteiligter.BeteiligtenID }))) {
+
+          this.DB.CurrentProjekt.Beteiligtenliste.push(Beteiligter);
+
+        }
+      }
+
+      this.DB.CurrentProjekt.Beteiligtenliste.sort( (a: Projektbeteiligtestruktur, b: Projektbeteiligtestruktur) => {
+
+        if (a.Name < b.Name) return -1;
+        if (a.Name > b.Name) return 1;
+        return 0;
+      });
+
+
+      this.DBBeteiligte.BeteiligtenlisteChanged.emit();
+
+      this.ShowOutlookkontakteAuswahl = false;
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'OutlookkontakteOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 }

@@ -19,6 +19,7 @@ import {DisplayService} from "../../services/diplay/display.service";
 import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
 import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
 import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
+import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 
 @Component({
   selector: 'pj-kostengruppen-auswahl',
@@ -47,6 +48,7 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
               public DB: DatabaseProjektpunkteService,
+              private Pool: DatabasePoolService,
               public Displayservice: DisplayService,
               public Kostengruppenservice: KostengruppenService,
               public Const: ConstProvider) {
@@ -178,6 +180,8 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
       this.DB.CurrentProjektpunkt.Hauptkostengruppe = null;
       this.DB.CurrentProjektpunkt.Unterkostengruppe = null;
 
+      this.Pool.ProjektpunktKostengruppeChanged.emit();
+
       this.PrepareData();
 
     } catch (error) {
@@ -194,6 +198,8 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
 
       this.DB.CurrentProjektpunkt.Unterkostengruppe = null;
 
+      this.Pool.ProjektpunktKostengruppeChanged.emit();
+
       this.PrepareData();
 
     } catch (error) {
@@ -207,6 +213,8 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
     try {
 
       this.DB.CurrentProjektpunkt.Unterkostengruppe = event.detail.value;
+
+      this.Pool.ProjektpunktKostengruppeChanged.emit();
 
       this.PrepareData();
 

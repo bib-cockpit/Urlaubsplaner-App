@@ -29,7 +29,7 @@ import {Graphservice} from "../../services/graph/graph";
   templateUrl: './page-header-menu.component.html',
   styleUrls: ['./page-header-menu.component.scss'],
 })
-export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit{
+export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('Suchleiste', { static: false }) Suchleiste: IonSearchbar;
 
@@ -47,6 +47,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   @Output()  LeistungsphaseFilterClicked = new EventEmitter<any>();
   @Output()  FilterChanged = new EventEmitter<string>();
   @Output()  ShowProjektauswahlEvent = new EventEmitter<any>();
+  @Output()  ShowProjektfilesEvent = new EventEmitter<any>();
 
 
   private SuchleisteInputSubscription: Subscription;
@@ -57,6 +58,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   public Wochentaghoehe: number;
   public Tagbreite: number;
   public HomeMouseOver: boolean;
+  public FilesMouseOver: boolean;
 
 
   constructor(private Debug: DebugProvider,
@@ -89,6 +91,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
       this.ShowMitarbeitertitle         = false;
       this.ShowProjektetitle            = false;
       this.ShowFavoritentitle           = false;
+      this.FilesMouseOver               = false;
 
     } catch (error) {
 
@@ -222,18 +225,6 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'ProjekteMenueButtonClicked', this.Debug.Typen.Component);
-    }
-  }
-
-  GetMainMenueColor(mainmenubereich: string) {
-
-    try {
-
-      return mainmenubereich === this.Menuservice.MainMenuebereich ? 'burnicklgruen' : 'weis';
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'GetMainMenueColor', this.Debug.Typen.Component);
     }
   }
 
@@ -663,6 +654,18 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetProjektForwardButtoncolor', this.Debug.Typen.Component);
+    }
+  }
+
+  ProjektfilesClicked() {
+
+    try {
+
+      this.ShowProjektfilesEvent.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ProjektfilesClicked', this.Debug.Typen.Component);
     }
   }
 }

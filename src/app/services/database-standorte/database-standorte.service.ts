@@ -17,8 +17,6 @@ export class DatabaseStandorteService {
 
   public CurrentStandort: Standortestruktur;
   public CurrentStandortfilter: Standortestruktur;
-  public MitarbeiterauswahlStandortfilter: Standortestruktur;
-  public ProjekteauswahlStandortfilter: Standortestruktur;
   public StandortfilterChanged = new EventEmitter<Standortestruktur>();
   private ServerUrl: string;
 
@@ -28,15 +26,9 @@ export class DatabaseStandorteService {
               private http: HttpClient) {
     try {
 
-      this.CurrentStandort                  = null;
-      this.CurrentStandortfilter            = null;
-
-      this.ProjekteauswahlStandortfilter    = null;
-
-      this.MitarbeiterauswahlStandortfilter = null;
-
-
-      this.ServerUrl = this.Pool.CockpitserverURL + '/standorte';
+      this.CurrentStandort       = null;
+      this.CurrentStandortfilter = null;
+      this.ServerUrl             = this.Pool.CockpitserverURL + '/standorte';
 
       this.Pool.MitarbeiterdatenChanged.subscribe(() => {
 
@@ -64,6 +56,17 @@ export class DatabaseStandorteService {
       else {
 
         this.CurrentStandortfilter = null;
+      }
+
+      if(this.Pool.Mitarbeiterdaten !== null) {
+
+        Standort = lodash.find(this.Pool.Standorteliste, {_id: this.Pool.Mitarbeiterdaten.StandortID });
+
+        if(lodash.isUndefined(Standort) === false) this.Pool.Mitarbeiterstandort = Standort;
+      }
+      else {
+
+        this.Pool.Mitarbeiterstandort = null;
       }
 
       this.StandortfilterChanged.emit();

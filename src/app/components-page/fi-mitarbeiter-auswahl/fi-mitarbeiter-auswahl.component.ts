@@ -74,7 +74,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
       this.Mitarbeiterfiltertext       = '';
       this.Multiselect                 = false;
       this.Titel                       = this.Const.NONE;
-      this.Iconname                    = 'help-circle-outline';
+      this.Iconname                    = 'people-outline';
       this.Dialogbreite                = 400;
       this.Dialoghoehe                 = 300;
       this.PositionY                   = 100;
@@ -99,6 +99,18 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'OnDestroy', this.Debug.Typen.Component);
+    }
+  }
+
+  private InitTitel() {
+
+    try {
+
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
     }
   }
 
@@ -149,6 +161,10 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
         this.Mitarbeiterliste = lodash.cloneDeep(this.Pool.Mitarbeiterliste);
 
         Liste = lodash.cloneDeep(this.Pool.Mitarbeiterliste);
+        Liste = lodash.filter(Liste, (currentmit: Mitarbeiterstruktur) => {
+
+          return currentmit.Archiviert === false;
+        });
 
         Liste.sort( (a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
 
@@ -159,14 +175,14 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
         // Standort Filter anwenden
 
-        if(this.DBStandort.MitarbeiterauswahlStandortfilter !== null) {
+        if(this.DBStandort.CurrentStandortfilter !== null) {
 
           Merker = lodash.cloneDeep(Liste);
           Liste  = [];
 
           for(let Eintrag of Merker) {
 
-            if(Eintrag.StandortID === this.DBStandort.MitarbeiterauswahlStandortfilter._id) Liste.push(Eintrag);
+            if(Eintrag.StandortID === this.DBStandort.CurrentStandortfilter._id) Liste.push(Eintrag);
           }
         }
 
@@ -423,8 +439,8 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
     try {
 
-      if(this.DBStandort.MitarbeiterauswahlStandortfilter === null) return 'kein Standortfilter';
-      else return this.DBStandort.MitarbeiterauswahlStandortfilter.Kuerzel + ' / ' + this.DBStandort.MitarbeiterauswahlStandortfilter.Standort;
+      if(this.DBStandort.CurrentStandortfilter === null) return 'kein Standortfilter';
+      else return this.DBStandort.CurrentStandortfilter.Kuerzel + ' / ' + this.DBStandort.CurrentStandortfilter.Standort;
 
     } catch (error) {
 

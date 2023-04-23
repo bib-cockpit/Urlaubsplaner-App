@@ -38,6 +38,7 @@
     "moment": "^2.29.4",
     "moment-duration-format": "^2.3.2",
     "mongoose": "^6.6.3",
+    "ng2-pdf-viewer": "^9.1.4",
     "ngx-material-timepicker": "^5.5.2",
     "pretty-format": "^29.4.1",
     "rxjs": "^7.8.0",

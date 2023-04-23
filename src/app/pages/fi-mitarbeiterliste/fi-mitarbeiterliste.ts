@@ -50,6 +50,8 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
   public ShowAuswahl: boolean;
   private Auswahldialogorigin: string;
   private StandortfilterSubsciption: Subscription;
+  public ShowMeOnly: boolean;
+  public ShowArchivierte: boolean;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -80,6 +82,8 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
       this.Auswahldialogorigin = this.Const.NONE;
       this.ListeSubscription   = null;
       this.StandortfilterSubsciption = null;
+      this.ShowMeOnly      = false;
+      this.ShowArchivierte = false;
 
     }
     catch (error) {
@@ -287,7 +291,23 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
         // Nach Namen sortieren
 
-        Liste = lodash.cloneDeep(Quelle);
+        if(this.ShowMeOnly) {
+
+          Liste = lodash.cloneDeep(Quelle);
+          Liste = lodash.filter(Liste, {_id: this.Pool.Mitarbeiterdaten._id});
+        }
+        else {
+
+          Liste = lodash.cloneDeep(Quelle);
+        }
+
+        if(this.ShowArchivierte === false) {
+
+          Liste = lodash.filter(Liste, (Eintrag: Mitarbeiterstruktur) => {
+
+            return !Eintrag.Archiviert;
+          });
+        }
 
         // Standortfilter anwenden
 
@@ -624,6 +644,34 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'StandortFilterClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  ShowMeCheckedChanged(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.ShowMeOnly = event.status;
+
+      this.PrepareDaten();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'ShowMeCheckedChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  ShowArchivierteChanged(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.ShowArchivierte = event.status;
+
+      this.PrepareDaten();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'ShowArchivierteChanged', this.Debug.Typen.Page);
     }
   }
 }

@@ -24,6 +24,7 @@ import {Meinewochestruktur} from "../../dataclasses/meinewochestruktur";
 import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {ToolsProvider} from "../../services/tools/tools";
 
 @Component({
   selector:    'pj-aufgaben-liste-page',
@@ -95,6 +96,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   public Heute: Moment;
   public Restarbeitszahl: number;
   public ProtokollSubscription: Subscription;
+  public ProjektpunktelisteSubscription: Subscription;
   public Projektschenllauswahltitel: string;
   public Projektschnellauswahlursprung: string;
 
@@ -107,6 +109,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
               private DBProtokolle: DatabaseProtokolleService,
               public DBProjekte: DatabaseProjekteService,
               public DBMitarbeiter: DatabaseMitarbeiterService,
+              public Tools: ToolsProvider,
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public Menuservice: MenueService,
               public Const: ConstProvider,
@@ -232,6 +235,11 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
         this.PrepareDaten();
       });
 
+      this.ProjektpunktelisteSubscription = this.Pool.ProjektpunktelisteChanged.subscribe(() => {
+
+        this.PrepareDaten();
+      });
+
       this.Displayservice.ResetDialogliste();
 
       this.PrepareDaten();
@@ -272,6 +280,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.SettingsSubscription.unsubscribe();
       this.MitarbeiterSubscription.unsubscribe();
       this.ProtokollSubscription.unsubscribe();
+      this.ProjektpunktelisteSubscription.unsubscribe();
 
     } catch (error) {
 
@@ -432,9 +441,9 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
         Index++;
       }
 
-      if(this.DBStandort.MitarbeiterauswahlStandortfilter !== null) {
+      if(this.DBStandort.CurrentStandortfilter !== null) {
 
-        this.Auswahlindex = lodash.findIndex(this.Pool.Standorteliste, {_id: this.DBStandort.MitarbeiterauswahlStandortfilter._id});
+        this.Auswahlindex = lodash.findIndex(this.Pool.Standorteliste, {_id: this.DBStandort.CurrentStandortfilter._id});
       }
       else this.Auswahlindex = 0;
 
@@ -983,6 +992,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
       if(this.Pool.Mitarbeiterdaten !== null) {
 
+
         for(let Projekt of this.DBProjekte.Projektliste) {
 
           Projektpunkteliste = lodash.filter(this.Pool.Projektpunkteliste[Projekt.Projektkey], (projektpunkt: Projektpunktestruktur) => {
@@ -1006,7 +1016,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
           this.DBProjekte.Projektauswahlsettings[0][3].Projektpunkteanzahl = Meilensteineanzahl;
         }
-
 
         // Meine Woche Projektdaten bestimmen
 
@@ -1133,18 +1142,13 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
           this.DBProjekte.SetProjektpunkteanzahl(Anzahl, Projekt.Projektkey);
         }
 
-
         this.DBProjektpunkte.PrepareWochenpunkteliste();
-
       }
-
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'PrepareDaten', this.Debug.Typen.Page);
     }
   }
-
 
 
   AufgabeClickedHandler(Projektpunkt: Projektpunktestruktur, projektindex: number, ursprung: string) {
@@ -1154,47 +1158,13 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.SetProjektindexAndUrsprung(projektindex, ursprung);
 
       this.DBProjektpunkte.CurrentProjektpunkt   = lodash.cloneDeep(Projektpunkt);
-      this.DBProjekte.CurrentProjekt             = lodash.find(this.Pool.Gesamtprojektliste, {_id: Projektpunkt.ProjektID});
+      this.DBProjekte.CurrentProjekt             = lodash.find(this.DBProjekte.Gesamtprojektliste, {_id: Projektpunkt.ProjektID});
 
       this.ShowProjektpunktEditor = true;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'AufgabeClickedHandler', this.Debug.Typen.Page);
-    }
-
-  }
-
-  FavoritenClickedHandler(favoritenindex: number) {
-
-    try {
-
-      switch (favoritenindex) {
-
-        case 1000:
-
-          this.Auswahlhoehe         = 800;
-          this.ShowFavoritenauswahl = true; // Zeige FAvoritenauswahl
-
-          break;
-
-        case 3000:
-
-          // Meine Woche
-
-          break;
-
-        default:
-
-
-
-
-          break;
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'FavoritenClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -1274,7 +1244,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'TerminFiltermodusClickedHandler', this.Debug.Typen.Page);
     }
-
   }
 
   MeinewocheZuweisenClickedHandler(projektpunkt: Projektpunktestruktur, projektindex: number, ursprung: string) {
@@ -1316,8 +1285,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     }
   }
 
-
-
   MeineWocheEintragTagClicked(event: MouseEvent, punkt: Projektpunktestruktur, tag: string) {
 
     try {
@@ -1328,7 +1295,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.DBProjektpunkte.CurrentProjektpunkt = punkt;
 
       this.ShowMeinewocheEditor            = true;
-      this.DBProjekte.CurrentProjekt       = lodash.find(this.Pool.Gesamtprojektliste, {_id: punkt.ProjektID});
+      this.DBProjekte.CurrentProjekt       = lodash.find(this.DBProjekte.Gesamtprojektliste, {_id: punkt.ProjektID});
       this.DBMitarbeiter.CurrentMeinewoche = lodash.find(this.Pool.Mitarbeiterdaten.Meinewocheliste, (eintrag: Meinewochestruktur) => {
 
         return eintrag.ProjektID === punkt.ProjektID && eintrag.ProjektpunktID === punkt._id;
@@ -1352,7 +1319,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.Datenursprung                       = this.Datenursprungsvarianten.MeineWoche;
       this.ShowProjektpunktEditor              = true;
       this.DBProjektpunkte.CurrentProjektpunkt = lodash.cloneDeep(punkt);
-      this.DBProjekte.CurrentProjekt           = lodash.find(this.Pool.Gesamtprojektliste, {_id: punkt.ProjektID});
+      this.DBProjekte.CurrentProjekt           = lodash.find(this.DBProjekte.Gesamtprojektliste, {_id: punkt.ProjektID});
 
 
     } catch (error) {
@@ -1373,7 +1340,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.Auswahlhoehe = 200;
 
       this.DBProjektpunkte.CurrentProjektpunkt = punkt;
-      this.DBProjekte.CurrentProjekt = lodash.find(this.Pool.Gesamtprojektliste, {_id: punkt.ProjektID});
+      this.DBProjekte.CurrentProjekt = lodash.find(this.DBProjekte.Gesamtprojektliste, {_id: punkt.ProjektID});
 
       this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Meintageintrag_Status;
 
@@ -1625,6 +1592,21 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'ProjektSchnellauswahlProjektClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  ShowProjektfilesHandler() {
+
+    try {
+
+      this.Menuservice.FilelisteAufrufer    = this.Menuservice.FilelisteAufrufervarianten.Aufgabenliste;
+      this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Fileliste;
+
+      this.Menuservice.SetCurrentPage();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'ShowProjektfilesHandler', this.Debug.Typen.Page);
     }
   }
 }

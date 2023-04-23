@@ -33,6 +33,8 @@ import * as Joi from "joi";
 import {ObjectSchema} from "joi";
 import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
 import {HttpErrorResponse} from "@angular/common/http";
+import {Subscription} from "rxjs";
+import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
 
 @Component({
   selector: 'pj-projektpunkt-editor',
@@ -67,6 +69,9 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
   public Auswahlliste: string[];
   public Auswahlindex: number;
   public Auswahltitel: string;
+  public StatusSubscription: Subscription;
+  public KostenSubscription: Subscription;
+  public Kostengruppenpunkteliste: Projektpunktestruktur[];
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -95,6 +100,9 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       this.PositionY = 100;
       this.ZIndex = 2000;
       this.StatusbuttonEnabled = true;
+      this.StatusSubscription = null;
+      this.Kostengruppenpunkteliste = [];
+      this.KostenSubscription = null;
 
       this.StatusbuttonEnabled = this.DB.CurrentProjektpunkt.Status !== this.Const.Projektpunktstatustypen.Festlegung.Name;
 
@@ -129,6 +137,12 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
       this.Displayservice.RemoveDialog(this.Displayservice.Dialognamen.Projektpunteditor);
 
+      this.StatusSubscription.unsubscribe();
+      this.StatusSubscription = null;
+
+      this.KostenSubscription.unsubscribe();
+      this.KostenSubscription = null;
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'OnDestroy', this.Debug.Typen.Component);
@@ -141,6 +155,23 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
       this.Displayservice.AddDialog(this.Displayservice.Dialognamen.Projektpunteditor, this.ZIndex);
 
+      this.KostenSubscription = this.Pool.ProjektpunktKostengruppeChanged.subscribe(() => {
+
+        this.Kostengruppenpunkteliste = [];
+      });
+
+      this.StatusSubscription = this.Pool.ProjektpunktStatusChanged.subscribe(() => {
+
+        if(this.DB.CurrentProjektpunkt.Status === this.Const.Projektpunktstatustypen.Festlegung.Name) {
+
+          this.SetLastKostengruppenliste();
+        }
+        else {
+
+          this.Kostengruppenpunkteliste = [];
+        }
+      });
+
       this.DBGebaeude.Init();
       this.SetupValidation();
       this.PrepareData();
@@ -148,6 +179,40 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'OnInit', this.Debug.Typen.Component);
+    }
+  }
+
+  private SetLastKostengruppenliste() {
+
+    try {
+
+      let Punkt: Projektpunktestruktur;
+
+      this.Kostengruppenpunkteliste = [];
+
+      for(let Projektpunkt of this.DB.CurrentProjektpunkteliste) {
+
+        if(Projektpunkt.Status === this.Const.Projektpunktstatustypen.Festlegung.Name) {
+
+          Punkt = lodash.find(this.Kostengruppenpunkteliste, (punkt: Projektpunktestruktur) => {
+
+            return punkt.Hauptkostengruppe === Projektpunkt.Hauptkostengruppe &&
+                   punkt.Oberkostengruppe  === Projektpunkt.Oberkostengruppe  &&
+                   punkt.Unterkostengruppe === Projektpunkt.Unterkostengruppe;
+          });
+
+          if(lodash.isUndefined(Punkt)) {
+
+            if(Projektpunkt.Hauptkostengruppe !== null || Projektpunkt.Unterkostengruppe !== null || Projektpunkt.Oberkostengruppe !== null) {
+
+              this.Kostengruppenpunkteliste.push(Projektpunkt);
+            }
+          }
+        }
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'SetLastKostengruppenliste', this.Debug.Typen.Page);
     }
   }
 
@@ -495,13 +560,6 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
       }
       else this.Auswahlindex = -1;
-
-      /*
-      this.Auswahltitel = 'Statusauswahl';
-
-      this.MyAuswahlDialog.Open(false, this.Auswahlindex);
-
-       */
     }
     catch (error) {
 
@@ -785,6 +843,24 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'GetTerminWert', this.Debug.Typen.Component);
+    }
+
+  }
+
+  LastKostengruppeClicked(Punkt: Projektpunktestruktur) {
+
+    try {
+
+      this.DB.CurrentProjektpunkt.Hauptkostengruppe = Punkt.Hauptkostengruppe;
+      this.DB.CurrentProjektpunkt.Oberkostengruppe  = Punkt.Oberkostengruppe;
+      this.DB.CurrentProjektpunkt.Unterkostengruppe = Punkt.Unterkostengruppe;
+
+      this.Kostengruppenpunkteliste = [];
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'LastKostengruppeClicked', this.Debug.Typen.Component);
     }
 
   }

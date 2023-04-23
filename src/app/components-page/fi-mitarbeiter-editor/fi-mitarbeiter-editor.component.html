@@ -40,10 +40,13 @@
             </ion-row>
             <ion-row>
               <ion-col [size]="Tools.GetButtonvalueSize()">
-                <input-clone [Enabled]="false" [Clickable]="true" [Value]="StandortDB.GetStandort(DB.CurrentMitarbeiter.StandortID)" [DisabledColor]="'gray'" (click)="StandortClicked()"  Titel="Standort"></input-clone>
+                <input-clone
+                  [Enabled]="false"
+                  [Clickable]="true"
+                  [DisabledColor]="DB.CurrentMitarbeiter.StandortID !== '' ? Basics.Farben.Burnicklgrau : Basics.Farben.Orange"  [Value]="StandortDB.GetStandort(DB.CurrentMitarbeiter.StandortID)"  (click)="StandortClicked()"  Titel="Standort" (TextChanged)="TextChanged($event)"></input-clone>
               </ion-col>
               <ion-col [size]="Tools.GetButtonvalueSize()">
-                <input-clone [Enabled]="false" [Clickable]="true" [Value]="DB.CurrentMitarbeiter.Fachbereich" [DisabledColor]="'gray'" (click)="FachbereichClicked()"  Titel="Fachbereich"></input-clone>
+                <input-clone  [Enabled]="false" [Clickable]="true" [Value]="DB.CurrentMitarbeiter.Fachbereich" [DisabledColor]="'gray'" (click)="FachbereichClicked()"  Titel="Fachbereich"></input-clone>
               </ion-col>
             </ion-row>
             <ion-row>
@@ -72,16 +75,27 @@
               <ion-col>
                 <table>
                   <tr>
-                    <td><checkbox-clon [Checked]="DeleteEnabled" (CheckChanged)="LoeschenCheckboxChanged($event)"></checkbox-clon></td>
+                    <td><checkbox-clon [Checked]="DB.CurrentMitarbeiter.Archiviert" (CheckChanged)="ArchivierenCheckboxChanged($event)"></checkbox-clon></td>
                     <td style="width: 6px"></td>
-                    <td>
-                      <ion-button size="small" color="rot" [disabled]="!DeleteEnabled" (click)="LoeschenButtonClicked()">
-                        <ion-icon name="trash-outline" style="font-size: 20px"></ion-icon>
-                        <ion-text>Eintrag löschen</ion-text>
-                      </ion-button>
-                    </td>
+                    <td>Eintrag archivieren</td>
                   </tr>
                 </table>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-text color="burnicklgruen"><b>Teamsprojekte</b></ion-text>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <div style="width: 100%; height: 400px; background: none; overflow: auto; border: 2px solid #354547; border-radius: 4px">
+                  <table class="paddingtable">
+                    <tr *ngFor="let Team of Teamsliste">
+                      <td>{{Team.displayName}}</td>
+                    </tr>
+                  </table>
+                </div>
               </ion-col>
             </ion-row>
 

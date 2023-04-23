@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import {MsalRedirectComponent} from "@azure/msal-angular";
+import {
+  PjFestlegungslistePage
+} from "./pages/pj-festlegungsliste/pj-festlegungsliste.page";
 
 const routes: Routes = [
   {
@@ -52,6 +55,11 @@ const routes: Routes = [
     // canLoad: [SecurityService]
   },
   {
+    path: 'PjFilebrowserPage',
+    loadChildren: () => import('./pages/pj-filebrowser/pj-filebrowser.module').then(m => m.PjFilebrowserPageModule),
+    // canLoad: [SecurityService]
+  },
+  {
     path: 'PjFavoritenlistePage',
     loadChildren: () => import('./pages/pj-favoriten-liste/pj-favoriten-liste.module').then(m => m.PjFavoritenListePageModule),
     // canLoad: [SecurityService]
@@ -67,6 +75,22 @@ const routes: Routes = [
   {
     path: 'PjProtokolleListePage',
     loadChildren: () => import('./pages/pj-protokolle-liste/pj-protokolle-liste.module').then(m => m.PjProtokolleListePageModule)
+  },
+  {
+    path: 'PjBaustelleLoplistePage',
+    loadChildren: () => import('./pages/pj-baustelle-lopliste/pj-baustelle-lopliste.module').then(m => m.PjBaustelleLoplistePageModule)
+  },
+  {
+    path: 'PjBaustelleTagebuchlistePage',
+    loadChildren: () => import('./pages/pj-baustelle-tagebuchliste/pj-baustelle-tagebuchliste.module').then(m => m.PjBaustelleTagebuchlistePageModule)
+  },
+  {
+    path: 'PjFestlegungslistePage',
+    loadChildren: () => import('./pages/pj-festlegungsliste/pj-festlegungsliste.module').then(m => m.PjFestlegungslistePageModule)
+  },
+  {
+    path: 'PDFViewerPage',
+    loadChildren: () => import('./pages/common-pdfview/common-pdfview.module').then(m => m.CommonPdfViewerPageModule)
   },
 ];
 

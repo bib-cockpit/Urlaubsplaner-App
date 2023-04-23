@@ -80,6 +80,19 @@ ion-searchbar {
   cursor: pointer;
 }
 
+.buttonsmallclass {
+
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  width: 50px;
+  min-height: 34px;
+  height: 100%;
+  border: 1px solid white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
 .statusvaianteclass {
 
   padding: 6px;
@@ -107,5 +120,20 @@ ion-searchbar {
   margin-top: 4px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.userkuerzelsmall {
+
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin-right: 4px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  background: #7b6a58;
+  color: white;
+  font-weight: bold;
 }
 

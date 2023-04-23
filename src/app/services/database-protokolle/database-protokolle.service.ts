@@ -8,7 +8,17 @@ import {ConstProvider} from "../const/const";
 import moment, {Moment} from "moment";
 import {Observable} from "rxjs";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
+import {Graphservice} from "../graph/graph";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import {DatabaseAuthenticationService} from "../database-authentication/database-authentication.service";
+import {Standortestruktur} from "../../dataclasses/standortestruktur";
+import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
+import {Projektestruktur} from "../../dataclasses/projektestruktur";
+import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
+import {DatabaseProjektbeteiligteService} from "../database-projektbeteiligte/database-projektbeteiligte.service";
+import {BasicsProvider} from "../basics/basics";
+import {KostengruppenService} from "../kostengruppen/kostengruppen.service";
 
 @Injectable({
   providedIn: 'root'
@@ -58,24 +68,34 @@ export class DatabaseProtokolleService {
   public MaxDatum: Moment;
   public Leistungsphasenfilter: string;
   private ServerProtokollUrl: string;
+  private ServerSaveProtokollToTeamsUrl: string;
+  private ServerSendProtokollToTeamsUrl: string;
 
   constructor(private Debug: DebugProvider,
               private DBProjekt: DatabaseProjekteService,
+              private DBBeteiligte: DatabaseProjektbeteiligteService,
               private Const: ConstProvider,
               private http: HttpClient,
+              private Basics: BasicsProvider,
+              private AuthService: DatabaseAuthenticationService,
+              public KostenService: KostengruppenService,
+              private GraphService: Graphservice,
               private Pool: DatabasePoolService) {
     try {
 
-      this.Zeitfiltervariante = this.Const.NONE;
-      this.Leistungsphasenfilter = this.Const.NONE;
-      this.CurrentProtokoll      = null;
-      this.Searchmodus           = this.Searchmodusvarianten.Titelsuche;
-      this.Monatsfilter       = null;
-      this.Startdatumfilter   = null;
-      this.Enddatumfilter     = null;
-      this.MinDatum           = null;
-      this.MaxDatum           = null;
-      this.ServerProtokollUrl = this.Pool.CockpitserverURL + '/protokolle';
+      this.Zeitfiltervariante      = this.Const.NONE;
+      this.Leistungsphasenfilter   = this.Const.NONE;
+      this.CurrentProtokoll        = null;
+      this.Searchmodus             = this.Searchmodusvarianten.Titelsuche;
+      this.Monatsfilter            = null;
+      this.Startdatumfilter        = null;
+      this.Enddatumfilter          = null;
+      this.MinDatum                = null;
+      this.MaxDatum                = null;
+
+      this.ServerProtokollUrl            = this.Pool.CockpitserverURL + '/protokolle';
+      this.ServerSaveProtokollToTeamsUrl = this.Pool.CockpitserverURL + '/saveprotokoll';
+      this.ServerSendProtokollToTeamsUrl = this.Pool.CockpitserverURL + '/sendprotokoll';
 
     } catch (error) {
 
@@ -88,10 +108,6 @@ export class DatabaseProtokolleService {
     try {
 
       let Heute: Moment = moment();
-      /*
-      let Anzahl: number = this.Pool.Protokollliste[this.DBProjekt.CurrentProjekt.Projektkey].length;
-      let Nummer: string = Anzahl === 0 ? '' : (Anzahl + 1).toString();
-       */
 
       return {
         Besprechungsort: "Online",
@@ -117,7 +133,18 @@ export class DatabaseProtokolleService {
         Zeitstempel: Heute.valueOf(),
         Zeitstring: Heute.format('DD.MM.YYYY'),
         _id: null,
-        Projektkey: this.DBProjekt.CurrentProjekt.Projektkey
+        Projektkey: this.DBProjekt.CurrentProjekt.Projektkey,
+
+        Betreff: "",
+        Nachricht: "",
+        CcEmpfaengerExternIDListe: [],
+        CcEmpfaengerInternIDListe: [],
+        EmpfaengerExternIDListe: [],
+        EmpfaengerInternIDListe: [],
+        Filename: "",
+        FileID: "",
+        GesendetZeitstempel: null,
+        GesendetZeitstring: this.Const.NONE,
       };
 
     } catch (error) {
@@ -347,7 +374,6 @@ export class DatabaseProtokolleService {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'GetLetzteProtokollnummer', this.Debug.Typen.Service);
     }
-
   }
 
   private UpdateProtokoll(protokoll: Protokollstruktur): Promise<any> {
@@ -357,8 +383,6 @@ export class DatabaseProtokolleService {
       let Observer: Observable<any>;
       let Params = new HttpParams();
       let Merker: Protokollstruktur;
-
-      debugger;
 
       return new Promise((resolve, reject) => {
 
@@ -408,6 +432,360 @@ export class DatabaseProtokolleService {
     }
   }
 
+  public async SendProtokollFromTeams(protokoll: Protokollstruktur, teamsid: string): Promise<any> {
+
+    try {
+
+      let token = await this.AuthService.RequestToken('Mail.Send');
+
+      let Observer: Observable<any>;
+      let Merker: Teamsfilesstruktur;
+      let Daten: {
+
+        Betreff:     string;
+        Nachricht:   string;
+        TeamsID:     string;
+        FileID:      string;
+        Filename:    string;
+        UserID:      string;
+        Token:       string;
+        Empfaengerliste:   any[];
+        CcEmpfaengerliste: any[];
+      };
+
+      if(this.Basics.DebugNoExternalEmail) {
+
+        protokoll.Empfaengerliste   = lodash.filter(protokoll.Empfaengerliste,   { Email : 'p.hornburger@gmail.com' });
+        protokoll.CcEmpfaengerliste = lodash.filter(protokoll.CcEmpfaengerliste, { Email : 'p.hornburger@gmail.com' });
+
+        if(protokoll.Empfaengerliste.length === 0) {
+
+          protokoll.Empfaengerliste.push({
+            Email: 'p.hornburger@gmail.com',
+            Name:  'Peter Hornburger'
+          });
+        }
+      }
+
+      Daten = {
+
+        Betreff:     protokoll.Betreff,
+        Nachricht:   protokoll.Nachricht,
+        TeamsID:     teamsid,
+        UserID:      this.GraphService.Graphuser.id,
+        FileID:      protokoll.FileID,
+        Filename:    protokoll.Filename,
+        Token:       token,
+        Empfaengerliste:   protokoll.Empfaengerliste,
+        CcEmpfaengerliste: protokoll.CcEmpfaengerliste
+      };
+
+      return new Promise((resolve, reject) => {
+
+        // PUT für update
+
+        Observer = this.http.put(this.ServerSendProtokollToTeamsUrl, Daten);
+
+        Observer.subscribe({
+
+          next: (ne) => {
+
+            Merker = ne;
+
+          },
+          complete: () => {
+
+            resolve(true);
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'SaveProtokollInTeams', this.Debug.Typen.Service);
+    }
+  }
+
+  public SaveProtokollInTeams(
+
+    teamsid: string,
+    directoryid: string,
+    filename: string,
+    projekt: Projektestruktur,
+    protokoll: Protokollstruktur,
+    standort: Standortestruktur, mitarbeiter: Mitarbeiterstruktur, showmailinformations: boolean): Promise<Protokollstruktur> {
+
+    try {
+
+      let Observer: Observable<any>;
+      let Teamsfile: Teamsfilesstruktur;
+      let Punkteliste: Projektpunktestruktur[];
+      let Projektpunkt: Projektpunktestruktur;
+      let Punkteindex: number;
+      let ExternZustaendigListe: string[][];
+      let InternZustaendigListe: string[][];
+      let Kostengruppenliste: string[];
+      let Beteiligter: Projektbeteiligtestruktur;
+      let Mitarbeiter: Mitarbeiterstruktur;
+      let Name: string;
+      let CcEmpfaengerliste: {
+        Name:  string;
+        Email: string;
+      }[];
+      let Empfaengerliste: {
+        Name:  string;
+        Email: string;
+      }[];
+      let Daten: {
+
+        TeamsID:     string;
+        DirectoryID: string;
+        Filename:    string;
+        Projekt:     Projektestruktur;
+        Protokoll:   Protokollstruktur;
+        Standort:    Standortestruktur;
+        Mitarbeiter: Mitarbeiterstruktur;
+        ShowMailinformations: boolean;
+      } = {
+
+        TeamsID:     teamsid,
+        DirectoryID: directoryid,
+        Projekt:     projekt,
+        Protokoll:   lodash.cloneDeep(protokoll),
+        Filename:    filename,
+        Standort:    standort,
+        Mitarbeiter: mitarbeiter,
+        ShowMailinformations: showmailinformations
+      };
+
+      // Protokollpunkte eintragen
+
+      Punkteliste = [];
+
+      for(let id of protokoll.ProjektpunkteIDListe) {
+
+        Projektpunkt = lodash.find(this.Pool.Projektpunkteliste[protokoll.Projektkey], (punkt: Projektpunktestruktur) => {
+
+          return punkt._id === id && punkt.ProtokollID === protokoll._id;
+        });
+
+        if(lodash.isUndefined(Projektpunkt) === false) {
+
+          Punkteliste.push(Projektpunkt);
+        }
+      }
+
+      Punkteliste.sort((a: Projektpunktestruktur, b: Projektpunktestruktur) => {
+
+        if (a.Startzeitsptempel < b.Startzeitsptempel) return -1;
+        if (a.Startzeitsptempel > b.Startzeitsptempel) return 1;
+        return 0;
+      });
+
+      Daten.Protokoll.Projektpunkteliste = Punkteliste;
+
+      // Zuständige Personen eintragen
+
+      ExternZustaendigListe = [];
+      InternZustaendigListe = [];
+      Kostengruppenliste    = [];
+      Punkteindex           = 0;
+
+      for(Projektpunkt of Punkteliste) {
+
+        ExternZustaendigListe[Punkteindex] = [];
+        InternZustaendigListe[Punkteindex] = [];
+
+        for(let ExternID of Projektpunkt.ZustaendigeExternIDListe) {
+
+          ExternZustaendigListe[Punkteindex].push(this.GetZustaendigExternName(ExternID));
+        }
+
+        for(let InternID of Projektpunkt.ZustaendigeInternIDListe) {
+
+          InternZustaendigListe[Punkteindex].push(this.GetZustaendigInternName(InternID));
+        }
+
+        if(Projektpunkt.Status === this.Const.Projektpunktstatustypen.Festlegung.Name) {
+
+          Kostengruppenliste.push(this.KostenService.GetKostengruppenname(Projektpunkt));
+        }
+        else {
+
+          Kostengruppenliste.push(this.Const.NONE);
+        }
+
+        Punkteindex++;
+      }
+
+      Daten.Protokoll.ExternZustaendigListe = ExternZustaendigListe;
+      Daten.Protokoll.InternZustaendigListe = InternZustaendigListe;
+      Daten.Protokoll.Kostengruppenliste    = Kostengruppenliste;
+
+      // Teilnehmer bestimmen
+
+      Daten.Protokoll.ExterneTeilnehmerliste = this.GetExterneTeilnehmerliste(true);
+      Daten.Protokoll.InterneTeilnehmerliste = this.GetInterneTeilnehmerliste(true);
+
+      // Empfaenger bestimmen
+
+      Empfaengerliste   = [];
+      CcEmpfaengerliste = [];
+
+      for(let ExternEmpfaengerID of Daten.Protokoll.EmpfaengerExternIDListe) {
+
+        Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: ExternEmpfaengerID});
+
+        if(!lodash.isUndefined(Beteiligter)) {
+
+          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+
+          Empfaengerliste.push({
+
+            Name: Name,
+            Email: Beteiligter.Email
+          });
+        }
+      }
+
+      for(let InternEmpfaengerID of Daten.Protokoll.EmpfaengerInternIDListe) {
+
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: InternEmpfaengerID});
+
+        if(!lodash.isUndefined(Mitarbeiter)) Empfaengerliste.push({
+
+          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
+          Email: Mitarbeiter.Email
+        });
+      }
+
+      for(let CcExternEmpfaengerID of Daten.Protokoll.CcEmpfaengerExternIDListe) {
+
+        Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: CcExternEmpfaengerID});
+
+        if(!lodash.isUndefined(Beteiligter)) {
+
+          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+
+          CcEmpfaengerliste.push({
+
+            Name: Name,
+            Email: Beteiligter.Email
+          });
+        }
+      }
+
+      for(let CcInternEmpfaengerID of Daten.Protokoll.CcEmpfaengerInternIDListe) {
+
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: CcInternEmpfaengerID});
+
+        if(!lodash.isUndefined(Mitarbeiter)) CcEmpfaengerliste.push({
+
+          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
+          Email: Mitarbeiter.Email
+        });
+      }
+
+      Daten.Protokoll.Empfaengerliste   = Empfaengerliste;
+      Daten.Protokoll.CcEmpfaengerliste = CcEmpfaengerliste;
+
+      // Protokoll versenden
+
+      return new Promise((resolve, reject) => {
+
+        // PUT für update -> Datei neu erstellen oder überschreiben
+
+        Observer = this.http.put(this.ServerSaveProtokollToTeamsUrl, Daten);
+
+        Observer.subscribe({
+
+          next: (ne) => {
+
+            Teamsfile = ne;
+          },
+          complete: () => {
+
+            Daten.Protokoll.FileID              = Teamsfile.id;
+            Daten.Protokoll.GesendetZeitstempel = Teamsfile.GesendetZeitstempel;
+            Daten.Protokoll.GesendetZeitstring  = Teamsfile.GesendetZeitstring;
+
+            resolve(Daten.Protokoll);
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'SaveProtokollInTeams', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetZustaendigInternName(ZustaendigID: string): string {
+
+    try {
+
+      let Mitarbeiter: Mitarbeiterstruktur = lodash.find(this.Pool.Mitarbeiterliste, {_id: ZustaendigID});
+
+      if(lodash.isUndefined(Mitarbeiter) === false) {
+
+        return Mitarbeiter.Kuerzel;
+      }
+      else {
+
+        return 'unbekannt';
+      }
+
+      return '';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'GetZustaendigInternName', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetZustaendigExternName(ZustaendigID: string): string {
+
+    try {
+
+
+      let Beteiligter: Projektbeteiligtestruktur = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, { BeteiligtenID: ZustaendigID});
+
+      if(lodash.isUndefined(Beteiligter) === false) {
+
+        if(Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person) {
+
+          return Beteiligter.Name;
+        }
+        else {
+
+          return Beteiligter.Firma;
+        }
+      }
+      else {
+
+        return 'unbekannt';
+      }
+
+      return '';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'GetZustaendigExternName', this.Debug.Typen.Service);
+    }
+  }
+
   private AddProtokoll(protkoll: Protokollstruktur) {
 
     try {
@@ -429,6 +807,8 @@ export class DatabaseProtokolleService {
             debugger;
           },
           complete: () => {
+
+            debugger;
 
             this.UpdateProtokollliste(this.CurrentProtokoll);
 
@@ -481,6 +861,74 @@ export class DatabaseProtokolleService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'UpdateProjektpunkteliste', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetExterneTeilnehmerliste(getliste: boolean): any {
+
+    try {
+
+      let Beteiligte: Projektbeteiligtestruktur;
+      let Value: string = '';
+      let Eintrag;
+      let Liste: string[] = [];
+
+      for(let id of this.CurrentProtokoll.BeteiligExternIDListe) {
+
+        Beteiligte = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: id});
+
+        if(!lodash.isUndefined(Beteiligte)) {
+
+          if(Beteiligte.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person) {
+
+            Eintrag = this.DBBeteiligte.GetBeteiligtenvorname(Beteiligte) + ' ' + Beteiligte.Name;
+            Value +=  Eintrag + '\n';
+          }
+          else {
+
+            Eintrag = Beteiligte.Firma;
+            Value  += Eintrag + '\n';
+          }
+
+          Liste.push(Eintrag);
+        }
+      }
+
+      return getliste ? Liste : Value;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'GetBeteiligteteilnehmerliste', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetInterneTeilnehmerliste(getliste: boolean): any {
+
+    try {
+
+      let Teammitglied: Mitarbeiterstruktur;
+      let Value: string = '';
+      let Liste:string[] = [];
+      let Eintrag: string;
+
+      for(let id of this.CurrentProtokoll.BeteiligtInternIDListe) {
+
+        Teammitglied = <Mitarbeiterstruktur>lodash.find(this.Pool.Mitarbeiterliste, {_id: id});
+
+        if(!lodash.isUndefined(Teammitglied)) {
+
+          Eintrag = Teammitglied.Vorname + ' ' + Teammitglied.Name + ' / ' + Teammitglied.Kuerzel;
+          Value +=  Eintrag + '\n';
+
+          Liste.push(Eintrag);
+        }
+      }
+
+      return getliste ? Liste : Value;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'GetTeamteilnehmerliste', this.Debug.Typen.Service);
     }
   }
 }

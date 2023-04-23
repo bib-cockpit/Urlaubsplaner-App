@@ -11,6 +11,7 @@ import {FiChangelogEditorModule} from "../../components-page/fi-changelog-editor
 import {
     PjProjekteSchnellauswahlModule
 } from "../../components-page/pj-projekte-schnellauswahl/pj-projekte-schnellauswahl.module";
+import {PjTeamsFilebrowserModule} from "../../components/pj-teams-filebrowser/pj-teams-filebrowser.module";
 
 const routes: Routes = [
   {
@@ -31,6 +32,7 @@ const routes: Routes = [
         PageFooterModule,
         FiChangelogEditorModule,
         PjProjekteSchnellauswahlModule,
+        PjTeamsFilebrowserModule,
     ],
   declarations: [CommonHomePage]
 })

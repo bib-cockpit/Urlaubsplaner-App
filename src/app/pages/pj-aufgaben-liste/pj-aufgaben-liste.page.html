@@ -8,6 +8,7 @@
       [Filterorigin]="Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Zeitfilter"
       (ShowProjektauswahlEvent)="ShowProjektauswahlEventHandler()"
       (FilterChanged)="FilterChangedHandler($event)"
+      (ShowProjektfilesEvent)="ShowProjektfilesHandler()"
       (ZeitspanneFilterClicked)="ZeitspanneFilterClickedHandler()"></page-header-menu>
   </page-header>
 </ion-header>
@@ -98,8 +99,8 @@
           <td [style.width.px]="Tagbreite" [style.height.px]="Listenhoehe">
             <div class="tagaufteilungkeeperdivclass">
               <div *ngFor="let Punkt of DBProjektpunkte.Wochenpunkteliste['Montag']" class="tagaufteilungeintragdivclass"
-                   [style.background]="DBProjekte.GetProjektFarbe(Punkt).Background"
-                   [style.color]="DBProjekte.GetProjektFarbe(Punkt).Foreground"
+                   [style.background]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Background"
+                   [style.color]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Foreground"
                    [style.height.px]="GetProjektpunthoehe(Punkt)"
                    (click)="MeineWocheEintragEditClicked($event, Punkt, 'Montag')">
                 <table style="width: 100%">
@@ -119,8 +120,8 @@
           <td [style.width.px]="Tagbreite" [style.height.px]="Listenhoehe">
             <div class="tagaufteilungkeeperdivclass">
               <div *ngFor="let Punkt of DBProjektpunkte.Wochenpunkteliste['Dienstag']" class="tagaufteilungeintragdivclass"
-                   [style.background]="DBProjekte.GetProjektFarbe(Punkt).Background"
-                   [style.color]="DBProjekte.GetProjektFarbe(Punkt).Foreground"
+                   [style.background]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Background"
+                   [style.color]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Foreground"
                    [style.height.px]="GetProjektpunthoehe(Punkt)"
                    (click)="MeineWocheEintragEditClicked($event,Punkt,'Dienstag')">
                 <table style="width: 100%">
@@ -140,8 +141,8 @@
           <td [style.width.px]="Tagbreite" [style.height.px]="Listenhoehe">
             <div class="tagaufteilungkeeperdivclass">
               <div *ngFor="let Punkt of DBProjektpunkte.Wochenpunkteliste['Mittwoch']" class="tagaufteilungeintragdivclass"
-                   [style.background]="DBProjekte.GetProjektFarbe(Punkt).Background"
-                   [style.color]="DBProjekte.GetProjektFarbe(Punkt).Foreground"
+                   [style.background]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Background"
+                   [style.color]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Foreground"
                    [style.height.px]="GetProjektpunthoehe(Punkt)"
                    (click)="MeineWocheEintragEditClicked($event, Punkt, 'Mittwoch')">
                 <table style="width: 100%">
@@ -161,8 +162,8 @@
           <td [style.width.px]="Tagbreite" [style.height.px]="Listenhoehe">
             <div class="tagaufteilungkeeperdivclass">
               <div *ngFor="let Punkt of DBProjektpunkte.Wochenpunkteliste['Donnerstag']" class="tagaufteilungeintragdivclass"
-                   [style.background]="DBProjekte.GetProjektFarbe(Punkt).Background"
-                   [style.color]="DBProjekte.GetProjektFarbe(Punkt).Foreground"
+                   [style.background]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Background"
+                   [style.color]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Foreground"
                    [style.height.px]="GetProjektpunthoehe(Punkt)"
                    (click)="MeineWocheEintragEditClicked($event, Punkt, 'Donerstag')">
                 <table style="width: 100%">
@@ -182,8 +183,8 @@
           <td [style.width.px]="Tagbreite" [style.height.px]="Listenhoehe">
             <div class="tagaufteilungkeeperdivclass">
               <div *ngFor="let Punkt of DBProjektpunkte.Wochenpunkteliste['Freitag']" class="tagaufteilungeintragdivclass"
-                   [style.background]="DBProjekte.GetProjektFarbe(Punkt).Background"
-                   [style.color]="DBProjekte.GetProjektFarbe(Punkt).Foreground"
+                   [style.background]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Background"
+                   [style.color]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Foreground"
                    [style.height.px]="GetProjektpunthoehe(Punkt)"
                    (click)="MeineWocheEintragEditClicked($event, Punkt, 'Freitag')">
                 <table style="width: 100%">

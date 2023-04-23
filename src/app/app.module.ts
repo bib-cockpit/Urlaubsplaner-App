@@ -82,8 +82,7 @@ const MSALGuardConfigFactory = (): MsalGuardConfiguration => {
   return {
     interactionType: InteractionType.Redirect,
     authRequest: {
-      scopes: ['user.read', 'offline_access'],// 'Calendars.ReadWrite',
-      // extraScopesToConsent: ['calendars.readwrite']
+      scopes: ['User.Read', 'offline_access', 'Sites.ReadWrite.All', 'TeamMember.ReadWrite.All'],
     },
   };
 };

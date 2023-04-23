@@ -62,4 +62,5 @@ export type Projektpunktestruktur = {
   Zustaendigkeitsliste?:    string[];
   __v?: any;
   Minuten?: number;
+  Kostengruppenname?: string;
 };

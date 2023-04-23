@@ -70,8 +70,11 @@
 
 
 <pj-favoriten-editor *ngIf="ShowEditor" [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe" [PositionY]="100" [Titel]="GetFavoritenTitel()" Iconname="star-outline"
-                   (CancelClickedEvent)="ShowEditor = false"
-                     (OkClickedEvent)="ShowEditor = false" (EditProjektlisteEvent)="EditProjektlisteEventHandler()"></pj-favoriten-editor>
+                     (CancelClickedEvent)="ShowEditor = false"
+                     (OkClickedEvent)="ShowEditor = false"
+                     (EditProjektlisteEvent)="EditProjektlisteEventHandler()"
+                     (FavoritDeletedEvent)="ShowEditor = false">
+</pj-favoriten-editor>
 
 <pj-projekte-auswahl *ngIf="ShowProjekteauswahl"
                         [Titel]="ProjekteauswahlTitel" Iconname="business-outline"

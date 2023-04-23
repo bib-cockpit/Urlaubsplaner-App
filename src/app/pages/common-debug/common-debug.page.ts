@@ -153,4 +153,28 @@ export class CommonDebugPage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error.message, 'Debug', 'ClearMessagesButtonCLcicked', this.Debug.Typen.Page);
     }
   }
+
+  ChangeShowHomeScreenInfos(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.Basics.ShowHomeScreenInfos = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Debug', 'ChangeShowHomeScreenInfos', this.Debug.Typen.Page);
+    }
+  }
+
+  DebugNoExternalEmailChanged(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.Basics.DebugNoExternalEmail = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Debug', 'DebugNoExternalEmailChanged', this.Debug.Typen.Page);
+    }
+  }
 }

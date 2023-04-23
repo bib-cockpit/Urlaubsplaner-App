@@ -9,6 +9,7 @@ import {AbstandElementFixedModule} from "../../components/abstand-element-fixed/
 import {PageFooterModule} from "../../components/page-footer/page-footer.module";
 import {PageHeaderMenuModule} from "../../components/page-header-menu/page-header-menu.module";
 import {PrettyjsonModule} from "../../pipes/prettyjson.module";
+import {CheckboxClonModule} from "../../components/checkbox-clon/checkbox-clon.module";
 
 const routes: Routes = [
   {
@@ -18,18 +19,19 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RouterModule.forChild(routes),
-    PageHeaderModule,
-    AbstandElementFixedModule,
-    ReactiveFormsModule,
-    PageFooterModule,
-    PageHeaderMenuModule,
-    PrettyjsonModule,
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        RouterModule.forChild(routes),
+        PageHeaderModule,
+        AbstandElementFixedModule,
+        ReactiveFormsModule,
+        PageFooterModule,
+        PageHeaderMenuModule,
+        PrettyjsonModule,
+        CheckboxClonModule,
+    ],
   declarations: [CommonDebugPage]
 })
 export class CommonDebugPageModule {}

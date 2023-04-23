@@ -18,6 +18,7 @@ import {Projektpunktanmerkungstruktur} from "../../dataclasses/projektpunktanmer
 import {Changelogstruktur} from "../../dataclasses/changelogstruktur";
 import {Bauteilstruktur} from "../../dataclasses/bauteilstruktur";
 import {environment} from "../../../environments/environment";
+import {Bautagebuchstruktur} from "../../dataclasses/bautagebuchstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -26,54 +27,66 @@ export class DatabasePoolService {
 
   public Standorteliste:          Standortestruktur[];
   public Mitarbeiterliste:        Mitarbeiterstruktur[];
-  public Gesamtprojektliste:      Projektestruktur[];
   public Projektpunkteliste:      Projektpunktestruktur[][];
   public Protokollliste:          Protokollstruktur[][];
+  public Bautagebuchliste:        Bautagebuchstruktur[][];
   public Mitarbeitersettingsliste: Mitarbeitersettingsstruktur[];
   public CockpitserverURL:        string;
   public Mitarbeiterdaten: Mitarbeiterstruktur;
+  public Mitarbeiterstandort: Standortestruktur;
   public Mitarbeitersettings: Mitarbeitersettingsstruktur;
   public ShowProgress: boolean;
   public MaxProgressValue: number;
   public CurrentProgressValue: number;
   public ProgressMessage: string;
   public Changlogliste: Changelogstruktur[];
+  public MitarbeiterdatenHasError:boolean;
+  public Emailcontent: string;
+  public Emailcontentvarinaten = {
+
+    NONE: this.Const.NONE,
+    Protokoll: 'Protokoll',
+    Bautagebuch: 'Bautagebuch'
+  };
 
   public StandortelisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public MitarbeiterlisteChanged: EventEmitter<any> = new EventEmitter<any>();
-  public GesamtprojektelisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public MitarbeiterdatenChanged: EventEmitter<any> = new EventEmitter<any>();
   public MitarbeitersettingslisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public MitarbeitersettingsChanged: EventEmitter<any> = new EventEmitter<any>();
   public LoadingAllDataFinished: EventEmitter<any> = new EventEmitter<any>();
   public ProjektpunktelisteChanged: EventEmitter<any> = new EventEmitter<any>();
+  public ProjektpunktStatusChanged: EventEmitter<any> = new EventEmitter<any>();
+  public ProjektpunktKostengruppeChanged: EventEmitter<any> = new EventEmitter<any>();
   public ProtokolllisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public ProtokollprojektpunktChanged: EventEmitter<any> = new EventEmitter<any>();
   public ProjektpunktChanged: EventEmitter<any> = new EventEmitter<any>();
   public ChangeloglisteChanged: EventEmitter<any> = new EventEmitter<any>();
+  public BautagebuchlisteChanged: EventEmitter<any> = new EventEmitter<any>();
+  public EmailempfaengerChanged: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private Debug: DebugProvider,
               private Const: ConstProvider,
-              private Http:  HttpClient,
-              private Basics: BasicsProvider) {
+              private Http:  HttpClient) {
     try {
 
       this.Mitarbeiterdaten         = null;
+      this.MitarbeiterdatenHasError = true;
       this.Mitarbeitersettings      = null;
+      this.Mitarbeiterstandort      = null;
       this.ShowProgress             = false;
       this.Mitarbeitersettingsliste = [];
       this.MaxProgressValue         = 10;
       this.CurrentProgressValue     = 5;
       this.Standorteliste           = [];
       this.Mitarbeiterliste         = [];
-      this.Gesamtprojektliste       = [];
       this.Projektpunkteliste       = [];
       this.Projektpunkteliste       = [];
       this.Protokollliste           = [];
       this.Changlogliste            = [];
+      this.Bautagebuchliste         = [];
       this.CockpitserverURL         = environment.production === true ? 'https://bib-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
-
-      // Test
+      this.Emailcontent             = this.Emailcontentvarinaten.NONE;
 
     } catch (error) {
 
@@ -178,9 +191,78 @@ export class DatabasePoolService {
           },
           complete: () => {
 
+
              // debugger;
 
             this.Debug.ShowMessage('Read Protokollliste von ' + projekt.Projektkurzname + ' fertig.', 'Database Pool', 'ReadProtokollliste', this.Debug.Typen.Service);
+
+
+            resolve(true);
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadProtokollliste', this.Debug.Typen.Service);
+    }
+  }
+
+  public ReadBautagebuchliste(projekt: Projektestruktur): Promise<any> {
+
+    try {
+
+      let Params: HttpParams;
+      let Headers: HttpHeaders;
+      let BautagebuchObservable: Observable<any>;
+
+      this.Bautagebuchliste[projekt.Projektkey] = [];
+
+      return new Promise((resolve, reject) => {
+
+        Params  = new HttpParams({ fromObject: { projektkey: projekt.Projektkey }} );
+        Headers = new HttpHeaders({
+
+          'content-type': 'application/json',
+          // 'authorization': this.AuthService.AccessToken
+        });
+
+        BautagebuchObservable = this.Http.get(this.CockpitserverURL + '/bautagebuch', { headers: Headers, params: Params } );
+
+        BautagebuchObservable.subscribe({
+
+          next: (data) => {
+
+
+
+            this.Bautagebuchliste[projekt.Projektkey] = <Bautagebuchstruktur[]>data;
+
+          },
+          complete: () => {
+
+
+            this.Bautagebuchliste[projekt.Projektkey].forEach((Tagebuch: Bautagebuchstruktur) => {
+
+              if(lodash.isUndefined(Tagebuch.GesendetZeitstring))  Tagebuch.GesendetZeitstring  = this.Const.NONE;
+              if(lodash.isUndefined(Tagebuch.GesendetZeitstempel)) Tagebuch.GesendetZeitstempel = null;
+
+            });
+
+            // Tagebücher absteigend mit letztem Eintrag zuerst sortieren
+
+            this.Bautagebuchliste[projekt.Projektkey].sort((a: Bautagebuchstruktur, b: Bautagebuchstruktur) => {
+
+              if (a.Zeitstempel > b.Zeitstempel) return -1;
+              if (a.Zeitstempel < b.Zeitstempel) return 1;
+              return 0;
+            });
+
+            this.Debug.ShowMessage('Read Bautagebuchliste von ' + projekt.Projektkurzname + ' fertig.', 'Database Pool', 'ReadBautagebuchliste', this.Debug.Typen.Service);
 
 
             resolve(true);
@@ -434,58 +516,6 @@ export class DatabasePoolService {
     }
   }
 
-  public ReadGesamtprojektliste(): Promise<any> {
-
-    try {
-
-      this.Gesamtprojektliste = [];
-
-      let headers: HttpHeaders = new HttpHeaders({
-
-        'content-type': 'application/json',
-        // 'authorization': this.AuthService.AccessToken
-      });
-
-      return new Promise((resolve, reject) => {
-
-        let StandortObservable = this.Http.get(this.CockpitserverURL + '/projekte', { headers: headers });
-
-        StandortObservable.subscribe({
-
-          next: (data) => {
-
-            this.Gesamtprojektliste = <Projektestruktur[]>data;
-          },
-          complete: () => {
-
-            for(let Projekt of this.Gesamtprojektliste) {
-
-              if(lodash.isUndefined(Projekt.Projektfarbe)) Projekt.Projektfarbe = 'Burnicklgruen';
-
-              for(let Beteiligter of Projekt.Beteiligtenliste) {
-
-                if(lodash.isUndefined(Beteiligter.Fachfirmentyp)) Beteiligter.Fachfirmentyp = 0;
-              }
-            }
-
-            this.GesamtprojektelisteChanged.emit();
-
-            resolve(true);
-
-          },
-          error: (error: HttpErrorResponse) => {
-
-            debugger;
-
-            reject(error);
-          }
-        });
-      });
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadGesamtprojektliste', this.Debug.Typen.Service);
-    }
-  }
 
   public InitMitarbeiter(mitarbeiter: Mitarbeiterstruktur): Mitarbeiterstruktur {
 
@@ -494,6 +524,10 @@ export class DatabasePoolService {
       if(lodash.isUndefined(mitarbeiter.SettingsID)) {
 
         mitarbeiter.SettingsID = null;
+      }
+      if(lodash.isUndefined(mitarbeiter.Archiviert)) {
+
+        mitarbeiter.Archiviert = false;
       }
 
       if(lodash.isUndefined(mitarbeiter.Meintagliste)) {
@@ -511,11 +545,31 @@ export class DatabasePoolService {
         if(lodash.isUndefined(Eintrag.Kalenderwoche)) Eintrag.Kalenderwoche = 0;
       }
 
+
+
       return mitarbeiter;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'InitMitarbeiter', this.Debug.Typen.Service);
+    }
+  }
+
+  public CheckMitarbeiterdaten(): boolean {
+
+    try {
+
+      if(this.Mitarbeiterdaten !== null) {
+
+        this.MitarbeiterdatenHasError = false;
+      }
+      else this.MitarbeiterdatenHasError = true;
+
+      return this.MitarbeiterdatenHasError;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Pool', 'CheckMItarbeiterdaten', this.Debug.Typen.Service);
     }
   }
 
@@ -549,6 +603,17 @@ export class DatabasePoolService {
           this.CurrentProgressValue++;
         }
 
+        for(let Projekt of projektliste)  {
+
+          this.ProgressMessage = 'Bautagebücher ' + Projekt.Projektkurzname;
+
+          await this.ReadBautagebuchliste(Projekt);
+
+          this.CurrentProgressValue++;
+        }
+
+
+
 
       } catch (error) {
 
@@ -559,6 +624,7 @@ export class DatabasePoolService {
 
       this.ProjektpunktelisteChanged.emit();
       this.ProtokolllisteChanged.emit();
+      this.BautagebuchlisteChanged.emit();
 
       this.ShowProgress = false;
 
@@ -568,28 +634,6 @@ export class DatabasePoolService {
     }
   }
 
-  public async Init() {
-
-    try {
-
-      try {
-
-        await this.ReadStandorteliste();
-        await this.ReadMitarbeiterliste();
-        await this.ReadSettingsliste();
-        await this.ReadGesamtprojektliste();
-        await this.ReadChangelogliste();
-
-      }
-      catch(error: any) {
-
-        return Promise.reject(error);
-      }
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'Init', this.Debug.Typen.Service);
-    }
-  }
 
   public GetNewUniqueID(): string {
 
@@ -712,16 +756,6 @@ export class DatabasePoolService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'InitMitarbeitersettings', this.Debug.Typen.Service);
-    }
-  }
-
-  private async ReadMitarbeitersettings() {
-
-    try {
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadMitarbeitersettings', this.Debug.Typen.Service);
     }
   }
 }

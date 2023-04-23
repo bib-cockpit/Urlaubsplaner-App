@@ -9,6 +9,8 @@ import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/c
 import {DatabaseAuthenticationService} from "../database-authentication/database-authentication.service";
 import {ConstProvider} from "../const/const";
 import {Meinewochestruktur} from "../../dataclasses/meinewochestruktur";
+import {Graphuserstruktur} from "../../dataclasses/graphuserstruktur";
+import {Graphservice} from "../graph/graph";
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +26,7 @@ export class DatabaseMitarbeiterService {
   constructor(private Debug: DebugProvider,
               private http: HttpClient,
               private Const: ConstProvider,
+              private GraphService: Graphservice,
               private AuthService: DatabaseAuthenticationService,
               private Pool: DatabasePoolService) {
     try {
@@ -38,6 +41,258 @@ export class DatabaseMitarbeiterService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'constructor', this.Debug.Typen.Service);
+    }
+  }
+
+  public ConvertGraphuserToMitarbeiter(graphuser: Graphuserstruktur) {
+
+    try {
+
+      let Mitarbeiter: Mitarbeiterstruktur;
+      let Jobtitle: string;
+      let Mobil: string;
+
+      Mitarbeiter = this.GetEmptyMitarbeiter();
+
+      if(graphuser.surname   === null) graphuser.surname   = '';
+      if(graphuser.givenName === null) graphuser.givenName = '';
+
+      Jobtitle = lodash.isUndefined(graphuser.jobTitle) ?    "" :  graphuser.jobTitle;
+      Mobil    = lodash.isUndefined(graphuser.mobilePhone) ? "" :  graphuser.mobilePhone;
+
+      Mitarbeiter.UserID   = graphuser.id;
+      Mitarbeiter.Email    = graphuser.mail;
+      Mitarbeiter.Vorname  = lodash.isUndefined(graphuser.givenName)      ? "" :  graphuser.givenName;
+      Mitarbeiter.Name     = lodash.isUndefined(graphuser.surname)        ? "" :  graphuser.surname;
+      Mitarbeiter.Mobil    = Mobil    === null ? "" : Mobil;
+      Mitarbeiter.Jobtitel = Jobtitle === null ? "" : Jobtitle;
+
+      if(lodash.isUndefined(graphuser.businessPhones) === false) {
+
+        if(graphuser.businessPhones.length > 0) Mitarbeiter.Telefon = graphuser.businessPhones[0];
+      }
+
+      if (lodash.isUndefined(graphuser.officeLocation) === false && graphuser.officeLocation !== null) {
+
+        Mitarbeiter.Location = graphuser.officeLocation !== null ? graphuser.officeLocation : "";
+
+        for(let Standort of this.Pool.Standorteliste) {
+
+          if(graphuser.officeLocation.indexOf(Standort.Ort) !== -1) {
+
+            Mitarbeiter.StandortID = Standort._id;
+          }
+        }
+      }
+
+      if(graphuser.surname === 'Feihl' || graphuser.givenName === 'Feihl') {
+
+        // debugger;
+      }
+
+      let A = graphuser.surname   !== null ? graphuser.surname.substring(0, 2).toUpperCase() : '';
+      let B = graphuser.givenName !== null ? graphuser.givenName.substring(0, 1).toUpperCase() : '';
+
+      Mitarbeiter.Kuerzel =  A + '' + B;
+
+      if(graphuser.jobTitle.toLowerCase().indexOf('projektleiter') !== -1) {
+
+        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Projektleitung;
+      }
+      else if(graphuser.jobTitle.toLowerCase().indexOf('teamleit') !== -1) {
+
+        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Teamleitung;
+      }
+      else if(graphuser.jobTitle.toLowerCase().indexOf('planer') !== -1) {
+
+        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Planer;
+      }
+      else if(graphuser.jobTitle.toLowerCase().indexOf('auszubildend') !== -1) {
+
+        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Auszubildende;
+      }
+      else if(graphuser.jobTitle.toLowerCase().indexOf('student') !== -1) {
+
+        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Studentin;
+      }
+      else if(graphuser.jobTitle.toLowerCase().indexOf('assisten') !== -1) {
+
+        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Assistenz;
+      }
+      else if(graphuser.jobTitle.toLowerCase().indexOf('objektüberw') !== -1) {
+
+        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Objektueberwachung;
+      }
+      else if(graphuser.jobTitle.toLowerCase().indexOf('buchhaltung') !== -1) {
+
+        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Buchhaltung;
+      }
+      else if(graphuser.jobTitle.toLowerCase().indexOf('marketing') !== -1) {
+
+        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Marketing;
+      }
+      else if(graphuser.jobTitle.toLowerCase().indexOf('leitung') !== -1) {
+
+        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Marketing;
+      }
+      else if(graphuser.jobTitle.toLowerCase().indexOf('geschäfts') !== -1) {
+
+        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Geschaeftsfuehrung;
+      }
+      else if(graphuser.jobTitle.toLowerCase().indexOf('prokurist') !== -1) {
+
+        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Prokurist;
+      }
+      else if(graphuser.jobTitle.toUpperCase().indexOf('IT ') !== -1) {
+
+        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.IT;
+      }
+      else {
+
+        switch (graphuser.jobTitle) {
+
+          case 'CAD-Koordinator':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Planer;
+
+            break;
+
+          case 'Controlling & Finanzen':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Controlling;
+
+            break;
+
+          case 'CTO':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Geschaeftsfuehrung;
+
+            break;
+
+          case 'CEO':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Geschaeftsfuehrung;
+            break;
+
+          case 'CFO':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Geschaeftsfuehrung;
+
+            break;
+
+          case 'JPL ELT':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Projektleitung;
+
+            break;
+
+          case 'Technikerin ELT':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Techniker;
+            break;
+
+          case 'Interim COO':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Geschaeftsfuehrung;
+
+            break;
+
+          case 'Interim CFO':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Geschaeftsfuehrung;
+
+            break;
+
+          case 'Controlling':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Controlling;
+
+            break;
+
+          case 'Facility Management':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Facilitymanager;
+
+            break;
+
+          case 'Niderlassungsleiter':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Niederlassungsleitung;
+
+            break;
+
+          case 'Niederlassungsleiter':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Niederlassungsleitung;
+
+            break;
+
+          case 'Junior Projekleiter':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Projektleitung;
+
+            break;
+
+          case 'Architektin':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Architektin;
+
+            break;
+
+          case 'Immobilienkauffrau':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Kauffrau;
+            break;
+
+          case 'Technische Zeichnerin':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Planer;
+            break;
+
+          case 'Vorzimmer Dr. Burnickl':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Assistenz;
+            break;
+
+          case 'HR-Businesspartner':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.HR;
+
+            break;
+
+            break;
+
+          case 'Technischer Leiter':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Teamleitung;
+
+            break;
+
+          case 'Praktikant':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Praktikantin;
+
+            break;
+
+            case 'IT':
+
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.IT;
+
+            break;
+
+          default:
+
+            debugger;
+
+            break;
+        }
+      }
+
+      return Mitarbeiter;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Graph', 'ConvertGraphuserToMitarbeiter', this.Debug.Typen.Service);
     }
   }
 
@@ -163,6 +418,9 @@ export class DatabaseMitarbeiterService {
       return {
 
         _id: null,
+        UserID: null,
+        Location: "",
+        Jobtitel: "",
         Vorname: "",
         Name: "",
         Kuerzel: "",
@@ -178,7 +436,8 @@ export class DatabaseMitarbeiterService {
         Deleted: false,
         Favoritenliste: [],
         Meintagliste: [],
-        Meinewocheliste: []
+        Meinewocheliste: [],
+        Archiviert: false,
       };
 
     } catch (error) {
@@ -253,7 +512,8 @@ export class DatabaseMitarbeiterService {
 
             if(Merker !== null) {
 
-              this.CurrentMitarbeiter = Merker;
+              this.CurrentMitarbeiter    = Merker;
+              this.Pool.Mitarbeiterdaten = Merker;
               this.Pool.MitarbeiterdatenChanged.emit();
 
               this.UpdateMitarbeiterliste(this.CurrentMitarbeiter);
@@ -287,7 +547,7 @@ export class DatabaseMitarbeiterService {
 
       let Index: number;
 
-      Index = lodash.findIndex(this.Pool.Mitarbeiterliste, {_id : this.CurrentMitarbeiter._id});
+      Index = lodash.findIndex(this.Pool.Mitarbeiterliste, {_id : mitarbeiter._id});
 
       if(Index !== -1) {
 
@@ -401,52 +661,17 @@ export class DatabaseMitarbeiterService {
     }
   }
 
-  public GetMitarbeiterRegistrierung(email: string): Promise<any> {
+  public CheckMitarbeiterExists(email: string): boolean {
 
     try {
 
-      let Observer: Observable<any>;
-      let Params = new HttpParams({ fromObject: { email: email }} );
-      let Daten: any;
-      // let Token:string = this.AuthService.AccessToken;
+      let Index: number = lodash.findIndex(this.Pool.Mitarbeiterliste, { Email: email});
 
-      let headers: HttpHeaders = new HttpHeaders({
-
-        // 'authorization': Token,
-        'content-type': 'application/json',
-      });
-
-      return new Promise<any>((resolve, reject) => {
-
-        Observer = this.http.get(this.ServerRegistrierungUrl, { params: Params, headers: headers });
-
-        Observer.subscribe({
-
-          next: (result) => {
-
-            // debugger;
-
-            Daten = result;
-          },
-
-          complete: () => {
-
-            // debugger;
-
-            resolve(Daten);
-          },
-          error: (error: HttpErrorResponse) => {
-
-            debugger;
-
-            resolve(error);
-          }
-        });
-      });
+      return Index !== -1;
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'GetMitarbeiterRegistrierung', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'CheckMitarbeiterExists', this.Debug.Typen.Service);
     }
   }
 

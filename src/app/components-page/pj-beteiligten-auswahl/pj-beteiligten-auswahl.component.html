@@ -38,13 +38,16 @@
                             <td>
                               <table cellspacing="0" cellpadding="0">
                                 <tr>
-                                  <td><checkbox-clon [Index]="i" (CheckChanged)="CheckedChanged($event)" [Checked]="Beteiligte.Selected"></checkbox-clon></td>
+                                  <td style="width: 30px"><checkbox-clon [Enabled]="Beteiligte.Email !== ''" [Index]="i" (CheckChanged)="CheckedChanged($event)" [Checked]="Beteiligte.Selected"></checkbox-clon></td>
                                   <td *ngIf="Beteiligte.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Person">
                                     {{Beteiligte.Name}} {{Beteiligte.Vorname}} <span *ngIf="Beteiligte.Kuerzel !== ''">/ {{Beteiligte.Kuerzel}}</span>
                                     <br>
+                                    <span *ngIf="Beteiligte.Email === ''" style="color: red; font-size: 80%">Keine Emailadresse hinterlegt</span>
                                   </td>
                                   <td *ngIf="Beteiligte.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Firma">
                                     {{Beteiligte.Firma}}
+                                    <span *ngIf="Beteiligte.Email === ''" style="color: red; font-size: 80%">Keine Emailadresse hinterlegt</span>
+                                    <br>
                                   </td>
                                 </tr>
                                 <tr>

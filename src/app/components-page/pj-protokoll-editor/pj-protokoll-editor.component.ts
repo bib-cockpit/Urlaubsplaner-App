@@ -98,6 +98,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
   public Titelhoehe: number;
   public Listeheaderhoehe: number;
   public Listehoehe: number;
+  public LinesanzahlTeilnehmer: number;
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -113,7 +114,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
               public DB: DatabaseProtokolleService,
               public DBProjekte: DatabaseProjekteService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
-              public DBBeteiligte: DatabaseProjektbeteiligteService,
               public KostenService: KostengruppenService,
               public Displayservice: DisplayService,
               private LoadingAnimation: LoadingAnimationService,
@@ -127,23 +127,8 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       this.Titelhoehe               = 0;
       this.Listeheaderhoehe         = 0;
       this.Listehoehe               = 0;
-      /*
-      this.HideAuswahl              = true;
-      this.Auswahlliste             = [''];
-      this.Auswahlindex             = 0;
-      this.Auswahltitel             = '';
-
-       */
+      this.LinesanzahlTeilnehmer    = 1;
       this.Valid                    = false;
-      // this.Modus                    = this.Modusvarianten.Projektbeteiligte;
-
-      /*
-      this.Be_Spaltenanzahl            = 5;
-      this.Be_Zeilenanzahl             = 1;
-      this.Te_Spaltenanzahl            = 1;
-      this.Te_Spaltenanzahl            = 5;
-
-       */
       this.Projektbeteiligteliste   = [];
       this.Punkteliste              = [];
       this.Teammitgliederliste      = [];
@@ -374,6 +359,11 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
       if(this.DB.CurrentProtokoll !== null) {
 
+        let AnzahlExtern   = this.DB.CurrentProtokoll.BeteiligExternIDListe.length;
+        let AnzahlBurnickl = this.DB.CurrentProtokoll.BeteiligtInternIDListe.length;
+
+        this.LinesanzahlTeilnehmer = Math.max(AnzahlExtern, AnzahlBurnickl);
+
         this.Punkteliste = [];
 
         for(let id of this.DB.CurrentProtokoll.ProjektpunkteIDListe) {
@@ -402,6 +392,8 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
           Nummer++;
         }
       }
+
+      this.DBProjektpunkte.CurrentProjektpunkteliste = lodash.cloneDeep(this.Punkteliste);
     }
     catch (error) {
 
@@ -1077,61 +1069,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
    */
 
 
-
-  GetZustaendigExternName(ZustaendigID: string): string {
-
-    try {
-
-
-      let Beteiligter: Projektbeteiligtestruktur = lodash.find(this.DBProjekte.CurrentProjekt.Beteiligtenliste, { BeteiligtenID: ZustaendigID});
-
-      if(lodash.isUndefined(Beteiligter) === false) {
-
-        if(Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person) {
-
-          return Beteiligter.Name;
-        }
-        else {
-
-          return Beteiligter.Firma;
-        }
-      }
-      else {
-
-        return 'unbekannt';
-      }
-
-      return '';
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetZustaendigExternName', this.Debug.Typen.Component);
-    }
-  }
-
-  GetZustaendigInternName(ZustaendigID: string): string {
-
-    try {
-
-      let Mitarbeiter: Mitarbeiterstruktur = lodash.find(this.Pool.Mitarbeiterliste, {_id: ZustaendigID});
-
-      if(lodash.isUndefined(Mitarbeiter) === false) {
-
-        return Mitarbeiter.Kuerzel;
-      }
-      else {
-
-        return 'unbekannt';
-      }
-
-      return '';
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetZustaendigInternName', this.Debug.Typen.Component);
-    }
-  }
-
   LeistungsphaseButtonClicked() {
 
     try {
@@ -1601,38 +1538,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
   }
 
-  GetBeteiligteteilnehmerliste() {
 
-    try {
-
-      let Beteiligte: Projektbeteiligtestruktur;
-      let Value: string = '';
-
-      for(let id of this.DB.CurrentProtokoll.BeteiligExternIDListe) {
-
-        Beteiligte = lodash.find(this.DBProjekte.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: id});
-
-
-        if(!lodash.isUndefined(Beteiligte)) {
-
-          if(Beteiligte.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person) {
-
-            Value += this.DBBeteiligte.GetBeteiligtenvorname(Beteiligte) + ' ' + Beteiligte.Name + '\n';
-          }
-          else {
-
-            Value += Beteiligte.Firma + '\n';
-          }
-        }
-      }
-
-      return Value;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetBeteiligteteilnehmerliste', this.Debug.Typen.Component);
-    }
-  }
 
   GetThemenlisteIconcolor(): string {
 
