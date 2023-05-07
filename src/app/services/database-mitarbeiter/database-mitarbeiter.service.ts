@@ -54,8 +54,12 @@ export class DatabaseMitarbeiterService {
 
       Mitarbeiter = this.GetEmptyMitarbeiter();
 
-      if(graphuser.surname   === null) graphuser.surname   = '';
-      if(graphuser.givenName === null) graphuser.givenName = '';
+      if(graphuser.surname        === null) graphuser.surname        = '';
+      if(graphuser.givenName      === null) graphuser.givenName      = '';
+      if(graphuser.jobTitle       === null) graphuser.jobTitle       = '';
+      if(graphuser.officeLocation === null) graphuser.officeLocation = '';
+      if(graphuser.mobilePhone    === null) graphuser.mobilePhone    = '';
+
 
       Jobtitle = lodash.isUndefined(graphuser.jobTitle) ?    "" :  graphuser.jobTitle;
       Mobil    = lodash.isUndefined(graphuser.mobilePhone) ? "" :  graphuser.mobilePhone;
@@ -100,6 +104,9 @@ export class DatabaseMitarbeiterService {
       let B = graphuser.givenName !== null ? graphuser.givenName.substring(0, 1).toUpperCase() : '';
 
       Mitarbeiter.Kuerzel =  A + '' + B;
+
+
+
 
       if(graphuser.jobTitle.toLowerCase().indexOf('projektleiter') !== -1) {
 
@@ -266,8 +273,6 @@ export class DatabaseMitarbeiterService {
 
             break;
 
-            break;
-
           case 'Technischer Leiter':
 
             Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Teamleitung;
@@ -288,7 +293,7 @@ export class DatabaseMitarbeiterService {
 
           default:
 
-            debugger;
+            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.unbekannt;
 
             break;
         }
