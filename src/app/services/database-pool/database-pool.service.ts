@@ -379,7 +379,8 @@ export class DatabasePoolService {
           },
           error: (error: HttpErrorResponse) => {
 
-            debugger;
+            console.log(error.message);
+            console.log('Mitarbeiterliste lesen war fehlerhaft.');
 
             reject(error);
           }

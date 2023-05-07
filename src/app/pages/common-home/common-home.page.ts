@@ -88,6 +88,11 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     try {
 
+      this.ChangelogSubscription = this.Pool.ChangeloglisteChanged.subscribe(() => {
+
+        this.PrepareDaten();
+      });
+
       this.msalBroadcastService.msalSubject$
         .pipe(
           filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS),

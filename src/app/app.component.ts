@@ -157,6 +157,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
           if(lodash.isUndefined(Mitarbeiter)) {
 
+            console.log('Mitarbeiter wurde nicht gefunden:');
+            console.log(User);
+
             if(User.mail.toLowerCase().indexOf('extern') === -1 && User.displayName.toLowerCase().indexOf('extern') === -1) {
 
               Mitarbeiter = this.MitarbeiterDB.ConvertGraphuserToMitarbeiter(User);
