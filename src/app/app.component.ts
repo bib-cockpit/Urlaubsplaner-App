@@ -20,6 +20,7 @@ import * as lodash from "lodash-es";
 import {Graphservice} from "./services/graph/graph";
 import {Mitarbeiterstruktur} from "./dataclasses/mitarbeiterstruktur";
 import {indexOf} from "lodash-es";
+import {environment} from "../environments/environment";
 
 @Component({
   selector: 'app-root',
@@ -121,6 +122,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
     try {
 
       let Mitarbeiter: Mitarbeiterstruktur;
+      let Page: string;
 
       this.Debug.ShowMessage('Start App', 'App Component', 'StartApp', this.Debug.Typen.Component);
 
@@ -228,12 +230,21 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           this.ProjekteDB.InitGesamtprojekteliste();
           this.ProjekteDB.InitProjektfavoritenliste();
 
-          this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
-          await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);                 // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
+          if(environment.production) {
 
-          this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Festlegungen;
+            Page = this.Const.Pages.HomePage;
+          }
+          else {
 
-          this.Tools.SetRootPage(this.Const.Pages.PjAufgabenlistePage); //  EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
+            Page = this.Const.Pages.PjAufgabenlistePage; //  EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
+
+            this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
+            await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);                 // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
+
+            this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Aufgabenliste;
+          }
+
+          this.Tools.SetRootPage(Page);
         }
 
         this.Pool.LoadingAllDataFinished.emit();
