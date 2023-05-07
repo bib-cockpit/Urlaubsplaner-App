@@ -164,6 +164,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
               Mitarbeiter = this.MitarbeiterDB.ConvertGraphuserToMitarbeiter(User);
 
+              console.log('Neuer Mitrabeiter:');
+              console.log(Mitarbeiter);
+
               await this.MitarbeiterDB.AddMitarbeiter(Mitarbeiter);
             }
           }
