@@ -85,9 +85,15 @@ export class DatabaseMitarbeiterService {
         }
       }
 
-      if(graphuser.surname === 'Feihl' || graphuser.givenName === 'Feihl') {
+      if(Mitarbeiter.StandortID === '') {
 
-        // debugger;
+        let Standort = lodash.find(this.Pool.Standorteliste, {Ort: 'Velburg'});
+
+        if(!lodash.isUndefined(Standort)) {
+
+          Mitarbeiter.StandortID = Standort._id;
+          Mitarbeiter.Archiviert = true;
+        }
       }
 
       let A = graphuser.surname   !== null ? graphuser.surname.substring(0, 2).toUpperCase() : '';
@@ -585,6 +591,9 @@ export class DatabaseMitarbeiterService {
       return new Promise((resolve, reject) => {
 
         // POST für neuen Eintrag
+
+        console.log('POST new Mitarbeiter:');
+        console.log(mitarbeiter);
 
         Observer = this.http.post(this.ServerMitarbeiterUrl, mitarbeiter);
 
