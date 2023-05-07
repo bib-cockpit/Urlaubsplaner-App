@@ -17,8 +17,8 @@ export class BasicsProvider {
   public InnerContenthoehe: number    = 0;
   public Waittime: number             = 300;
   public Svgpath: string              = 'assets/svgs/';
-  public AppVersionName: string       = '1.24';
-  public AppVersionDatum: string      = '07.05.2023 12:32';
+  public AppVersionName: string       = '1.25';
+  public AppVersionDatum: string      = '07.05.2023 14:11';
   public ShowHomeScreenInfos          = true;
   public DebugNoExternalEmail         = true;
 

@@ -40,6 +40,12 @@ const clientserverregistration: string = 'a816f3fb-bb99-466d-92bc-fb7ccd823430';
 // Benutzername: cockpit@burnickl.com
 // Passwort:     Spekyland4##
 
+// AZURE MOngo DB
+
+// Collection  Indexes
+// projekte    Projektname
+// mitarbeiter Name
+
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 

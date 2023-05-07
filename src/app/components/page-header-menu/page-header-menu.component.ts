@@ -235,7 +235,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     try {
 
-      return projektemenubereich === this.Menuservice.ProjekteMenuebereich ? 'burnicklgruen' : 'weis';
+      return projektemenubereich === this.Menuservice.ProjekteMenuebereich ? 'burnicklgruen' : 'weiss';
 
     } catch (error) {
 
