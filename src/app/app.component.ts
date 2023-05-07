@@ -144,6 +144,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         await this.Pool.ReadChangelogliste();
         await this.Pool.ReadStandorteliste();
+
+        console.log('Read Mitarbeiterliste:');
+
         await this.Pool.ReadMitarbeiterliste();
         await this.ProjekteDB.ReadGesamtprojektliste();
         let Liste = await this.GraphService.GetAllUsers();
