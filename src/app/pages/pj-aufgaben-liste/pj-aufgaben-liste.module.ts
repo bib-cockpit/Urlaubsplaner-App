@@ -23,6 +23,9 @@ import {PjProjektpunktDateKwPickerModule} from "../../components-page/pj-projekt
 import {
   PjProjekteSchnellauswahlModule
 } from "../../components-page/pj-projekte-schnellauswahl/pj-projekte-schnellauswahl.module";
+import {
+    PjBaustelleLoplisteEditorModule
+} from "../../components-page/pj-baustelle-lopliste-editor/pj-baustelle-lopliste-editor.module";
 
 const routes: Routes = [
   {
@@ -32,32 +35,33 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    IonicModule,
-    PageHeaderModule,
-    RouterModule.forChild(routes),
-    PageHeaderMenuModule,
-    PageFooterModule,
-    AuswahlDialogModule,
-    FiMitarbeiterAuswahlModule,
-    PjBeteiligtenAuswahlModule,
-    PjProtokollEditorModule,
-    PjProjektpunktEditorModule,
-    PjKostengruppenAuswahlModule,
-    PjGebaeudeRaumauswahlModule,
-    PjProtokollListefilterModule,
-    PjProjektpunktelisteModule,
-    PjProjektpunktStatusdatePickerModule,
-    PjAufgabenListefilterModule,
-    PjFavoritenAuswahlModule,
-    PjMeinewocheEditorModule,
-    PjProjektpunktStatusdatePickerModule,
-    PjProjektpunktDateKwPickerModule,
-    PjProjekteSchnellauswahlModule,
+    imports: [
+        CommonModule,
+        IonicModule,
+        PageHeaderModule,
+        RouterModule.forChild(routes),
+        PageHeaderMenuModule,
+        PageFooterModule,
+        AuswahlDialogModule,
+        FiMitarbeiterAuswahlModule,
+        PjBeteiligtenAuswahlModule,
+        PjProtokollEditorModule,
+        PjProjektpunktEditorModule,
+        PjKostengruppenAuswahlModule,
+        PjGebaeudeRaumauswahlModule,
+        PjProtokollListefilterModule,
+        PjProjektpunktelisteModule,
+        PjProjektpunktStatusdatePickerModule,
+        PjAufgabenListefilterModule,
+        PjFavoritenAuswahlModule,
+        PjMeinewocheEditorModule,
+        PjProjektpunktStatusdatePickerModule,
+        PjProjektpunktDateKwPickerModule,
+        PjProjekteSchnellauswahlModule,
+        PjBaustelleLoplisteEditorModule,
 
 
-  ],
+    ],
   declarations: [PjAufgabenListePage],
   exports: [
     PjAufgabenListePage

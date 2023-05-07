@@ -20,7 +20,8 @@
 
   <div style="height: 100%; width: 100%;">
     <div  [style.height.px]="Headerhoehe" style="width: 100%; padding-left: 8px; padding-right: 8px; padding-top: 8px">
-      <table *ngIf="Protokollliste.length !== 0"  width="100%" class="docinnertable">
+      <!-- *ngIf="Protokollliste.length !== 0"  -->
+      <table   width="100%" class="docinnertable">
         <tr>
           <td style="width: 60px; height: 30px; font-weight: bold">Nr.</td>
           <td style="width: 100px; font-weight: bold">Datum</td>
@@ -77,13 +78,14 @@
 
       </div>
 
-      <table *ngIf="Protokollliste.length === 0" class="paddingtable" width="100%">
-        <tr>
-          <td style="text-align: center; padding: 40px;">
-            keine Protokolle für <b>{{DBProjekte.CurrentProjekt !== null ? DBProjekte.CurrentProjekt.Projektname : 'unbekannt'}}</b> vorhanden
-          </td>
-        </tr>
-      </table>
+      <div *ngIf="Protokollliste.length === 0"  class="keineintragclass">
+        <table   width="100%" class="docinnertable">
+          <tr>
+            <td style="text-align: center; height: 100px">Kein Protokoll vorhanden</td>
+          </tr>
+        </table>
+
+      </div>
 
     </div>
   </div>

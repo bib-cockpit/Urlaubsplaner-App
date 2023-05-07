@@ -62,6 +62,22 @@ export class AuswahlDialogService {
 
     Protokollliste_Filter_Leistungsphase:     'Protokollliste_Filter_Leistungsphase',
     Protokollliste_Filter_Zeitspanne:         'Protokollliste_Filter_Zeitspanne',
+
+    LOPListe_LOPListeeditor_InternTeilnehmer:       'LOPListe_LOPListeeditor_InternTeilnehmer',
+    LOPListe_LOPListeeditor_ExternTeilnehmer:       'LOPListe_LOPListeeditor_ExternTeilnehmer',
+    LOPListe:                                       'LOPListe',
+
+    LOPListe_Eintrageditor_ZustaendigExtern:     'LOPListe_Eintrageditor_ZustaendigExtern',
+    LOPListe_Eintrageditor_ZustaendigIntern:     'LOPListe_Eintrageditor_ZustaendigIntern',
+    LOPListe_Eintrageditor_Standortfilter:       'LOPListe_Eintrageditor_Standortfilter',
+    LOPListe_Eintrageditor_Fachbereich:          'LOPListe_Eintrageditor_Fachbereich',
+    LOPListe_Eintrageditor_Status:               'LOPListe_Eintrageditor_Status',
+    LOPListe_Eintrageditor_Prioritaet:           'LOPListe_Eintrageditor_Prioritaet',
+
+    LOPListe_Emaileditor_Intern_Empfaenger:           'LOPListe_Emaileditor_Intern_Empfaenger',
+    LOPListe_Emaileditor_Intern_CcEmpfaenger:         'LOPListe_Emaileditor_Intern_CcEmpfaenger',
+    LOPListe_Emaileditor_Extern_Empfaenger:           'LOPListe_Emaileditor_Extern_Empfaenger',
+    LOPListe_Emaileditor_Extern_CcEmpfaenger:         'LOPListe_Emaileditor_Extern_CcEmpfaenger',
   };
 
   constructor(private Debug: DebugProvider) {

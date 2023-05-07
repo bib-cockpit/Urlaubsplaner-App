@@ -7,10 +7,10 @@
     <table class="paddingtable">
       <tr>
         <td><checkbox-clon [Checked]="ShowRealProjekteOnly" (CheckChanged)="ShowRealProjekteCheckedChanged($event)"></checkbox-clon></td>
-        <td>Nur reale Projekte anzeigen</td>
+        <td style="color: white">Nur reale Projekte anzeigen</td>
         <td style="width: 40px"></td>
         <td><checkbox-clon [Checked]="ShowOwnProjekteOnly" (CheckChanged)="ShowOwnProjekteCheckedChanged($event)"></checkbox-clon></td>
-        <td>Nur eigene Projekte anzeigen</td>
+        <td style="color: white">Nur eigene Projekte anzeigen</td>
       </tr>
     </table>
   </page-header>
@@ -50,7 +50,7 @@
                                   <table>
                                     <tr *ngIf="!Projekt.Filtered">
                                       <td>{{Projekt.Projektname}} {{Projekt.Projektkurzname !== '' ? '/ ' + Projekt.Projektkurzname : '' }}</td>
-                                      <td>Key: {{Projekt.Projektkey}}</td>
+                                     <td></td>
                                     </tr>
                                     <tr *ngIf="Projekt.Filtered">
                                       <td>
@@ -105,10 +105,6 @@
 </ion-content>
 <ion-footer>
   <page-footer #PageFooter>
-
-    <div class="rootbuttonclass" (click)="AddProjektButtonClicked()">
-      <ion-icon style="font-size: 28px" color="burnicklgruen" name="add-circle-outline"></ion-icon>
-    </div>
 
   </page-footer>
 </ion-footer>

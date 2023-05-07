@@ -27,6 +27,25 @@
                 </table>
               </div>
             </td>
+            <td align="center" class="trennertdclass">
+              <div [class]="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte ? 'trennerbigdivclass' : 'trennerdivclass'"></div>
+            </td>
+            <td>
+              <div class="menubuttonclass"
+                   (mouseenter)="EmailMouseOver = true"
+                   (mouseleave)="EmailMouseOver = false"
+                   (click)="MainMenueButtonClicked(Menuservice.MainMenuebereiche.Email)">
+                <table class="paddingsmalltable">
+                  <tr>
+                    <td>
+                      <ion-icon name="mail-outline"
+                                [color]="EmailMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
+                      </ion-icon>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </td>
 
             <td align="center" class="trennertdclass">
               <div [class]="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte ? 'trennerbigdivclass' : 'trennerdivclass'"></div>
@@ -302,6 +321,28 @@
 
     <!-- Meine Woche 2. Menüzeile -->
 
+    <ng-container *ngIf="Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.LOPListe">
+        <tr>
+          <td colspan="2" style="padding-left: 8px; padding-right: 8px">
+            <div style="width: 100%; height: 1px; background: white"></div>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 360px;">
+            <table class="paddingtable">
+              <tr>
+                <td>
+                    <button-value [Buttontext]="'Geschlossene Einträge ausblenden nach'"
+                                  (ButtonClicked)="LOPListeZeitspanneEvent.emit()"
+                                  [Wert_A]="Pool.Mitarbeitersettings.LOPListeGeschlossenZeitfilter.toString() + ' Tage'"></button-value>
+
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+    </ng-container>
     <ng-container *ngIf="Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste && Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meine_Woche">
 
       <tr>

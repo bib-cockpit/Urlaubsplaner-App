@@ -15,6 +15,9 @@ export type Mitarbeitersettingsstruktur = {
   AufgabenShowRuecklauf:    boolean;
   AufgabenShowMeilensteinOnly: boolean;
 
+  AufgabenShowPlanung: boolean;
+  AufgabenShowAusfuehrung: boolean;
+
   AufgabenTerminfiltervariante:  string;
   AufgabenTerminfilterStartwert: number;
   AufgabenTerminfilterEndewert:  number;
@@ -25,6 +28,8 @@ export type Mitarbeitersettingsstruktur = {
 
   Deleted:                  boolean;
   HeadermenueMaxFavoriten:  number;
+
+  LOPListeGeschlossenZeitfilter: number;
 
   AufgabenShowMeilensteine:  boolean;
   AufgabenShowNummer:        boolean;

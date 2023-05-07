@@ -5,10 +5,10 @@
     <table class="paddingtable">
       <tr>
         <td><checkbox-clon [Checked]="ShowMeOnly" (CheckChanged)="ShowMeCheckedChanged($event)"></checkbox-clon></td>
-        <td>Nur meinen Eintrag anzeigen</td>
+        <td style="color: white">Nur meinen Eintrag anzeigen</td>
         <td style="width: 6px"></td>
         <td><checkbox-clon [Checked]="ShowArchivierte" (CheckChanged)="ShowArchivierteChanged($event)"></checkbox-clon></td>
-        <td>Archivierte Einträge anzeigen</td>
+        <td style="color: white">Archivierte Einträge anzeigen</td>
       </tr>
     </table>
   </page-header>
@@ -121,20 +121,13 @@
         <td style="width: 50%">
           {{Mitarbeiterliste.length}} Einträge
         </td>
-        <td style="width: 50%" align="right">
-          <div class="rootbuttonclass" (click)="AddMitarbeiterButtonClicked()">
-            <ion-icon style="font-size: 28px" color="burnicklgruen" name="add-circle-outline"></ion-icon>
-          </div>
-        </td>
       </tr>
-
     </table>
-
 
   </page-footer>
 </ion-footer>
 
-<fi-mitarbeiter-editor *ngIf="ShowEditor" [Dialogbreite]="600" [Dialoghoehe]="800" [PositionY]="100"  [Titel]="GetDialogTitel()" Iconname="people-outline"
+<fi-mitarbeiter-editor *ngIf="ShowEditor" [Dialogbreite]="600" [Dialoghoehe]="850" [PositionY]="100"  [Titel]="GetDialogTitel()" Iconname="people-outline"
                        (StandortClickedEvent)="StandortClickedHandler()"
                        (CancelClickedEvent)="ShowEditor = false"
                        (OkClickedEvent)="ShowEditor = false" (DeleteClickedEvent)="ShowEditor = false"

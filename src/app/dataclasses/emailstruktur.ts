@@ -18,5 +18,5 @@ export type Emailstruktur = {
 
     Name: string;
     Email: string;
-  }
+  };
 };

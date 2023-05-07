@@ -11,10 +11,11 @@ import * as Joi from "joi";
 import {ObjectSchema} from "joi";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {BasicsProvider} from "../../services/basics/basics";
-import {Subscription} from "rxjs";
 import {Graphservice} from "../../services/graph/graph";
 import {Teamsstruktur} from "../../dataclasses/teamsstruktur";
 import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
+import {LoadingAnimationService} from "../../services/loadinganimation/loadinganimation";
+import * as lodash from "lodash-es";
 
 @Component({
   selector: 'fi-mitarbeiter-editor',
@@ -57,6 +58,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
               private GraphService: Graphservice,
               public StandortDB: DatabaseStandorteService,
               public ProjekteDB: DatabaseProjekteService,
+              public LoadingAnimation: LoadingAnimationService,
               public DB: DatabaseMitarbeiterService) {
 
     try {
@@ -180,7 +182,8 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
         this.Teamsliste = teamsliste;
 
-        this.ProjekteDB.SyncronizeGesamtprojektlisteWithTeams(this.Teamsliste);
+
+        // this.ProjekteDB.SyncronizeGesamtprojektlisteWithTeams(this.Teamsliste);
 
       }).catch((error: any) => {
 
@@ -328,6 +331,40 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'ArchivierenCheckboxChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  CheckForNewProjects(): boolean {
+
+    try {
+
+     for(let Eintrag of this.Teamsliste) {
+
+       if(lodash.isUndefined(lodash.find(this.ProjekteDB.Gesamtprojektliste, { TeamsID : Eintrag.id}))) {
+
+         return true;
+       }
+     }
+
+     return false;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'CheckForNewProjects', this.Debug.Typen.Component);
+    }
+  }
+
+  async SaveNewProjekte() {
+
+    try {
+
+      await this.LoadingAnimation.ShowLoadingAnimation('Hinweis', 'Unbekannte Projekte werden gespeichert.');
+      await this.ProjekteDB.SyncronizeGesamtprojektlisteWithTeams(this.Teamsliste);
+      await this.LoadingAnimation.HideLoadingAnimation(true);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'SaveNewProjekte', this.Debug.Typen.Component);
     }
   }
 }

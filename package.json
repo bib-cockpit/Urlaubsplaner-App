@@ -26,6 +26,7 @@
     "@capacitor/status-bar": "4.0.1",
     "@ionic/angular": "^6.4.1",
     "@microsoft/microsoft-graph-client": "^3.0.5",
+    "@tinymce/tinymce-angular": "^7.0.0",
     "@types/js-cookie": "^3.0.2",
     "@types/lodash-es": "^4.17.6",
     "@types/moment-duration-format": "^2.2.3",

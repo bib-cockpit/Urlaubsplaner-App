@@ -48,6 +48,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   @Output()  FilterChanged = new EventEmitter<string>();
   @Output()  ShowProjektauswahlEvent = new EventEmitter<any>();
   @Output()  ShowProjektfilesEvent = new EventEmitter<any>();
+  @Output()  LOPListeZeitspanneEvent = new EventEmitter<any>();
 
 
   private SuchleisteInputSubscription: Subscription;
@@ -58,6 +59,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   public Wochentaghoehe: number;
   public Tagbreite: number;
   public HomeMouseOver: boolean;
+  public EmailMouseOver: boolean;
   public FilesMouseOver: boolean;
 
 
@@ -87,6 +89,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
       this.Wochentaghoehe               = 30;
       this.Tagbreite                    = 0;
       this.HomeMouseOver                = false;
+      this.EmailMouseOver               = false;
       this.ShowStandorttitle            = false;
       this.ShowMitarbeitertitle         = false;
       this.ShowProjektetitle            = false;

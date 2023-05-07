@@ -206,8 +206,6 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
       RootFileinfo = await this.GraphService.GetTeamsRootDirectory(this.DB.CurrentProjekt.TeamsID);
 
-      debugger;
-
       if(this.DB.CurrentProjekt.ProtokolleFolderID === this.Const.NONE || this.DB.CurrentProjekt.ProtokolleFolderID.startsWith('ROOT:')) {
 
         this.DB.CurrentProjekt.ProtokolleFolderID = 'ROOT:' + RootFileinfo.id;
@@ -256,8 +254,6 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
     try {
 
       await this.CheckTeamsPathes();
-
-      debugger;
 
       this.Beteiligtenliste = lodash.cloneDeep(this.DB.CurrentProjekt.Beteiligtenliste);
 
@@ -334,30 +330,9 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     try {
 
-      let Projekt: Projektestruktur;
-      let Kurzname: string;
 
       this.ValidateInput();
 
-      if(event.Titel === 'Projektkurzname') {
-
-        if(this.DB.CurrentProjekt.ProjektIsNew) { // Nur Eingabe wenn Projekt neu ist
-
-          Kurzname = event.Text.toUpperCase();
-          Projekt  = lodash.find(this.DB.Gesamtprojektliste, {Projektkurzname: Kurzname });
-
-          if(!lodash.isUndefined(Projekt)) {
-
-            if(Kurzname !== '') this.Tools.ShowHinweisDialog('Der Projektkurzname ' + Kurzname + ' ist bereits vergeben.');
-
-            this.Valid= false;
-          }
-          else {
-
-            this.DB.CurrentProjekt.Projektkurzname = Kurzname;
-          }
-        }
-      }
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'TextChanged', this.Debug.Typen.Component);
@@ -497,8 +472,6 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
          */
       }
       else {
-
-        this.DB.CurrentProjekt.ProjektIsNew = false;
 
         if(this.DB.CurrentProjekt.Projektkey === this.Const.NONE) {
 

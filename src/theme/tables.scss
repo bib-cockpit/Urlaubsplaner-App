@@ -156,13 +156,13 @@
 
   .nobordersmalltable {
 
-    border-collapse: collapse;
+    border-collapse: collapse !important;
   }
 
   .nobordersmalltable td {
 
     padding: 0px;
-    border: none;
+    border: none !important;
   }
 
   .reddoctableheader {

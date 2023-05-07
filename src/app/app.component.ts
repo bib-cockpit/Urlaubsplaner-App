@@ -224,7 +224,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
           this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Festlegungen;
 
-          this.Tools.SetRootPage(this.Const.Pages.PjBaustelleTagebuchlistePage); // HomePage
+          this.Tools.SetRootPage(this.Const.Pages.PjAufgabenlistePage); //  EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
         }
 
         this.Pool.LoadingAllDataFinished.emit();

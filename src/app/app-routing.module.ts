@@ -39,6 +39,9 @@ const routes: Routes = [
   { path: 'ErrorPage',
     loadChildren: () => import('./pages/common-error/common-error.module').then(m => m.CommonErrorPageModule),
   },
+  { path: 'EmaillistePage',
+    loadChildren: () => import('./pages/common-emailliste/common-emailliste.module').then(m => m.CommonEmaillistePageModule),
+  },
   {
     path: 'FiStandortelistePage',
     loadChildren: () => import('./pages/fi-standorteliste/fi-standorteliste.module').then(m => m.FiStandortelistePageModule),

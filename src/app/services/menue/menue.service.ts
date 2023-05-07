@@ -14,6 +14,7 @@ export class MenueService {
   public MainMenuebereiche = {
 
     Home:          'Home',
+    Email:         'Email',
     Debug:         'Debug',
     Logout:        'Logout',
     Einstellungen: 'Einstellungen',
@@ -90,6 +91,12 @@ export class MenueService {
         case this.MainMenuebereiche.Home:
 
           this.Tools.SetRootPage(this.Const.Pages.HomePage);
+
+          break;
+
+        case this.MainMenuebereiche.Email:
+
+          this.Tools.SetRootPage(this.Const.Pages.EmaillistePage);
 
           break;
 

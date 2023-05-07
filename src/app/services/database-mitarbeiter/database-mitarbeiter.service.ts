@@ -671,11 +671,27 @@ export class DatabaseMitarbeiterService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'CheckMitarbeiterExists', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'CheckMitarbeiterExists', this.Debug.Typen.Service);
     }
   }
 
-  public GetMitarbeiter(email: string): Promise<any> {
+  public GetMitarbeiterByEmail(email: string): Mitarbeiterstruktur {
+
+    try {
+
+      let Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {Email: email });
+
+      return lodash.isUndefined(Mitarbeiter) ? null : Mitarbeiter;
+
+  }
+  catch(error) {
+
+    this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'GetMitarbeiterByEmail', this.Debug.Typen.Service);
+  }
+
+  }
+
+  public GetMitarbeiterByGraph(email: string): Promise<any> {
 
     try {
 

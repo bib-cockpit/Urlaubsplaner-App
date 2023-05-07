@@ -39,7 +39,9 @@ export class DisplayService {
     Outlookkontakteauswahl: 'Outlookkontakteauswahl',
     ProjektSendeEmail: 'ProjektSendeEmail',
     Bautagebucheditor: 'Bautagebucheditor',
-    Bautagebucheintrageditor: 'Bautagebucheintrageditor'
+    Bautagebucheintrageditor: 'Bautagebucheintrageditor',
+    LOPListeEditor: 'LOPListeEditor',
+    LOPListeEintragEditor: 'LOPListeEintragEditor',
 
   };
 

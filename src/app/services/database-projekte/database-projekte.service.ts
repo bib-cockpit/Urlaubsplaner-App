@@ -288,7 +288,13 @@ export class DatabaseProjekteService {
 
     try {
 
-      let key: string = projekt.Projektkurzname.toUpperCase();
+      let key: string = projekt.TeamsName.toUpperCase();
+
+      key = key.replace('UMBAU', '');
+      key = key.replace('SANIERUNG', '');
+      key = key.replace('NEUBAU', '');
+      key = key.replace('ANBAU', '');
+      key = key.replace('UND', '');
 
       key = key.replace(/ /g, '_');
       key = key.replace(/ä/g, 'ae');
@@ -298,7 +304,7 @@ export class DatabaseProjekteService {
       key = key.replace(/ü/g, 'ue');
       key = key.replace(/Ü/g, 'UE');
       key = key.replace(/ß/g, 'ss');
-      key = key.replace(/[^a-zA-Z0-9 ]/g, '_'); // /[&\/\\#,+()$~%.'§=^!`´;":.,*-?<>{}]/g, '_');
+      key = key.replace(/[^a-zA-Z0-9]/g, '_'); // /[&\/\\#,+()$~%.'§=^!`´;":.,*-?<>{}]/g, '_');
 
       return key;
 
@@ -340,7 +346,6 @@ export class DatabaseProjekteService {
         Projektfarbe: this.Const.NONE,
         Beteiligtenliste: [],
         Bauteilliste: [],
-        ProjektIsNew: true,
         ProjektIsReal: true,
 
         TeamsID:          this.Const.NONE,
@@ -407,8 +412,6 @@ export class DatabaseProjekteService {
 
           next: (result) => {
 
-            debugger;
-
             Projekt = result.data;
 
           },
@@ -416,8 +419,6 @@ export class DatabaseProjekteService {
 
             this.UpdateProjektliste(Projekt);
             this.GesamtprojektelisteChanged.emit();
-
-            debugger;
 
             resove(true);
 
@@ -637,6 +638,12 @@ export class DatabaseProjekteService {
                 this.CurrentFavoritprojektindex = 0;
                 this.CurrentProjekt             = this.Projektliste[this.CurrentFavoritprojektindex];
               }
+
+              if(lodash.isUndefined(this.CurrentProjekt)) {
+
+                this.CurrentFavoritprojektindex = null;
+                this.CurrentProjekt             = null;
+              }
           }
         }
       }
@@ -805,11 +812,62 @@ export class DatabaseProjekteService {
     }
   }
 
+  private GetPrjektnummer(team: Teamsstruktur): string {
+
+    try {
+
+      // 18-100
+
+      let BuchstageA: string = team.displayName.substring(0, 1); // 1..
+      let BuchstageB: string = team.displayName.substring(2, 3); // ..-..
+      let BuchstageC: string = team.displayName.substring(5, 6); // -- 0 --
+      let BuchstageD: string = team.displayName.substring(9, 10);
+      let WertA: number;
+      let WertC: number;
+      let WertD: number;
+      let Projektnummer: string = 'unbekannt';
+
+      if(BuchstageB === '-') {
+
+        WertA = parseInt(BuchstageA);
+        WertC = parseInt(BuchstageC);
+
+        if(!isNaN(WertA) && !isNaN(WertC)) {
+
+          Projektnummer = team.displayName.substring(0, 6);
+        }
+      }
+      else {
+
+        WertA = parseInt(BuchstageA);
+        WertD = parseInt(BuchstageD);
+
+        if(!isNaN(WertA) && !isNaN(WertD)) {
+
+          Projektnummer = team.displayName.substring(0, 10);
+        }
+      }
+
+      debugger;
+
+      return Projektnummer;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'GetPrjektnummer', this.Debug.Typen.Service);
+    }
+  }
+
   async SyncronizeGesamtprojektlisteWithTeams(teamsliste: Teamsstruktur[]): Promise<any> {
 
     try {
 
       let Projekt: Projektestruktur;
+      let Projektkey: string;
+      let ProjektkeyNeu: string;
+      let Nummer:number;
+      let GoOn: boolean;
+      let Result: Projektestruktur;
 
         for(let Team of teamsliste) {
 
@@ -822,6 +880,31 @@ export class DatabaseProjekteService {
             Projekt.TeamsID          = Team.id;
             Projekt.TeamsDescription = Team.description;
             Projekt.TeamsName        = Team.displayName;
+            Projekt.Projektname      = Team.displayName;
+            Projekt.Projektnummer    = this.GetPrjektnummer(Team);
+
+            Projektkey    = this.GenerateProjektkey(Projekt);
+            ProjektkeyNeu = Projektkey;
+            Nummer        = 0;
+            GoOn          = true;
+
+            do
+            {
+              Result = lodash.find(this.Gesamtprojektliste, {Projektkey: ProjektkeyNeu});
+
+              if(!lodash.isUndefined(Result)) {
+
+                Nummer++;
+                ProjektkeyNeu = Projektkey + '_' + Nummer.toString();
+              }
+              else {
+
+                GoOn = false;
+              }
+            }
+            while (GoOn === true);
+
+            Projekt.Projektkey = ProjektkeyNeu;
 
             await this.AddProjekt(Projekt);
           }

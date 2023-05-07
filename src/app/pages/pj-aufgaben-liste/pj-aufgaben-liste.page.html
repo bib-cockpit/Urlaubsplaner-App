@@ -37,6 +37,7 @@
                                (MeintagClicked)="PrepareDaten()"
                                (MeilensteinClicked)="PrepareDaten()"
                                (ProtokollmarkeClicked)="ProtokollmarkeClickedHandler()"
+                               (LOPListerMarkeClicked)="LOPListerMarkeClickedHandler()"
                                (AufgabeClicked)="AufgabeClickedHandler($event, projektindex, Datenursprungsvarianten.Meilensteine)"
                                (TerminFiltermodusClicked)="TerminFiltermodusClickedHandler($event)"
                                (AddProjektpunktClicked)="AddAufgabeClickedHandler(projektindex, Datenursprungsvarianten.Meilensteine)"
@@ -49,7 +50,7 @@
     </ng-container>
 
     <div *ngIf="Meilensteineprojektpunkteliste.length === 0" class="keineintragclass">
-      Kein Eintrag vorhanden
+      Keine Aufgaben vorhanden
     </div>
   </ng-container>
 
@@ -72,6 +73,7 @@
                                (MeintagClicked)="PrepareDaten()"
                                (MeilensteinClicked)="PrepareDaten()"
                                (ProtokollmarkeClicked)="ProtokollmarkeClickedHandler()"
+                               (LOPListerMarkeClicked)="LOPListerMarkeClickedHandler()"
                                (AufgabeClicked)="AufgabeClickedHandler($event, projektindex, Datenursprungsvarianten.MeinTag)"
                                (TerminFiltermodusClicked)="TerminFiltermodusClickedHandler($event)"
                                (AddProjektpunktClicked)="AddAufgabeClickedHandler(projektindex, Datenursprungsvarianten.MeinTag)"
@@ -229,6 +231,7 @@
                            (MeintagClicked)="PrepareDaten()"
                            (MeilensteinClicked)="PrepareDaten()"
                            (ProtokollmarkeClicked)="ProtokollmarkeClickedHandler()"
+                           (LOPListerMarkeClicked)="LOPListerMarkeClickedHandler()"
                            (AufgabeClicked)="AufgabeClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
                            (TerminFiltermodusClicked)="TerminFiltermodusClickedHandler($event)"
                            (AddProjektpunktClicked)="AddAufgabeClickedHandler(null, Datenursprungsvarianten.Favoritenprojekt)"
@@ -383,5 +386,16 @@
                      (ProtokollpunktClicked)="ProtokollpunktClickedHandler($event)"
                      (AddProtokollpunktClicked)="AddProtokollpunktClickedHandler()">
 </pj-protokoll-editor>
+
+<pj-baustelle-lopliste-editor *ngIf="ShowLOPListeEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+                              [Titel]="'LOP Liste bearbeiten'" Iconname="book-outline"
+                              [ZIndex]="2000"
+                              (OkClickedEvent)="ShowLOPListeEditor = false"
+                              (CancelClickedEvent)="ShowLOPListeEditor = false"
+                              (TeamteilnehmerClicked)="TeamteilnehmerClickedHandler()"
+                              (BeteiligteteilnehmerClicked)="BeteiligteteilnehmerClickedHandler()"
+                              (LOPListepunktClicked)="LOPListepunktClickedHandler($event)"
+                              (AddLOPListepunktClicked)="AddLOPListepunktClickedHandler()">
+</pj-baustelle-lopliste-editor>
 
 

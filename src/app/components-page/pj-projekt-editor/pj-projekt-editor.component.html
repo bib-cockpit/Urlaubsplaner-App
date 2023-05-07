@@ -123,8 +123,13 @@
                             </ion-col>
                           </ion-row>
                           <ion-row>
+                            <ion-col [size]="12">
+                              <input-clone  [Enabled]="false" [Required]="true" Titel="Projektkey" [Value]="DB.CurrentProjekt.Projektkey"></input-clone>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row>
                             <ion-col [size]="Tools.GetButtonvalueSize()">
-                              <input-clone (TextChanged)="TextChanged($event)" [Enabled]="DB.CurrentProjekt.ProjektIsNew === true" [Required]="true" [MinLength]="3" [MaxLength]="20" Titel="Projektkurzname" [Value]="DB.CurrentProjekt.Projektkurzname"></input-clone>
+                              <input-clone (TextChanged)="TextChanged($event)"  [Required]="true" [MinLength]="3" [MaxLength]="20" Titel="Projektkurzname" [(Value)]="DB.CurrentProjekt.Projektkurzname"></input-clone>
                             </ion-col>
                           </ion-row>
                           <ion-row>

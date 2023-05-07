@@ -21,6 +21,8 @@ import {DatabaseMitarbeitersettingsService} from "../../services/database-mitarb
 import {Meintagstruktur} from "../../dataclasses/meintagstruktur";
 import {Meinewochestruktur} from "../../dataclasses/meinewochestruktur";
 import {DatabaseProtokolleService} from "../../services/database-protokolle/database-protokolle.service";
+import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
+import {DatabaseLoplisteService} from "../../services/database-lopliste/database-lopliste.service";
 
 @Component({
   selector: 'pj-projektpunkteliste',
@@ -31,6 +33,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
   @Output() StatusClicked               = new EventEmitter<Projektpunktestruktur>();
   @Output() ProtokollmarkeClicked       = new EventEmitter<any>();
+  @Output() LOPListerMarkeClicked       = new EventEmitter<any>();
   @Output() AufgabeClicked              = new EventEmitter<Projektpunktestruktur>();
   @Output() StartdatumChanged           = new EventEmitter<Projektpunktestruktur>();
   @Output() DetaildatumChanged          = new EventEmitter<Projektpunktestruktur>();
@@ -93,6 +96,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
               public  Database: DatabaseProjektpunkteService,
               private ProjekteDB: DatabaseProjekteService,
               private ProtokolleDB: DatabaseProtokolleService,
+              private LOPListeDB: DatabaseLoplisteService,
               private MitarbeiterDB: DatabaseMitarbeiterService,
               private MitarbeitersettingsDB: DatabaseMitarbeitersettingsService,
               // private Emailservice: EmailService,
@@ -567,7 +571,6 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
       if(lodash.isUndefined(Projekt) === false) {
 
         this.ProjekteDB.CurrentProjekt   = Projekt;
-        // this.ProjekteDB.Projektindex = lodash.findIndex(this.Pool.Projektliste, {ProjektID: Projektpunkt.ProjektID});
 
         Protokoll = lodash.find(this.Pool.Protokollliste[Projekt.Projektkey], {_id: Projektpunkt.ProtokollID});
 
@@ -967,6 +970,67 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'DebugButtonClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  LOPMarkeClicked(Projektpunkt: Projektpunktestruktur) {
+
+    try {
+
+      let LOPListe: LOPListestruktur;
+      let Projekt: Projektestruktur;
+
+      Projekt = lodash.find(this.ProjekteDB.Gesamtprojektliste, {_id: Projektpunkt.ProjektID});
+
+      if(lodash.isUndefined(Projekt) === false) {
+
+        this.ProjekteDB.CurrentProjekt = Projekt;
+
+        LOPListe = lodash.find(this.Pool.LOPListe[Projekt.Projektkey], {_id: Projektpunkt.LOPListeID});
+
+        if(lodash.isUndefined(LOPListe) === false) {
+
+          this.LOPListeDB.CurrentLOPListe = LOPListe;
+
+          this.LOPListerMarkeClicked.emit();
+        }
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'LOPMarkeClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  PlanungCheckedChanged(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.Pool.Mitarbeitersettings.AufgabenShowPlanung = event.status;
+
+      this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+
+      this.Pool.MitarbeitersettingsChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'PlanungCheckedChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  AusfuehrungCheckedChanged(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.Pool.Mitarbeitersettings.AufgabenShowAusfuehrung = event.status;
+
+      this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+
+      this.Pool.MitarbeitersettingsChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'AusfuehrungCheckedChanged', this.Debug.Typen.Page);
     }
   }
 }

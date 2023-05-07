@@ -194,6 +194,7 @@ const _Pages = {
   ErrorPage: 'ErrorPage',
   DebugPage: 'DebugPage',
   PDFViewerPage: 'PDFViewerPage',
+  EmaillistePage:  'EmaillistePage',
 
   // Firma
 
@@ -201,8 +202,6 @@ const _Pages = {
   FiMitarbeiterauswahlPage:  'FiMitarbeiterauswahlPage',
   FiMitarbeiterSettingsPage: 'FiMitarbeiterSettingsPage',
   FiStandortelistePage:      'FiStandortelistePage',
-
-
 
   // Projekt
 
@@ -743,6 +742,34 @@ const _Zeitansatzeinheitvarianten = {
   'Tage':    'Tage'
 };
 
+const _Projektpunktprioritaetstypen: any = {
+
+  Niedrig: {
+
+    Statusnummer: 0,
+      Name:         'Niedrig',
+      Displayname:  'Niedrig',
+      Color:        '#008000'
+  },
+
+  Mittel: {
+
+    Statusnummer: 1,
+      Name:         'Mittel',
+      Displayname:  'Mittel',
+      Color:        'orange'
+  },
+
+  Hoch: {
+
+    Statusnummer: 2,
+      Name:         'Hoch',
+      Displayname:  'Hoch',
+      Color:        'red'
+  },
+
+};
+
 const _Projektpunktstatustypen: any = {
 
   Offen: {
@@ -784,6 +811,7 @@ const _Projektpunktstatustypen: any = {
     Displayname:  'Rücklauf',
     Color:        '#0020C2'
   },
+
   Festlegung: {
 
     Statusnummer:  4,
@@ -882,7 +910,8 @@ export class ConstProvider {
   public readonly Zeitansatzeinheitvarianten    = _Zeitansatzeinheitvarianten;
   public readonly Fachbereiche                  = _Fachbereiche;
   public readonly Faelligkeitsterminfiltervarianten = _Faelligkeitsterminfiltervarianten;
-  public readonly AufgabenSortiermodusvarianten = _AufgabenSortiermodusvarianten;
+  public readonly AufgabenSortiermodusvarianten     = _AufgabenSortiermodusvarianten;
+  public readonly Projektpunktprioritaetstypen      = _Projektpunktprioritaetstypen;
 
   constructor() {
 

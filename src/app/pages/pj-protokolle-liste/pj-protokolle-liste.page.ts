@@ -67,6 +67,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
   public ShowProjektschnellauswahl: boolean;
   public Auswahlhoehe: number;
 
+
   constructor(public Displayservice: DisplayService,
               public Basics: BasicsProvider,
               public Auswahlservice: AuswahlDialogService,
@@ -366,6 +367,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       }
 
       this.Pool.EmailempfaengerChanged.emit();
+      this.Pool.MitarbeiterAuswahlChanged.emit();
 
       this.ShowMitarbeiterauswahl = false;
 
@@ -409,6 +411,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       this.ShowBeteiligteauswahl = false;
 
       this.Pool.EmailempfaengerChanged.emit();
+      this.Pool.BeteiligteAuswahlChanged.emit();
 
     } catch (error) {
 
@@ -565,12 +568,12 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     this.Auswahlliste.push({Index: 0, FirstColumn: this.Const.Fachbereiche.unbekannt, SecoundColumn: '',      Data: this.Const.Fachbereiche.unbekannt});
     this.Auswahlliste.push({Index: 1, FirstColumn: this.Const.Fachbereiche.Elektrotechnik, SecoundColumn: '', Data: this.Const.Fachbereiche.Elektrotechnik});
-    this.Auswahlliste.push({Index: 1, FirstColumn: this.Const.Fachbereiche.HLS, SecoundColumn: '',            Data: this.Const.Fachbereiche.HLS});
-    this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.Heizung, SecoundColumn: '',        Data: this.Const.Fachbereiche.Heizung});
-    this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.Lueftung, SecoundColumn: '',       Data: this.Const.Fachbereiche.Lueftung});
-    this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.Sanitaer, SecoundColumn: '',       Data: this.Const.Fachbereiche.Sanitaer});
-    this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.Klimatisierung, SecoundColumn: '', Data: this.Const.Fachbereiche.Klimatisierung});
-    this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.MSR, SecoundColumn: '',            Data: this.Const.Fachbereiche.MSR});
+    this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.HLS, SecoundColumn: '',            Data: this.Const.Fachbereiche.HLS});
+    this.Auswahlliste.push({Index: 3, FirstColumn: this.Const.Fachbereiche.Heizung, SecoundColumn: '',        Data: this.Const.Fachbereiche.Heizung});
+    this.Auswahlliste.push({Index: 4, FirstColumn: this.Const.Fachbereiche.Lueftung, SecoundColumn: '',       Data: this.Const.Fachbereiche.Lueftung});
+    this.Auswahlliste.push({Index: 5, FirstColumn: this.Const.Fachbereiche.Sanitaer, SecoundColumn: '',       Data: this.Const.Fachbereiche.Sanitaer});
+    this.Auswahlliste.push({Index: 6, FirstColumn: this.Const.Fachbereiche.Klimatisierung, SecoundColumn: '', Data: this.Const.Fachbereiche.Klimatisierung});
+    this.Auswahlliste.push({Index: 7, FirstColumn: this.Const.Fachbereiche.MSR, SecoundColumn: '',            Data: this.Const.Fachbereiche.MSR});
 
     this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.DBProjektpunkte.CurrentProjektpunkt.Fachbereich});
     this.ShowAuswahl  = true;
@@ -680,6 +683,8 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       let Anzahl: number;
       let Projektpunkt: Projektpunktestruktur;
 
+      this.Protokollliste = [];
+
       if(this.DBProjekte.CurrentProjekt !== null) {
 
         if(!lodash.isUndefined(this.Pool.Protokollliste[this.DBProjekte.CurrentProjekt.Projektkey])) {
@@ -739,7 +744,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     try {
 
-      this.ShowProjektschnellauswahl     = true;
+      this.ShowProjektschnellauswahl = true;
 
 
     } catch (error) {

@@ -99,6 +99,8 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
   public Listeheaderhoehe: number;
   public Listehoehe: number;
   public LinesanzahlTeilnehmer: number;
+  private MitarbeiterSubscription: Subscription;
+  private BeteiligteSubscription: Subscription;
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -141,6 +143,8 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       this.ShowUpload               = false;
       this.ProtokollSubscription    = null;
       this.ProjektpunktSubscription = null;
+      this.MitarbeiterSubscription  = null;
+      this.BeteiligteSubscription   = null;
       this.Titel = this.Const.NONE;
       this.Iconname = 'help-circle-outline';
       this.Dialogbreite = 400;
@@ -170,6 +174,16 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       this.CreatePDFRunning = false;
       this.PageLoaded       = false;
       this.Bereich          = this.DB.CurrentProtokoll._id === null ? this.Bereiche.Allgemein : this.Bereiche.Themenliste;
+
+      this.MitarbeiterSubscription = this.Pool.MitarbeiterAuswahlChanged.subscribe(() => {
+
+        this.PrepareData();
+      });
+
+      this.BeteiligteSubscription = this.Pool.BeteiligteAuswahlChanged.subscribe(() => {
+
+        this.PrepareData();
+      });
 
       this.ProtokollSubscription = this.Pool.ProtokolllisteChanged.subscribe(() => {
 
@@ -223,6 +237,18 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
         this.ProjektpunktSubscription.unsubscribe();
         this.ProjektpunktSubscription = null;
+      }
+
+      if(this.MitarbeiterSubscription !== null) {
+
+        this.MitarbeiterSubscription.unsubscribe();
+        this.MitarbeiterSubscription = null;
+      }
+
+      if(this.BeteiligteSubscription !== null) {
+
+        this.BeteiligteSubscription.unsubscribe();
+        this.BeteiligteSubscription = null;
       }
 
 

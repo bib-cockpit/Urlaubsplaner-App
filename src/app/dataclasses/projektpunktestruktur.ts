@@ -7,12 +7,15 @@ export type Projektpunktestruktur = {
   ProjektID:           string;
   ProjektleiterID:     string;
   ProtokollID:         string;
+  LOPListeID:          string;
+  Prioritaet:          string;
   Projektkey:          string;
   NotizenID:           string;
   FestlegungskategorieID: string;
   Listenposition:      number;
   Nummer:              string;
   Aufgabe:             string;
+  Thematik:            string;
 
   Startzeitsptempel:   number;
   Startzeitstring:     string;

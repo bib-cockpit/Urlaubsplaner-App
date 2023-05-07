@@ -108,6 +108,30 @@ export class ToolsProvider {
     }
   }
 
+  public GenerateProjektkey(name: string, extention: string): string {
+
+    try {
+
+      let key: string = name; // .toUpperCase();
+
+      key = key.replace(/ /g, '_');
+      key = key.replace(/ä/g, 'ae');
+      key = key.replace(/Ä/g, 'AE');
+      key = key.replace(/ö/g, 'oe');
+      key = key.replace(/Ö/g, 'OE');
+      key = key.replace(/ü/g, 'ue');
+      key = key.replace(/Ü/g, 'UE');
+      key = key.replace(/ß/g, 'ss');
+      key = key.replace(/[^a-zA-Z0-9 ]/g, '_'); // /[&\/\\#,+()$~%.'§=^!`´;":.,*-?<>{}]/g, '_');
+
+      return key;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Tools', 'GenerateProjektkey', this.Debug.Typen.Service);
+    }
+  }
+
 
   public DeepCompareObjectarrays(ListeA: any[], ListeB: any[]): boolean {
 

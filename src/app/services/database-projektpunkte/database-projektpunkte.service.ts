@@ -22,6 +22,9 @@ import {Meintagstruktur} from "../../dataclasses/meintagstruktur";
 import {Meinewochestruktur} from "../../dataclasses/meinewochestruktur";
 import {Projektfarbenstruktur} from "../../dataclasses/projektfarbenstruktur";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
+import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
+import {DatabaseLoplisteService} from "../database-lopliste/database-lopliste.service";
+import {settings} from "ionicons/icons";
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +46,7 @@ export class DatabaseProjektpunkteService {
               private DBMitarbeiter: DatabaseMitarbeiterService,
               private DBProjekt: DatabaseProjekteService,
               private DBProtokoll: DatabaseProtokolleService,
+              private DBLOPListe: DatabaseLoplisteService,
               private Const: ConstProvider) {
 
     try {
@@ -122,6 +126,27 @@ export class DatabaseProjektpunkteService {
     }
   }
 
+  public GetProjektpunktPrioritaetByName(name: string): Projektpunktstatustypenstruktur {
+
+    try {
+
+      let Eintrag: Projektpunktstatustypenstruktur;
+
+      for(const key of Object.keys(this.Const.Projektpunktprioritaetstypen)) {
+
+        Eintrag = this.Const.Projektpunktprioritaetstypen[key];
+
+        if(name === Eintrag.Name) return Eintrag;
+      }
+
+      return null;
+    }
+    catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'GetProjektpunktPrioritaetByName', this.Debug.Typen.Service);
+    }
+  }
+
   DeleteProjektpunkt(punkt: Projektpunktestruktur): Promise<any> {
 
     try {
@@ -148,11 +173,27 @@ export class DatabaseProjektpunkteService {
               reject(errorb);
             });
           }
+
+          else if(punkt.LOPListeID !== null && this.DBLOPListe.CurrentLOPListe !== null) {
+
+            this.DBLOPListe.CurrentLOPListe.ProjektpunkteIDListe = lodash.filter(this.DBLOPListe.CurrentLOPListe.ProjektpunkteIDListe, (istid: string) => {
+
+              return istid !== punkt._id;
+            });
+
+            this.DBLOPListe.SaveLOPListe().then(() => {
+
+              resolve(true);
+
+            }).catch((errorb: HttpErrorResponse) => {
+
+              reject(errorb);
+            });
+          }
           else {
 
             resolve(true);
           }
-
         }).catch((errora: HttpErrorResponse) => {
 
           reject(errora);
@@ -179,6 +220,8 @@ export class DatabaseProjektpunkteService {
         Observer.subscribe({
 
           next: (result) => {
+
+            debugger;
 
             this.CurrentProjektpunkt = result.Projektpunkt;
           },
@@ -228,6 +271,8 @@ export class DatabaseProjektpunkteService {
           next: (ne) => {
 
             Merker = ne.Projektpunkt;
+
+            debugger;
 
           },
           complete: () => {
@@ -379,11 +424,14 @@ export class DatabaseProjektpunkteService {
         Projektkey:      this.DBProjekt.CurrentProjekt.Projektkey,
         ProjektleiterID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : null,
         ProtokollID:     null,
+        LOPListeID:      null,
+        Prioritaet:      null,
         NotizenID:       null,
         FestlegungskategorieID: null,
         Nummer:          Nummer.toString(),
         Listenposition:  Nummer,
         Aufgabe:         "",
+        Thematik:        "",
         Status:          this.GetProjektpunktstusByName(this.Const.Projektpunktstatustypen.Offen.Name).Name,
         Deleted:         false,
         Endezeitstempel:   Endezeitstempel,
@@ -467,11 +515,14 @@ export class DatabaseProjektpunkteService {
         ProjektID:       Protokoll !== null ? Protokoll.ProjektID : null,
         ProjektleiterID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : null,
         ProtokollID:     Protokoll !== null ? Protokoll._id : null,
+        LOPListeID:      null,
+        Prioritaet:      this.Const.NONE,
         NotizenID:       null,
         FestlegungskategorieID: null,
         Nummer:          Nummer,
         Listenposition:  parseInt(Nummer) - 1,
         Aufgabe:         "",
+        Thematik:        "",
         Status:          this.Const.Projektpunktstatustypen.Protokollpunkt.Name, // this.GetProjektpunktstusByName().Name,
         Deleted:         false,
         Endezeitstempel:   Endezeitstempel,
@@ -524,6 +575,112 @@ export class DatabaseProjektpunkteService {
     catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'GetNewProtokollpunkt', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetNewLOPListepunkt(lopliste: LOPListestruktur): Projektpunktestruktur {
+
+    try {
+
+      let Nummer;
+      let Tag: Moment;
+      let Liste: Projektpunktestruktur[];
+
+
+
+      if(lopliste !== null) Tag  = MyMoment(lopliste.Zeitstempel);
+      else                   Tag = MyMoment();
+
+      let Termin: Moment = Tag.clone().add(7, 'days');
+      let Startzeitpunkt: string = Tag.format('DD.MM.YYYY');
+
+      let Endezeitstempel: number = Termin.valueOf();
+      let Endezeitpunkt: string = Termin.format('DD.MM.YYYY');
+      let Vorname: string  = this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten.Vorname : '';
+      let Name: string  = this.Pool.Mitarbeiterdaten    !== null ? this.Pool.Mitarbeiterdaten.Name    : '';
+      let Email: string = this.Pool.Mitarbeiterdaten    !== null ? this.Pool.Mitarbeiterdaten.Email   : '';
+      let Anmerkungenliste: Projektpunktanmerkungstruktur[] = [];
+
+      if(this.DBProjekt.CurrentProjekt !== null) {
+
+        Liste = lodash.filter(this.Pool.Projektpunkteliste[this.DBProjekt.CurrentProjekt.Projektkey], (eintag: Projektpunktestruktur) => {
+
+            return eintag.LOPListeID !== null;
+
+        });
+
+        Nummer = Liste.length;
+
+      }
+      else Nummer = 0;
+
+      let Punkt: Projektpunktestruktur = {
+
+        _id:              null,
+        Projektkey:      this.DBProjekt.CurrentProjekt.Projektkey,
+        ProjektID:       lopliste !== null ? lopliste.ProjektID : null,
+        ProjektleiterID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : null,
+        ProtokollID:     null,
+        LOPListeID:      lopliste !== null ? lopliste._id : null,
+        Prioritaet:      this.Const.Projektpunktprioritaetstypen.Niedrig.Name,
+        NotizenID:       null,
+        FestlegungskategorieID: null,
+        Nummer:          Nummer.toString(),
+        Listenposition:  null,
+        Aufgabe:         "",
+        Thematik:        "",
+        Status:          this.Const.Projektpunktstatustypen.Offen.Name, // this.GetProjektpunktstusByName().Name,
+        Deleted:         false,
+        Endezeitstempel:   Endezeitstempel,
+        Endezeitstring:    Endezeitpunkt,
+        EndeKalenderwoche: null,
+        Startzeitsptempel: lopliste !== null ? lopliste.Zeitstempel : null,
+        Startzeitstring:   Startzeitpunkt,
+        Geschlossenzeitstempel: null,
+        Geschlossenzeitstring: null,
+        FileDownloadURL:   this.Const.NONE,
+        Filename:          this.Const.NONE,
+        Filezoom:          1,
+        Bildbreite:        0,
+        Bildhoehe:         0,
+        Querdarstellung:   false,
+        Meilenstein:       false,
+        Meilensteinstatus: 'OFF',
+        Anmerkungenliste:   Anmerkungenliste,
+        DataChanged:        false,
+        ProtokollOnly:      true,
+        ProtokollPublic:    true,
+        LiveEditor:         false,
+        BemerkungMouseOver: false,
+        EndeMouseOver:      false,
+        Zeitansatz:         30,
+        Zeitansatzeinheit:  this.Const.Zeitansatzeinheitvarianten.Minuten,
+        Fortschritt:        0,
+        ZustaendigeInternIDListe: [],
+        ZustaendigeExternIDListe: [],
+        BauteilID:          null,
+        GeschossID:         null,
+        RaumID:             null,
+        OpenFestlegung:     false,
+        Fachbereich:        this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten.Fachbereich : null,
+        Oberkostengruppe:   null,
+        Hauptkostengruppe:  null,
+        Unterkostengruppe:  null,
+
+        Verfasser: {
+
+          Vorname: Vorname,
+          Name: Name,
+          Email: Email
+        }
+      };
+
+      return Punkt;
+
+    }
+    catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'GetNewLOPListepunkt', this.Debug.Typen.Service);
     }
   }
 
@@ -898,6 +1055,19 @@ export class DatabaseProjektpunkteService {
             GoOn = Projektpunkt.Meilenstein === true;
           }
 
+          // Aufgaben / Protokolle und LOP Liste filtern
+
+          if(Settings.AufgabenShowPlanung === false) {
+
+            if(Projektpunkt.LOPListeID == null) GoOn = false; // Wenn es kein LOP Liste Punkt ist ist es eine Aufgabe oder ein Protokolleintrag
+          }
+
+          if(Settings.AufgabenShowAusfuehrung === false) {
+
+            if(Projektpunkt.LOPListeID !== null) GoOn = false;
+          }
+
+
           if(GoOn === true) {
 
             if(Settings.AufgabenTerminfiltervariante === null) {
@@ -944,7 +1114,6 @@ export class DatabaseProjektpunkteService {
 
   public SetStatus(projektpunkt: Projektpunktestruktur, status: string) {
 
-
     try {
 
       projektpunkt.Status = status;
@@ -954,14 +1123,6 @@ export class DatabaseProjektpunkteService {
         case this.Const.Projektpunktstatustypen.Geschlossen.Name:
 
           projektpunkt.Geschlossenzeitstempel = moment().valueOf();
-
-          break;
-
-        case this.Const.Projektpunktstatustypen.Festlegung.Name:
-
-          projektpunkt.Geschlossenzeitstempel = null;
-          projektpunkt.Meilenstein            = false;
-          projektpunkt.Meilensteinstatus      = 'OFF';
 
           break;
 
@@ -1139,6 +1300,22 @@ export class DatabaseProjektpunkteService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'GetEndedatumString', this.Debug.Typen.Service);
+    }
+  }
+
+  GetPrioritaetcolor(punkt: Projektpunktestruktur): string {
+
+    try {
+
+      if(punkt !== null && punkt.Prioritaet !== null) {
+
+        return this.GetProjektpunktPrioritaetByName(punkt.Prioritaet).Color;
+      }
+      else return 'green';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkte', 'GetPrioritaetcolor', this.Debug.Typen.Service);
     }
   }
 }

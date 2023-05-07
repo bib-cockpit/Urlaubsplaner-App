@@ -98,7 +98,11 @@
                 </div>
               </ion-col>
             </ion-row>
-
+            <ion-row *ngIf="CheckForNewProjects()">
+              <ion-col>
+                <ion-button size="small" color="burnicklbraun" (click)="SaveNewProjekte()">Unbekannte Projekte speichern</ion-button>
+              </ion-col>
+            </ion-row>
           </ion-grid>
         </div>
       </ion-content>

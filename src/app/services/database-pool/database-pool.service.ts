@@ -19,6 +19,7 @@ import {Changelogstruktur} from "../../dataclasses/changelogstruktur";
 import {Bauteilstruktur} from "../../dataclasses/bauteilstruktur";
 import {environment} from "../../../environments/environment";
 import {Bautagebuchstruktur} from "../../dataclasses/bautagebuchstruktur";
+import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,7 @@ export class DatabasePoolService {
   public Projektpunkteliste:      Projektpunktestruktur[][];
   public Protokollliste:          Protokollstruktur[][];
   public Bautagebuchliste:        Bautagebuchstruktur[][];
+  public LOPListe:                LOPListestruktur[][];
   public Mitarbeitersettingsliste: Mitarbeitersettingsstruktur[];
   public CockpitserverURL:        string;
   public Mitarbeiterdaten: Mitarbeiterstruktur;
@@ -60,10 +62,14 @@ export class DatabasePoolService {
   public ProjektpunktKostengruppeChanged: EventEmitter<any> = new EventEmitter<any>();
   public ProtokolllisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public ProtokollprojektpunktChanged: EventEmitter<any> = new EventEmitter<any>();
+  public LOPListeprojektpunktChanged: EventEmitter<any> = new EventEmitter<any>();
   public ProjektpunktChanged: EventEmitter<any> = new EventEmitter<any>();
   public ChangeloglisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public BautagebuchlisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public EmailempfaengerChanged: EventEmitter<any> = new EventEmitter<any>();
+  public LOPListeChanged: EventEmitter<any> = new EventEmitter<any>();
+  public MitarbeiterAuswahlChanged: EventEmitter<any> = new EventEmitter<any>();
+  public BeteiligteAuswahlChanged: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private Debug: DebugProvider,
               private Const: ConstProvider,
@@ -85,6 +91,7 @@ export class DatabasePoolService {
       this.Protokollliste           = [];
       this.Changlogliste            = [];
       this.Bautagebuchliste         = [];
+      this.LOPListe                 = [];
       this.CockpitserverURL         = environment.production === true ? 'https://bib-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
       this.Emailcontent             = this.Emailcontentvarinaten.NONE;
 
@@ -135,6 +142,9 @@ export class DatabasePoolService {
               if(lodash.isUndefined(Projektpunkt.Geschlossenzeitstempel)) Projektpunkt.Geschlossenzeitstempel = null;
               if(lodash.isUndefined(Projektpunkt.Geschlossenzeitstring))  Projektpunkt.Geschlossenzeitstring  = null;
               if(lodash.isUndefined(Projektpunkt.EndeKalenderwoche))      Projektpunkt.EndeKalenderwoche      = null;
+              if(lodash.isUndefined(Projektpunkt.LOPListeID))             Projektpunkt.LOPListeID             = null;
+              if(lodash.isUndefined(Projektpunkt.Prioritaet))             Projektpunkt.Prioritaet             = null;
+              if(lodash.isUndefined(Projektpunkt.Thematik))               Projektpunkt.Thematik               = '';
 
               Projektpunkt.Anmerkungenliste.forEach((Anmerkung: Projektpunktanmerkungstruktur) => {
 
@@ -213,6 +223,59 @@ export class DatabasePoolService {
     }
   }
 
+  public ReadLOPListe(projekt: Projektestruktur): Promise<any> {
+
+    try {
+
+      let Params: HttpParams;
+      let Headers: HttpHeaders;
+      let LOPListeObservable: Observable<any>;
+
+      this.LOPListe[projekt.Projektkey] = [];
+
+      return new Promise((resolve, reject) => {
+
+        Params  = new HttpParams({ fromObject: { projektkey: projekt.Projektkey }} );
+        Headers = new HttpHeaders({
+
+          'content-type': 'application/json',
+        });
+
+        LOPListeObservable = this.Http.get(this.CockpitserverURL + '/lopliste', { headers: Headers, params: Params } );
+
+        LOPListeObservable.subscribe({
+
+          next: (data) => {
+
+            // debugger;
+
+            this.LOPListe[projekt.Projektkey] = <LOPListestruktur[]>data;
+
+          },
+          complete: () => {
+
+
+             // debugger;
+
+            this.Debug.ShowMessage('Read LOP Liste von ' + projekt.Projektkurzname + ' fertig.', 'Database Pool', 'ReadLOPListe', this.Debug.Typen.Service);
+
+
+            resolve(true);
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadLOPListe', this.Debug.Typen.Service);
+    }
+  }
+
   public ReadBautagebuchliste(projekt: Projektestruktur): Promise<any> {
 
     try {
@@ -237,8 +300,6 @@ export class DatabasePoolService {
         BautagebuchObservable.subscribe({
 
           next: (data) => {
-
-
 
             this.Bautagebuchliste[projekt.Projektkey] = <Bautagebuchstruktur[]>data;
 
@@ -582,6 +643,8 @@ export class DatabasePoolService {
       this.CurrentProgressValue = 0;
       this.Projektpunkteliste   = [];
       this.Protokollliste       = [];
+      this.Bautagebuchliste     = [];
+      this.LOPListe             = [];
 
       try {
 
@@ -612,8 +675,14 @@ export class DatabasePoolService {
           this.CurrentProgressValue++;
         }
 
+        for(let Projekt of projektliste)  {
 
+          this.ProgressMessage = 'LOP Liste ' + Projekt.Projektkurzname;
 
+          await this.ReadLOPListe(Projekt);
+
+          this.CurrentProgressValue++;
+        }
 
       } catch (error) {
 
@@ -625,6 +694,7 @@ export class DatabasePoolService {
       this.ProjektpunktelisteChanged.emit();
       this.ProtokolllisteChanged.emit();
       this.BautagebuchlisteChanged.emit();
+      this.LOPListeChanged.emit();
 
       this.ShowProgress = false;
 
@@ -684,10 +754,14 @@ export class DatabasePoolService {
         AufgabenShowMeintag:       true,
         AufgabenShowZeitansatz:    false,
         AufgabenShowMeinewoche:    true,
+        AufgabenShowAusfuehrung:   true,
+        AufgabenShowPlanung:       true,
 
         AufgabenTerminfiltervariante:  null,
         AufgabenTerminfilterStartwert: null,
-        AufgabenTerminfilterEndewert:  null
+        AufgabenTerminfilterEndewert:  null,
+
+        LOPListeGeschlossenZeitfilter: 14
       };
 
     } catch (error) {
@@ -741,6 +815,8 @@ export class DatabasePoolService {
           if(lodash.isUndefined(Settings.AufgabenShowBearbeitung))  Settings.AufgabenShowBearbeitung  = true;
           if(lodash.isUndefined(Settings.AufgabenShowRuecklauf))    Settings.AufgabenShowRuecklauf    = true;
           if(lodash.isUndefined(Settings.AufgabenShowMeilensteine)) Settings.AufgabenShowMeilensteine = true;
+          if(lodash.isUndefined(Settings.AufgabenShowAusfuehrung))  Settings.AufgabenShowAusfuehrung  = true;
+          if(lodash.isUndefined(Settings.AufgabenShowPlanung))      Settings.AufgabenShowPlanung      = true;
 
           if(lodash.isUndefined(Settings.AufgabenTerminfiltervariante))  Settings.AufgabenTerminfiltervariante  = null;
           if(lodash.isUndefined(Settings.AufgabenTerminfilterStartwert)) Settings.AufgabenTerminfilterStartwert = null;
@@ -748,6 +824,8 @@ export class DatabasePoolService {
           if(lodash.isUndefined(Settings.AufgabenSortiermodus))          Settings.AufgabenSortiermodus  = this.Const.AufgabenSortiermodusvarianten.TermineAufsteigend;
 
           if(lodash.isUndefined(Settings.AufgabenMeilensteineNachlauf)) Settings.AufgabenMeilensteineNachlauf  = 2;
+
+          if(lodash.isUndefined(Settings.LOPListeGeschlossenZeitfilter)) Settings.LOPListeGeschlossenZeitfilter  = 14;
 
           return Settings;
         }

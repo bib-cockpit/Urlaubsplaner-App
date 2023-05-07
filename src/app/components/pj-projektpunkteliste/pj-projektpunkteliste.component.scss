@@ -3,6 +3,30 @@ ion-progress-bar {
   --progress-background: #c7d304;
 }
 
+.verticalclass {
+
+  width: 30px;
+  text-align: left;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 90%;
+}
+
+.markerclass {
+
+  background: #7b6a58;
+  width: 34px;
+  height: 26px;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  color: white;
+  font-size: 85%;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 .nobordertitelbuttonclass {
 
   border-left-style: hidden !important;

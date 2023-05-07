@@ -25,6 +25,7 @@ import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {ToolsProvider} from "../../services/tools/tools";
+import {DatabaseLoplisteService} from "../../services/database-lopliste/database-lopliste.service";
 
 @Component({
   selector:    'pj-aufgaben-liste-page',
@@ -99,6 +100,8 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   public ProjektpunktelisteSubscription: Subscription;
   public Projektschenllauswahltitel: string;
   public Projektschnellauswahlursprung: string;
+  public ShowLOPListeEditor: boolean;
+  public ShowEintragEditor: boolean;
 
 
   constructor(public Displayservice: DisplayService,
@@ -107,6 +110,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public DBStandort: DatabaseStandorteService,
               private DBProtokolle: DatabaseProtokolleService,
+              private DBLOPListe: DatabaseLoplisteService,
               public DBProjekte: DatabaseProjekteService,
               public DBMitarbeiter: DatabaseMitarbeiterService,
               public Tools: ToolsProvider,
@@ -157,7 +161,9 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.Tagbreite                = 0;
       this.Headerhoehe              = 0;
       this.ShowDateKkPicker         = false;
+      this.ShowLOPListeEditor       = false;
       this.ShowProjektschnellauswahl = false;
+      this.ShowEintragEditor         = false;
       this.Heute                    = moment().set({date: 6, month: 1, year: 2023, hour: 7, minute: 0, second: 0  }).locale('de'); // Month ist Zero based
 
     } catch (error) {
@@ -645,12 +651,12 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     this.Auswahlliste.push({Index: 0, FirstColumn: this.Const.Fachbereiche.unbekannt, SecoundColumn: '',      Data: this.Const.Fachbereiche.unbekannt});
     this.Auswahlliste.push({Index: 1, FirstColumn: this.Const.Fachbereiche.Elektrotechnik, SecoundColumn: '', Data: this.Const.Fachbereiche.Elektrotechnik});
-    this.Auswahlliste.push({Index: 1, FirstColumn: this.Const.Fachbereiche.HLS, SecoundColumn: '',            Data: this.Const.Fachbereiche.HLS});
-    this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.Heizung, SecoundColumn: '',        Data: this.Const.Fachbereiche.Heizung});
-    this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.Lueftung, SecoundColumn: '',       Data: this.Const.Fachbereiche.Lueftung});
-    this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.Sanitaer, SecoundColumn: '',       Data: this.Const.Fachbereiche.Sanitaer});
-    this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.Klimatisierung, SecoundColumn: '', Data: this.Const.Fachbereiche.Klimatisierung});
-    this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.MSR, SecoundColumn: '',            Data: this.Const.Fachbereiche.MSR});
+    this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.HLS, SecoundColumn: '',            Data: this.Const.Fachbereiche.HLS});
+    this.Auswahlliste.push({Index: 3, FirstColumn: this.Const.Fachbereiche.Heizung, SecoundColumn: '',        Data: this.Const.Fachbereiche.Heizung});
+    this.Auswahlliste.push({Index: 4, FirstColumn: this.Const.Fachbereiche.Lueftung, SecoundColumn: '',       Data: this.Const.Fachbereiche.Lueftung});
+    this.Auswahlliste.push({Index: 5, FirstColumn: this.Const.Fachbereiche.Sanitaer, SecoundColumn: '',       Data: this.Const.Fachbereiche.Sanitaer});
+    this.Auswahlliste.push({Index: 6, FirstColumn: this.Const.Fachbereiche.Klimatisierung, SecoundColumn: '', Data: this.Const.Fachbereiche.Klimatisierung});
+    this.Auswahlliste.push({Index: 7, FirstColumn: this.Const.Fachbereiche.MSR, SecoundColumn: '',            Data: this.Const.Fachbereiche.MSR});
 
     this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.DBProjektpunkte.CurrentProjektpunkt.Fachbereich});
     this.ShowAuswahl  = true;
@@ -1577,7 +1583,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
           this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
 
-          // Update der Mitarbeitersettings lösen PrepareDaten() aus
+
 
           break;
 
@@ -1607,6 +1613,46 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'ShowProjektfilesHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  LOPListerMarkeClickedHandler() {
+
+    try {
+
+      this.ShowLOPListeEditor  = true;
+      this.Dialogbreite        = 950;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'LOPListerMarkeClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  AddLOPListepunktClickedHandler() {
+
+    try {
+
+      this.ShowEintragEditor                   = true;
+      this.DBProjektpunkte.CurrentProjektpunkt = lodash.cloneDeep(this.DBProjektpunkte.GetNewLOPListepunkt(this.DBLOPListe.CurrentLOPListe));
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'AddLOPListepunktClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  LOPListepunktClickedHandler(punkt: Projektpunktestruktur) {
+
+    try {
+
+      this.DBProjektpunkte.CurrentProjektpunkt = lodash.cloneDeep(punkt);
+      this.ShowEintragEditor                   = true;
+      this.Dialoghoehe                         = 900;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgabe Liste', 'LOPListepunktClickedHandler', this.Debug.Typen.Page);
     }
   }
 }
