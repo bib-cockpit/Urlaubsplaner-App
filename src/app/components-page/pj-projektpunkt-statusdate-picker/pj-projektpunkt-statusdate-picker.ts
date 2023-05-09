@@ -8,8 +8,6 @@ import {ConstProvider} from "../../services/const/const";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
-import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
-import {Geschossstruktur} from "../../dataclasses/geschossstruktur";
 import {DisplayService} from "../../services/diplay/display.service";
 import 'moment-duration-format';
 
@@ -41,9 +39,6 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
   @Input() Dialoghoehe: number;
   @Input() PositionY: number;
   @Input() ZIndex: number;
-  // @Input() public Pageheader: PageHeaderComponent;
-
-  // @ViewChild('MyAuswahlDialog', { static: false }) MyAuswahlDialog: AuswahlDialogComponent;
 
   @Output() StatusChanged            = new EventEmitter<string>();
   @Output() FertigClicked            = new EventEmitter<any>();
@@ -126,8 +121,6 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
       Tagesumme     = Tagesumme + Tage;
       Wochenanazahl = Tagesumme / 7;
 
-      // let Endedatum: Moment =  MonatEndedatum.add(Tage, 'day');
-
       this.Kalendertageliste = [];
 
       for(let wochenindex = 0; wochenindex < Wochenanazahl; wochenindex++) {
@@ -148,8 +141,6 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
           Tag.add(1, 'day');
         }
       }
-
-      debugger;
 
     } catch (error) {
 
@@ -226,154 +217,6 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'DateChangedEvent', this.Debug.Typen.Component);
-    }
-  }
-
-
-  GetGeschossliste(projektpunkt: Projektpunktestruktur): Geschossstruktur[] {
-
-    try {
-
-      return [];
-
-      /*
-
-      let Bauteil: Bauteilstruktur;
-
-      if(projektpunkt !== null) {
-
-        Bauteil = lodash.find(this.Pool.Bauteilstrukturliste[this.Projektservice.Projektindex], { BauteilID: projektpunkt.BauteilID});
-
-        if(lodash.isUndefined(Bauteil) === false) {
-
-          return Bauteil.Geschossliste;
-        }
-        else {
-
-          return [];
-        }
-      }
-      else {
-
-        return [];
-      }
-
-       */
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'GetGeschossliste', this.Debug.Typen.Component);
-    }
-  }
-
-
-  GetRaumIDValue(RaumID: string): string {
-
-    try {
-
-      switch (RaumID) {
-
-        case this.Const.NONE:
-
-          return this.Const.NONE;
-
-          break;
-
-        case 'All':
-
-          return 'All';
-
-          break;
-
-        default:
-
-          return 'Raum';
-
-          break;
-
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'GetRaumIDValue', this.Debug.Typen.Component);
-    }
-  }
-
-  AddFerstlegungskategorieHandler(id: string) {
-
-    try {
-
-      this.AddFerstlegungskategorie.emit(id);
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'function', this.Debug.Typen.Page);
-    }
-  }
-
-  GetWindowWidth(): number {
-
-    try {
-
-      if(this.DBProjektpunkte.CurrentProjektpunkt !== null) {
-
-        if (this.DBProjektpunkte.CurrentProjektpunkt.Status !== this.Const.Projektpunktstatustypen.Festlegung.Name) {
-
-          return 370;
-        }
-        else {
-
-          if(this.DBProjekte.CurrentProjekt !== null) {
-
-            if(this.DBProjekte.CurrentProjekt.Bauteilliste.length > 0) {
-
-              return 960;
-            }
-            else {
-
-              return 740;
-            }
-          }
-        }
-      }
-      else {
-
-        return 0;
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'GetWindowWidth', this.Debug.Typen.Component);
-    }
-  }
-
-  GetWindowHeight(): number {
-
-    try {
-
-      let Hoehe: number = this.Basics.Contenthoehe;
-      let Footerhoehe: number = 62;
-      let Headerhoehe: number;
-      let Topspace: number =    20;
-      let Bottomspace: number = 20;
-
-      return 0;
-
-      /*
-      if(lodash.isUndefined(this.Pageheader) === false && this.Pageheader !== null) {
-
-        Headerhoehe = this.Pageheader.PageHeaderframeDiv.nativeElement.clientHeight;
-      }
-      else Headerhoehe = 8; // Small Header
-
-      return Hoehe - Footerhoehe - Headerhoehe - Topspace - Bottomspace;
-
-
-       */
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'GetWindowHeight', this.Debug.Typen.Component);
     }
   }
 
@@ -478,9 +321,6 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
 
         this.DBProjektpunkte.CurrentProjektpunkt.EndeKalenderwoche = Datum.isoWeek();
       }
-
-
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'TerminStatusChangedHandler', this.Debug.Typen.Component);
@@ -498,8 +338,6 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
       this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date Status Picker', 'GetEndemonatname', this.Debug.Typen.Component);
     }
   }
-
-
 
   public KalenderwocheMonatRueckwaerts() {
 

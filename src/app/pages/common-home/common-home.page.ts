@@ -284,8 +284,6 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     try {
 
-      debugger;
-
       if(this.DBProjekte.CurrentFavorit !== null && this.DBProjekte.GesamtprojektlisteHasDatenerror === false) {
 
         this.Menuservice.MainMenuebereich     = this.Menuservice.MainMenuebereiche.Projekte;

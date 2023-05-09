@@ -57,6 +57,7 @@ export class AuswahlDialogService {
     Protokollliste_Emaileditor_Extern_CcEmpfaenger:         'Protokollliste_Emaileditor_Extern_CcEmpfaenger',
 
 
+    Protokollliste_Editor_Standortfilter:              'Protokollliste_Editor_Standortfilter',
     Protokollliste_Projektpunkteditor_Status:          'Protokollliste_Projektpunkteditor_Status',
     Protokollliste_Projektpunkteditor_Fachbereich:     'Protokollliste_Projektpunkteditor_Fachbereich',
 

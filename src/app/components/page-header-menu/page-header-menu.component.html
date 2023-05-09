@@ -321,7 +321,7 @@
 
     <!-- Meine Woche 2. Menüzeile -->
 
-    <ng-container *ngIf="Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.LOPListe">
+    <ng-container *ngIf="this.Menuservice.MainMenuebereich === this.Menuservice.MainMenuebereiche.Projekte && Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.LOPListe">
         <tr>
           <td colspan="2" style="padding-left: 8px; padding-right: 8px">
             <div style="width: 100%; height: 1px; background: white"></div>
@@ -332,7 +332,7 @@
             <table class="paddingtable">
               <tr>
                 <td>
-                    <button-value [Buttontext]="'Geschlossene Einträge ausblenden nach'"
+                    <button-value *ngIf="Pool.Mitarbeitersettings !== null" [Buttontext]="'Geschlossene Einträge ausblenden nach'"
                                   (ButtonClicked)="LOPListeZeitspanneEvent.emit()"
                                   [Wert_A]="Pool.Mitarbeitersettings.LOPListeGeschlossenZeitfilter.toString() + ' Tage'"></button-value>
 

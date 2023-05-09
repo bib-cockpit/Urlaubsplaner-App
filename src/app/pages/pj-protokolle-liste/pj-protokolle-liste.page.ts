@@ -230,8 +230,25 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
   AuswahlOkButtonClicked(data: any) {
 
     try {
+      debugger;
 
       switch (this.Auswahldialogorigin) {
+
+        case this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Editor_Standortfilter:
+
+          this.DBStandort.CurrentStandortfilter        = data;
+          this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
+
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
+
+            this.DBStandort.StandortfilterChanged.emit();
+
+          }).catch((error) => {
+
+            this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+          });
+
+          break;
 
         case this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Editor_Leistungsphase:
 
@@ -305,7 +322,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     try {
 
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_Standortfilter;
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Editor_Standortfilter;
 
       let Index = 0;
 

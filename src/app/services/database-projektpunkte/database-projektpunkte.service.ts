@@ -221,8 +221,6 @@ export class DatabaseProjektpunkteService {
 
           next: (result) => {
 
-            debugger;
-
             this.CurrentProjektpunkt = result.Projektpunkt;
           },
           complete: () => {
@@ -271,8 +269,6 @@ export class DatabaseProjektpunkteService {
           next: (ne) => {
 
             Merker = ne.Projektpunkt;
-
-            debugger;
 
           },
           complete: () => {
@@ -609,10 +605,10 @@ export class DatabaseProjektpunkteService {
 
         });
 
-        Nummer = Liste.length;
+        Nummer = Liste.length + 1;
 
       }
-      else Nummer = 0;
+      else Nummer = 1;
 
       let Punkt: Projektpunktestruktur = {
 
@@ -1116,19 +1112,26 @@ export class DatabaseProjektpunkteService {
 
     try {
 
+      let Heute: Moment = moment();
+
       projektpunkt.Status = status;
 
       switch(projektpunkt.Status) {
 
         case this.Const.Projektpunktstatustypen.Geschlossen.Name:
 
-          projektpunkt.Geschlossenzeitstempel = moment().valueOf();
+          if(projektpunkt.Geschlossenzeitstempel === null) {
+
+            projektpunkt.Geschlossenzeitstempel = Heute.valueOf();
+            projektpunkt.Geschlossenzeitstring  = Heute.format('DD.MM.YYYY');
+          }
 
           break;
 
         default:
 
           projektpunkt.Geschlossenzeitstempel = null;
+          projektpunkt.Geschlossenzeitstring  = null;
 
           break;
       }

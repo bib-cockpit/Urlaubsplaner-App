@@ -593,6 +593,8 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
       let Heute: Moment = moment();
 
+      debugger;
+
       if(event.status === true) {
 
         Projektpunkt.Status                 = this.Const.Projektpunktstatustypen.Geschlossen.Name;

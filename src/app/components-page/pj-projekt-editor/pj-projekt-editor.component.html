@@ -16,7 +16,7 @@
                 <div class="menubuttonclass" (click)="AllgemeinMenuButtonClicked()">
                   <table class="paddingsmalltable">
                     <tr>
-                      <td><ion-icon name="reader-outline" [color]="Bereich === Bereiche.Allgemein ? 'burnicklgruen' : 'weis'"></ion-icon></td>
+                      <td><ion-icon name="reader-outline" [color]="Bereich === Bereiche.Allgemein ? 'burnicklgruen' : 'weiss'"></ion-icon></td>
                       <td [style.color]="Bereich === Bereiche.Allgemein ? Basics.Farben.Burnicklgruen : 'white'">Allgemein</td>
                     </tr>
                   </table>
@@ -27,7 +27,7 @@
                 <div class="menubuttonclass" (click)="BeteiligteMenuButtonClicked()">
                   <table class="paddingsmalltable">
                     <tr>
-                      <td><ion-icon name="people-outline" [color]="Bereich === Bereiche.Beteiligte ? 'burnicklgruen' : 'weis'"></ion-icon></td>
+                      <td><ion-icon name="people-outline" [color]="Bereich === Bereiche.Beteiligte ? 'burnicklgruen' : 'weiss'"></ion-icon></td>
                       <td [style.color]="Bereich === Bereiche.Beteiligte ? Basics.Farben.Burnicklgruen : 'white'">Projektbeteiligte</td>
                       <td *ngIf="DB.CurrentProjekt.Beteiligtenliste.length > 0" [style.color]="Bereich === Bereiche.Beteiligte ? Basics.Farben.Burnicklgruen : 'white'">[{{DB.CurrentProjekt.Beteiligtenliste.length}}]</td>
                     </tr>
@@ -39,7 +39,7 @@
                 <div class="menubuttonclass" (click)="StrukturMenuButtonClicked()">
                   <table class="paddingsmalltable">
                     <tr>
-                      <td><ion-icon name="home-outline" [color]="Bereich === Bereiche.Gebaeudestruktur ? 'burnicklgruen' : 'weis'"></ion-icon></td>
+                      <td><ion-icon name="home-outline" [color]="Bereich === Bereiche.Gebaeudestruktur ? 'burnicklgruen' : 'weiss'"></ion-icon></td>
                       <td [style.color]="Bereich === Bereiche.Gebaeudestruktur ? Basics.Farben.Burnicklgruen : 'white'">Gebäudestruktur</td>
                     </tr>
                   </table>

@@ -26,6 +26,7 @@ import {
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {ToolsProvider} from "../../services/tools/tools";
 import {DatabaseLoplisteService} from "../../services/database-lopliste/database-lopliste.service";
+import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 
 @Component({
   selector:    'pj-aufgaben-liste-page',
@@ -325,6 +326,24 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     try {
 
       switch (this.Auswahldialogorigin) {
+
+        case this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_Standortfilter:
+
+          this.DBStandort.CurrentStandortfilter        = data;
+          this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
+
+          this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
+
+            this.DBStandort.StandortfilterChanged.emit();
+
+          }).catch((error) => {
+
+            this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+          });
+
+          this.PrepareDaten();
+
+          break;
 
         case this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Projektpunkteditor_Status:
 
@@ -1620,8 +1639,10 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     try {
 
-      this.ShowLOPListeEditor  = true;
-      this.Dialogbreite        = 950;
+      this.DBLOPListe.LOPListeEditorViewModus = this.DBLOPListe.LOPListeEditorViewModusvarianten.Eintraege;
+      this.ShowLOPListeEditor                 = true;
+      this.Dialogbreite                       = 1200;
+      this.Dialoghoehe                        = this.Basics.InnerContenthoehe - this.DialogPosY * 2;
 
     } catch (error) {
 

@@ -1,4 +1,4 @@
-import {EventEmitter, Injectable} from '@angular/core';
+ import {EventEmitter, Injectable} from '@angular/core';
 import {DebugProvider} from "../debug/debug";
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import * as lodash from "lodash-es";
@@ -7,7 +7,6 @@ import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import moment, {Moment} from "moment";
 import { v4 as uuidv4 } from 'uuid';
-import {boat, body} from "ionicons/icons";
 import {ConstProvider} from "../const/const";
 
 @Injectable({
