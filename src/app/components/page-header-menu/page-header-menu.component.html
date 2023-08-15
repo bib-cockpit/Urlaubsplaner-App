@@ -219,10 +219,10 @@
                         </ion-button>
                       </td>
                       <td>
-                        <div (click)="ProjektClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt ? '#c7d304' : 'white'"  class="buttonclass">
+                        <div (click)="ProjektClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt ? '#000000' : 'white'"  class="buttonclass">
                           <table>
                             <tr>
-                              <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt ? '#c7d304' : 'white'">
+                              <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt ? 'white' : 'white'">
                                 {{DBProjekte.CurrentProjekt.Projektkurzname}}
                               </td>
                             </tr>

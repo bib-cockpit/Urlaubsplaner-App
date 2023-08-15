@@ -321,7 +321,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     try {
 
-      return projektemenubereich === this.Menuservice.ProjekteMenuebereich ? '#c7d304' : 'white';
+      return projektemenubereich === this.Menuservice.ProjekteMenuebereich ? '#000000' : 'white';
 
     } catch (error) {
 
@@ -704,11 +704,11 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
       if(this.Menuservice.Aufgabenlisteansicht === this.Menuservice.Aufgabenlisteansichten.Projekt && this.DBProjekte.CurrentProjektindex > 0) {
 
-        return 'burnicklbraun';
+        return 'grau';
       }
       else {
 
-        return 'grau';
+        return 'silber';
       }
     } catch (error) {
 
@@ -722,11 +722,11 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
       if(this.Menuservice.Aufgabenlisteansicht === this.Menuservice.Aufgabenlisteansichten.Projekt && this.DBProjekte.CurrentProjektindex < this.DBProjekte.Projektliste.length - 1) {
 
-        return 'burnicklbraun';
+        return 'grau';
       }
       else {
 
-        return 'grau';
+        return 'silver';
       }
     } catch (error) {
 

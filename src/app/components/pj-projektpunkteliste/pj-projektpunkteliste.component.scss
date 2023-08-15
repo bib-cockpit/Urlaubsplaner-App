@@ -1,6 +1,6 @@
 ion-progress-bar {
   --background: #444444;
-  --progress-background: #c7d304;
+  --progress-background: #2190df;
 }
 
 .verticalclass {
@@ -14,7 +14,7 @@ ion-progress-bar {
 
 .markerclass {
 
-  background: #7b6a58;
+  background: #454545;
   width: 34px;
   height: 26px;
   display: flex;
@@ -32,7 +32,7 @@ ion-progress-bar {
   border-left-style: hidden !important;
   border-right-style: hidden !important;
   border-top-style: hidden !important;
-  color: #c7d304;
+  color: #2190df;
   font-size: 120%;
   font-weight: bold;
 }
@@ -185,7 +185,7 @@ ion-progress-bar {
   border-radius: 50%;
   width: 26px;
   height: 26px;
-  background: #c7d304;
+  background: #2190df;
   display: flex;
   justify-content: center; // horizontal
   align-items: center; // vertikal
@@ -218,7 +218,7 @@ ion-progress-bar {
   display: flex;
   justify-content: center; // horizontal
   align-items: center; // vertikal
-  background: #7b6a58;
+  background: #454545;
   color: white;
   cursor: pointer;
 }
