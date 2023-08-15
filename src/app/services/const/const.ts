@@ -437,6 +437,25 @@ const _Fachfirmentypen: any = {
     Name: 'Fliesenleger',
     Color: '#ff6600'
   },
+  Foerderanlagenbauer: {
+
+    Typnummer: 15,
+    Name: 'Förderanlagenbauer',
+    Color: '#ff6600'
+  },
+};
+
+const _Leistungsphasenvarianten = {
+
+  UNBEKANNT: 'unbekannt',
+  LPH1: 'LPH1',
+  LPH2: 'LPH2',
+  LPH3: 'LPH3',
+  LPH4: 'LPH4',
+  LPH5: 'LPH5',
+  LPH6: 'LPH6',
+  LPH7: 'LPH7',
+  LPH8: 'LPH8',
 };
 
 
@@ -912,6 +931,7 @@ export class ConstProvider {
   public readonly Faelligkeitsterminfiltervarianten = _Faelligkeitsterminfiltervarianten;
   public readonly AufgabenSortiermodusvarianten     = _AufgabenSortiermodusvarianten;
   public readonly Projektpunktprioritaetstypen      = _Projektpunktprioritaetstypen;
+  public readonly Leistungsphasenvarianten          = _Leistungsphasenvarianten;
 
   constructor() {
 

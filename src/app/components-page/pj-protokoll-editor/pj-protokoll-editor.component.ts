@@ -47,7 +47,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
   @Output() OkClickedEvent              = new EventEmitter<any>();
   @Output() CancelClickedEvent          = new EventEmitter();
-  @Output() LeistungsphaseClickedEvent  = new EventEmitter();
   @Output() TeamteilnehmerClicked       = new EventEmitter();
   @Output() BeteiligteteilnehmerClicked = new EventEmitter();
   @Output() AddProtokollpunktClicked    = new EventEmitter();
@@ -1095,43 +1094,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
    */
 
 
-  LeistungsphaseButtonClicked() {
 
-    try {
-
-      this.StopSaveProtokollTimer();
-
-      this.LeistungsphaseClickedEvent.emit();
-
-      /*
-
-      this.Auswahltitel = 'Leistungsphase';
-      this.Auswahlliste = [];
-      this.Auswahlliste.push(this.DB.Leistungsphasenvarianten.LPH1);
-      this.Auswahlliste.push(this.DB.Leistungsphasenvarianten.LPH2);
-      this.Auswahlliste.push(this.DB.Leistungsphasenvarianten.LPH3);
-      this.Auswahlliste.push(this.DB.Leistungsphasenvarianten.LPH4);
-      this.Auswahlliste.push(this.DB.Leistungsphasenvarianten.LPH5);
-      this.Auswahlliste.push(this.DB.Leistungsphasenvarianten.LPH6);
-      this.Auswahlliste.push(this.DB.Leistungsphasenvarianten.LPH7);
-      this.Auswahlliste.push(this.DB.Leistungsphasenvarianten.LPH8);
-
-      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, (id: string) => {
-
-        return id === this.DB.CurrentProtokoll.Leistungsphase;
-      });
-
-       */
-
-
-      // this.MyAuswahlDialog.Open(false, this.Auswahlindex);
-
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'LeistungsphaseButtonClicked', this.Debug.Typen.Component);
-    }
-  }
 
   DuplicateProtokollClicked() {
 

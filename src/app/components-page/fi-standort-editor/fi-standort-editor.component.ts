@@ -196,6 +196,8 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
 
     try {
 
+      debugger;
+
       if(this.DB.CurrentStandort._id === null) {
 
         this.DB.AddStandort().then((result: any) => {

@@ -34,6 +34,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
   @Output() StatusClicked               = new EventEmitter<Projektpunktestruktur>();
   @Output() ProtokollmarkeClicked       = new EventEmitter<any>();
   @Output() LOPListerMarkeClicked       = new EventEmitter<any>();
+  @Output() EmailMarkeClicked           = new EventEmitter<Projektpunktestruktur>();
   @Output() AufgabeClicked              = new EventEmitter<Projektpunktestruktur>();
   @Output() StartdatumChanged           = new EventEmitter<Projektpunktestruktur>();
   @Output() DetaildatumChanged          = new EventEmitter<Projektpunktestruktur>();
@@ -593,8 +594,6 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
       let Heute: Moment = moment();
 
-      debugger;
-
       if(event.status === true) {
 
         Projektpunkt.Status                 = this.Const.Projektpunktstatustypen.Geschlossen.Name;
@@ -1035,4 +1034,5 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'AusfuehrungCheckedChanged', this.Debug.Typen.Page);
     }
   }
+
 }

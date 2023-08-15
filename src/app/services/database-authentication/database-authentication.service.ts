@@ -150,7 +150,6 @@ export class DatabaseAuthenticationService {
       let message: string;
       let acountliste: any[] = this.MSALService.instance.getAllAccounts();
 
-
       if(acountliste.length === 0) {
 
         this.ShowLogin   = true;
@@ -197,7 +196,6 @@ export class DatabaseAuthenticationService {
 
                 break;
             }
-
           }
 
           return of(err != null);
@@ -209,11 +207,8 @@ export class DatabaseAuthenticationService {
             resolve(response.accessToken);
           }
           else resolve(null);
-
         });
       });
-
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Authentication', 'RequestToken', this.Debug.Typen.Service);
@@ -224,6 +219,8 @@ export class DatabaseAuthenticationService {
 
     try {
 
+      debugger;
+
       if(this.SecurityEnabled) {
 
         if (this.msalGuardConfig.interactionType === InteractionType.Popup) {
@@ -231,11 +228,15 @@ export class DatabaseAuthenticationService {
             this.authService.loginPopup({ ...this.msalGuardConfig.authRequest } as PopupRequest)
               .subscribe((response: AuthenticationResult) => {
 
+                debugger;
+
                 this.authService.instance.setActiveAccount(response.account);
               });
           } else {
             this.authService.loginPopup()
               .subscribe((response: AuthenticationResult) => {
+
+                debugger;
 
                 this.SaveAccessToken(response.accessToken);
                 this.authService.instance.setActiveAccount(response.account);
@@ -244,6 +245,8 @@ export class DatabaseAuthenticationService {
         }
         else {
           if (this.msalGuardConfig.authRequest) {
+
+            debugger;
 
             this.authService.loginRedirect({ ...this.msalGuardConfig.authRequest } as RedirectRequest);
           }
@@ -255,7 +258,7 @@ export class DatabaseAuthenticationService {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'file', 'Login', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error, 'Database Authentication', 'Login', this.Debug.Typen.Service);
     }
   }
 

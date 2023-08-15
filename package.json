@@ -1,5 +1,5 @@
 {
-  "name": "BIB Cockpit Application",
+  "name": "BAE Cockpit Application",
   "version": "0.0.1",
   "author": "Peter Hornburger",
   "homepage": "https://www.alinea-software.net",
@@ -82,5 +82,5 @@
     "ts-node": "~8.3.0",
     "typescript": "~4.7.3"
   },
-  "description": "BIB Cockpit Application"
+  "description": "BAE Cockpit Application"
 }

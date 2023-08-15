@@ -15,6 +15,7 @@ export class PageHeaderComponent implements OnInit {
 
   @ViewChild('PageHeaderDiv', { read: ElementRef, static: true }) public PageHeaderDiv: ElementRef;
 
+  @Input()  ProgressMessage:   string;
 
   constructor(private Debug: DebugProvider,
               public Basics: BasicsProvider,
@@ -23,6 +24,7 @@ export class PageHeaderComponent implements OnInit {
 
     try {
 
+      this.ProgressMessage = 'Stammdaten werden geladen werden geladen';
     }
     catch (error) {
 

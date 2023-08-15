@@ -19,7 +19,6 @@ export type Protokollstruktur = {
   Startstempel: number;
   Endestempel:  number;
   Besprechungsort: string;
-  Leistungsphase: string;
   ShowDetails: boolean;
   DownloadURL: string;
   Verfasser: Verfasserstruktur;

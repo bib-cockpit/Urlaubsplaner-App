@@ -18,6 +18,7 @@ export type Projektestruktur = {
   Projektfarbe:         string;
   Projektkurzname:      string;
   Projektnummer:        string;
+  Leistungsphase:       string;
   Status:               string;
   Deleted:              boolean;
   Beteiligtenliste:     Projektbeteiligtestruktur[];

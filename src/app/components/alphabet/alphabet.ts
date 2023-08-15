@@ -59,7 +59,7 @@ export class AlphabetComponent implements OnInit, OnChanges {
         width: this.Breite      + 'px',
         top: TopPossition       + 'px',
         bottom: BottomPossition + 'px',
-        background: this.Basics.Farben.Burnicklgrau
+        background: this.Basics.Farben.BAEHellgrau
       };
     }
     catch (error) {

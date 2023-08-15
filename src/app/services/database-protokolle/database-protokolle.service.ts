@@ -25,17 +25,6 @@ import {KostengruppenService} from "../kostengruppen/kostengruppen.service";
 })
 export class DatabaseProtokolleService {
 
-  public Leistungsphasenvarianten = {
-
-    LPH1: 'LPH1',
-    LPH2: 'LPH2',
-    LPH3: 'LPH3',
-    LPH4: 'LPH4',
-    LPH5: 'LPH5',
-    LPH6: 'LPH6',
-    LPH7: 'LPH7',
-    LPH8: 'LPH8',
-  };
 
   public Searchmodusvarianten = {
 
@@ -114,7 +103,6 @@ export class DatabaseProtokolleService {
         Notizen: "",
         DownloadURL: "",
         Endestempel: Heute.clone().add(1, 'hour').valueOf(),
-        Leistungsphase: 'LPH5',
         ProjektID: this.DBProjekt.CurrentProjekt._id,
         BeteiligtInternIDListe: [this.Pool.Mitarbeiterdaten._id],
         BeteiligExternIDListe: [],
@@ -613,7 +601,7 @@ export class DatabaseProtokolleService {
 
         if(Projektpunkt.Status === this.Const.Projektpunktstatustypen.Festlegung.Name) {
 
-          Kostengruppenliste.push(this.KostenService.GetKostengruppenname(Projektpunkt));
+          Kostengruppenliste.push(this.KostenService.GetKostengruppennameByProjektpunkt(Projektpunkt));
         }
         else {
 

@@ -9,6 +9,7 @@ export class AuswahlDialogService {
   public Auswahloriginvarianten = {
 
     Projekteliste_Standortfiler:                       'Projekteliste_Standortfiler',
+    Projekteliste_Editor_Leistungsphase:               'Projekteliste_Editor_Leistungsphase',
 
     Projekte_Editor_Standort:                          'Projekte_Editor_Standortfilter',
     Projekte_Editor_Mitarbeiterauswahl_Projektleiter:  'Projekte_Editor_Mitarbeiterauswahl_Projektleiter',
@@ -36,10 +37,22 @@ export class AuswahlDialogService {
     Aufgabenliste_Editor_Standortfilter:                 'Aufgabenliste_Editor_Standortfilter',
     Aufgabenliste_Editor_ZustaendigExtern:               'Aufgabenliste_Editor_ZustaendigExtern',
     Aufgabenliste_Editor_ZustaendigIntern:               'Aufgabenliste_Editor_ZustaendigIntern',
+    Aufgabenliste_Editor_Leistungsphase:                 'Aufgabenliste_Editor_Leistungsphase',
 
     Aufgabenliste_Meintageintrag_Status:                 'Aufgabenliste_Meintageintrag_Status',
 
-    Fesrlegungsliste_Editor_Leistungsphase:                 'Fesrlegungsliste_Editor_Leistungsphase',
+    Festlegungsliste_Editor_Leistungsphase:        'Festlegungsliste_Editor_Leistungsphase',
+    Festlegungsliste_Leistungsphasefilter:         'Festlegungsliste_Leistungsphasefilter',
+    Festlegungliste_Emaileditor_Standortfilter:    'Festlegungliste_Emaileditor_Standortfilter',
+    Festlegungliste_Editor_Status:                 'Festlegungliste_Editor_Status',
+    Festlegungliste_Editor_Fachbereich:            'Festlegungliste_Editor_Fachbereich',
+    Festlegungliste_Editor_ZustaendigExtern:       'Festlegungliste_Editor_ZustaendigExtern',
+    Festlegungliste_Editor_ZustaendigIntern:       'Festlegungliste_Editor_ZustaendigIntern',
+
+    Festlegungliste_Emaileditor_Intern_Empfaenger:          'Festlegungliste_Emaileditor_Intern_Empfaenger',
+    Festlegungliste_Emaileditor_Intern_CcEmpfaenger:        'Festlegungliste_Emaileditor_Intern_CcEmpfaenger',
+    Festlegungliste_Emaileditor_Extern_Empfaenger:          'Festlegungliste_Emaileditor_Extern_Empfaenger',
+    Festlegungliste_Emaileditor_Extern_CcEmpfaenger:        'Festlegungliste_Emaileditor_Extern_CcEmpfaenger',
 
     Bautagebuchliste_Emaileditor_Intern_Empfaenger:         'Bautagebuchliste_Emaileditor_Intern_Empfaenger',
     Bautagebuchliste_Emaileditor_Intern_CcEmpfaenger:       'Bautagebuchliste_Emaileditor_Intern_CcEmpfaenger',
@@ -51,15 +64,22 @@ export class AuswahlDialogService {
     Protokollliste_Projektpunkteditor_Teamteilnehmer:       'Protokollliste_Projektpunkteditor_Teamteilnehmer',
     Protokollliste_Protokolleditor_Beteilgtenteilnehmer:    'Protokollliste_Protokolleditor_Beteilgtenteilnehmer',
     Protokollliste_Projektpunkteditor_Beteilgtenteilnehmer: 'Protokollliste_Projektpunkteditor_Beteilgtenteilnehmer',
-    Protokollliste_Emaileditor_Intern_Empfaenger:           'Protokollliste_Emaileditor_Intern_Empfaenger',
-    Protokollliste_Emaileditor_Intern_CcEmpfaenger:         'Protokollliste_Emaileditor_Intern_CcEmpfaenger',
+
     Protokollliste_Emaileditor_Extern_Empfaenger:           'Protokollliste_Emaileditor_Extern_Empfaenger',
     Protokollliste_Emaileditor_Extern_CcEmpfaenger:         'Protokollliste_Emaileditor_Extern_CcEmpfaenger',
+    Protokollliste_Emaileditor_Intern_Empfaenger:           'Protokollliste_Emaileditor_Intern_Empfaenger',
+    Protokollliste_Emaileditor_Intern_CcEmpfaenger:         'Protokollliste_Emaileditor_Intern_CcEmpfaenger',
 
 
     Protokollliste_Editor_Standortfilter:              'Protokollliste_Editor_Standortfilter',
     Protokollliste_Projektpunkteditor_Status:          'Protokollliste_Projektpunkteditor_Status',
     Protokollliste_Projektpunkteditor_Fachbereich:     'Protokollliste_Projektpunkteditor_Fachbereich',
+
+
+
+    Emailliste_Projektpunkteditor_Fachbereich:     'Emailliste_Projektpunkteditor_Fachbereich',
+    Emailliste_Editor_ZustaendigIntern:            'Emailliste_Editor_ZustaendigIntern',
+    Emailliste_Editor_ZustaendigExtern:            'Emailliste_Editor_ZustaendigExtern',
 
     Protokollliste_Filter_Leistungsphase:     'Protokollliste_Filter_Leistungsphase',
     Protokollliste_Filter_Zeitspanne:         'Protokollliste_Filter_Zeitspanne',

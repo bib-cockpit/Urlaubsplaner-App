@@ -8,6 +8,7 @@ export type Projektpunktestruktur = {
   ProjektleiterID:     string;
   ProtokollID:         string;
   LOPListeID:          string;
+  EmailID:             string;
   Prioritaet:          string;
   Projektkey:          string;
   NotizenID:           string;
@@ -49,6 +50,7 @@ export type Projektpunktestruktur = {
   Fortschritt:         number;
   OpenFestlegung:      boolean;
   Fachbereich:         string;
+  Leistungsphase:      string;
 
   Verfasser: Verfasserstruktur;
 
@@ -66,4 +68,9 @@ export type Projektpunktestruktur = {
   __v?: any;
   Minuten?: number;
   Kostengruppenname?: string;
+
+  Filtered?: boolean;
+  Text_A?: string;
+  Text_B?: string;
+  Text_C?: string;
 };

@@ -78,9 +78,7 @@
                     <button-value-date [Datum]="GetDatum()" [Buttontext]="'Datum'" [ElementID]="'datum'" (TimeChanged)="DatumChanged($event)" [ShowKW]="true"></button-value-date>
                   </ion-col>
                   <ion-col [size]="Tools.GetButtonvalueSize()">
-                    <button-value [Buttontext]="'Leistungsphase'"
-                                  [Wert_A]="DB.CurrentProtokoll.Leistungsphase !== Const.NONE ? DB.CurrentProtokoll.Leistungsphase : 'unbekannt'"
-                                  (ButtonClicked)="LeistungsphaseButtonClicked()"></button-value>
+
                   </ion-col>
                 </ion-row>
                 <ion-row>
@@ -174,7 +172,7 @@
 
                                         <table style="font-size: 90%">
                                           <tr *ngIf="Projektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name">
-                                            <td  style="color: #FF9333; font-weight: bold; vertical-align: top; min-width: 20px">{{KostenService.GetKostengruppenname(Projektpunkt)}}</td>
+                                            <td  style="color: #FF9333; font-weight: bold; vertical-align: top; min-width: 20px">{{KostenService.GetKostengruppennameByProjektpunkt(Projektpunkt)}}</td>
                                           </tr>
                                           <tr>
                                             <td [innerHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe: 'html'"></td>

@@ -25,7 +25,9 @@
         <tr>
           <td style="width: 60px; height: 30px; font-weight: bold">Nr.</td>
           <td style="width: 100px; font-weight: bold">Datum</td>
+          <!--
           <td style="width: 80px; font-weight: bold">LPH</td>
+          -->
           <td style="width: auto; font-weight: bold">Titel</td>
           <td style="width: 80px; font-weight: bold">Einträge</td>
           <td style="width: 60px; font-weight: bold">Offen</td>
@@ -41,7 +43,11 @@
           <tr>
             <td style="width: 60px; height: 40px">{{Protokoll.Protokollnummer}}</td>
             <td style="width: 100px;">{{Protokoll.Zeitstring}}</td>
-            <td style="width: 80px;">{{Protokoll.Leistungsphase !== Const.NONE ? Protokoll.Leistungsphase : ''}}</td>
+              <!--
+            <td style="width: 80px;">
+              {{Protokoll.Leistungsphase !== Const.NONE ? Protokoll.Leistungsphase : ''}}
+            </td>
+              -->
             <td style="width: auto;">
               <ng-container *ngIf="Protokoll.Filtered !== true">
                 {{Protokoll.Titel}}
@@ -102,12 +108,12 @@
   </page-footer>
 </ion-footer>
 
+
 <pj-protokoll-editor *ngIf="ShowProtokollEditor"  [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
                      [Titel]="GetProtokollTitel()" Iconname="book-outline"
                      [ZIndex]="2000"
                      (OkClickedEvent)="ShowProtokollEditor = false"
                      (CancelClickedEvent)="ShowProtokollEditor = false"
-                     (LeistungsphaseClickedEvent)="LeistungsphaseClickedHandler()"
                      (TeamteilnehmerClicked)="TeamteilnehmerClickedHandler()"
                      (BeteiligteteilnehmerClicked)="BeteiligteteilnehmerClickedHandler()"
                      (ProtokollpunktClicked)="ProtokollpunktClickedHandler($event)"

@@ -25,6 +25,12 @@ import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 import {DatabaseLoplisteService} from "../database-lopliste/database-lopliste.service";
 import {settings} from "ionicons/icons";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import {DatabaseAuthenticationService} from "../database-authentication/database-authentication.service";
+import {Graphservice} from "../graph/graph";
+import {Standortestruktur} from "../../dataclasses/standortestruktur";
+import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
+import {DatabaseFestlegungenService} from "../database-festlegungen/database-festlegungen.service";
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +44,8 @@ export class DatabaseProjektpunkteService {
   public LiveEditorOpen: boolean;
   public Heute: moment.Moment;
   public Wochenpunkteliste: Projektpunktestruktur[][];
+  private ServerSendFestlegungenToTeamsUrl: string;
+  private ServerSaveFestlegungenToTeamsUrl: string;
 
   constructor(private Debug: DebugProvider,
               private Basics: BasicsProvider,
@@ -46,6 +54,9 @@ export class DatabaseProjektpunkteService {
               private DBMitarbeiter: DatabaseMitarbeiterService,
               private DBProjekt: DatabaseProjekteService,
               private DBProtokoll: DatabaseProtokolleService,
+              private DBFestlegungen: DatabaseFestlegungenService,
+              private AuthService: DatabaseAuthenticationService,
+              private GraphService: Graphservice,
               private DBLOPListe: DatabaseLoplisteService,
               private Const: ConstProvider) {
 
@@ -58,6 +69,9 @@ export class DatabaseProjektpunkteService {
       this.LiveEditorOpen            = false;
       this.Wochenpunkteliste         = [];
       this.CurrentProjektpunkteliste = [];
+
+      this.ServerSendFestlegungenToTeamsUrl = this.Pool.CockpitserverURL + '/sendfestlegungen';
+      this.ServerSaveFestlegungenToTeamsUrl = this.Pool.CockpitserverURL + '/savefestlegungen';
 
       this.InitStatustypen();
 
@@ -297,50 +311,11 @@ export class DatabaseProjektpunkteService {
           }
         });
       });
-
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'UpdateProjektpunkt', this.Debug.Typen.Service);
     }
   }
-
-  /*
-
-  SaveProjektpunktliste(liste: Projektpunktestruktur[]): Promise<any> {
-
-    try {
-
-      let Projektpunkt: Projektpunktestruktur;
-
-      return new Promise((resolve, reject) => {
-
-        Projektpunkt = lodash.find(liste, {LiveEditor: true});
-
-        debugger;
-
-        if(!lodash.isUndefined(Projektpunkt)) {
-
-          liste.forEach((eintrag: Projektpunktestruktur) => {
-
-            eintrag.LiveEditor = false;
-          });
-
-
-        }
-        else
-        {
-          resolve(true);
-        }
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'SaveProjektpunktliste', this.Debug.Typen.Service);
-    }
-  }
-
-   */
 
   DeleteProjektpunkteliste(liste: Projektpunktestruktur[], projekt: Projektestruktur): Promise<any> {
 
@@ -421,9 +396,11 @@ export class DatabaseProjektpunkteService {
         ProjektleiterID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : null,
         ProtokollID:     null,
         LOPListeID:      null,
+        EmailID:         null,
         Prioritaet:      null,
         NotizenID:       null,
         FestlegungskategorieID: null,
+        Leistungsphase:  this.DBProjekt.CurrentProjekt.Leistungsphase,
         Nummer:          Nummer.toString(),
         Listenposition:  Nummer,
         Aufgabe:         "",
@@ -483,6 +460,93 @@ export class DatabaseProjektpunkteService {
     }
   }
 
+  public GetNewFestlegung(): Projektpunktestruktur {
+
+    try {
+
+      let Heute: Moment  = MyMoment();
+      let Startzeitstempel: number = Heute.valueOf();
+      let Startzeitpunkt: string = Heute.format('DD.MM.YYYY');
+      let Vorname: string = this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten.Vorname : '';
+      let Name: string  = this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten.Name    : '';
+      let Email: string = this.Pool.Mitarbeiterdaten   !== null ? this.Pool.Mitarbeiterdaten.Email   : '';
+
+
+
+
+
+      let Punkt: Projektpunktestruktur = {
+
+        _id:              null,
+        ProjektID:       this.DBProjekt.CurrentProjekt !== null ? this.DBProjekt.CurrentProjekt._id : null,
+        Projektkey:      this.DBProjekt.CurrentProjekt !== null ? this.DBProjekt.CurrentProjekt.Projektkey : null,
+        ProjektleiterID: this.Pool.Mitarbeiterdaten    !== null ? this.Pool.Mitarbeiterdaten._id : null,
+        ProtokollID:     null,
+        LOPListeID:      null,
+        EmailID:         null,
+        Prioritaet:      null,
+        NotizenID:       null,
+        Leistungsphase:  this.DBProjekt.CurrentProjekt !== null ? this.DBProjekt.CurrentProjekt.Leistungsphase : 'unbekannt',
+        FestlegungskategorieID: null,
+        Nummer:          null,
+        Listenposition:  null,
+        Aufgabe:         "",
+        Thematik:        "",
+        Status:          this.GetProjektpunktstusByName(this.Const.Projektpunktstatustypen.Festlegung.Name).Name,
+        Deleted:         false,
+        Endezeitstempel:   null,
+        Endezeitstring:    null,
+        EndeKalenderwoche: null,
+        Startzeitsptempel: Startzeitstempel,
+        Startzeitstring:   Startzeitpunkt,
+        Geschlossenzeitstempel: null,
+        Geschlossenzeitstring: null,
+        FileDownloadURL:   this.Const.NONE,
+        Filename:          this.Const.NONE,
+        Filezoom:          1,
+        Bildbreite:        0,
+        Bildhoehe:         0,
+        Querdarstellung:   false,
+        Meilenstein:       false,
+        Meilensteinstatus: 'OFF',
+        Anmerkungenliste:   [], // Kommentarliste,
+        DataChanged:        false,
+        ProtokollOnly:      true,
+        ProtokollPublic:    true,
+        LiveEditor:         false,
+        BemerkungMouseOver: false,
+        EndeMouseOver:      false,
+        Zeitansatz:         30,
+        Zeitansatzeinheit:  this.Const.Zeitansatzeinheitvarianten.Minuten,
+        Fortschritt:        0,
+        ZustaendigeInternIDListe: [this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : ''],
+        ZustaendigeExternIDListe: [],
+        BauteilID:          null,
+        GeschossID:         null,
+        RaumID:             null,
+        OpenFestlegung:     false,
+        Fachbereich:        this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten.Fachbereich : null,
+        Oberkostengruppe:   null,
+        Hauptkostengruppe:  null,
+        Unterkostengruppe:  null,
+
+        Verfasser: {
+
+          Vorname: Vorname,
+          Name: Name,
+          Email: Email
+        }
+      };
+
+      return Punkt;
+
+    }
+    catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'GetNewFestlegung', this.Debug.Typen.Service);
+    }
+  }
+
   public GetNewProtokollpunkt(Protokoll: Protokollstruktur): Projektpunktestruktur {
 
     try {
@@ -512,10 +576,12 @@ export class DatabaseProjektpunkteService {
         ProjektleiterID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : null,
         ProtokollID:     Protokoll !== null ? Protokoll._id : null,
         LOPListeID:      null,
+        EmailID:         null,
         Prioritaet:      this.Const.NONE,
         NotizenID:       null,
         FestlegungskategorieID: null,
         Nummer:          Nummer,
+        Leistungsphase:  this.DBProjekt.CurrentProjekt !== null ? this.DBProjekt.CurrentProjekt.Leistungsphase : 'unbekannt',
         Listenposition:  parseInt(Nummer) - 1,
         Aufgabe:         "",
         Thematik:        "",
@@ -574,6 +640,241 @@ export class DatabaseProjektpunkteService {
     }
   }
 
+  public SaveFestlegungenInTeams(
+
+    teamsid: string,
+    directoryid: string,
+    projekt: Projektestruktur,
+    standort: Standortestruktur,
+    mitarbeiter: Mitarbeiterstruktur,
+    showmailinformations: boolean
+  ): Promise<any> {
+
+    try {
+
+      let Observer: Observable<any>;
+      let Teamsfile: Teamsfilesstruktur;
+      let Beteiligter: Projektbeteiligtestruktur;
+      let Mitarbeiter: Mitarbeiterstruktur;
+      let Name: string;
+
+      let Daten: {
+
+        TeamsID:     string;
+        DirectoryID: string;
+        Filename:    string;
+        Projekt:     Projektestruktur;
+        Displayliste: Projektpunktestruktur[][];
+        Kostengruppenliste: Projektpunktestruktur[];
+        Standort:    Standortestruktur;
+        Mitarbeiter: Mitarbeiterstruktur;
+        ShowMailinformations: boolean;
+        CcEmpfaengerliste: {
+          Name:  string;
+          Email: string;
+        }[];
+        Empfaengerliste: {
+          Name:  string;
+          Email: string;
+        }[];
+      } = {
+
+        TeamsID:     teamsid,
+        DirectoryID: directoryid,
+        Projekt:     projekt,
+        Displayliste: this.DBFestlegungen.Displayliste,
+        Kostengruppenliste: this.DBFestlegungen.Kostengruppenliste,
+        Filename:    this.DBFestlegungen.Filename,
+        Standort:    standort,
+        Mitarbeiter: mitarbeiter,
+        ShowMailinformations: showmailinformations,
+        Empfaengerliste:   [],
+        CcEmpfaengerliste: []
+      };
+
+      // Empfaenger bestimmen
+
+      this.DBFestlegungen.Empfaengerliste   = [];
+      this.DBFestlegungen.CcEmpfaengerliste = [];
+
+      debugger;
+
+
+      for(let ExternEmpfaengerID of this.DBFestlegungen.EmpfaengerExternIDListe) {
+
+        Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: ExternEmpfaengerID});
+
+        if(!lodash.isUndefined(Beteiligter)) {
+
+          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+
+          this.DBFestlegungen.Empfaengerliste.push({
+
+            Name: Name,
+            Email: Beteiligter.Email
+          });
+        }
+      }
+
+      for(let InternEmpfaengerID of this.DBFestlegungen.EmpfaengerInternIDListe) {
+
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: InternEmpfaengerID});
+
+        if(!lodash.isUndefined(Mitarbeiter)) this.DBFestlegungen.Empfaengerliste.push({
+
+          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
+          Email: Mitarbeiter.Email
+        });
+      }
+
+      for(let CcExternEmpfaengerID of this.DBFestlegungen.CcEmpfaengerExternIDListe) {
+
+        Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: CcExternEmpfaengerID});
+
+        if(!lodash.isUndefined(Beteiligter)) {
+
+          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+
+          this.DBFestlegungen.CcEmpfaengerliste.push({
+
+            Name: Name,
+            Email: Beteiligter.Email
+          });
+        }
+      }
+
+      for(let CcInternEmpfaengerID of this.DBFestlegungen.CcEmpfaengerInternIDListe) {
+
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: CcInternEmpfaengerID});
+
+        if(!lodash.isUndefined(Mitarbeiter)) this.DBFestlegungen.CcEmpfaengerliste.push({
+
+          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
+          Email: Mitarbeiter.Email
+        });
+      }
+
+      Daten.Empfaengerliste   = this.DBFestlegungen.Empfaengerliste;
+      Daten.CcEmpfaengerliste = this.DBFestlegungen.CcEmpfaengerliste;
+
+      // Festlegungsliste versenden
+
+      return new Promise((resolve, reject) => {
+
+        // PUT für update -> Datei neu erstellen oder überschreiben
+
+        Observer = this.http.put(this.ServerSaveFestlegungenToTeamsUrl, Daten);
+
+        Observer.subscribe({
+
+          next: (ne) => {
+
+            Teamsfile = ne;
+          },
+          complete: () => {
+
+            this.DBFestlegungen.FileID = Teamsfile.id;
+
+            resolve(Daten);
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'SaveProtokollInTeams', this.Debug.Typen.Service);
+    }
+  }
+
+  public async SendFestlegungenFromTeams(teamsid: string): Promise<any> {
+
+    try {
+
+      let token = await this.AuthService.RequestToken('Mail.Send');
+
+      let Observer: Observable<any>;
+      let Merker: Teamsfilesstruktur;
+      let Daten: {
+
+        Betreff:     string;
+        Nachricht:   string;
+        TeamsID:     string;
+        UserID:      string;
+        Token:       string;
+        Filename:    string;
+        FileID:      string;
+        Displayliste: Projektpunktestruktur[][];
+        Kostengruppenliste: Projektpunktestruktur[];
+        Empfaengerliste:   any[];
+        CcEmpfaengerliste: any[];
+      };
+
+      if(this.Basics.DebugNoExternalEmail) {
+
+        this.DBFestlegungen.Empfaengerliste   = lodash.filter(this.DBFestlegungen.Empfaengerliste,   { Email : 'p.hornburger@gmail.com' });
+        this.DBFestlegungen.CcEmpfaengerliste = lodash.filter(this.DBFestlegungen.CcEmpfaengerliste, { Email : 'p.hornburger@gmail.com' });
+
+        if(this.DBFestlegungen.Empfaengerliste.length === 0) {
+
+          this.DBFestlegungen.Empfaengerliste.push({
+            Email: 'p.hornburger@gmail.com',
+            Name:  'Peter Hornburger'
+          });
+        }
+      }
+
+      Daten = {
+
+        Betreff:     this.DBFestlegungen.Betreff,
+        Nachricht:   this.DBFestlegungen.Nachricht,
+        TeamsID:     teamsid,
+        UserID:      this.GraphService.Graphuser.id,
+        Token:       token,
+        Filename:           this.DBFestlegungen.Filename,
+        FileID:             this.DBFestlegungen.FileID,
+        Displayliste:       this.DBFestlegungen.Displayliste,
+        Kostengruppenliste: this.DBFestlegungen.Kostengruppenliste,
+        Empfaengerliste:    this.DBFestlegungen.Empfaengerliste,
+        CcEmpfaengerliste:  this.DBFestlegungen.CcEmpfaengerliste
+      };
+
+      return new Promise((resolve, reject) => {
+
+        // PUT für update
+
+        Observer = this.http.put(this.ServerSendFestlegungenToTeamsUrl, Daten);
+
+        Observer.subscribe({
+
+          next: (ne) => {
+
+            Merker = ne;
+
+          },
+          complete: () => {
+
+            resolve(true);
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'SaveProtokollInTeams', this.Debug.Typen.Service);
+    }
+  }
+
   public GetNewLOPListepunkt(lopliste: LOPListestruktur): Projektpunktestruktur {
 
     try {
@@ -620,6 +921,8 @@ export class DatabaseProjektpunkteService {
         LOPListeID:      lopliste !== null ? lopliste._id : null,
         Prioritaet:      this.Const.Projektpunktprioritaetstypen.Niedrig.Name,
         NotizenID:       null,
+        EmailID:         null,
+        Leistungsphase:  this.Const.Leistungsphasenvarianten.LPH3,
         FestlegungskategorieID: null,
         Nummer:          Nummer.toString(),
         Listenposition:  null,
@@ -1229,6 +1532,9 @@ export class DatabaseProjektpunkteService {
           }
         }
       }
+
+
+
 
       this.Wochenpunkteliste['Montag']     = this.SortWochenpunkteliste(this.Wochenpunkteliste['Montag']);
       this.Wochenpunkteliste['Dienstag']   = this.SortWochenpunkteliste(this.Wochenpunkteliste['Dienstag']);

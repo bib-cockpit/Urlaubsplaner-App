@@ -91,12 +91,11 @@ export class DatabaseMitarbeiterService {
 
       if(Mitarbeiter.StandortID === '') {
 
-        let Standort = lodash.find(this.Pool.Standorteliste, {Ort: 'Velburg'});
+        let Standort = lodash.find(this.Pool.Standorteliste, {Ort: 'Bamberg'});
 
         if(!lodash.isUndefined(Standort)) {
 
           Mitarbeiter.StandortID = Standort._id;
-          Mitarbeiter.Archiviert = true;
         }
       }
 
@@ -105,199 +104,6 @@ export class DatabaseMitarbeiterService {
 
       Mitarbeiter.Kuerzel =  A + '' + B;
 
-
-
-
-      if(graphuser.jobTitle.toLowerCase().indexOf('projektleiter') !== -1) {
-
-        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Projektleitung;
-      }
-      else if(graphuser.jobTitle.toLowerCase().indexOf('teamleit') !== -1) {
-
-        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Teamleitung;
-      }
-      else if(graphuser.jobTitle.toLowerCase().indexOf('planer') !== -1) {
-
-        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Planer;
-      }
-      else if(graphuser.jobTitle.toLowerCase().indexOf('auszubildend') !== -1) {
-
-        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Auszubildende;
-      }
-      else if(graphuser.jobTitle.toLowerCase().indexOf('student') !== -1) {
-
-        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Studentin;
-      }
-      else if(graphuser.jobTitle.toLowerCase().indexOf('assisten') !== -1) {
-
-        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Assistenz;
-      }
-      else if(graphuser.jobTitle.toLowerCase().indexOf('objektüberw') !== -1) {
-
-        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Objektueberwachung;
-      }
-      else if(graphuser.jobTitle.toLowerCase().indexOf('buchhaltung') !== -1) {
-
-        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Buchhaltung;
-      }
-      else if(graphuser.jobTitle.toLowerCase().indexOf('marketing') !== -1) {
-
-        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Marketing;
-      }
-      else if(graphuser.jobTitle.toLowerCase().indexOf('leitung') !== -1) {
-
-        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Marketing;
-      }
-      else if(graphuser.jobTitle.toLowerCase().indexOf('geschäfts') !== -1) {
-
-        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Geschaeftsfuehrung;
-      }
-      else if(graphuser.jobTitle.toLowerCase().indexOf('prokurist') !== -1) {
-
-        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Prokurist;
-      }
-      else if(graphuser.jobTitle.toUpperCase().indexOf('IT ') !== -1) {
-
-        Mitarbeiter.Fachbereich = this.Const.Fachbereiche.IT;
-      }
-      else {
-
-        switch (graphuser.jobTitle) {
-
-          case 'CAD-Koordinator':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Planer;
-
-            break;
-
-          case 'Controlling & Finanzen':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Controlling;
-
-            break;
-
-          case 'CTO':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Geschaeftsfuehrung;
-
-            break;
-
-          case 'CEO':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Geschaeftsfuehrung;
-            break;
-
-          case 'CFO':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Geschaeftsfuehrung;
-
-            break;
-
-          case 'JPL ELT':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Projektleitung;
-
-            break;
-
-          case 'Technikerin ELT':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Techniker;
-            break;
-
-          case 'Interim COO':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Geschaeftsfuehrung;
-
-            break;
-
-          case 'Interim CFO':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Geschaeftsfuehrung;
-
-            break;
-
-          case 'Controlling':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Controlling;
-
-            break;
-
-          case 'Facility Management':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Facilitymanager;
-
-            break;
-
-          case 'Niderlassungsleiter':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Niederlassungsleitung;
-
-            break;
-
-          case 'Niederlassungsleiter':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Niederlassungsleitung;
-
-            break;
-
-          case 'Junior Projekleiter':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Projektleitung;
-
-            break;
-
-          case 'Architektin':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Architektin;
-
-            break;
-
-          case 'Immobilienkauffrau':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Kauffrau;
-            break;
-
-          case 'Technische Zeichnerin':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Planer;
-            break;
-
-          case 'Vorzimmer Dr. Burnickl':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Assistenz;
-            break;
-
-          case 'HR-Businesspartner':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.HR;
-
-            break;
-
-          case 'Technischer Leiter':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Teamleitung;
-
-            break;
-
-          case 'Praktikant':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.Praktikantin;
-
-            break;
-
-            case 'IT':
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.IT;
-
-            break;
-
-          default:
-
-            Mitarbeiter.Fachbereich = this.Const.Fachbereiche.unbekannt;
-
-            break;
-        }
-      }
 
       return Mitarbeiter;
 
@@ -596,6 +402,8 @@ export class DatabaseMitarbeiterService {
       return new Promise((resolve, reject) => {
 
         // POST für neuen Eintrag
+
+        debugger;
 
         console.log('POST new Mitarbeiter:');
         console.log(mitarbeiter);

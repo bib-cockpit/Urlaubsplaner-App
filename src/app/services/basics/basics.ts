@@ -25,8 +25,11 @@ export class BasicsProvider {
 
   public Farben = {
 
+    BAEBlau:       '#2190df',
+    BAEHellgrau:   '#dfe5eb',
     Gruen:         '#006400',
     Burnicklgruen: '#c7d304',
+    Grau:          '#454545',
     Buttoncolor:   '#444444',
     Blau:          '#00008B',
     Orange:        '#FF8C00',
@@ -39,8 +42,10 @@ export class BasicsProvider {
   public Ionicfarben = {
 
     BurnicklGruen: 'burnicklgruen',
+    BAEBlau:       'baeblau',
     BurnicklGrau:  'burnicklgrau',
     BurnicklBraun: 'burnicklbraun',
+
     Gruen:         'gruen',
     Orange:        'orange',
     Grau:          'grau',

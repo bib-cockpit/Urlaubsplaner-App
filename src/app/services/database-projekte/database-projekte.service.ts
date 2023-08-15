@@ -21,6 +21,7 @@ import {assignWith, forEach} from "lodash-es";
 import {Teamsstruktur} from "../../dataclasses/teamsstruktur";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Protokollstruktur} from "../../dataclasses/protokollstruktur";
+import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -152,6 +153,7 @@ export class DatabaseProjekteService {
               if(lodash.isUndefined(Projekt.BaustellenLOPFolderID)) Projekt.BaustellenLOPFolderID = this.Const.NONE;
               if(lodash.isUndefined(Projekt.ProtokolleFolderID))    Projekt.ProtokolleFolderID    = this.Const.NONE;
               if(lodash.isUndefined(Projekt.BautagebuchFolderID))   Projekt.BautagebuchFolderID   = this.Const.NONE;
+              if(lodash.isUndefined(Projekt.Leistungsphase))        Projekt.Leistungsphase        = 'unbekannt';
 
               for(let Beteiligter of Projekt.Beteiligtenliste) {
 
@@ -204,10 +206,83 @@ export class DatabaseProjekteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Meine Woche Editor', 'GetProjektFarbeByProjektpunkt', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'GetProjektFarbeByProjektpunkt', this.Debug.Typen.Service);
     }
   }
 
+  public CheckEmailIsProjektmember(email: string): boolean {
+
+    try {
+
+      if(this.Pool.Mitarbeiterdaten !== null) {
+
+        if(email !== this.Pool.Mitarbeiterdaten.Email) {
+
+          for(let Projekt of this.Gesamtprojektliste) {
+
+            let Beteiligter = lodash.find(Projekt.Beteiligtenliste, (eintrag: Projektbeteiligtestruktur) => {
+
+              return eintrag.Email === email;
+
+            });
+
+            if(!lodash.isUndefined(Beteiligter)) return true; //  Projekt;
+          }
+
+          return false; // null;
+        }
+        else {
+
+          return true;
+        }
+      }
+      else {
+
+        return false;
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'CheckEmailIsProjektmember', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetEmailIsProjektmember(email: string): Projektestruktur {
+
+    try {
+
+      if(this.Pool.Mitarbeiterdaten !== null) {
+
+        if(email !== this.Pool.Mitarbeiterdaten.Email) {
+
+          for(let Projekt of this.Projektliste) {
+
+            let Beteiligter = lodash.find(Projekt.Beteiligtenliste, (eintrag: Projektbeteiligtestruktur) => {
+
+              return eintrag.Email === email;
+
+            });
+
+            if(!lodash.isUndefined(Beteiligter)) return Projekt;
+          }
+
+          return null;
+        }
+        else {
+
+          return null;
+        }
+      }
+      else {
+
+        return null;
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'GetEmailIsProjektmember', this.Debug.Typen.Service);
+    }
+  }
 
   public SetProjektpunkteanzahl(anzahl: number, projektkey: string) {
 
@@ -347,6 +422,7 @@ export class DatabaseProjekteService {
         Beteiligtenliste: [],
         Bauteilliste: [],
         ProjektIsReal: true,
+        Leistungsphase: 'unbekannt',
 
         TeamsID:          this.Const.NONE,
         TeamsDescription: this.Const.NONE,
@@ -720,12 +796,17 @@ export class DatabaseProjekteService {
 
       let Farbe = this.GetProjektfarbeByProjektfarbnamen(projekt.Projektfarbe);
 
+      return Farbe;
+
+      /*
       if(this.CheckProjektmembership(projekt)) return Farbe;
       else return {
         Background: "silver",
         Foreground: "black",
         Name: ""
       };
+
+       */
 
     } catch (error) {
 

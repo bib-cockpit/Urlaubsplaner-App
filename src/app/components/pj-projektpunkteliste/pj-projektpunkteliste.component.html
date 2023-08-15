@@ -110,9 +110,6 @@
                     <div (click)="ProtokollMarkeClicked(Projektpunkt)" class="markerclass">
                       P
                     </div>
-                    <!--
-                    <ion-button size="small" [color]="Basics.Ionicfarben.BurnicklBraun" (click)="ProtokollMarkeClicked(Projektpunkt)">P</ion-button>
-                    -->
                   </td>
                 </tr>
                 <tr *ngIf="Projektpunkt.LOPListeID !== null " style="height: inherit; ">
@@ -120,9 +117,13 @@
                     <div (click)="LOPMarkeClicked(Projektpunkt)" class="markerclass">
                       LOP
                     </div>
-                    <!--
-                    <ion-button size="small" [color]="Basics.Ionicfarben.BurnicklBraun" (click)="LOPMarkeClicked(Projektpunkt)">LOP</ion-button>
-                    -->
+                  </td>
+                </tr>
+                <tr *ngIf="Projektpunkt.EmailID !== null " style="height: inherit; ">
+                  <td style="width: 30px">
+                    <div (click)="EmailMarkeClicked.emit(Projektpunkt)" class="markerclass">
+                      E
+                    </div>
                   </td>
                 </tr>
               </table>
@@ -351,5 +352,7 @@
 
 </table>
 
+<!--
 <span *ngIf="Settings === null">Settings null</span>
 <span *ngIf="Projekt  === null">Projekt null</span>
+-->

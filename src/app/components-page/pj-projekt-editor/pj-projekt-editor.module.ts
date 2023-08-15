@@ -9,6 +9,7 @@ import {PjProjektEditorComponent} from "./pj-projekt-editor.component";
 import {PageHeaderModule} from "../../components/page-header/page-header.module";
 import {PageFooterModule} from "../../components/page-footer/page-footer.module";
 import {PageHeaderCenterModule} from "../../components/page-header-center/page-header-center.module";
+import {ButtonValueModule} from "../../components/button-value/button-value.module";
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import {PageHeaderCenterModule} from "../../components/page-header-center/page-h
         CheckboxClonModule,
         PageHeaderModule,
         PageFooterModule,
-        PageHeaderCenterModule
+        PageHeaderCenterModule,
+        ButtonValueModule
     ],
   providers: [
 

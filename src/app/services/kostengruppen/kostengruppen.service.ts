@@ -1974,7 +1974,7 @@ export class KostengruppenService {
     }
   }
 
-  public GetKostengruppe(projektpunkt: Projektpunktestruktur): Kostengruppenstruktur {
+  public GetKostengruppeByProjektpunkt(projektpunkt: Projektpunktestruktur): Kostengruppenstruktur {
 
     try {
 
@@ -2015,21 +2015,104 @@ export class KostengruppenService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'GetKostengruppe', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'GetKostengruppeByProjektpunkt', this.Debug.Typen.Service);
     }
   }
 
-  public GetKostengruppenname(projektpunkt: Projektpunktestruktur): string {
+  public GetKostengruppeByGruppennummern(Unterkostengruppe: number,  Hauptkostengruppe: number, Oberkostengruppe: number ): Kostengruppenstruktur {
 
     try {
 
-      let Kostengruppe: Kostengruppenstruktur = this.GetKostengruppe(projektpunkt);
+      let Kostengruppe: Kostengruppenstruktur;
+
+        if(Unterkostengruppe !== null) {
+
+          Kostengruppe = lodash.find(this.Kostengruppen, (gruppe: Kostengruppenstruktur) => {
+
+            return gruppe.Typ === this.Kostengruppentypen.Untergruppe && gruppe.Kostengruppennummer === Unterkostengruppe;
+          });
+
+           if(!lodash.isUndefined(!Kostengruppe)) return Kostengruppe;
+        }
+        else if(Hauptkostengruppe !== null) {
+
+          Kostengruppe = lodash.find(this.Kostengruppen, (gruppe: Kostengruppenstruktur) => {
+
+            return gruppe.Typ === this.Kostengruppentypen.Hauptgruppe && gruppe.Kostengruppennummer === Hauptkostengruppe;
+          });
+
+          if(!lodash.isUndefined(!Kostengruppe)) return Kostengruppe;
+        }
+        else if(Oberkostengruppe !== null) {
+
+          Kostengruppe = lodash.find(this.Kostengruppen, (gruppe: Kostengruppenstruktur) => {
+
+            return gruppe.Typ === this.Kostengruppentypen.Obergruppe && gruppe.Kostengruppennummer === Oberkostengruppe;
+          });
+
+          if(!lodash.isUndefined(!Kostengruppe)) return Kostengruppe;
+        }
+
+      return null;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'GetKostengruppeByProjektpunkt', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetKostengruppennameByProjektpunkt(projektpunkt: Projektpunktestruktur): string {
+
+    try {
+
+      let Kostengruppe: Kostengruppenstruktur = this.GetKostengruppeByProjektpunkt(projektpunkt);
 
       return Kostengruppe !== null ? Kostengruppe.Kostengruppennummer + ' ' + Kostengruppe.Bezeichnung : 'Unbekannt';
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'GetKostengruppenname', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'GetKostengruppennameByProjektpunkt', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetKostengruppennameByGruppennummern(Unterkostengruppe: number,  Hauptkostengruppe: number, Oberkostengruppe: number ): string {
+
+    try {
+
+      let Kostengruppe: Kostengruppenstruktur = this.GetKostengruppeByGruppennummern(Unterkostengruppe, Hauptkostengruppe, Oberkostengruppe);
+      let Gruppennummer: string;
+
+      if(Kostengruppe !== null) {
+
+        Gruppennummer = Kostengruppe.Kostengruppennummer.toString();
+
+        switch (Kostengruppe.Typ) {
+
+          case this.Kostengruppentypen.Obergruppe:
+
+            Gruppennummer = Gruppennummer.substring(0, 1) + 'xx';
+
+            break;
+
+          case this.Kostengruppentypen.Hauptgruppe:
+
+            Gruppennummer = Gruppennummer.substring(0, 2) + 'x';
+
+            break;
+
+          case this.Kostengruppentypen.Untergruppe:
+
+            Gruppennummer = Gruppennummer.substring(0, 3);
+
+            break;
+
+        }
+      }
+      return Kostengruppe !== null ? Gruppennummer + ' ' + Kostengruppe.Bezeichnung : null;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'GetKostengruppennameByProjektpunkt', this.Debug.Typen.Service);
     }
   }
 }

@@ -6,12 +6,30 @@
   --ion-color-gruen-shade: #009000;
   --ion-color-gruen-tint: #009000;
 
+  /*
   --ion-color-burnicklgruen: #c7d416;
   --ion-color-burnicklgruen-rgb: 0, 128, 0;
   --ion-color-burnicklgruen-contrast: #ffffff;
   --ion-color-burnicklgruen-contrast-rgb: 0, 0, 0;
   --ion-color-burnicklgruen-shade: #c7d416;
   --ion-color-burnicklgruen-tint: #c7d416;
+
+   */
+  --ion-color-burnicklgruen: #444444;
+  --ion-color-burnicklgruen-rgb: 0, 128, 0;
+  --ion-color-burnicklgruen-contrast: #ffffff;
+  --ion-color-burnicklgruen-contrast-rgb: 0, 0, 0;
+  --ion-color-burnicklgruen-shade: 444444;
+  --ion-color-burnicklgruen-tint: #444444;
+
+
+
+  --ion-color-baeblau: #2190df;
+  --ion-color-baeblau-rgb: 0, 128, 0;
+  --ion-color-baeblau-contrast: #ffffff;
+  --ion-color-baeblau-contrast-rgb: 0, 0, 0;
+  --ion-color-baeblau-shade: #2190df;
+  --ion-color-baeblau-tint: #2190df;
 
   --ion-color-burnicklgrau: #354547;
   --ion-color-burnicklgrau-rgb: 0, 128, 0;
@@ -77,12 +95,12 @@
   --ion-color-menuetitlegrau-shade: #000000;
   --ion-color-menuetitlegrau-tint: #444444;
 
-  --ion-color-grau: #444444;
+  --ion-color-grau: #454545;
   --ion-color-grau-rgb: 68, 68, 68;
   --ion-color-grau-contrast: #ffffff;
   --ion-color-grau-contrast-rgb: 255, 255, 255;
   --ion-color-grau-shade: #000000;
-  --ion-color-grau-tint: #000000;
+  --ion-color-grau-tint: #454545;
 
   --ion-color-graudisabled: #444444;
   --ion-color-graudisabled-rgb: 68, 68, 68;
@@ -241,6 +259,17 @@
   --ion-color-contrast-rgb: var(--ion-burnicklgruen-contrast-rgb) !important;
   --ion-color-shade: var(--ion-color-burnicklgruen-shade) !important;
   --ion-color-tint: var(--ion-color-burnicklgruen-tint) !important;
+}
+
+
+
+.ion-color-baeblau {
+  --ion-color-base: var(--ion-color-baeblau) !important;
+  --ion-color-base-rgb: var(--ion-color-baeblau-rgb) !important;
+  --ion-color-contrast: var(--ion-color-baeblau-contrast) !important;
+  --ion-color-contrast-rgb: var(--ion-baeblau-contrast-rgb) !important;
+  --ion-color-shade: var(--ion-color-baeblau-shade) !important;
+  --ion-color-tint: var(--ion-color-baeblau-tint) !important;
 }
 
 .ion-color-burnicklgrau {

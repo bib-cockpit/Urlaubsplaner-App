@@ -47,8 +47,9 @@ export class DatabasePoolService {
   public Emailcontentvarinaten = {
 
     NONE: this.Const.NONE,
-    Protokoll: 'Protokoll',
-    Bautagebuch: 'Bautagebuch'
+    Protokoll:    'Protokoll',
+    Bautagebuch:  'Bautagebuch',
+    Festlegungen: 'Festlegungen'
   };
 
   public StandortelisteChanged: EventEmitter<any> = new EventEmitter<any>();
@@ -73,6 +74,7 @@ export class DatabasePoolService {
 
   constructor(private Debug: DebugProvider,
               private Const: ConstProvider,
+              private AuthService: DatabaseAuthenticationService,
               private Http:  HttpClient) {
     try {
 
@@ -82,8 +84,8 @@ export class DatabasePoolService {
       this.Mitarbeiterstandort      = null;
       this.ShowProgress             = false;
       this.Mitarbeitersettingsliste = [];
-      this.MaxProgressValue         = 10;
-      this.CurrentProgressValue     = 5;
+      this.MaxProgressValue         = 0;
+      this.CurrentProgressValue     = 0;
       this.Standorteliste           = [];
       this.Mitarbeiterliste         = [];
       this.Projektpunkteliste       = [];
@@ -145,6 +147,8 @@ export class DatabasePoolService {
               if(lodash.isUndefined(Projektpunkt.LOPListeID))             Projektpunkt.LOPListeID             = null;
               if(lodash.isUndefined(Projektpunkt.Prioritaet))             Projektpunkt.Prioritaet             = null;
               if(lodash.isUndefined(Projektpunkt.Thematik))               Projektpunkt.Thematik               = '';
+              if(lodash.isUndefined(Projektpunkt.EmailID))                Projektpunkt.EmailID                = null;
+              if(lodash.isUndefined(Projektpunkt.Leistungsphase))         Projektpunkt.Leistungsphase         = this.Const.Leistungsphasenvarianten.LPH3;
 
               Projektpunkt.Anmerkungenliste.forEach((Anmerkung: Projektpunktanmerkungstruktur) => {
 
@@ -351,7 +355,6 @@ export class DatabasePoolService {
       let headers: HttpHeaders = new HttpHeaders({
 
         'content-type': 'application/json',
-        // 'authorization': this.AuthService.AccessToken
       });
 
       return new Promise((resolve, reject) => {
@@ -359,6 +362,7 @@ export class DatabasePoolService {
         let MitarbeiterObservable = this.Http.get(this.CockpitserverURL + '/mitarbeiter', { headers: headers } );
 
         MitarbeiterObservable.subscribe({
+
 
           next: (data) => {
 
@@ -639,8 +643,9 @@ export class DatabasePoolService {
 
     try {
 
+      let Steps: number         = 4;
       this.ShowProgress         = true;
-      this.MaxProgressValue     = projektliste.length;
+      this.MaxProgressValue     = projektliste.length * Steps;
       this.CurrentProgressValue = 0;
       this.Projektpunkteliste   = [];
       this.Protokollliste       = [];
@@ -656,27 +661,18 @@ export class DatabasePoolService {
           await this.ReadProjektpunkteliste(Projekt);
 
           this.CurrentProgressValue++;
-        }
-
-        for(let Projekt of projektliste)  {
 
           this.ProgressMessage = 'Protokolle ' + Projekt.Projektkurzname;
 
           await this.ReadProtokollliste(Projekt);
 
           this.CurrentProgressValue++;
-        }
-
-        for(let Projekt of projektliste)  {
 
           this.ProgressMessage = 'Bautagebücher ' + Projekt.Projektkurzname;
 
           await this.ReadBautagebuchliste(Projekt);
 
           this.CurrentProgressValue++;
-        }
-
-        for(let Projekt of projektliste)  {
 
           this.ProgressMessage = 'LOP Liste ' + Projekt.Projektkurzname;
 
@@ -684,7 +680,6 @@ export class DatabasePoolService {
 
           this.CurrentProgressValue++;
         }
-
       } catch (error) {
 
         this.ShowProgress = false;
@@ -697,6 +692,7 @@ export class DatabasePoolService {
       this.BautagebuchlisteChanged.emit();
       this.LOPListeChanged.emit();
 
+      this.CurrentProgressValue = this.MaxProgressValue;
       this.ShowProgress = false;
 
     } catch (error) {
@@ -730,6 +726,7 @@ export class DatabasePoolService {
         ProjektID:               null,
         Favoritprojektindex:     null,
         StandortFilter:          null,
+        LeistungsphaseFilter:    this.Const.Leistungsphasenvarianten.UNBEKANNT,
         AufgabenShowBearbeitung: true,
         AufgabenShowGeschlossen: false,
         AufgabenShowOffen:       true,
@@ -757,6 +754,10 @@ export class DatabasePoolService {
         AufgabenShowMeinewoche:    true,
         AufgabenShowAusfuehrung:   true,
         AufgabenShowPlanung:       true,
+
+        OberkostengruppeFilter: null,
+        HauptkostengruppeFilter: null,
+        UnterkostengruppeFilter: null,
 
         AufgabenTerminfiltervariante:  null,
         AufgabenTerminfilterStartwert: null,
@@ -827,6 +828,12 @@ export class DatabasePoolService {
           if(lodash.isUndefined(Settings.AufgabenMeilensteineNachlauf)) Settings.AufgabenMeilensteineNachlauf  = 2;
 
           if(lodash.isUndefined(Settings.LOPListeGeschlossenZeitfilter)) Settings.LOPListeGeschlossenZeitfilter  = 14;
+
+          if(lodash.isUndefined(Settings.LeistungsphaseFilter)) Settings.LeistungsphaseFilter  = this.Const.Leistungsphasenvarianten.UNBEKANNT;
+
+          if(lodash.isUndefined(Settings.OberkostengruppeFilter))  Settings.OberkostengruppeFilter   = null;
+          if(lodash.isUndefined(Settings.UnterkostengruppeFilter)) Settings.UnterkostengruppeFilter  = null;
+          if(lodash.isUndefined(Settings.HauptkostengruppeFilter)) Settings.HauptkostengruppeFilter  = null;
 
           return Settings;
         }

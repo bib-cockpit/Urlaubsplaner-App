@@ -12,6 +12,7 @@ import {FormsModule} from "@angular/forms";
 import {ButtonValueDateModule} from "../../components/button-value-date/button-value-date.module";
 import {PageFooterModule} from "../../components/page-footer/page-footer.module";
 import {ButtonValueDateSmallModule} from "../../components/button-value-date-small/button-value-date-small.module";
+import {EditorComponent} from "@tinymce/tinymce-angular";
 
 @NgModule({
   declarations: [
@@ -22,22 +23,23 @@ import {ButtonValueDateSmallModule} from "../../components/button-value-date-sma
 
     PjProjektpunktEditorComponent
   ],
-  imports: [
+    imports: [
 
-    CommonModule,
-    IonicModule,
-    InputCloneModule,
-    InputCloneKeeperModule,
-    AbstandElementFixedModule,
-    CheckboxClonModule,
-    PageHeaderModule,
-    ButtonValueModule,
-    FormsModule,
-    ButtonValueDateModule,
-    PageFooterModule,
-    ButtonValueDateSmallModule,
-    //  ReactiveFormsModule,
-  ],
+        CommonModule,
+        IonicModule,
+        InputCloneModule,
+        InputCloneKeeperModule,
+        AbstandElementFixedModule,
+        CheckboxClonModule,
+        PageHeaderModule,
+        ButtonValueModule,
+        FormsModule,
+        ButtonValueDateModule,
+        PageFooterModule,
+        ButtonValueDateSmallModule,
+        EditorComponent,
+        //  ReactiveFormsModule,
+    ],
   providers: [
 
   ]

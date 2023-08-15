@@ -47,6 +47,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
   public Backgroundinterval: any;
   public ShowChangelogEditor: boolean;
   private ChangelogSubscription: Subscription;
+  public ProgressMessage: string;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -77,6 +78,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
       this.Backgroundinterval     = null;
       this.ShowChangelogEditor    = false;
       this.ChangelogSubscription  = null;
+      this.ProgressMessage        = '';
     }
     catch (error) {
 
@@ -128,6 +130,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
       this.Menuservice.MainMenuebereich = this.Menuservice.MainMenuebereiche.Home;
 
+      /*
       this.Backgroundinterval = window.setInterval(() => {
 
         Nummer = lodash.random(1, 36, false);
@@ -136,6 +139,8 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
 
       }, 60000);
+
+       */
 
     }
     catch (error) {
@@ -286,6 +291,8 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
       if(this.DBProjekte.CurrentFavorit !== null && this.DBProjekte.GesamtprojektlisteHasDatenerror === false) {
 
+        this.ProgressMessage = 'Projektdaten werden geladen';
+
         this.Menuservice.MainMenuebereich     = this.Menuservice.MainMenuebereiche.Projekte;
         this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Aufgabenliste;
         this.Menuservice.Aufgabenlisteansicht = this.Menuservice.Aufgabenlisteansichten.Projekt;
@@ -416,7 +423,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     try {
 
-      this.GraphService.GetUsercalendar();
+      this.GraphService.GetOwnCalendar();
 
     } catch (error) {
 
@@ -467,6 +474,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
   TestSites() {
 
     try {
+
 
       this.GraphService.TestSites();
 

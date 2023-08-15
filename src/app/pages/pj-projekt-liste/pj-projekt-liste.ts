@@ -31,6 +31,7 @@ import {Outlookkontaktestruktur} from "../../dataclasses/outlookkontaktestruktur
 import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {DatabaseProtokolleService} from "../../services/database-protokolle/database-protokolle.service";
 
 
 @Component({
@@ -103,6 +104,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
               private GraphService: Graphservice,
               private LoadingAnimation: LoadingAnimationService,
               public DBGebaeude: DatabaseGebaeudestrukturService,
+              public DBProtokolle: DatabaseProtokolleService,
               public  Pool: DatabasePoolService) {
 
     try {
@@ -142,8 +144,6 @@ export class PjProjektListePage implements OnInit, OnDestroy {
       this.ShowOutlookkontakteAuswahl = false;
       this.AuswahlDialogHoehe         = 300;
       this.AuswahlDialogBreite        = 300;
-
-
     }
     catch (error) {
 
@@ -230,8 +230,6 @@ export class PjProjektListePage implements OnInit, OnDestroy {
       this.StrukturDialoghoehe = this.Dialoghoehe;
 
       this.PrepareData();
-
-      // this.ProjektButtonClicked(0);
     }
     catch (error) {
 
@@ -269,6 +267,10 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
       this.Lastletter = '';
 
+      debugger;
+
+      /*
+
       if(this.ShowRealProjekteOnly) Liste = lodash.filter(Liste, { ProjektIsReal : true});
 
       if(this.ShowOwnProjekteOnly) {
@@ -278,6 +280,8 @@ export class PjProjektListePage implements OnInit, OnDestroy {
           return this.DB.CheckProjektmembership(Projekt);
         });
       }
+
+       */
 
       for(let Projekt of Liste) {
 
@@ -418,10 +422,12 @@ export class PjProjektListePage implements OnInit, OnDestroy {
       let Teams: Teamsstruktur;
       let Message: string;
 
+      this.DB.CurrentProjekt = lodash.cloneDeep(Projekt);
+      this.ShowEditor        = true;
+
+      /*
       if(this.DB.CheckProjektmembership(Projekt) === true) {
 
-        this.DB.CurrentProjekt = lodash.cloneDeep(Projekt);
-        this.ShowEditor        = true;
       }
       else {
 
@@ -429,7 +435,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
         if(Message === this.Const.Dialogmessages.ok) {
 
-          await this.LoadingAnimation.ShowLoadingAnimation('Team beitrenten', 'Der Team Beitritt läuft. Bitte kurz warten.');
+          await this.LoadingAnimation.ShowLoadingAnimation('Team beitreten', 'Der Team Beitritt läuft. Bitte kurz warten.');
 
           await this.GraphService.JoinTeams(projekt.TeamsID, this.Pool.Mitarbeiterdaten.UserID);
           Teams = await this.GraphService.GetOtherTeamsinfo(projekt.TeamsID);
@@ -442,6 +448,8 @@ export class PjProjektListePage implements OnInit, OnDestroy {
           this.ShowEditor        = true;
         }
       }
+
+       */
     }
     catch (error) {
 
@@ -454,7 +462,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     try {
 
       this.DB.CurrentProjekt = this.DB.GetEmptyProjekt();
-      this.ShowEditor              = true;
+      this.ShowEditor        = true;
     }
     catch (error) {
 
@@ -652,9 +660,13 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     try {
 
 
-      debugger;
-
       switch (this.Auswahldialogorigin) {
+
+        case this.Auswahlservice.Auswahloriginvarianten.Projekteliste_Editor_Leistungsphase:
+
+          this.DB.CurrentProjekt.Leistungsphase = data;
+
+          break;
 
         case this.Auswahlservice.Auswahloriginvarianten.Projekteliste_Standortfiler:
 
@@ -727,6 +739,33 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  LeistungsphaseClickedHandler() {
+
+    try {
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Projekteliste_Editor_Leistungsphase;
+
+      this.Auswahltitel  = 'Leistungsphase festlegen';
+      this.Auswahlliste  = [];
+      this.Auswahlliste.push({ Index: 0, FirstColumn: this.Const.Leistungsphasenvarianten.UNBEKANNT, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.UNBEKANNT });
+      this.Auswahlliste.push({ Index: 1, FirstColumn: this.Const.Leistungsphasenvarianten.LPH1, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH1 });
+      this.Auswahlliste.push({ Index: 2, FirstColumn: this.Const.Leistungsphasenvarianten.LPH2, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH2 });
+      this.Auswahlliste.push({ Index: 3, FirstColumn: this.Const.Leistungsphasenvarianten.LPH3, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH3 });
+      this.Auswahlliste.push({ Index: 4, FirstColumn: this.Const.Leistungsphasenvarianten.LPH4, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH4 });
+      this.Auswahlliste.push({ Index: 5, FirstColumn: this.Const.Leistungsphasenvarianten.LPH5, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH5 });
+      this.Auswahlliste.push({ Index: 6, FirstColumn: this.Const.Leistungsphasenvarianten.LPH6, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH6 });
+      this.Auswahlliste.push({ Index: 7, FirstColumn: this.Const.Leistungsphasenvarianten.LPH7, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH7 });
+      this.Auswahlliste.push({ Index: 8, FirstColumn: this.Const.Leistungsphasenvarianten.LPH8, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH8 });
+
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {FirstColumn: this.DB.CurrentProjekt.Leistungsphase});
+      this.ShowAuswahl  = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'LeistungsphaseClickedHandler', this.Debug.Typen.Page);
     }
   }
 

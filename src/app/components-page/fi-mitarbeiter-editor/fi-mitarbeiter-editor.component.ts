@@ -48,6 +48,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
   public DeleteEnabled: boolean;
   public Teamsliste: Teamsstruktur[];
   private JoiShema: ObjectSchema;
+  public ErrorMessage: string;
 
   constructor(public Debug: DebugProvider,
               public Tools: ToolsProvider,
@@ -74,6 +75,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
       this.SkipOkButtonAction = false;
       this.EmailinputEnabled  = true;
       this.Teamsliste         = [];
+      this.ErrorMessage       = null;
 
     } catch (error) {
 
@@ -182,13 +184,9 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
         this.Teamsliste = teamsliste;
 
-
-        // this.ProjekteDB.SyncronizeGesamtprojektlisteWithTeams(this.Teamsliste);
-
       }).catch((error: any) => {
 
-        debugger;
-
+        this.ErrorMessage = error.error;
       });
 
     } catch (error) {

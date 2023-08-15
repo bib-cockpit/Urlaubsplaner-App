@@ -8,6 +8,11 @@ export type Mitarbeitersettingsstruktur = {
   ProjektID:             string;
   Favoritprojektindex:   number;
   StandortFilter:        string;
+  LeistungsphaseFilter:  string;
+
+  OberkostengruppeFilter:  number;
+  HauptkostengruppeFilter: number;
+  UnterkostengruppeFilter: number;
 
   AufgabenShowOffen:        boolean;
   AufgabenShowGeschlossen:  boolean;

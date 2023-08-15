@@ -28,6 +28,8 @@ export class ButtonValueComponent implements OnInit, OnChanges {
   @Input() public ProContent: boolean = false;
   @Input() public ProMessage: string = '';
   @Input() public Buttonvaluecolor: string = '';
+  @Input() public Rechtebreite: number;
+  @Input() public Linkebreite: number;
 
   @Output() public ButtonClicked = new EventEmitter();
   @Output() public DisabledButtonClicked = new EventEmitter();
@@ -54,6 +56,8 @@ export class ButtonValueComponent implements OnInit, OnChanges {
       this.Buttoncolor = this.Basics.Farben.Burnicklbraun;
       this.Enabled     = true;
       this.Buttonvaluecolor = this.Basics.Farben.Burnicklgrau;
+      this.Linkebreite      = 40;
+      this.Rechtebreite     = 60;
     }
     catch (error) {
 

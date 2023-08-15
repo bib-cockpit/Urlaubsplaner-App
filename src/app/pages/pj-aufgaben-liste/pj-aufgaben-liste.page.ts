@@ -27,6 +27,9 @@ import {
 import {ToolsProvider} from "../../services/tools/tools";
 import {DatabaseLoplisteService} from "../../services/database-lopliste/database-lopliste.service";
 import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
+import {Outlookkontaktestruktur} from "../../dataclasses/outlookkontaktestruktur";
+import {Graphservice} from "../../services/graph/graph";
+import {Outlookkalenderstruktur} from "../../dataclasses/outlookkalenderstruktur";
 
 @Component({
   selector:    'pj-aufgaben-liste-page',
@@ -103,7 +106,13 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   public Projektschnellauswahlursprung: string;
   public ShowLOPListeEditor: boolean;
   public ShowEintragEditor: boolean;
-
+  private FavoritenProjektSubcription: Subscription;
+  public Kalenderliste: Outlookkalenderstruktur[][];
+  public MeinTagindex: number;
+  public Tageliste: {
+    Datum: string;
+    Tag: string;
+  }[];
 
   constructor(public Displayservice: DisplayService,
               public Basics: BasicsProvider,
@@ -115,6 +124,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
               public DBProjekte: DatabaseProjekteService,
               public DBMitarbeiter: DatabaseMitarbeiterService,
               public Tools: ToolsProvider,
+              private GraphService: Graphservice,
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public Menuservice: MenueService,
               public Const: ConstProvider,
@@ -165,7 +175,21 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.ShowLOPListeEditor       = false;
       this.ShowProjektschnellauswahl = false;
       this.ShowEintragEditor         = false;
+      this.ShowMitarbeiterauswahl    = false;
+      this.ShowBeteiligteauswahl    = false;
       this.Heute                    = moment().set({date: 6, month: 1, year: 2023, hour: 7, minute: 0, second: 0  }).locale('de'); // Month ist Zero based
+      this.FavoritenProjektSubcription = null;
+      this.Kalenderliste = [];
+      this.MeinTagindex  = 0;
+      this.Tageliste = [
+        { Tag: 'Montag',     Datum: '' },
+        { Tag: 'Dienstag',   Datum: '' },
+        { Tag: 'Mittwoch',   Datum: '' },
+        { Tag: 'Donnerstag', Datum: '' },
+        { Tag: 'Freitag',    Datum: '' },
+        { Tag: 'Samstag',    Datum: '' },
+        { Tag: 'Sonntag',    Datum: '' },
+       ];
 
     } catch (error) {
 
@@ -202,7 +226,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.Headerhoehe  = 30;
       this.Listenhoehe  = this.Basics.InnerContenthoehe;
       this.Minutenhoehe = this.Listenhoehe / (8 * 60);
-      this.Tagbreite    = (this.Basics.Contentbreite -4) / 5;
+      this.Tagbreite    = (this.Basics.Contentbreite - 4) / 5;
 
       this.StrukturDialoghoehe = this.Dialoghoehe;
 
@@ -237,6 +261,11 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
         this.PrepareDaten();
       });
 
+      this.FavoritenProjektSubcription = this.DBProjekte.CurrentFavoritenProjektChanged.subscribe(() => {
+
+        this.PrepareDaten();
+      });
+
       this.ProtokollSubscription = this.Pool.ProtokolllisteChanged.subscribe(() => {
 
         this.PrepareDaten();
@@ -264,11 +293,12 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     try {
 
-      let Projekt: Projektestruktur = this.DBProjekte.GetProjektByID(Punkt.ProjektID);
+      let Projekt: Projektestruktur = Punkt. ProjektID !== null ? this.DBProjekte.GetProjektByID(Punkt.ProjektID) : null;
 
       let Text = Punkt.Aufgabe.replace(/<p[^>]*>/g, '').replace(/<\/p>/g, '<br />');
 
-      Text = '<b>' + Projekt.Projektkurzname + ': </b>' + Text;
+      if(Projekt !== null) Text = '<b>' + Projekt.Projektkurzname + ': </b>' + Text;
+      else Text = '<b>Termin: </b>' + Text;
 
       return Text;
 
@@ -288,6 +318,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.MitarbeiterSubscription.unsubscribe();
       this.ProtokollSubscription.unsubscribe();
       this.ProjektpunktelisteSubscription.unsubscribe();
+      this.FavoritenProjektSubcription.unsubscribe();
 
     } catch (error) {
 
@@ -332,7 +363,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
           this.DBStandort.CurrentStandortfilter        = data;
           this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
 
-          this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
 
             this.DBStandort.StandortfilterChanged.emit();
 
@@ -370,6 +401,14 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
           this.DBProjektpunkte.CurrentProjektpunkt.Fortschritt = data;
 
           this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt);
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_Leistungsphase:
+
+          this.DBProjektpunkte.CurrentProjektpunkt.Leistungsphase = data;
+
+          // this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt);
 
           break;
 
@@ -492,13 +531,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
           break;
 
-        case this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_ZustaendigIntern:
-
-          this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeInternIDListe = idliste;
-
-          this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt);
-
-          break;
       }
 
       this.ShowMitarbeiterauswahl = false;
@@ -581,17 +613,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.Auswahlliste.push({ Index:  8, FirstColumn:  '80%', SecoundColumn: '', Data:  80 });
       this.Auswahlliste.push({ Index:  9, FirstColumn:  '90%', SecoundColumn: '', Data:  90 });
       this.Auswahlliste.push({ Index: 10, FirstColumn: '100%', SecoundColumn: '', Data: 100 });
-
-      /*
-      this.Auswahlliste.push({ Index: 1, FirstColumn: this.DB.Leistungsphasenvarianten.LPH1, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH1 });
-      this.Auswahlliste.push({ Index: 2, FirstColumn: this.DB.Leistungsphasenvarianten.LPH2, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH2 });
-      this.Auswahlliste.push({ Index: 3, FirstColumn: this.DB.Leistungsphasenvarianten.LPH3, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH3 });
-      this.Auswahlliste.push({ Index: 4, FirstColumn: this.DB.Leistungsphasenvarianten.LPH4, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH4 });
-      this.Auswahlliste.push({ Index: 5, FirstColumn: this.DB.Leistungsphasenvarianten.LPH5, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH5 });
-      this.Auswahlliste.push({ Index: 6, FirstColumn: this.DB.Leistungsphasenvarianten.LPH6, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH6 });
-      this.Auswahlliste.push({ Index: 7, FirstColumn: this.DB.Leistungsphasenvarianten.LPH7, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH7 });
-      this.Auswahlliste.push({ Index: 8, FirstColumn: this.DB.Leistungsphasenvarianten.LPH8, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH8 });
-       */
 
       this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: projektpunkt.Fortschritt} );
 
@@ -985,7 +1006,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     }
   }
 
-  public PrepareDaten() {
+  public async PrepareDaten() {
 
     try {
 
@@ -1003,6 +1024,15 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       let Wochenliste: Meinewochestruktur[];
       let Projektpunkt: Projektpunktestruktur;
       let UpdateMitarbeiter: boolean;
+      let Wochenmoment: Moment = moment().isoWeek(this.GraphService.KalenderKW).locale('de');
+      let AktuellerTag: Moment = Wochenmoment.clone().startOf('week');
+      let TerminTag: Moment;
+      let Terminprojektpunkt: Projektpunktestruktur;
+      let Liste: Outlookkalenderstruktur[];
+      let Startzeitpunkt: Moment;
+      let Endezeitpunkt: Moment;
+
+      this.MeinTagindex = this.GetMeinTagindex();
 
       this.MeinTagProjektliste          = [];
       this.FavoritenProjektpunkteliste  = [];
@@ -1120,7 +1150,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
                 case 'Montag':     Add = MeineWocheEintrag.Montagseinsatz;     break;
                 case 'Dienstag':   Add = MeineWocheEintrag.Dienstagseinsatz;   break;
-                case 'Mittwoch':   Add = MeineWocheEintrag.Mittwochseinsatz;  break;
+                case 'Mittwoch':   Add = MeineWocheEintrag.Mittwochseinsatz;   break;
                 case 'Donnerstag': Add = MeineWocheEintrag.Donnerstagseinsatz; break;
                 case 'Freitag':    Add = MeineWocheEintrag.Freitagseinsatz;    break;
               }
@@ -1168,7 +1198,63 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
         }
 
         this.DBProjektpunkte.PrepareWochenpunkteliste();
+
+        Liste = await this.GraphService.GetOwnCalendar();
+
+        this.Kalenderliste = [];
+
+
+
+        for(let i = 0; i < 6; i++) {
+
+          this.Kalenderliste[i] = [];
+          this.Tageliste[i].Datum = AktuellerTag.format('DD.MM.YY');
+
+          console.log('ddd, DD.MM.YYYY');
+
+          for(let Termin of Liste) {
+
+            TerminTag = moment(Termin.start.Zeitstempel).locale('de');
+
+            if(TerminTag.isSame(AktuellerTag, 'day')) {
+
+              this.Kalenderliste[i].push(Termin);
+            }
+          }
+
+          AktuellerTag.add(1, 'day');
+        }
       }
+
+
+
+      for(let i = 0; i < 6; i++) {
+
+        if(!lodash.isUndefined(this.Kalenderliste[i])) {
+
+          Liste = this.Kalenderliste[i];
+
+
+          for(let Termin of Liste) {
+
+            Terminprojektpunkt         = this.DBProjektpunkte.GetNewProjektpunkt(null, 0);
+            Terminprojektpunkt.Aufgabe = Termin.subject;
+            Terminprojektpunkt._id     = Termin.id;
+            Tag                        = this.Tageliste[i].Tag;
+            Startzeitpunkt             = moment(Termin.start.Zeitstempel);
+            Endezeitpunkt              = moment(Termin.end.Zeitstempel);
+            Terminprojektpunkt.Minuten = moment.duration(Endezeitpunkt.diff(Startzeitpunkt)).asMinutes();
+
+            if(lodash.isUndefined(lodash.find(this.DBProjektpunkte.Wochenpunkteliste[Tag], {_id : Termin.id}))) {
+
+              this.DBProjektpunkte.Wochenpunkteliste[Tag].unshift(Terminprojektpunkt);
+            }
+
+          }
+        }
+      }
+
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'PrepareDaten', this.Debug.Typen.Page);
@@ -1452,20 +1538,21 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     try {
 
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Editor_Leistungsphase;
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_Leistungsphase;
 
       this.Auswahltitel  = 'Leistungsphase festlegen';
       this.Auswahlliste  = [];
-      this.Auswahlliste.push({ Index: 0, FirstColumn: this.DBProtokolle.Leistungsphasenvarianten.LPH1, SecoundColumn: '', Data: this.DBProtokolle.Leistungsphasenvarianten.LPH1 });
-      this.Auswahlliste.push({ Index: 1, FirstColumn: this.DBProtokolle.Leistungsphasenvarianten.LPH2, SecoundColumn: '', Data: this.DBProtokolle.Leistungsphasenvarianten.LPH2 });
-      this.Auswahlliste.push({ Index: 2, FirstColumn: this.DBProtokolle.Leistungsphasenvarianten.LPH3, SecoundColumn: '', Data: this.DBProtokolle.Leistungsphasenvarianten.LPH3 });
-      this.Auswahlliste.push({ Index: 3, FirstColumn: this.DBProtokolle.Leistungsphasenvarianten.LPH4, SecoundColumn: '', Data: this.DBProtokolle.Leistungsphasenvarianten.LPH4 });
-      this.Auswahlliste.push({ Index: 4, FirstColumn: this.DBProtokolle.Leistungsphasenvarianten.LPH5, SecoundColumn: '', Data: this.DBProtokolle.Leistungsphasenvarianten.LPH5 });
-      this.Auswahlliste.push({ Index: 5, FirstColumn: this.DBProtokolle.Leistungsphasenvarianten.LPH6, SecoundColumn: '', Data: this.DBProtokolle.Leistungsphasenvarianten.LPH6 });
-      this.Auswahlliste.push({ Index: 6, FirstColumn: this.DBProtokolle.Leistungsphasenvarianten.LPH7, SecoundColumn: '', Data: this.DBProtokolle.Leistungsphasenvarianten.LPH7 });
-      this.Auswahlliste.push({ Index: 7, FirstColumn: this.DBProtokolle.Leistungsphasenvarianten.LPH8, SecoundColumn: '', Data: this.DBProtokolle.Leistungsphasenvarianten.LPH8 });
+      this.Auswahlliste.push({ Index: 0, FirstColumn: this.Const.Leistungsphasenvarianten.UNBEKANNT, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.UNBEKANNT });
+      this.Auswahlliste.push({ Index: 1, FirstColumn: this.Const.Leistungsphasenvarianten.LPH1, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH1 });
+      this.Auswahlliste.push({ Index: 2, FirstColumn: this.Const.Leistungsphasenvarianten.LPH2, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH2 });
+      this.Auswahlliste.push({ Index: 3, FirstColumn: this.Const.Leistungsphasenvarianten.LPH3, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH3 });
+      this.Auswahlliste.push({ Index: 4, FirstColumn: this.Const.Leistungsphasenvarianten.LPH4, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH4 });
+      this.Auswahlliste.push({ Index: 5, FirstColumn: this.Const.Leistungsphasenvarianten.LPH5, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH5 });
+      this.Auswahlliste.push({ Index: 6, FirstColumn: this.Const.Leistungsphasenvarianten.LPH6, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH6 });
+      this.Auswahlliste.push({ Index: 7, FirstColumn: this.Const.Leistungsphasenvarianten.LPH7, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH7 });
+      this.Auswahlliste.push({ Index: 8, FirstColumn: this.Const.Leistungsphasenvarianten.LPH8, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH8 });
 
-      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {FirstColumn: this.DBProtokolle.CurrentProtokoll.Leistungsphase});
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {FirstColumn: this.DBProjektpunkte.CurrentProjektpunkt.Leistungsphase});
       this.ShowAuswahl  = true;
 
     } catch (error) {
@@ -1674,6 +1761,63 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Aufgabe Liste', 'LOPListepunktClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  EmailMarkeClickedHandler(punkt: Projektpunktestruktur) {
+
+    try {
+
+      this.DBProjektpunkte.CurrentProjektpunkt = lodash.cloneDeep(punkt);
+      this.ShowProjektpunktEditor              = true;
+      this.Dialoghoehe                         = 900;
+      this.Dialogbreite                        = 800;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgabe Liste', 'EmailMarkeClickedHandler', this.Debug.Typen.Page);
+    }
+
+  }
+
+  GetUhrzeitstring(Zeitstempel: number) {
+
+    try {
+
+      return moment(Zeitstempel).locale('de').format('HH:mm');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgabe Liste', 'GetUhrzeitstring', this.Debug.Typen.Page);
+    }
+  }
+
+  public GetMeinTagindex(): number {
+
+    try {
+
+      let Heute: Moment = moment().locale('de');
+      let Tagindex: number = Heute.weekday();
+
+      return Tagindex;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgabe Liste', 'GetMeinTagindex', this.Debug.Typen.Page);
+    }
+
+  }
+
+  GetMeinTagTerminanzahl(): number {
+
+    try {
+
+      if(!lodash.isUndefined(this.Kalenderliste[this.MeinTagindex])) return this.Kalenderliste[this.MeinTagindex].length;
+      else return 0;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgabe Liste', 'GetMeinTagTerminanzahl', this.Debug.Typen.Page);
     }
   }
 }

@@ -140,41 +140,81 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         this.Debug.ShowMessage('Benutzer ist angemeldet: ' + this.AuthService.ActiveUser.username, 'App Component', 'StartApp', this.Debug.Typen.Component);
 
-        await this.GraphService.GetOwnUserinfo();
-        await this.GraphService.GetOwnUserimage();
-        await this.GraphService.GetOwnUserteams();
+        this.Pool.ShowProgress         = true;
+        this.Pool.MaxProgressValue     = 10;
+        this.Pool.CurrentProgressValue = 0;
 
-        await this.Pool.ReadChangelogliste();
-        await this.Pool.ReadStandorteliste();
+        try {
 
-        console.log('Read Mitarbeiterliste:');
+          await this.GraphService.GetOwnUserinfo();  // 1
 
-        await this.Pool.ReadMitarbeiterliste();
-        await this.ProjekteDB.ReadGesamtprojektliste();
-        let Liste = await this.GraphService.GetAllUsers();
+          this.Pool.ProgressMessage = 'Lade eigene Daten';
+          this.Pool.CurrentProgressValue++;
 
-        for(let User of Liste) {
+          await this.GraphService.GetOwnUserimage(); // 2
 
-          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, (currentmitarbeiter: Mitarbeiterstruktur) => {
+          this.Pool.ProgressMessage = 'Lade eigens Bild';
+          this.Pool.CurrentProgressValue++;
 
-            return currentmitarbeiter.UserID === User.id;
-          });
+          // await this.GraphService.GetOwnUserteams(); // 3
 
-          if(lodash.isUndefined(Mitarbeiter)) {
+          // this.Pool.ProgressMessage = 'Lade eigene Projekte';
+          // this.Pool.CurrentProgressValue++;
 
-            console.log('Mitarbeiter wurde nicht gefunden:');
-            console.log(User);
+          await this.Pool.ReadChangelogliste(); // 4
 
-            if(User.mail.toLowerCase().indexOf('extern') === -1 && User.displayName.toLowerCase().indexOf('extern') === -1) {
+          this.Pool.ProgressMessage = 'Lade Change Log';
+          this.Pool.CurrentProgressValue++;
 
-              Mitarbeiter = this.MitarbeiterDB.ConvertGraphuserToMitarbeiter(User);
+          await this.Pool.ReadStandorteliste(); // 5
 
-              console.log('Neuer Mitrabeiter:');
-              console.log(Mitarbeiter);
+          this.Pool.ProgressMessage = 'Lade Standortliste';
+          this.Pool.CurrentProgressValue++;
 
-              await this.MitarbeiterDB.AddMitarbeiter(Mitarbeiter);
+          console.log('Read Mitarbeiterliste:');
+
+          await this.Pool.ReadMitarbeiterliste(); // 6
+
+          this.Pool.ProgressMessage = 'Lade aktuelle Mitarbeiterliste';
+          this.Pool.CurrentProgressValue++;
+
+          await this.ProjekteDB.ReadGesamtprojektliste(); // 7
+
+          this.Pool.ProgressMessage = 'Lade Gesamtprojektliste';
+          this.Pool.CurrentProgressValue++;
+
+          let Liste = await this.GraphService.GetAllUsers(); // 8
+
+          this.Pool.ProgressMessage = 'Aktuallisiere Mitarbeiterliste';
+          this.Pool.CurrentProgressValue++;
+
+          for(let User of Liste) {
+
+            Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, (currentmitarbeiter: Mitarbeiterstruktur) => {
+
+              return currentmitarbeiter.UserID === User.id;
+            });
+
+            if(lodash.isUndefined(Mitarbeiter)) {
+
+              console.log('Mitarbeiter wurde nicht gefunden:');
+              console.log(User);
+
+              if(User.mail.toLowerCase().indexOf('admin') === -1) {
+
+                Mitarbeiter = this.MitarbeiterDB.ConvertGraphuserToMitarbeiter(User);
+
+                console.log('Neuer Mitrabeiter:');
+                console.log(Mitarbeiter);
+
+                await this.MitarbeiterDB.AddMitarbeiter(Mitarbeiter);
+              }
             }
           }
+        }
+        catch(error) {
+
+          debugger;
         }
 
         if(this.MitarbeiterDB.CheckMitarbeiterExists(this.GraphService.Graphuser.mail) === false) {
@@ -198,15 +238,26 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
         this.Pool.Mitarbeiterdaten = this.Pool.InitMitarbeiter(Mitarbeiter); // fehlende Mitarbeiterdaten initialisieren
         this.Pool.CheckMitarbeiterdaten();
 
-        await this.Pool.ReadSettingsliste();
+        await this.Pool.ReadSettingsliste(); // 9
 
-        await this.ProjekteDB.SyncronizeGesamtprojektlisteWithTeams(this.GraphService.Teamsliste);
+        this.Pool.ProgressMessage = 'Lade Einstellungen';
+        this.Pool.CurrentProgressValue++;
+
+        await this.ProjekteDB.SyncronizeGesamtprojektlisteWithTeams(this.GraphService.Teamsliste); // 10
+
+        this.Pool.ProgressMessage = 'Syncronisiere Gesamtprojektliste';
+        this.Pool.CurrentProgressValue++;
 
         this.ProjekteDB.CheckMyProjektdaten();
 
         this.Pool.Mitarbeitersettings = this.Pool.InitMitarbeitersettings(); // fehlende Settingseintraege initialisieren
 
         await this.MitarbeitersettingsDB.SaveMitarbeitersettings();
+
+        this.Pool.ProgressMessage = 'Aktualisiere Mitarbeitereinstellungen';
+        this.Pool.CurrentProgressValue++;
+
+
 
         this.Pool.MitarbeitersettingsChanged.emit();
 
@@ -220,6 +271,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
         this.MitarbeiterDB.InitService();
         this.StandortDB.InitService();
         this.ProjekteDB.InitService();
+
+        this.Pool.ShowProgress = false;
 
         if(this.Pool.Mitarbeiterdaten.Favoritenliste.length === 0) {
 
@@ -236,7 +289,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           }
           else {
 
-            Page = this.Const.Pages.PjAufgabenlistePage; //  EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
+            Page = this.Const.Pages.PjAufgabenlistePage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
 
             this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
             await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);                 // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden

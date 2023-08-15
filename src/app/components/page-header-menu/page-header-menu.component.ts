@@ -23,6 +23,8 @@ import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {Graphservice} from "../../services/graph/graph";
+import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
+import {DatabaseOutlookemailService} from "../../services/database-email/database-outlookemail.service";
 
 @Component({
   selector: 'page-header-menu',
@@ -32,6 +34,7 @@ import {Graphservice} from "../../services/graph/graph";
 export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('Suchleiste', { static: false }) Suchleiste: IonSearchbar;
+  @ViewChild('Suchleiste2', { static: false }) Suchleiste2: IonSearchbar;
 
   @Input()  ShowSandortfilter: boolean;
   @Input()  ShowSuchleiste:    boolean;
@@ -40,6 +43,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   @Input()  ShowMitarbeitertitle: boolean;
   @Input()  ShowProjektetitle:    boolean;
   @Input()  ShowFavoritentitle:   boolean;
+  @Input()  SendFestlegungenEnabled:   boolean;
 
   @Output()  SucheChanged = new EventEmitter<string>();
   @Output()  StandortfilterClicked = new EventEmitter<string>();
@@ -49,10 +53,17 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   @Output()  ShowProjektauswahlEvent = new EventEmitter<any>();
   @Output()  ShowProjektfilesEvent = new EventEmitter<any>();
   @Output()  LOPListeZeitspanneEvent = new EventEmitter<any>();
-
+  @Output()  KostengruppeFilterClicked = new EventEmitter<any>();
+  @Output()  ShowOpenFestlegungOnlyEvent = new EventEmitter<any>();
+  @Output()  SendFestlegungenClicked = new EventEmitter<any>();
+  @Output()  ShowUngelesenOnlyChanged = new EventEmitter<any>();
+  @Output()  ProjektsortierungChanged = new EventEmitter<any>();
+  @Output()  EmailDatumChanged = new EventEmitter<any>();
 
   private SuchleisteInputSubscription: Subscription;
+  private Suchleiste2InputSubscription: Subscription;
   private SuchleisteClearSubscription: Subscription;
+  private Suchleiste2ClearSubscription: Subscription;
   private FavoritenSubscription: Subscription;
   public Inputtimer: any;
   public Projektauswahlbreite: number;
@@ -61,7 +72,8 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   public HomeMouseOver: boolean;
   public EmailMouseOver: boolean;
   public FilesMouseOver: boolean;
-
+  public ShowOpenFestlegungOnly: boolean;
+  public BackMouseOver: boolean;
 
   constructor(private Debug: DebugProvider,
               public Basics: BasicsProvider,
@@ -71,16 +83,20 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
               public Auswahlservice: AuswahlDialogService,
               public  DBStandort: DatabaseStandorteService,
               public DBProjekte: DatabaseProjekteService,
+              public DBEmail: DatabaseOutlookemailService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public GraphService: Graphservice,
               public  AuthService: DatabaseAuthenticationService,
               public  Pool: DatabasePoolService,
+              public Kostengruppenservice: KostengruppenService,
               public  Menuservice: MenueService) {
     try {
 
       this.ShowSuchleiste               = false;
       this.SuchleisteClearSubscription  = null;
+      this.Suchleiste2ClearSubscription = null;
       this.SuchleisteInputSubscription  = null;
+      this.Suchleiste2InputSubscription = null;
       this.FavoritenSubscription        = null;
       this.Inputtimer                   = null;
       this.ShowSandortfilter            = false;
@@ -95,6 +111,9 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
       this.ShowProjektetitle            = false;
       this.ShowFavoritentitle           = false;
       this.FilesMouseOver               = false;
+      this.ShowOpenFestlegungOnly       = false;
+      this.SendFestlegungenEnabled      = false;
+      this.BackMouseOver                = false;
 
     } catch (error) {
 
@@ -106,13 +125,25 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     try {
 
-
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'OnDestroy', this.Debug.Typen.Component);
     }
+  }
+
+  BackButtonClicked() {
+
+    try {
+
+      this.Menuservice.MainMenuebereich = this.Menuservice.MainMenuebereiche.Projekte;
+
+      this.Menuservice.SetCurrentPage();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'BackButtonClicked', this.Debug.Typen.Component);
     }
+  }
 
   ngOnInit() {
 
@@ -123,6 +154,32 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'OnInit', this.Debug.Typen.Component);
+    }
+  }
+
+  ProjektsortierungChangedHandler(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.DBEmail.Projektsortierung = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ProjektsortierungChangedHandler', this.Debug.Typen.Component);
+    }
+  }
+
+  ShowUngelesenCheckChanged(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.DBEmail.ShowUngelesenOnly = event.status;
+
+      this.ShowUngelesenOnlyChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ShowUngelesenCheckChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -167,22 +224,39 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
       }
       else this.Suchleiste = null;
 
-      /*
-      this.FavoritenSubscription = this.DBProjekte.CurrentFavoritenChanged.subscribe(() => {
+      if(this.Suchleiste2) { // Muss hier stehen / funktioniert in OnInit() nicht
 
-        debugger;
+        this.Suchleiste2InputSubscription = this.Suchleiste2.ionInput.subscribe((data: any) => {
 
-        this.DBProjekte.InitProjektfavoritenliste();
+          Text = data.target.value;
 
-        this.Pool.ReadProjektdaten(this.DBProjekte.Projektliste).then(() => {
+          if(this.Inputtimer !== null) {
 
+            window.clearTimeout(this.Inputtimer);
 
-          this.DBProjekte.InitMenuProjektauswahl();
-          this.Pool.LoadingAllDataFinished.emit();
+            this.Inputtimer = null;
+          }
+
+          if(Text.length >= 3 || Text.length === 0) {
+
+            this.Inputtimer = window.setTimeout(()  => {
+
+              this.SucheChanged.emit(Text);
+
+            }, 600);
+          }
+
         });
-      });
 
-       */
+        this.Suchleiste2ClearSubscription = this.Suchleiste2.ionClear.subscribe(() => {
+
+          this.SucheChanged.emit('');
+        });
+
+
+      }
+      else this.Suchleiste2 = null;
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'ngAfterViewInit', this.Debug.Typen.Component);
@@ -669,6 +743,77 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ProjektfilesClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  GetKostengruppenname(): string {
+
+    try {
+
+      let Name: string;
+
+      if(this.Pool.Mitarbeitersettings !== null) {
+
+        Name = this.Kostengruppenservice.GetKostengruppennameByGruppennummern(
+          this.Pool.Mitarbeitersettings.UnterkostengruppeFilter,
+          this.Pool.Mitarbeitersettings.HauptkostengruppeFilter,
+          this.Pool.Mitarbeitersettings.OberkostengruppeFilter,
+        );
+
+        return Name !== null ? Name : 'Alle';
+
+        return Name;
+
+      }
+      else {
+
+        return 'Alle';
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetKostengruppenname', this.Debug.Typen.Component);
+    }
+
+  }
+
+  ShowOpenFestlegungOnlyChanged(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.ShowOpenFestlegungOnly = event.status;
+
+      this.ShowOpenFestlegungOnlyEvent.emit(event.status);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ShowOpenFestlegungOnlyChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  GetMailDatum(): any {
+
+    try {
+
+      return this.DBEmail.Emaildatum;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetMailDatum', this.Debug.Typen.Component);
+    }
+  }
+
+  EmailDatumChangedHandler(datum: moment.Moment) {
+
+    try {
+
+      this.DBEmail.Emaildatum = datum.clone();
+
+      this.EmailDatumChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'EmailDatumChangedHandler', this.Debug.Typen.Component);
     }
   }
 }

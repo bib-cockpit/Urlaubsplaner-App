@@ -162,10 +162,14 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
         return currenta.ProjektIsReal;
       });
 
+      /*
+
       Liste = lodash.filter(Liste, (currentb: Projektestruktur) => {
 
         return this.DB.CheckProjektmembership(currentb);
       });
+
+       */
 
       Liste.sort( (a: Projektestruktur, b: Projektestruktur) => {
 

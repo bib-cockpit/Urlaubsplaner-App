@@ -1,12 +1,12 @@
 ion-progress-bar {
   --background: #444444;
-  --progress-background: #c7d304;
+  --progress-background: #307ac1;
 }
 
 .keeperdivclass {
 
   width: 100%;
-  background: #354547;
+  background: #307ac1;
   min-height: 52px;
   /*
   display: flex;
@@ -29,7 +29,7 @@ ion-progress-bar {
 
 .headerdivclass {
 
-  background: #354547;
+  background: #307ac1;
   width: 100%; height: 30px;
   padding: 4px;
   color: white;
@@ -40,8 +40,8 @@ ion-progress-bar {
 
 .contentdivclass {
 
-  border-left: 3px solid #354547;
-  border-right: 3px solid #354547;
+  border-left: 3px solid #307ac1;
+  border-right: 3px solid #307ac1;
   background: white;
   width: 100%;
   height: 120px;

@@ -54,6 +54,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
   @Output() SelectBautagebuchfolderEvent       = new EventEmitter<any>();
   @Output() SelectBaustelleLOPListefolderEvent = new EventEmitter<any>();
   @Output() SelectProtokollfolderEvent         = new EventEmitter<any>();
+  @Output() LeistungsphaseClickedEvent         = new EventEmitter<any>();
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -255,6 +256,8 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
       await this.CheckTeamsPathes();
 
+      this.Mitgliederliste  = [];
+
       this.Beteiligtenliste = lodash.cloneDeep(this.DB.CurrentProjekt.Beteiligtenliste);
 
       this.Beteiligtenliste.sort( (a: Projektbeteiligtestruktur, b: Projektbeteiligtestruktur) => {
@@ -269,12 +272,16 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
       try {
 
+        /*
+
         this.Mitgliederliste = await this.GraphService.GetTeamsMitglieder(this.DB.CurrentProjekt.TeamsID);
 
         for(let Mitglied of this.Mitgliederliste) {
 
           Mitglied.UserImageSRC = await this.GraphService.GetOtherUserimage(Mitglied.userId);
         }
+
+         */
 
       } catch(error) {
 
@@ -313,9 +320,12 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       if(Result.error) this.Valid = false;
       else             this.Valid = true;
 
+      /*
       if(this.DB.CurrentProjekt.ProtokolleFolderID    === this.Const.NONE) this.Valid = false;
       if(this.DB.CurrentProjekt.BautagebuchFolderID   === this.Const.NONE) this.Valid = false;
       if(this.DB.CurrentProjekt.BaustellenLOPFolderID === this.Const.NONE) this.Valid = false;
+
+       */
 
 
     } catch (error) {
@@ -456,7 +466,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
       if(this.DB.CurrentProjekt._id === null) { // Diese Option ist hinfällig da Projekt über Teams erstellt wird
 
-        /*
+
         this.DB.CurrentProjekt.Projektkey = this.DB.GenerateProjektkey(this.DB.CurrentProjekt);
 
         this.DB.AddProjekt(this.DB.CurrentProjekt).then((result: any) => {
@@ -469,7 +479,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
         });
 
-         */
+
       }
       else {
 

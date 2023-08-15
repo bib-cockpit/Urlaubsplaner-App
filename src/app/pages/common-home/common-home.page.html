@@ -18,10 +18,10 @@
                       <tr>
                         <td>
                           <ion-icon name="log-out-outline"
-                                    [color]="LogoutMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
+                                    [color]="LogoutMouseOver ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Weiss">
                           </ion-icon>
                         </td>
-                        <td [style.color]="LogoutMouseOver ? '#c7d304' : 'white'">Abmelden</td>
+                        <td [style.color]="LogoutMouseOver ? '#000000' : 'white'">Abmelden</td>
                       </tr>
                     </table>
                   </div>
@@ -38,10 +38,10 @@
                       <tr>
                         <td>
                           <ion-icon name="bug-outline"
-                                    [color]="DebugMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
+                                    [color]="DebugMouseOver ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Weiss">
                           </ion-icon>
                         </td>
-                        <td [style.color]="DebugMouseOver ? '#c7d304' : 'white'">Debug</td>
+                        <td [style.color]="DebugMouseOver ? '#000000' : 'white'">Debug</td>
                       </tr>
                     </table>
                   </div>
@@ -56,10 +56,10 @@
                       <tr>
                         <td>
                           <ion-icon name="settings-outline"
-                                    [color]="EinstellungenMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
+                                    [color]="EinstellungenMouseOver ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Weiss">
                           </ion-icon>
                         </td>
-                        <td [style.color]="EinstellungenMouseOver ? '#c7d304' : 'white'">Einstellungen</td>
+                        <td [style.color]="EinstellungenMouseOver ? '#000000' : 'white'">Einstellungen</td>
                       </tr>
                     </table>
                   </div>
@@ -79,7 +79,7 @@
                   <td style="width: 10px"></td>
                 </tr>
               </table>
-              <div *ngIf="GraphService.UserimageSRC === null" class="userkuerzelsmall">
+              <div *ngIf="GraphService.UserimageSRC === null" [style.background]="Basics.Farben.Grau" class="userkuerzelsmall">
                 {{Pool.Mitarbeiterdaten !==  null ? Pool.Mitarbeiterdaten.Kuerzel : '---'}}
               </div>
             </ng-container>
@@ -101,21 +101,21 @@
 
       <table class="paddingtable" style="font-size: 80%">
         <tr>
-          <td colspan="3" style="font-size: 140%; font-weight: bold; color: #7b6a58">Change Log</td>
+          <td colspan="3" style="font-size: 140%; font-weight: bold;" [style.color]="Basics.Farben.BAEBlau">Change Log</td>
         </tr>
-        <tr style="font-weight: bold; color: #7b6a58">
+        <tr style="font-weight: bold; color: #454545">
           <td>Datum</td>
           <td>Version</td>
           <td>Beschreibung</td>
         </tr>
-        <tr *ngFor="let Changelog of Pool.Changlogliste" style="color: #444444;">
+        <tr *ngFor="let Changelog of Pool.Changlogliste">
           <td><div style="width: 100%; cursor: pointer" (click)="ChangelogClicked(Changelog)">{{GetDatum(Changelog.Zeitstempel)}}</div></td>
           <td><div style="width: 100%; cursor: pointer" (click)="ChangelogClicked(Changelog)">{{Changelog.Version}}</div> </td>
           <td><div style="width: 100%; cursor: pointer" (click)="ChangelogClicked(Changelog)">{{Changelog.Beschreibung}}</div></td>
         </tr>
       </table>
 
-      <ion-button size="small" [color]="'burnicklbraun'"
+      <ion-button size="small" [color]="'grau'"
                   (click)="AddChangelogClicked()">
         <ion-icon style="font-size: 90%" name="add-circle-outline" color="weiss" slot="start"></ion-icon>
         <ion-text color="weiss" style="font-size: 80%">Neuer Eintrag</ion-text>
@@ -125,189 +125,211 @@
 
 
     <div style="width: 100%; height: 100%; background: #354547">
-      <div style="position: absolute; width: 100%; height: 100%; z-index: 1;">
+      <div style="position: absolute; width: 100%; height: 100%; z-index: 1;" [style.background]="Basics.Farben.BAEHellgrau">
 
+      <!--
         <img [src]="BackgroundimageURL">
+      -->
 
       </div>
       <div style="position: absolute; width: 100%; height: 100%; z-index: 2">
         <ion-grid>
           <ion-row>
             <ion-col size="12">
-              <div style="height: 40px"></div>
+              <div style="height: 20px"></div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <table style="width: 100%">
+                <tr>
+                  <td align="center">
+                    <img src="assets/images/logo_large.png" style="height: 50px"/>
+                  </td>
+                </tr>
+              </table>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <div style="height: 20px"></div>
             </ion-col>
           </ion-row>
         <ion-row>
           <ion-col>
-            <table style="width: 100%;">
-              <tr>
-                <td align="center">
+            <div style="height: 140px; width: 100%; background: none;">
+              <table *ngIf="Pool.ShowProgress === false"  style="width: 100%;">
+                <tr>
+                  <td align="center">
 
-                  <table>
-                    <tr>
-                      <td>
+                    <table>
+                      <tr>
+                        <td>
 
-                        <div (click)="StandorteButtonClicked()"
-                             (mouseenter)="StandortMouseOver = true"
-                             (mouseleave)="StandortMouseOver = false" class="buttonclass">
+                          <div (click)="StandorteButtonClicked()"
+                               (mouseenter)="StandortMouseOver = true"
+                               (mouseleave)="StandortMouseOver = false" class="buttonclass">
+                              <table>
+                                <tr>
+                                  <td align="center">
+                                    <ion-icon name="location-outline" [color]="StandortMouseOver ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style="text-align: center;">
+                                    <table>
+                                      <tr>
+                                        <td style="font-size: 22px; font-weight: bold;" [style.color]="Basics.Farben.BAEBlau">
+                                          {{Pool.Standorteliste.length}}
+                                        </td>
+                                        <td style="width: 4px"></td>
+                                        <td>
+                                          <ion-text [color]="Basics.Ionicfarben.Grau" style="font-size: 22px">Standorte</ion-text>
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                              </table>
+                          </div>
+
+                        </td>
+                        <td>
+                          <div class="trennerdiv" [style.background]="Basics.Farben.Grau"></div>
+                        </td>
+                        <td>
+
+                          <div class="buttonclass"
+                               (click)="MitarbeiterButtonClicked()"
+                               (mouseenter)="MitarbeiterMouseOver = true"
+                               (mouseleave)="MitarbeiterMouseOver = false">
+
                             <table>
                               <tr>
                                 <td align="center">
-                                  <ion-icon name="location-outline" [color]="StandortMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
+
+                                  <div style="height: 90px; width: 100px; background: none; position: relative">
+                                    <div class="projektbuttoniconclass">
+                                      <ion-icon name="people-outline" [color]="MitarbeiterMouseOver ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
+                                    </div>
+                                    <ng-container *ngIf="Pool.Mitarbeiterdaten !== null">
+                                      <div *ngIf="Pool.Mitarbeiterdaten.Kuerzel === '' || Pool.Mitarbeiterdaten.StandortID === ''" class="projektbuttoniconerrorclass">
+                                        <img src="/assets/svgs/alert.svg" style="height: 44px"/>
+                                      </div>
+                                    </ng-container>
+                                  </div>
+
+
                                 </td>
                               </tr>
                               <tr>
                                 <td style="text-align: center;">
                                   <table>
                                     <tr>
-                                      <td style="font-size: 22px; font-weight: bold; color: #c7d304">
-                                        {{Pool.Standorteliste.length}}
+                                      <td style="font-size: 22px; font-weight: bold;" [style.color]="Basics.Farben.BAEBlau">
+
+                                        {{CountMitarbeiter()}}
                                       </td>
                                       <td style="width: 4px"></td>
-                                      <td>
-                                        <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">Standorte</ion-text>
+                                      <td style="text-align: center;">
+                                        <ion-text [color]="Basics.Ionicfarben.Grau" style="font-size: 22px">Mitarbeiter</ion-text>
                                       </td>
                                     </tr>
                                   </table>
                                 </td>
                               </tr>
                             </table>
-                        </div>
 
-                      </td>
-                      <td>
-                        <div class="trennerdiv"></div>
-                      </td>
-                      <td>
+                          </div>
 
-                        <div class="buttonclass"
-                             (click)="MitarbeiterButtonClicked()"
-                             (mouseenter)="MitarbeiterMouseOver = true"
-                             (mouseleave)="MitarbeiterMouseOver = false">
+                        </td>
+                        <td>
+                          <div class="trennerdiv" [style.background]="Basics.Farben.Grau"></div>
+                        </td>
+                        <td>
 
-                          <table>
-                            <tr>
-                              <td align="center">
-
-                                <div style="height: 90px; width: 100px; background: none; position: relative">
-                                  <div class="projektbuttoniconclass">
-                                    <ion-icon name="people-outline" [color]="MitarbeiterMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
-                                  </div>
-                                  <ng-container *ngIf="Pool.Mitarbeiterdaten !== null">
-                                    <div *ngIf="Pool.Mitarbeiterdaten.Kuerzel === '' || Pool.Mitarbeiterdaten.StandortID === ''" class="projektbuttoniconerrorclass">
+                          <div class="buttonclass"
+                               (click)="ProjekteButtonClicked()"
+                               (mouseenter)="ProjekteMouseOver = true"
+                               (mouseleave)="ProjekteMouseOver = false">
+                            <table>
+                              <tr>
+                                <td align="center">
+                                  <div style="height: 90px; width: 100px; background: none; position: relative">
+                                    <div class="projektbuttoniconclass">
+                                      <ion-icon name="business-outline" [color]="ProjekteMouseOver ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
+                                    </div>
+                                    <div *ngIf="DBProjekte.GesamtprojektlisteHasDatenerror" class="projektbuttoniconerrorclass">
                                       <img src="/assets/svgs/alert.svg" style="height: 44px"/>
                                     </div>
-                                  </ng-container>
-                                </div>
-
-
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style="text-align: center;">
-                                <table>
-                                  <tr>
-                                    <td style="font-size: 22px; font-weight: bold; color: #c7d304">
-
-                                      {{CountMitarbeiter()}}
-                                    </td>
-                                    <td style="width: 4px"></td>
-                                    <td style="text-align: center;">
-                                      <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">Mitarbeiter</ion-text>
-                                    </td>
-                                  </tr>
-                                </table>
-                              </td>
-                            </tr>
-                          </table>
-
-                        </div>
-
-                      </td>
-                      <td>
-                        <div class="trennerdiv"></div>
-                      </td>
-                      <td>
-
-                        <div class="buttonclass"
-                             (click)="ProjekteButtonClicked()"
-                             (mouseenter)="ProjekteMouseOver = true"
-                             (mouseleave)="ProjekteMouseOver = false">
-                          <table>
-                            <tr>
-                              <td align="center">
-                                <div style="height: 90px; width: 100px; background: none; position: relative">
-                                  <div class="projektbuttoniconclass">
-                                    <ion-icon name="business-outline" [color]="ProjekteMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
                                   </div>
-                                  <div *ngIf="DBProjekte.GesamtprojektlisteHasDatenerror" class="projektbuttoniconerrorclass">
-                                    <img src="/assets/svgs/alert.svg" style="height: 44px"/>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style="text-align: center;">
-                                <table>
-                                  <tr>
-                                    <td style="font-size: 22px; font-weight: bold; color: #c7d304">
-                                      {{CountProjekte()}}
-                                    </td>
-                                    <td style="width: 4px"></td>
-                                    <td style="text-align: center;">
-                                      <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">{{CountProjekte() !== 1 ? 'Projekte' : 'Projekt'}}</ion-text>
-                                    </td>
-                                  </tr>
-                                </table>
-                              </td>
-                            </tr>
-                          </table>
-                        </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="text-align: center;">
+                                  <table>
+                                    <tr>
+                                      <td style="font-size: 22px; font-weight: bold;" [style.color]="Basics.Farben.BAEBlau">
+                                        {{CountProjekte()}}
+                                      </td>
+                                      <td style="width: 4px"></td>
+                                      <td style="text-align: center;">
+                                        <ion-text [color]="Basics.Ionicfarben.Grau" style="font-size: 22px">{{CountProjekte() !== 1 ? 'Projekte' : 'Projekt'}}</ion-text>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                          </div>
 
 
-                      </td>
-                      <td>
-                        <div class="trennerdiv"></div>
-                      </td>
-                      <td>
-                        <div class="buttonclass"
-                             (click)="FavoritenButtonClicked()"
-                             (mouseenter)="FavoritenMouseOver = true"
-                             (mouseleave)="FavoritenMouseOver = false">
-                          <table>
-                            <tr>
-                              <td align="center">
-                                <ion-icon name="bookmarks-outline" [color]="FavoritenMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style="text-align: center;">
+                        </td>
+                        <td>
+                          <div class="trennerdiv" [style.background]="Basics.Farben.Grau"></div>
+                        </td>
+                        <td>
+                          <div class="buttonclass"
+                               (click)="FavoritenButtonClicked()"
+                               (mouseenter)="FavoritenMouseOver = true"
+                               (mouseleave)="FavoritenMouseOver = false">
+                            <table>
+                              <tr>
+                                <td align="center">
+                                  <ion-icon name="bookmarks-outline" [color]="FavoritenMouseOver ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="text-align: center;">
 
-                                <table *ngIf="Pool.Mitarbeiterdaten !== null">
-                                  <tr>
-                                    <td style="font-size: 22px; font-weight: bold; color: #c7d304">
-                                      {{Pool.Mitarbeiterdaten.Favoritenliste.length}}
-                                    </td>
-                                    <td style="width: 4px"></td>
-                                    <td style="text-align: center;">
-                                      <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 22px">{{Pool.Mitarbeiterdaten.Favoritenliste.length === 1 ? 'Favorit' : 'Favoriten'}}</ion-text>
-                                    </td>
-                                  </tr>
-                                </table>
+                                  <table *ngIf="Pool.Mitarbeiterdaten !== null">
+                                    <tr>
+                                      <td style="font-size: 22px; font-weight: bold;"  [style.color]="Basics.Farben.BAEBlau">
+                                        {{Pool.Mitarbeiterdaten.Favoritenliste.length}}
+                                      </td>
+                                      <td style="width: 4px"></td>
+                                      <td style="text-align: center;">
+                                        <ion-text [color]="Basics.Ionicfarben.Grau" style="font-size: 22px">{{Pool.Mitarbeiterdaten.Favoritenliste.length === 1 ? 'Favorit' : 'Favoriten'}}</ion-text>
+                                      </td>
+                                    </tr>
+                                  </table>
 
-                              </td>
-                            </tr>
-                          </table>
-                        </div>
+                                </td>
+                              </tr>
+                            </table>
+                          </div>
 
-                      </td>
-                    </tr>
-                  </table>
+                        </td>
+                      </tr>
+                    </table>
 
 
-                </td>
-              </tr>
-            </table>
+                  </td>
+                </tr>
+              </table>
+
+
+            </div>
           </ion-col>
         </ion-row>
           <ion-row>
@@ -317,35 +339,38 @@
           </ion-row>
           <ion-row>
             <ion-col>
-              <table style="width: 100%">
-                <tr>
-                  <td align="center">
+              <div style="width: 100%; background: none;" [style.height.px]="GetFavoritenlistehoehe()">
+                <table *ngIf="Pool.ShowProgress === false" style="width: 100%">
+                  <tr>
+                    <td align="center">
 
-                    <div class="favlistedivclass" [style.height.px]="GetFavoritenlistehoehe()">
+                      <div class="favlistedivclass" [style.height.px]="GetFavoritenlistehoehe()">
 
-                      <ion-radio-group *ngIf="Pool.Mitarbeiterdaten !== null" [value]="DBProjekte.CurrentFavorit !== null ? DBProjekte.CurrentFavorit.FavoritenID : null" (ionChange)="FavoritChangedHandler($event)">
-                        <table *ngIf="Pool.Mitarbeiterdaten.Favoritenliste.length > 0" class="paddingtable">
-                          <tr *ngFor="let Favorit of Pool.Mitarbeiterdaten.Favoritenliste">
-                            <td>
-                              <ion-radio [value]="Favorit.FavoritenID" style="font-size: 40px"></ion-radio>
-                            </td>
-                            <td style="font-size: 22px"
-                                [style.color]="DBProjekte.CurrentFavorit === null || DBProjekte.CurrentFavorit.FavoritenID !== Favorit.FavoritenID ? '#7b6a58' : '#c7d304'">{{Favorit.Name}}</td>
+                        <ion-radio-group *ngIf="Pool.Mitarbeiterdaten !== null" [value]="DBProjekte.CurrentFavorit !== null ? DBProjekte.CurrentFavorit.FavoritenID : null" (ionChange)="FavoritChangedHandler($event)">
+                          <table *ngIf="Pool.Mitarbeiterdaten.Favoritenliste.length > 0" class="paddingtable">
+                            <tr *ngFor="let Favorit of Pool.Mitarbeiterdaten.Favoritenliste">
+                              <td>
+                                <ion-radio [value]="Favorit.FavoritenID" style="font-size: 40px"></ion-radio>
+                              </td>
+                              <td style="font-size: 22px"
+                                  [style.color]="DBProjekte.CurrentFavorit === null || DBProjekte.CurrentFavorit.FavoritenID !== Favorit.FavoritenID ? '#454545' : '#2190df'">{{Favorit.Name}}</td>
+                            </tr>
+                          </table>
+                        </ion-radio-group>
+
+                        <table style="width: 100%;" *ngIf="Pool.Mitarbeiterdaten !== null &&  Pool.Mitarbeiterdaten.Favoritenliste.length === 0" class="paddingtable">
+                          <tr>
+                            <td style="font-size: 22px; text-align: center" [style.color]="'#454545'">Bitte erstelle zuerst deine Projektfavoriten.</td>
                           </tr>
                         </table>
-                      </ion-radio-group>
 
-                      <table style="width: 100%;" *ngIf="Pool.Mitarbeiterdaten !== null &&  Pool.Mitarbeiterdaten.Favoritenliste.length === 0" class="paddingtable">
-                        <tr>
-                          <td style="font-size: 22px; text-align: center" [style.color]="'#7b6a58'">Bitte erstelle zuerst deine Projektfavoriten.</td>
-                        </tr>
-                      </table>
+                      </div>
 
-                    </div>
+                    </td>
+                  </tr>
+                </table>
 
-                  </td>
-                </tr>
-              </table>
+              </div>
             </ion-col>
           </ion-row>
           <ion-row>
@@ -371,12 +396,12 @@
                             <table style="width: 100%;">
                               <tr>
                                 <td align="center">
-                                  <ion-icon name="airplane-outline" [color]="PlayMouseOver && DBProjekte.CurrentFavorit && DBProjekte.GesamtprojektlisteHasDatenerror === false ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 120px"></ion-icon>
+                                  <ion-icon name="airplane-outline" [color]="PlayMouseOver && DBProjekte.CurrentFavorit && DBProjekte.GesamtprojektlisteHasDatenerror === false ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.Grau" style="font-size: 120px"></ion-icon>
                                 </td>
                               </tr>
                               <tr>
                                 <td style="text-align: center;">
-                                  <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 26px">BIB Cockpit</ion-text>
+                                  <ion-text [color]="Basics.Ionicfarben.Grau" style="font-size: 26px">BAE Cockpit</ion-text>
                                 </td>
                               </tr>
                               <tr>
@@ -391,7 +416,7 @@
                             <table>
                               <tr>
                                 <td align="center">
-                                  <ion-icon name="play-outline" [color]="PlayMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.BurnicklGrau" style="font-size: 120px"></ion-icon>
+                                  <ion-icon name="play-outline" [color]="PlayMouseOver ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.BurnicklGrau" style="font-size: 120px"></ion-icon>
                                 </td>
                               </tr>
                               <tr>
@@ -437,7 +462,7 @@
             </tr>
             <tr>
               <td style="text-align: center;">
-                <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 40px">BIB Cockpit</ion-text>
+                <ion-text [color]="Basics.Ionicfarben.BurnicklBraun" style="font-size: 40px">BAE Cockpit</ion-text>
               </td>
             </tr>
             <tr>
@@ -447,7 +472,7 @@
             </tr>
             <tr>
               <td style="text-align: center; vertical-align: center; height: 100px">
-                <ion-button [color]="Basics.Ionicfarben.BurnicklGruen" (click)="AuthService.Login()">Login</ion-button>
+                <ion-button [color]="Basics.Ionicfarben.BAEBlau" (click)="AuthService.Login()">Login</ion-button>
               </td>
             </tr>
           </table>
@@ -467,11 +492,11 @@
     <ion-button *ngIf="AuthService.ShowLogin === false" (click)="SaveProtokokllClicked()">Save Protokoll</ion-button>
     <ion-button *ngIf="AuthService.ShowLogin === false" (click)="SendMailClicked()">Send Mail</ion-button>
     -->
-    <ion-button *ngIf="AuthService.ShowLogin === false" (click)="TestSites()">Test Sites</ion-button>
-    <ion-button *ngIf="AuthService.ShowLogin === false" (click)="TestGraphClicked()">Test Graph</ion-button>
-    <ion-button *ngIf="AuthService.ShowLogin === false" (click)="GetUsercalendarClicked()">Kalender</ion-button>
-    <ion-button *ngIf="AuthService.ShowLogin === false" (click)="TestServerClicked()">Test Server</ion-button>
-    <ion-button *ngIf="AuthService.ShowLogin === false" (click)="LoggoutClicked()">Logout</ion-button>
+    <ion-button color="grau" *ngIf="AuthService.ShowLogin === false" (click)="TestSites()">Test Sites</ion-button>
+    <ion-button color="grau" *ngIf="AuthService.ShowLogin === false" (click)="TestGraphClicked()">Test Graph</ion-button>
+    <ion-button color="grau" *ngIf="AuthService.ShowLogin === false" (click)="GetUsercalendarClicked()">Kalender</ion-button>
+    <ion-button color="grau" *ngIf="AuthService.ShowLogin === false" (click)="TestServerClicked()">Test Server</ion-button>
+    <ion-button color="grau" *ngIf="AuthService.ShowLogin === false" (click)="LoggoutClicked()">Logout</ion-button>
   </ng-container>
 
 

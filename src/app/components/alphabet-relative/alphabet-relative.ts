@@ -66,7 +66,7 @@ export class AlphabetRelativeComponent implements OnInit, OnChanges {
         width: this.Breite      + 'px',
         top: TopPossition       + 'px',
         bottom: BottomPossition + 'px',
-        background: this.Basics.Farben.Burnicklgrau,
+        background: this.Basics.Farben.BAEHellgrau,
         display: 'flex',
         'flex-direction': 'column',
         'justify-content': 'center' // horizontal

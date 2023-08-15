@@ -38,6 +38,7 @@
                                (MeilensteinClicked)="PrepareDaten()"
                                (ProtokollmarkeClicked)="ProtokollmarkeClickedHandler()"
                                (LOPListerMarkeClicked)="LOPListerMarkeClickedHandler()"
+                               (EmailMarkeClicked)="EmailMarkeClickedHandler($event)"
                                (AufgabeClicked)="AufgabeClickedHandler($event, projektindex, Datenursprungsvarianten.Meilensteine)"
                                (TerminFiltermodusClicked)="TerminFiltermodusClickedHandler($event)"
                                (AddProjektpunktClicked)="AddAufgabeClickedHandler(projektindex, Datenursprungsvarianten.Meilensteine)"
@@ -74,6 +75,7 @@
                                (MeilensteinClicked)="PrepareDaten()"
                                (ProtokollmarkeClicked)="ProtokollmarkeClickedHandler()"
                                (LOPListerMarkeClicked)="LOPListerMarkeClickedHandler()"
+                               (EmailMarkeClicked)="EmailMarkeClickedHandler($event)"
                                (AufgabeClicked)="AufgabeClickedHandler($event, projektindex, Datenursprungsvarianten.MeinTag)"
                                (TerminFiltermodusClicked)="TerminFiltermodusClickedHandler($event)"
                                (AddProjektpunktClicked)="AddAufgabeClickedHandler(projektindex, Datenursprungsvarianten.MeinTag)"
@@ -82,6 +84,34 @@
         </pj-projektpunkteliste>
 
       </div>
+
+      <ng-container *ngIf="DBProjekte.CurrentProjekt !== null && GetMeinTagTerminanzahl() > 0">
+        <table  style="width: 100%" class="docinnertable">
+          <tr>
+            <td colspan="20" class="nobordertitelbuttonclass">
+              Termine
+            </td>
+          </tr>
+        </table>
+
+        <table class="docinnertable">
+            <ng-container *ngIf="Kalenderliste[MeinTagindex]">
+              <tr>
+                <td style="font-weight: bold">Begin</td>
+                <td style="font-weight: bold">Ende</td>
+                <td style="font-weight: bold">Thema</td>
+                <td style="font-weight: bold">Organisator</td>
+              </tr>
+              <tr *ngFor="let Termin of Kalenderliste[GetMeinTagindex()]">
+                <td>{{GetUhrzeitstring(Termin.start.Zeitstempel)}}</td>
+                <td>{{GetUhrzeitstring(Termin.end.Zeitstempel)}}</td>
+                <td>{{Termin.subject}}</td>
+                <td>{{Termin.organizer.emailAddress.name}}</td>
+              </tr>
+            </ng-container>
+        </table>
+
+      </ng-container>
 
 
     </ng-container>
@@ -104,15 +134,17 @@
                    [style.background]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Background"
                    [style.color]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Foreground"
                    [style.height.px]="GetProjektpunthoehe(Punkt)"
-                   (click)="MeineWocheEintragEditClicked($event, Punkt, 'Montag')">
+                   (click)="Punkt.ProjektID !== null ? MeineWocheEintragEditClicked($event, Punkt, 'Montag') : null">
                 <table style="width: 100%">
                   <tr>
                     <td [innerHTML]="GetProjektpunktAufgabentext(Punkt)"></td>
-                    <td style="width: 30px"><ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Montag')"></ion-icon></td>
+                    <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
+                      <ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Montag')"></ion-icon></td>
                   </tr>
                   <tr>
-                    <td><div (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
-                    <td style="width: 30px"><ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Montag')"></ion-icon></td>
+                    <td><div *ngIf="Punkt.ProjektID !== null" (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
+                    <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
+                      <ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Montag')"></ion-icon></td>
                   </tr>
                 </table>
               </div>
@@ -125,15 +157,17 @@
                    [style.background]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Background"
                    [style.color]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Foreground"
                    [style.height.px]="GetProjektpunthoehe(Punkt)"
-                   (click)="MeineWocheEintragEditClicked($event,Punkt,'Dienstag')">
+                   (click)="Punkt.ProjektID !== null ? MeineWocheEintragEditClicked($event,Punkt,'Dienstag') : null">
                 <table style="width: 100%">
                   <tr>
                     <td [innerHTML]="GetProjektpunktAufgabentext(Punkt)"></td>
-                    <td style="width: 30px"><ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Dienstag')"></ion-icon></td>
+                    <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
+                      <ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Dienstag')"></ion-icon></td>
                   </tr>
                   <tr>
-                    <td><div (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
-                    <td style="width: 30px"><ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Dienstag')"></ion-icon></td>
+                    <td><div *ngIf="Punkt.ProjektID !== null" (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
+                    <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
+                      <ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Dienstag')"></ion-icon></td>
                   </tr>
                 </table>
               </div>
@@ -146,15 +180,17 @@
                    [style.background]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Background"
                    [style.color]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Foreground"
                    [style.height.px]="GetProjektpunthoehe(Punkt)"
-                   (click)="MeineWocheEintragEditClicked($event, Punkt, 'Mittwoch')">
+                   (click)="Punkt.ProjektID !== null ? MeineWocheEintragEditClicked($event, Punkt, 'Mittwoch') : null">
                 <table style="width: 100%">
                   <tr>
                     <td [innerHTML]="GetProjektpunktAufgabentext(Punkt)"></td>
-                    <td style="width: 30px"><ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Mittwoch')"></ion-icon></td>
+                    <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
+                      <ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Mittwoch')"></ion-icon></td>
                   </tr>
                   <tr>
-                    <td><div (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
-                    <td style="width: 30px"><ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Mittwoch')"></ion-icon></td>
+                    <td><div *ngIf="Punkt.ProjektID !== null" (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
+                    <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
+                      <ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Mittwoch')"></ion-icon></td>
                   </tr>
                 </table>
               </div>
@@ -167,15 +203,17 @@
                    [style.background]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Background"
                    [style.color]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Foreground"
                    [style.height.px]="GetProjektpunthoehe(Punkt)"
-                   (click)="MeineWocheEintragEditClicked($event, Punkt, 'Donerstag')">
+                   (click)="Punkt.ProjektID !== null ? MeineWocheEintragEditClicked($event, Punkt, 'Donerstag') : null">
                 <table style="width: 100%">
                   <tr>
                     <td [innerHTML]="GetProjektpunktAufgabentext(Punkt)"></td>
-                    <td style="width: 30px"><ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Donnerstag')"></ion-icon></td>
+                    <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
+                      <ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Donnerstag')"></ion-icon></td>
                   </tr>
                   <tr>
-                    <td><div (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
-                    <td style="width: 30px"><ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Donnerstag')"></ion-icon></td>
+                    <td><div *ngIf="Punkt.ProjektID !== null" (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
+                    <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
+                      <ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Donnerstag')"></ion-icon></td>
                   </tr>
                 </table>
               </div>
@@ -188,15 +226,16 @@
                    [style.background]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Background"
                    [style.color]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Foreground"
                    [style.height.px]="GetProjektpunthoehe(Punkt)"
-                   (click)="MeineWocheEintragEditClicked($event, Punkt, 'Freitag')">
+                   (click)="Punkt.ProjektID !== null ? MeineWocheEintragEditClicked($event, Punkt, 'Freitag') : null">
                 <table style="width: 100%">
                   <tr>
                     <td [innerHTML]="GetProjektpunktAufgabentext(Punkt)"></td>
-                    <td style="width: 30px"><ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Freitag')"></ion-icon></td>
+                    <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
+                      <ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Freitag')"></ion-icon></td>
                   </tr>
                   <tr>
-                    <td><div (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
-                    <td style="width: 30px">
+                    <td><div *ngIf="Punkt.ProjektID !== null" (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
+                    <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
                       <ion-icon tooltip="Eintrag löschen" name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Freitag')"></ion-icon>
                     </td>
                   </tr>
@@ -232,12 +271,41 @@
                            (MeilensteinClicked)="PrepareDaten()"
                            (ProtokollmarkeClicked)="ProtokollmarkeClickedHandler()"
                            (LOPListerMarkeClicked)="LOPListerMarkeClickedHandler()"
+                           (EmailMarkeClicked)="EmailMarkeClickedHandler($event)"
                            (AufgabeClicked)="AufgabeClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
                            (TerminFiltermodusClicked)="TerminFiltermodusClickedHandler($event)"
                            (AddProjektpunktClicked)="AddAufgabeClickedHandler(null, Datenursprungsvarianten.Favoritenprojekt)"
                            (MeinewocheZuweisenClicked)="MeinewocheZuweisenClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
                            (MeinewocheBearbeitenClicked)="MeineWocheBearbeitenClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)">
     </pj-projektpunkteliste>
+      <table *ngIf="DBProjekte.CurrentProjekt !== null && Kalenderliste.length > 0" style="width: 100%" class="docinnertable">
+        <tr>
+          <td colspan="20" class="nobordertitelbuttonclass">
+            Termine
+          </td>
+        </tr>
+      </table>
+      <table class="docinnertable">
+        <ng-container *ngFor="let Tageintrag of Tageliste; let Tagindex = index">
+          <ng-container *ngIf="Kalenderliste[Tagindex] && Kalenderliste[Tagindex].length > 0">
+            <tr>
+              <td colspan="10"><b><ion-text color="burnicklgruen">{{Tageintrag.Tag + ', ' + Tageintrag.Datum}}</ion-text></b></td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold">Begin</td>
+              <td style="font-weight: bold">Ende</td>
+              <td style="font-weight: bold">Thema</td>
+              <td style="font-weight: bold">Organisator</td>
+            </tr>
+            <tr *ngFor="let Termin of Kalenderliste[Tagindex]">
+              <td>{{GetUhrzeitstring(Termin.start.Zeitstempel)}}</td>
+              <td>{{GetUhrzeitstring(Termin.end.Zeitstempel)}}</td>
+              <td>{{Termin.subject}}</td>
+              <td>{{Termin.organizer.emailAddress.name}}</td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </table>
 
   </div>
 
@@ -293,9 +361,15 @@
                         (ZustaendigInternClicked)="EditorZustaendigInternHandler()"
                         (ZustaendigExternClicked)="EditorZustaendigExternHandler()"
                         (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
+                        (LeistungsphaseClickedEvent)="LeistungsphaseClickedHandler()"
                         (TerminButtonClicked)="ShowDateKkPicker = true"
                         (CancelClickedEvent)="ShowProjektpunktEditor = false"
                         (OkClickedEvent)="ShowProjektpunktEditor = false"></pj-projektpunkt-editor>
+
+<pj-kostengruppen-auswahl *ngIf="ShowKostengruppenauswahl" Titel="Kostengruppe festlegen"
+                          [Dialogbreite]="KostenDialogbreite" [Dialoghoehe]="KostenDialoghoehe" [PositionY]="DialogPosY"
+                          (OkClickedEvent)="ShowKostengruppenauswahl = false"
+                          (CancelClickedEvent)="ShowKostengruppenauswahl = false"></pj-kostengruppen-auswahl>
 
 
 <fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
@@ -380,7 +454,6 @@
                      [ZIndex]="2000"
                      (OkClickedEvent)="ShowProtokollEditor = false"
                      (CancelClickedEvent)="ShowProtokollEditor = false"
-                     (LeistungsphaseClickedEvent)="LeistungsphaseClickedHandler()"
                      (TeamteilnehmerClicked)="TeamteilnehmerClickedHandler()"
                      (BeteiligteteilnehmerClicked)="BeteiligteteilnehmerClickedHandler()"
                      (ProtokollpunktClicked)="ProtokollpunktClickedHandler($event)"

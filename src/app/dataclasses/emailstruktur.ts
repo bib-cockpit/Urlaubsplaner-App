@@ -10,6 +10,7 @@ export type Emailstruktur = {
   Betreff:     string;
   Nachricht:   string;
   Dateiname:   string;
+  Deleted:     boolean;
   EmpfaengerIDListe: string[];
   Empfengerliste?:   string[];
   KopienIDListe:     string[];

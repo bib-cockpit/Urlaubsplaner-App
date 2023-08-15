@@ -30,14 +30,14 @@ import {LocalstorageService} from "./services/localstorage/localstorage";
 import {environment} from "../environments/environment";
 import { EditorModule } from '@tinymce/tinymce-angular';
 
-const appurl: string                   = environment.production === false ? 'http://localhost:4200' : 'https://lemon-moss-06aa32f03.2.azurestaticapps.net';
-const serverurl: string                = environment.production === false ? 'http://localhost:8080' : 'https://bib-cockpit-server.azurewebsites.net';
-const MandantenID: string              = '1bf5df3d-726d-435f-b6dd-658e78e90581';
-const clientappregistration: string    = 'e00bbb87-83f4-4001-bd97-28169a9c1123'; // Login funktioniert mit cockpit und p.hornburger
-const clientserverregistration: string = 'a816f3fb-bb99-466d-92bc-fb7ccd823430'; // geht nicht da Web / Server Anwendung
+const appurl: string                   = environment.production === false ? 'http://localhost:4200' : 'https://nice-glacier-0c9ec7703.3.azurestaticapps.net';
+const serverurl: string                = environment.production === false ? 'http://localhost:8080' : 'https://bae-cockpit-server.azurewebsites.net';
+const MandantenID: string              = '8870822d-b5ee-4a63-b4ea-7147f0ee753d';
+const clientappregistration: string    = 'bc457d46-6f13-4fa7-a973-e94cf4102dd9'; // Login funktioniert mit peter.hornburger
+const clientserverregistration: string = '8289bad1-d444-4958-9033-832603d0e244'; // geht nicht da Web / Server Anwendung
 
-// GIT HUB Account
-// Benutzername: cockpit@burnickl.com
+// GITHUB Account
+// Benutzername: peter.hornburger@b-a-e.eu
 // Passwort:     Spekyland4##
 
 // AZURE MOngo DB
@@ -45,6 +45,7 @@ const clientserverregistration: string = 'a816f3fb-bb99-466d-92bc-fb7ccd823430';
 // Collection  Indexes
 // projekte    Projektname
 // mitarbeiter Name
+
 
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
@@ -78,8 +79,6 @@ export const MSALInstanceFactory = (): IPublicClientApplication => {
 const MSALInterceptorConfigFactory = () : MsalInterceptorConfiguration => {
   const protectedResourceMap = new Map<string, Array<string>>();
   protectedResourceMap.set('https://graph.microsoft.com/v1.0/me', ['user.read']);
-  // protectedResourceMap.set('https://graph.microsoft.com/v1.0/me/drives', ['Files.ReadWrite.All']);
-  // protectedResourceMap.set('https://graph.microsoft.com/v1.0/me/calendarview', ['calendars.readwrite']);
   protectedResourceMap.set(serverurl, ['api://' + clientserverregistration + '/database_access']);
 
   return {
@@ -92,7 +91,23 @@ const MSALGuardConfigFactory = (): MsalGuardConfiguration => {
   return {
     interactionType: InteractionType.Redirect,
     authRequest: {
-      scopes: ['User.Read', 'offline_access', 'Sites.ReadWrite.All', 'TeamMember.ReadWrite.All'],
+      scopes: [
+        'Calendars.Read',
+        'Calendars.Read.Shared',
+        'Calendars.ReadBasic',
+        'Calendars.ReadWrite',
+        'Calendars.ReadWrite.Shared',
+        'Mail.Read',
+        'Mail.ReadBasic',
+        'Mail.ReadWrite',
+        'Mail.Send',
+        'User.Read',
+        'User.ReadBasic.All',
+        'offline_access',
+        'openid',
+        'profile',
+        'email'
+      ], // Alle scopes für Tokenabrufe (Auth Service Funktion: RequestToken) müssen hier eingetragen werden
     },
   };
 };

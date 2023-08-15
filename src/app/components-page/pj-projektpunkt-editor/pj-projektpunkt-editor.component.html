@@ -42,6 +42,13 @@
               <ion-col size="6">
 
                 <ion-grid>
+                  <ion-row>
+                    <ion-col size="3">
+                      <button-value [Buttontext]="'Leistungsphase'"
+                                    [Wert_A]="DB.CurrentProjektpunkt.Leistungsphase !== Const.NONE ? DB.CurrentProjektpunkt.Leistungsphase : 'unbekannt'"
+                                    (ButtonClicked)="LeistungsphaseClickedEvent.emit()"></button-value>
+                    </ion-col>
+                  </ion-row>
                   <ion-row *ngIf="DB.CurrentProjektpunkt.ProtokollID !== null">
                     <ion-col size="3">
 
@@ -77,7 +84,7 @@
                         <tr>
                           <td>
                             <button-value [Buttontext]="'Kostengruppe'"
-                                          [Wert_A]="KostenService.GetKostengruppenname(this.DB.CurrentProjektpunkt)" (ButtonClicked)="KostengruppeClicked.emit()">
+                                          [Wert_A]="KostenService.GetKostengruppennameByProjektpunkt(this.DB.CurrentProjektpunkt)" (ButtonClicked)="KostengruppeClicked.emit()">
                             </button-value>
                           </td>
                         </tr>
@@ -89,7 +96,7 @@
                               </tr>
                               <tr *ngFor="let Punkt of Kostengruppenpunkteliste">
                                 <td style="color: #FF9333; font-weight: bold;">
-                                  <a (click)="LastKostengruppeClicked(Punkt)">{{KostenService.GetKostengruppenname(Punkt)}}</a></td>
+                                  <a (click)="LastKostengruppeClicked(Punkt)">{{KostenService.GetKostengruppennameByProjektpunkt(Punkt)}}</a></td>
                               </tr>
                             </table>
 
@@ -263,30 +270,108 @@
 
               </ion-col>
             </ion-row>
+            <ng-container *ngIf="DB.CurrentProjektpunkt.EmailID !== null && DBEmail.CurrentEmail !== null">
+              <ion-row>
+                <ion-col>
+                  <ion-text color="burnicklgruen"><b>Email</b></ion-text>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+
+                  <div class="emaildivclass">
+
+                    <table  class="docinnertable" style="width: 100%">
+                      <tr>
+                        <td style="width: 110px"><b>Betreff</b></td>
+                        <td>{{this.DBEmail.CurrentEmail.subject}}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Datum</b></td>
+                        <td>{{GetMailDatum()}}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Uhrzeit</b></td>
+                        <td>{{GetMailUhrzeit()}}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Absender</b></td>
+                        <td>
+                          <table style="width: 100%" class="nobordertable">
+                            <tr>
+                              <td style="width: 30%">{{DBEmail.CurrentEmail.from.emailAddress.name}}</td>
+                              <td style="width: auto"><{{DBEmail.CurrentEmail.from.emailAddress.address}}></td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="width: 80px"><b>Empfänger</b></td>
+                        <td>
+                          <table style="width: 100%" class="nobordertable">
+                            <tr *ngFor="let Empfaenger of DBEmail.CurrentEmail.toRecipients">
+                              <td style="width: 30%">{{Empfaenger.emailAddress.name}}</td>
+                              <td style="width: auto"><{{Empfaenger.emailAddress.address}}></td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="width: 80px; vertical-align: top"><b>Cc Empfänger</b></td>
+                        <td>
+                          <table style="width: 100%" class="nobordertable">
+                            <tr *ngFor="let CcEmpfaenger of DBEmail.CurrentEmail.ccRecipients">
+                              <td style="width: 30%;">{{CcEmpfaenger.emailAddress.name}}</td>
+                              <td style="width: auto;"><{{CcEmpfaenger.emailAddress.address}}></td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+
+                  </div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <!--  [innerHTML]="DBEmail.CurrentEmail.body.content" -->
+                  <div  class="emaildivclass">
+                    <table style="width: 100%" class="docinnertable">
+                      <tr>
+                        <td class="nobordertable" [innerHTML]="HTMLBody"></td>
+                      </tr>
+                    </table>
+
+
+                    <!--
+                    DBEmail.CurrentEmail.body.content
+                    <editor #MyEditor [(ngModel)]="DBEmail.CurrentEmail.body.content" [apiKey]="'7hvzif1s8dafhu40z0kjgpw1y4zwc2p5cokjkfox946qpfjc'" [init]="Editorconfig"></editor>
+                    <editor [(ngModel)]="DBEmail.CurrentEmail.Nachricht" [apiKey]="'7hvzif1s8dafhu40z0kjgpw1y4zwc2p5cokjkfox946qpfjc'" [init]="Editorconfig"></editor>
+                    -->
+                  </div>
+                </ion-col>
+              </ion-row>
+              <ion-row *ngIf="DB.CurrentProjektpunkt._id !== null">
+                <ion-col>
+
+                  <table>
+                    <tr>
+                      <td><checkbox-clon [Checked]="DeleteEnabled" (CheckChanged)="CanDeleteCheckedChanged($event)"></checkbox-clon></td>
+                      <td style="width: 6px"></td>
+                      <td>
+                        <ion-button size="small" color="rot" [disabled]="!DeleteEnabled" (click)="DeleteButtonClicked()">
+                          <ion-icon name="trash-outline" style="font-size: 20px"></ion-icon>
+                          <ion-text>Eintrag löschen</ion-text>
+                        </ion-button>
+                      </td>
+                    </tr>
+                  </table>
+
+                </ion-col>
+              </ion-row>
+            </ng-container>
           </ion-grid>
-
-
-
         </div>
-
-
-        <div *ngIf="DB.CurrentProjektpunkt._id !== null" style="position: absolute; width: 100%; height: 60px; background: none; left: 0px; bottom: 0px; padding: 6px">
-          <table>
-            <tr>
-              <td><checkbox-clon [Checked]="DeleteEnabled" (CheckChanged)="CanDeleteCheckedChanged($event)"></checkbox-clon></td>
-              <td style="width: 6px"></td>
-              <td>
-                <ion-button size="small" color="rot" [disabled]="!DeleteEnabled" (click)="DeleteButtonClicked()">
-                  <ion-icon name="trash-outline" style="font-size: 20px"></ion-icon>
-                  <ion-text>Eintrag löschen</ion-text>
-                </ion-button>
-              </td>
-            </tr>
-          </table>
-
-        </div>
-
-
       </ion-content>
 
       <ion-footer>

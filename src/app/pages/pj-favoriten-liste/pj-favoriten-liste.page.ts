@@ -17,6 +17,9 @@ import {DatabaseProjekteService} from "../../services/database-projekte/database
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import {Subscription} from "rxjs";
 import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
+import {
+  DatabaseMitarbeitersettingsService
+} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 
 
 @Component({
@@ -52,6 +55,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
               public Auswahlservice: AuswahlDialogService,
               public Const: ConstProvider,
               public DBProjekt: DatabaseProjekteService,
+              private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public Pool: DatabasePoolService) {
 
     try {
@@ -312,11 +316,26 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
 
     try {
 
+      let Filter: string;
+
+
       switch (this.Auswahldialogorigin) {
 
         case this.Auswahlservice.Auswahloriginvarianten.Favoriten_Editor_Projekteauswahl_Standortfilter:
 
-          this.DBStandort.CurrentStandortfilter = cloneDeep(data);
+          Filter =
+
+          this.DBStandort.CurrentStandortfilter        = data;
+          this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
+
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
+
+            this.DBStandort.StandortfilterChanged.emit();
+
+          }).catch((error) => {
+
+            this.Debug.ShowErrorMessage(error.message, 'Projekt Favoriten', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+          });
 
           this.DBStandort.StandortfilterChanged.emit();
 

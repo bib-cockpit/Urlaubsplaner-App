@@ -29,11 +29,6 @@ export class DatabaseStandorteService {
       this.CurrentStandortfilter = null;
       this.ServerUrl             = this.Pool.CockpitserverURL + '/standorte';
 
-      this.Pool.MitarbeiterdatenChanged.subscribe(() => {
-
-
-      });
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'constructor', this.Debug.Typen.Service);

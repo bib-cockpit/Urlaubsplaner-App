@@ -20,7 +20,7 @@
                   <tr>
                     <td>
                       <ion-icon name="home-outline"
-                                [color]="HomeMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
+                                [color]="HomeMouseOver ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Weiss">
                       </ion-icon>
                     </td>
                   </tr>
@@ -30,7 +30,7 @@
             <td align="center" class="trennertdclass">
               <div [class]="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte ? 'trennerbigdivclass' : 'trennerdivclass'"></div>
             </td>
-            <td>
+            <td *ngIf="Menuservice.MainMenuebereich !== Menuservice.MainMenuebereiche.Email">
               <div class="menubuttonclass"
                    (mouseenter)="EmailMouseOver = true"
                    (mouseleave)="EmailMouseOver = false"
@@ -39,12 +39,31 @@
                   <tr>
                     <td>
                       <ion-icon name="mail-outline"
-                                [color]="EmailMouseOver ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss">
+                                [color]="EmailMouseOver ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Weiss">
                       </ion-icon>
                     </td>
                   </tr>
                 </table>
               </div>
+            </td>
+            <td *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Email">
+
+              <div class="menubuttonclass" [style.cursor]="BackMouseOver ? 'pointer': 'default'"
+                   (mouseenter)="BackMouseOver = true"
+                   (mouseleave)="BackMouseOver = false"
+                   (click)="BackButtonClicked()">
+                <table class="paddingsmalltable">
+                  <tr>
+                    <td>
+                      <ion-icon name="arrow-back-circle-outline"
+                                [color]="BackMouseOver ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.Weiss">
+                      </ion-icon>
+                    </td>
+                    <td [style.color]="BackMouseOver ? '#000000' : 'white'">Zurück</td>
+                  </tr>
+                </table>
+              </div>
+
             </td>
 
             <td align="center" class="trennertdclass">
@@ -54,8 +73,8 @@
                 <div class="menubuttonclass">
                   <table class="paddingsmalltable">
                     <tr>
-                      <td><ion-icon name="location-outline" [color]="Basics.Ionicfarben.BurnicklGruen"></ion-icon></td>
-                      <td [style.color]="'#c7d304'">Standorte</td>
+                      <td><ion-icon name="location-outline" [color]="Basics.Ionicfarben.Schwarz"></ion-icon></td>
+                      <td [style.color]="'#000000'">Standorte</td>
                     </tr>
                   </table>
                 </div>
@@ -65,8 +84,8 @@
                 <div class="menubuttonclass">
                   <table class="paddingsmalltable">
                     <tr>
-                      <td><ion-icon name="people-outline" [color]="Basics.Ionicfarben.BurnicklGruen"></ion-icon></td>
-                      <td [style.color]="'#c7d304'">Mitarbeiter</td>
+                      <td><ion-icon name="people-outline" [color]="Basics.Ionicfarben.Schwarz"></ion-icon></td>
+                      <td [style.color]="'#000000'">Mitarbeiter</td>
                     </tr>
                   </table>
                 </div>
@@ -75,8 +94,8 @@
                 <div class="menubuttonclass">
                   <table class="paddingsmalltable">
                     <tr>
-                      <td><ion-icon name="business-outline" [color]="Basics.Ionicfarben.BurnicklGruen"></ion-icon></td>
-                      <td [style.color]="'#c7d304'">Projekte</td>
+                      <td><ion-icon name="business-outline" [color]="Basics.Ionicfarben.Schwarz"></ion-icon></td>
+                      <td [style.color]="'#000000'">Projekte</td>
                     </tr>
                   </table>
                 </div>
@@ -85,8 +104,8 @@
                 <div class="menubuttonclass" (click)="FirmaMenueButtonClicked(Menuservice.FirmaMenuebereiche.Favoriten)">
                   <table class="paddingsmalltable">
                     <tr>
-                      <td><ion-icon name="bookmarks-outline" [color]="Basics.Ionicfarben.BurnicklGruen"></ion-icon></td>
-                      <td [style.color]="'#c7d304'">Favoriten</td>
+                      <td><ion-icon name="bookmarks-outline" [color]="Basics.Ionicfarben.Schwarz"></ion-icon></td>
+                      <td [style.color]="'#000000'">Favoriten</td>
                     </tr>
                   </table>
                 </div>
@@ -187,9 +206,9 @@
                   </tr>
                 </table>
               </td>
-
-
-                <td align="center" class="trennertdclass"><div class="trennerbigdivclass"></div></td>
+              <td align="center" class="trennertdclass"><div class="trennerbigdivclass"></div></td>
+            </ng-container>
+            <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte || Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Email">
                 <td *ngIf="DBProjekte.CurrentProjekt !== null">
                   <table class="paddingtable">
                     <tr>
@@ -210,12 +229,12 @@
                           </table>
                         </div>
                       </td>
-                      <td>
+                      <td *ngIf="Menuservice.MainMenuebereich !== Menuservice.MainMenuebereiche.Email">
                         <div (click)="ProjektfilesClicked()" (mouseover)="FilesMouseOver = true" (mouseleave)="FilesMouseOver = false" [style.border-color]="FilesMouseOver === true ? '#c7d304' : 'white'"  class="buttonsmallclass">
                           <table>
                             <tr>
                               <td>
-                                <ion-icon name="folder-outline" style="font-size: 18px" [color]="FilesMouseOver === true ? Basics.Ionicfarben.BurnicklGruen : Basics.Ionicfarben.Weiss"></ion-icon>
+                                <ion-icon name="folder-outline" style="font-size: 18px" [color]="FilesMouseOver === true ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.Weiss"></ion-icon>
                               </td>
                             </tr>
                           </table>
@@ -227,12 +246,35 @@
                           <ion-icon name="arrow-forward-circle" style="font-size: 22px"></ion-icon>
                         </ion-button>
                       </td>
+                      <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Email">
+                        <td style="width: 300px;">
+                          <button-value-date [Buttontext]="'Ab dem '"
+                                             [ElementID]="'terminspanneende'"
+                                             [Datum]="GetMailDatum()"
+                                             (TimeChanged)="EmailDatumChangedHandler($event)">
+                          </button-value-date>
+                        </td>
+                        <td>
+                          <checkbox-clon [Checked]="DBEmail.ShowUngelesenOnly" (CheckChanged)="ShowUngelesenCheckChanged($event)"></checkbox-clon>
+                        </td>
+                        <td>
+                          Nur ungelesene Emails anzeigen
+                        </td>
+                        <td>
+                          <checkbox-clon [Checked]="DBEmail.Projektsortierung" (CheckChanged)="ProjektsortierungChangedHandler($event)"></checkbox-clon>
+                        </td>
+                        <td>
+                          Sortieren nach Projekten
+                        </td>
+                      </ng-container>
                     </tr>
                   </table>
                 </td>
 
+            </ng-container>
 
-              <ng-container *ngIf="Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste">
+              <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte &&
+              Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste">
 
                 <td>
                   <div (click)="MeintagClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Mein_Tag ? '#c7d304' : 'white'"  class="buttonclass">
@@ -274,7 +316,7 @@
 
               </ng-container>
 
-            </ng-container>
+
             <ng-container *ngIf="ShowSuchleiste">
               <td style="width: 20px"></td>
               <td>
@@ -351,7 +393,7 @@
         </td>
       </tr>
       <tr>
-        <td>
+        <td colspan="2">
           <table>
             <tr>
               <td [style.width.px]="Tagbreite">
@@ -376,14 +418,70 @@
             </tr>
           </table>
         </td>
-        <td><!-- Bild --></td>
+        <!--
+        <td></td>
+        -->
+      </tr>
+
+
+    </ng-container>
+
+    <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Projekte &&
+                         Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Festlegungen &&
+                         DBProjekte.CurrentProjekt        !== null">
+      <tr>
+        <td colspan="2" style="padding-left: 8px; padding-right: 8px">
+          <div style="width: 100%; height: 1px; background: white"></div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+
+          <div style="width: 100%; height: 100%; background: none">
+
+
+            <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable" width="100%">
+              <tr>
+                <td style="width: 380px">
+                  <button-value [Buttontext]="'Leitungsphase'"
+                                (ButtonClicked)="LeistungsphaseFilterClicked.emit()"
+                                [Wert_A]="Pool.Mitarbeitersettings.LeistungsphaseFilter !== Const.Leistungsphasenvarianten.UNBEKANNT ? Pool.Mitarbeitersettings.LeistungsphaseFilter : 'Alle'">
+                  </button-value>
+                </td>
+                <td style="width: 600px">
+                  <button-value [Buttontext]="'Kostengruppe'" [Linkebreite]="20" [Rechtebreite]="80"
+                                (ButtonClicked)="KostengruppeFilterClicked.emit()"
+                                [Wert_A]="GetKostengruppenname()">
+                  </button-value>
+                </td>
+                <td style="width: 280px">
+                  <ion-searchbar #Suchleiste2 placeholder="Suche"></ion-searchbar>
+                </td>
+                <td style="width: auto">
+                  <table class="paddingtable">
+                    <tr>
+                      <td><checkbox-clon [Checked]="ShowOpenFestlegungOnly" (CheckChanged)="ShowOpenFestlegungOnlyChanged($event)"></checkbox-clon></td>
+                      <td>nur offene Festlegungen anzeigen</td>
+                    </tr>
+                  </table>
+                </td>
+                <td style="width: 120px;" align="right">
+                  <ion-button size="small" [color]="SendFestlegungenEnabled === true ? 'burnicklbraun' : 'grau'" (click)="SendFestlegungenEnabled === true ? SendFestlegungenClicked.emit() : null">
+                    <ion-icon name="mail-outline" color="weiss" slot="start"></ion-icon>
+                    <ion-text color="weiss">Email</ion-text>
+                  </ion-button>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </td>
       </tr>
 
 
     </ng-container>
 
 
-    <!-- Einzelprojekt 2. Menüzeile -->
+    <!-- Einzelprojekt 3. Menüzeile -->
 
     <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Projekte &&
                          Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste &&
@@ -438,6 +536,115 @@
         <td><!-- Bild --></td>
       </tr>
     </ng-container>
+
+    <!--
+    <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Email">
+      <tr>
+        <td colspan="2">
+
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 50%">
+
+
+                <table>
+                  <tr>
+                    <td style="width: 10px"></td>
+                    <td>
+
+                    </td>
+                    <td style="width: 10px"></td>
+                    <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
+                    <td style="width: 10px"></td>
+
+                    <td>
+
+                      <ion-text color="weiss">
+                        <b>
+                          Email
+                        </b>
+                      </ion-text>
+
+                    </td>
+
+                    <td style="width: 100px"></td>
+                    <td>
+
+                      <table  *ngIf="DBProjekte.CurrentProjekt !== null" class="paddingtable">
+                        <tr>
+                          <td>
+                            <ion-button (click)="ProjektGoBackClicked()" slot="icon-only"
+                                        [color]="GetProjektBackButtoncolor()" size="small">
+                              <ion-icon name="arrow-back-circle" style="font-size: 22px"></ion-icon>
+                            </ion-button>
+                          </td>
+                          <td>
+                            <div (click)="ProjektClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt ? '#c7d304' : 'white'"  class="buttonclass">
+                              <table>
+                                <tr>
+                                  <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt ? '#c7d304' : 'white'">
+                                    {{DBProjekte.CurrentProjekt.Projektkurzname}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </div>
+                          </td>
+                          <td>
+                            <ion-button (click)="ProjektGoForwardClicked()" slot="icon-only"
+                                        [color]="GetProjektForwardButtoncolor()" size="small">
+                              <ion-icon name="arrow-forward-circle" style="font-size: 22px"></ion-icon>
+                            </ion-button>
+                          </td>
+                        </tr>
+                      </table>
+
+
+
+                    </td>
+
+
+                  </tr>
+                </table>
+
+
+
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" style="padding-left: 8px; padding-right: 8px">
+          <div style="width: 100%; height: 1px; background: white"></div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+
+          <div style="width: 100%; height: 100%; background: none">
+
+            <table class="paddingtable">
+              <tr>
+                <td>
+                  <checkbox-clon [Checked]="DBEmail.ShowUngelesenOnly" (CheckChanged)="ShowUngelesenCheckChanged($event)"></checkbox-clon>
+                </td>
+                <td>
+                  Nur ungelesene Emails anzeigen
+                </td>
+                <td>
+                  <checkbox-clon [Checked]="DBEmail.Projektsortierung" (CheckChanged)="ProjektsortierungChangedHandler($event)"></checkbox-clon>
+                </td>
+                <td>
+                  Sortieren nach Projekten
+                </td>
+              </tr>
+            </table>
+
+          </div>
+        </td>
+      </tr>
+          </table>
+
+    </ng-container>
+
+    -->
 
 
 

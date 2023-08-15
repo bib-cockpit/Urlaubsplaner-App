@@ -252,7 +252,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
         case this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Editor_Leistungsphase:
 
-          this.DB.CurrentProtokoll.Leistungsphase = data;
+          this.DBProjektpunkte.CurrentProjektpunkt.Leistungsphase = data;
 
           break;
 
@@ -444,16 +444,16 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
       this.Auswahltitel  = 'Leistungsphase festlegen';
       this.Auswahlliste  = [];
-      this.Auswahlliste.push({ Index: 0, FirstColumn: this.DB.Leistungsphasenvarianten.LPH1, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH1 });
-      this.Auswahlliste.push({ Index: 1, FirstColumn: this.DB.Leistungsphasenvarianten.LPH2, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH2 });
-      this.Auswahlliste.push({ Index: 2, FirstColumn: this.DB.Leistungsphasenvarianten.LPH3, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH3 });
-      this.Auswahlliste.push({ Index: 3, FirstColumn: this.DB.Leistungsphasenvarianten.LPH4, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH4 });
-      this.Auswahlliste.push({ Index: 4, FirstColumn: this.DB.Leistungsphasenvarianten.LPH5, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH5 });
-      this.Auswahlliste.push({ Index: 5, FirstColumn: this.DB.Leistungsphasenvarianten.LPH6, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH6 });
-      this.Auswahlliste.push({ Index: 6, FirstColumn: this.DB.Leistungsphasenvarianten.LPH7, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH7 });
-      this.Auswahlliste.push({ Index: 7, FirstColumn: this.DB.Leistungsphasenvarianten.LPH8, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH8 });
+      this.Auswahlliste.push({ Index: 0, FirstColumn: this.Const.Leistungsphasenvarianten.LPH1, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH1 });
+      this.Auswahlliste.push({ Index: 1, FirstColumn: this.Const.Leistungsphasenvarianten.LPH2, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH2 });
+      this.Auswahlliste.push({ Index: 2, FirstColumn: this.Const.Leistungsphasenvarianten.LPH3, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH3 });
+      this.Auswahlliste.push({ Index: 3, FirstColumn: this.Const.Leistungsphasenvarianten.LPH4, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH4 });
+      this.Auswahlliste.push({ Index: 4, FirstColumn: this.Const.Leistungsphasenvarianten.LPH5, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH5 });
+      this.Auswahlliste.push({ Index: 5, FirstColumn: this.Const.Leistungsphasenvarianten.LPH6, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH6 });
+      this.Auswahlliste.push({ Index: 6, FirstColumn: this.Const.Leistungsphasenvarianten.LPH7, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH7 });
+      this.Auswahlliste.push({ Index: 7, FirstColumn: this.Const.Leistungsphasenvarianten.LPH8, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH8 });
 
-      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {FirstColumn: this.DB.CurrentProtokoll.Leistungsphase});
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {FirstColumn: this.DBProjektpunkte.CurrentProjektpunkt.Leistungsphase});
       this.ShowAuswahl  = true;
 
     } catch (error) {
@@ -663,14 +663,14 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       this.Auswahltitel  = 'Leistungsphase filtern';
       this.Auswahlliste  = [];
       this.Auswahlliste.push({ Index: 0, FirstColumn: 'kein Filter', SecoundColumn: '', Data: this.Const.NONE });
-      this.Auswahlliste.push({ Index: 1, FirstColumn: this.DB.Leistungsphasenvarianten.LPH1, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH1 });
-      this.Auswahlliste.push({ Index: 2, FirstColumn: this.DB.Leistungsphasenvarianten.LPH2, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH2 });
-      this.Auswahlliste.push({ Index: 3, FirstColumn: this.DB.Leistungsphasenvarianten.LPH3, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH3 });
-      this.Auswahlliste.push({ Index: 4, FirstColumn: this.DB.Leistungsphasenvarianten.LPH4, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH4 });
-      this.Auswahlliste.push({ Index: 5, FirstColumn: this.DB.Leistungsphasenvarianten.LPH5, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH5 });
-      this.Auswahlliste.push({ Index: 6, FirstColumn: this.DB.Leistungsphasenvarianten.LPH6, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH6 });
-      this.Auswahlliste.push({ Index: 7, FirstColumn: this.DB.Leistungsphasenvarianten.LPH7, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH7 });
-      this.Auswahlliste.push({ Index: 8, FirstColumn: this.DB.Leistungsphasenvarianten.LPH8, SecoundColumn: '', Data: this.DB.Leistungsphasenvarianten.LPH8 });
+      this.Auswahlliste.push({ Index: 1, FirstColumn: this.Const.Leistungsphasenvarianten.LPH1, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH1 });
+      this.Auswahlliste.push({ Index: 2, FirstColumn: this.Const.Leistungsphasenvarianten.LPH2, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH2 });
+      this.Auswahlliste.push({ Index: 3, FirstColumn: this.Const.Leistungsphasenvarianten.LPH3, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH3 });
+      this.Auswahlliste.push({ Index: 4, FirstColumn: this.Const.Leistungsphasenvarianten.LPH4, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH4 });
+      this.Auswahlliste.push({ Index: 5, FirstColumn: this.Const.Leistungsphasenvarianten.LPH5, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH5 });
+      this.Auswahlliste.push({ Index: 6, FirstColumn: this.Const.Leistungsphasenvarianten.LPH6, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH6 });
+      this.Auswahlliste.push({ Index: 7, FirstColumn: this.Const.Leistungsphasenvarianten.LPH7, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH7 });
+      this.Auswahlliste.push({ Index: 8, FirstColumn: this.Const.Leistungsphasenvarianten.LPH8, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH8 });
 
       this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: Data});
       this.ShowAuswahl  = true;
@@ -881,7 +881,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll List', 'EmpfaengerExternClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'EmpfaengerExternClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -896,7 +896,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll List', 'EmpfaengerExternClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'EmpfaengerExternClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -911,7 +911,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Protokoll List', 'EmpfaengerExternClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'EmpfaengerExternClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -926,7 +926,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bautagebuch List', 'CcEmpfaengerBurnicklClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'CcEmpfaengerBurnicklClickedHandler', this.Debug.Typen.Page);
     }
   }
 }

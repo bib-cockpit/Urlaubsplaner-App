@@ -35,6 +35,10 @@ import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subscription} from "rxjs";
 import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
+import {DatabaseOutlookemailService} from "../../services/database-email/database-outlookemail.service";
+import {Outlookemailstruktur} from "../../dataclasses/outlookemailstruktur";
+import {Outlookemailattachmentstruktur} from "../../dataclasses/outlookemailattachmentstruktur";
+import {Graphservice} from "../../services/graph/graph";
 
 @Component({
   selector: 'pj-projektpunkt-editor',
@@ -52,6 +56,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
   @Output() ZustaendigExternClicked = new EventEmitter<any>();
   @Output() KostengruppeClicked     = new EventEmitter<any>();
   @Output() GebaeudeteilClicked     = new EventEmitter<any>();
+  @Output() LeistungsphaseClickedEvent  = new EventEmitter();
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -72,6 +77,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
   public StatusSubscription: Subscription;
   public KostenSubscription: Subscription;
   public Kostengruppenpunkteliste: Projektpunktestruktur[];
+  public  HTMLBody: string;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -84,8 +90,10 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
               public DBProtokoll: DatabaseProtokolleService,
               public Displayservice: DisplayService,
               public Pool: DatabasePoolService,
+              public Graph: Graphservice,
               public KostenService: KostengruppenService,
               public DBGebaeude: DatabaseGebaeudestrukturService,
+              public DBEmail: DatabaseOutlookemailService,
               public Const: ConstProvider) {
     try {
 
@@ -103,6 +111,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       this.StatusSubscription = null;
       this.Kostengruppenpunkteliste = [];
       this.KostenSubscription = null;
+      this.HTMLBody = null;
 
       this.StatusbuttonEnabled = this.DB.CurrentProjektpunkt.Status !== this.Const.Projektpunktstatustypen.Festlegung.Name;
 
@@ -174,7 +183,6 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
       this.DBGebaeude.Init();
       this.SetupValidation();
-      this.PrepareData();
 
     } catch (error) {
 
@@ -216,9 +224,56 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
-  private PrepareData() {
+  private async PrepareData() {
 
     try {
+
+      let Email: Outlookemailstruktur;
+      let HTML: string;
+      let Attachments: Outlookemailattachmentstruktur[] = [];
+      let ImageID: string;
+      let Mimetype: string;
+      let Data:string;
+
+      this.DBEmail.CurrentEmail = null;
+
+      if(this.DB.CurrentProjektpunkt.EmailID !== null) {
+
+        try {
+
+          Email = await this.DBEmail.GetEmail(this.DB.CurrentProjektpunkt.EmailID);
+
+          if(!lodash.isUndefined(Email) && Email !== null) {
+
+            this.DBEmail.CurrentEmail = Email;
+            this.HTMLBody             = '';
+
+            HTML = Email.body.content;
+
+            Attachments = await this.Graph.GetOwnEmailAttachemntlist(this.DBEmail.CurrentEmail.id);
+
+            for (let Attachment of Attachments) {
+
+              if (Attachment.isInline === true) {
+
+                ImageID = Attachment.contentId;
+                Mimetype = Attachment.contentType;
+
+                Data = 'data:' + Mimetype + ';base64,' + Attachment.contentBytes;
+
+                HTML = HTML.replace('cid:' + ImageID, Data);
+              }
+            }
+
+            this.HTMLBody = HTML;
+          }
+        }
+        catch(error) {
+
+          this.DBEmail.CurrentEmail = null;
+          this.HTMLBody = null;
+        }
+      }
 
 
     } catch (error) {
@@ -236,6 +291,8 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
         this.ValidateInput();
 
       }, 30);
+
+      this.PrepareData();
 
     } catch (error) {
 
@@ -862,7 +919,30 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
       this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'LastKostengruppeClicked', this.Debug.Typen.Component);
     }
+  }
 
+  GetMailDatum(): string {
+
+    try {
+
+      return moment(this.DBEmail.CurrentEmail.Zeitstempel).format('DD.MM.YYYY');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetMailDatum', this.Debug.Typen.Component);
+    }
+  }
+
+  GetMailUhrzeit(): string {
+
+    try {
+
+      return moment(this.DBEmail.CurrentEmail.Zeitstempel).format('HH:mm:ss');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetMailUhrzeit', this.Debug.Typen.Component);
+    }
   }
 }
 

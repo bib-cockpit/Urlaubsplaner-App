@@ -4,6 +4,7 @@ import {CommonModule} from '@angular/common';
 import {PageHeaderMenuComponent} from "../page-header-menu/page-header-menu.component";
 import {ButtonValueModule} from "../button-value/button-value.module";
 import {CheckboxClonModule} from "../checkbox-clon/checkbox-clon.module";
+import {ButtonValueDateModule} from "../button-value-date/button-value-date.module";
 
 @NgModule({
   declarations: [
@@ -14,13 +15,14 @@ import {CheckboxClonModule} from "../checkbox-clon/checkbox-clon.module";
 
     PageHeaderMenuComponent
   ],
-  imports: [
+    imports: [
 
-    CommonModule,
-    IonicModule,
-    ButtonValueModule,
-    CheckboxClonModule,
-  ],
+        CommonModule,
+        IonicModule,
+        ButtonValueModule,
+        CheckboxClonModule,
+        ButtonValueDateModule,
+    ],
   providers: [
 
   ]
