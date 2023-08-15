@@ -1,0 +1,115 @@
+<ion-header>
+  <page-header #PageHeader>
+
+    <table style="width: 100%;">
+      <tr>
+        <td style="width: 50%">
+
+
+          <table>
+            <tr>
+              <td style="width: 10px"></td>
+              <td>
+                <div class="menubuttonclass" [style.cursor]="BackMouseOver ? 'pointer': 'default'"
+                     (mouseenter)="BackMouseOver = true"
+                     (mouseleave)="BackMouseOver = false"
+                     (click)="BackButtonClicked()">
+                  <table class="paddingsmalltable">
+                    <tr>
+                      <td>
+                        <ion-icon name="arrow-back-circle-outline"
+                                  [color]="BackMouseOver ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.Weiss">
+                        </ion-icon>
+                      </td>
+                      <td [style.color]="BackMouseOver ? '#c7d304' : 'white'">Zurück</td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+              <td style="width: 10px"></td>
+              <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
+              <td style="width: 10px"></td>
+              <td *ngIf="DBProjekte.CurrentProjekt !== null">
+
+                <ion-text color="weiss">
+                  <b>
+                    {{this.DBProjekte.CurrentProjekt.Projektname}}
+                  </b>
+                </ion-text>
+
+              </td>
+              <td style="width: 10px"></td>
+
+
+            </tr>
+          </table>
+
+        </td>
+        <td align="right" valign="middle" style="width: 50%">
+            <table *ngIf="GraphService.UserimageSRC !== null">
+              <tr>
+                <td>
+                  <img class="userimagesmall" [src]="GraphService.UserimageSRC">
+                </td>
+                <td style="width: 10px"></td>
+              </tr>
+            </table>
+            <div *ngIf="GraphService.UserimageSRC === null" class="userkuerzelsmall">
+              {{Pool.Mitarbeiterdaten !==  null ? Pool.Mitarbeiterdaten.Kuerzel : '---'}}
+            </div>
+        </td>
+      </tr>
+    </table>
+
+
+  </page-header>
+</ion-header>
+<ion-content>
+
+  <pj-teams-filebrowser-viewer
+    [TeamsID]="DBProjekte.CurrentProjekt !== null ? DBProjekte.CurrentProjekt.TeamsID : null"
+    [Browserbreite]="Browserbreite"
+    [Browserhoehe]="Browserhoehe"
+    [Filelistbreite]="500"
+    [Zoomfaktor]="Zoomfaktor"
+    (PDFDownloadStarted)="PDFDownloadStartedHandler($event)"
+    (PDFRenderedFinished)="PDFPageRenderedFinishedHandler()">
+  </pj-teams-filebrowser-viewer>
+
+</ion-content>
+<ion-footer>
+  <page-footer #PageFooter>
+
+    <table width="100%">
+      <tr>
+        <td align="right">
+
+          <table *ngIf="GraphService.CurrentPDFDownload !== null" class="paddingtable">
+            <tr>
+              <td>
+                <ion-button size="small" color="burnicklbraun" (click)="ZoomOutClicked()">
+                 <ion-icon slot="icon-only" name="remove-circle-outline"></ion-icon>
+                </ion-button>
+              </td>
+              <td>{{(Zoomfaktor * 100).toFixed(0)}}%</td>
+              <td>
+                <ion-button size="small" color="burnicklbraun" (click)="ZoomInClicked()">
+                  <ion-icon name="add-circle-outline"></ion-icon>
+                </ion-button>
+              </td>
+              <td>
+                <div class="filekeeperclass">{{GraphService.CurrentPDFDownload.name}}</div>
+              </td>
+            </tr>
+          </table>
+
+
+        </td>
+      </tr>
+    </table>
+
+  </page-footer>
+</ion-footer>
+
+
+

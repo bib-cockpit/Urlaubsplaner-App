@@ -1,0 +1,18 @@
+
+.festlegungdivclass {
+
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
+  border-radius: 3px;
+  font-size: 90%;
+  color: black;
+}
+
+.festlegungdivclass:hover {
+
+  text-decoration: underline;
+}

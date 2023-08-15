@@ -1,0 +1,88 @@
+#container {
+  text-align: center;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.loplisteheader {
+
+  width: 100%;
+  height: 32px;
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.listeheaderclass {
+
+  border-top:  1px solid #000000;
+  border-left:  1px solid #000000;
+  border-right:  1px solid #000000;
+}
+.listeheaderclass td {
+
+  padding: 4px;
+  border:  1px solid var(--ion-color-schwarz);
+}
+
+.statusdivclass {
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items:     center; // vertikal
+  color: white;
+  font-size: 90%;
+  flex-wrap: wrap;
+  padding: 6px;
+}
+
+.docinnertablespezial {
+
+  // border:  0px solid #000000;
+}
+
+.docinnertablespezial td {
+
+  padding: 4px;
+  border-bottom:  1px solid var(--ion-color-schwarz);
+  border-left:    1px solid var(--ion-color-schwarz);
+  border-right:   1px solid var(--ion-color-schwarz);
+}
+
+#container strong {
+  font-size: 20px;
+  line-height: 26px;
+}
+
+#container p {
+  font-size: 16px;
+  line-height: 22px;
+
+  color: #8c8c8c;
+
+  margin: 0;
+}
+
+#container a {
+  text-decoration: none;
+}
+
+.keineintragclass {
+
+  width: 100%;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  font-weight: bold;
+  font-size: 120%;
+  padding-left: 8px; padding-right: 8px;
+}

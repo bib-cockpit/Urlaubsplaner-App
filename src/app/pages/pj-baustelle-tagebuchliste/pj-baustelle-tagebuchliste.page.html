@@ -1,0 +1,154 @@
+<ion-header>
+  <page-header #PageHeader>
+    <page-header-menu
+      (ShowProjektauswahlEvent)="ShowProjektauswahlEventHandler()"
+      (ShowProjektfilesEvent)="ShowProjektfilesHandler()"></page-header-menu>
+  </page-header>
+</ion-header>
+<ion-content>
+
+  <table *ngIf="DBProjekte.CurrentProjekt !== null" class="paddingtable" width="100%">
+    <tr>
+      <td>
+        <ion-text color="burnicklgruen" style="font-size: 120%"><b>{{DBProjekte.CurrentProjekt.Projektname}}</b></ion-text>
+      </td>
+    </tr>
+  </table>
+
+  <div *ngIf="DBProjekte.CurrentProjekt !== null" style="height: 100%; width: 100%;">
+    <div  [style.height.px]="Headerhoehe" style="width: 100%; padding-left: 8px; padding-right: 8px; padding-top: 8px">
+      <table  width="100%" class="docinnertable">
+        <tr>
+          <td style="width: 60px; height: 30px; font-weight: bold">Nr.</td>
+          <td style="width: 100px; font-weight: bold">Datum</td>
+          <td style="width: auto; font-weight: bold">Titel</td>
+          <td style="width: 80px; font-weight: bold; text-align: center">Einträge</td>
+          <td style="width: 80px; font-weight: bold; text-align: center">Status</td>
+        </tr>
+      </table>
+    </div>
+
+    <div [style.height.px]="Listenhoehe" style="width: 100%; height: 100%; overflow: auto;">
+
+      <div  *ngFor="let Tagebuch of Tagebuchliste; let i = index" (click)="TagebuchClicked(Tagebuch)" style="width: 100%; cursor: pointer; padding-left: 8px; padding-right: 8px">
+        <table width="100%" class="docinnertablenew">
+          <tr>
+            <td style="width: 60px; height: 40px">{{Tagebuch.Nummer}}</td>
+            <td style="width: 100px;">{{Tagebuch.Zeitstring}}</td>
+            <td style="width: auto;">Bautagebuch {{Tagebuch.Nummer}}</td>
+            <td style="width: 80px; text-align: center">{{Tagebuch.Eintraegeliste.length}}</td>
+            <td style="width: 80px;">
+
+              <div *ngIf="Tagebuch.Eintraegeliste.length > 0"class="maildivclass" (click)="SendMailButtonClicked($event, Tagebuch)">
+                <table class="nobordersmalltable" width="100%">
+                  <tr>
+                    <td align="center">
+                      <ion-icon  name="mail" [color]="Tagebuch.GesendetZeitstempel !== null ? 'gruen' : 'rot'"></ion-icon>
+                    </td>
+                  </tr>
+                  <ng-container *ngIf="Tagebuch.GesendetZeitstempel !== null">
+                    <tr>
+                      <td style="text-align: center; font-size: 80%">{{Tools.GetDatumFromZeitstempel(Tagebuch.GesendetZeitstempel)}}</td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: center; font-size: 80%">{{Tools.GetZeitFromZeitstempel(Tagebuch.GesendetZeitstempel)}}</td>
+                    </tr>
+                  </ng-container>
+                </table>
+
+              </div>
+
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div *ngIf="Tagebuchliste.length === 0"  class="keineintragclass">
+        <table   width="100%" class="docinnertable">
+          <tr>
+            <td style="text-align: center; height: 100px">Kein Bautagebuch vorhanden</td>
+          </tr>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</ion-content>
+<ion-footer>
+  <page-footer #PageFooter>
+    <div class="rootbuttonclass" (click)="AddTagebuchButtonClicked()">
+      <ion-icon style="font-size: 28px" color="burnicklgruen" name="add-circle-outline"></ion-icon>
+    </div>
+  </page-footer>
+</ion-footer>
+
+<pj-email-send *ngIf="ShowEmailSenden"
+               [Titel]="'Protokoll senden'"
+               [Dialogbreite]="EmailDialogbreite"
+               [Dialoghoehe]="EmailDialoghoehe"
+               [PositionY]="DialogPosY"
+               [ZIndex]="4000"
+               Iconname="mail-outline"
+               (EmpfaengerBurnicklClicked)="EmpfaengerBurnicklClickedHandler()"
+               (CcEmpfaengerBurnicklClicked)="CcEmpfaengerBurnicklClickedHandler()"
+               (EmpfaengerExternClicked)="EmpfaengerExternClickedHandler()"
+               (CcEmpfaengerExternClicked)="CcEmpfaengerExternClickedHandler()"
+               (CancelClickedEvent)="ShowEmailSenden = false"
+               (OkClickedEvent)="ShowEmailSenden = false">
+</pj-email-send>
+
+<pj-bautagebuch-editor *ngIf="ShowTagebucheditor"
+                       [Dialoghoehe]="900"
+                       [Dialogbreite]="1000"
+                       [PositionY]="90"
+                       (EintragClickedEvent)="ShowTagebucheintrageditor = true"
+                       (AddTaetigkeiteintragEvent)="ShowTagebucheintrageditor = true"
+                       (CancelClickedEvent)="ShowTagebucheditor = false"
+                       (OkClickedEvent)="ShowTagebucheditor = false">
+</pj-bautagebuch-editor>
+
+<pj-bautagebuch-eintrageditor *ngIf="ShowTagebucheintrageditor"
+                              [Dialoghoehe]="100"
+                              [Dialogbreite]="700"
+                              [PositionY]="200"
+                              (OkClickedEvent)="ShowTagebucheintrageditor = false"
+                              (CancelClickedEvent)="ShowTagebucheintrageditor = false">
+</pj-bautagebuch-eintrageditor>
+
+<fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
+                        [Titel]="'Zuständige Kollegen festlegen'"
+                        [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY + 100" [ZIndex]="4000"
+                        [Multiselect]="true"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
+                        (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
+                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
+
+<pj-beteiligten-auswahl *ngIf="ShowBeteiligteauswahl"
+                        [Titel]="GetBeteiligtenauswahlTitel()"
+                        [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY + 100" [ZIndex]="4000"
+                        [Multiselect]="true"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowBeteiligteauswahl = false"
+                        (OkClickedEvent)="BeteiligteauswahlOkButtonClicked($event)"></pj-beteiligten-auswahl>
+
+<pj-projekte-schnellauswahl *ngIf="ShowProjektschnellauswahl"
+                            [ZIndex]="5000"
+                            [Dialogbreite]="800"
+                            [Dialoghoehe]="Auswahlhoehe"
+                            [PositionY]="200" [Titel]="'Projekt wechsel'" [Iconname]="'star-outline'"
+                            (ProjektClickedEvent)="ProjektSchnellauswahlProjektClickedEventHandler($event)"
+                            (CancelClickedEvent)="ShowProjektschnellauswahl = false"
+                            (OkClickedEvent)="ShowProjektschnellauswahl = false">
+</pj-projekte-schnellauswahl>
+
+<auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex"
+                [Dialogbreite]="300" [Dialoghoehe]="300" [PositionY]="200"
+                [Titel]="Auswahltitel" [Iconname]="'Standortfilter festlegen'"
+                (OkClickedEvent)="AuswahlOkButtonClicked($event)"
+                (CancelClickedEvent)="ShowAuswahl = false"></auswahl-dialog>
+
+

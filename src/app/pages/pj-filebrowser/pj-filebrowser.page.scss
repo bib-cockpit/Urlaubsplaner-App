@@ -1,0 +1,32 @@
+.userimagesmall {
+
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin-top: 4px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.trennerdivclass {
+
+  width: 1px;
+  min-height: 30px;
+  height: 100%;
+  background: silver;
+}
+
+.filekeeperclass {
+
+  width: 500px;
+  height: 100%;
+  left: 0px;
+  background: none;
+  display: flex;
+  justify-content: flex-end; // horizontal
+  align-items: center; // vertikal
+  color: white;
+  font-weight: bold;
+  padding: 6px;
+}
+

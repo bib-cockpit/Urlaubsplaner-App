@@ -1,0 +1,17 @@
+.trennerdivclass {
+
+  width: 1px;
+  min-height: 30px;
+  height: 100%;
+  background: silver;
+}
+
+.menubuttonclass {
+
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
+  width: 100%;
+  min-height: 50px;
+  padding: 2px;
+}

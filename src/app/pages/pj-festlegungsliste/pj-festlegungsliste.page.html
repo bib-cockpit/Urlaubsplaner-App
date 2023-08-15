@@ -1,0 +1,184 @@
+<ion-header>
+  <page-header #PageHeader>
+    <page-header-menu [SendFestlegungenEnabled]="DB.Displayliste.length > 0" (ShowProjektfilesEvent)="ShowProjektfilesHandler()"
+                      (SucheChanged)="SucheChangedHandler($event)"
+                      (LeistungsphaseFilterClicked)="LeistungsphaseClickedHandler('Filter')"
+                      (KostengruppeFilterClicked)="KostengruppeFilterClickedHandler()"
+                      (ShowOpenFestlegungOnlyEvent)="ShowOpenFestlegungOnlyHandler($event)"
+                      (SendFestlegungenClicked)="SendFestlegungenClickedHandler()"
+                      (ShowProjektauswahlEvent)="ShowProjektauswahlEventHandler()">
+    </page-header-menu>
+  </page-header>
+</ion-header>
+<ion-content>
+
+  <table *ngIf="DBProjekte.CurrentProjekt !== null" class="paddingtable" width="100%">
+    <tr>
+      <td>
+        <ion-text color="burnicklgruen" style="font-size: 120%"><b>{{DBProjekte.CurrentProjekt.Projektname}}</b></ion-text>
+      </td>
+    </tr>
+  </table>
+
+  <table  class="paddingtable" style="width: 100%">
+    <ng-container *ngFor="let Kostengruppe of DB.Kostengruppenliste; let i = index">
+      <tr>
+        <td>
+          <ion-text color="burnicklgruen"><b>{{Kostengruppe.Kostengruppenname}}</b></ion-text>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <table width="100%" class="docinnertable">
+            <tr>
+              <td style="width: 3px"><b>Nr.</b></td>
+              <td style="width: 80px; text-align: center"><b>Datum</b></td>
+              <td style="width: auto"><b>Beschreibung</b></td>
+              <td style="width: 80px; text-align: center"><b>Phase</b></td>
+              <td style="width: 80px; text-align: center"><b>Ursprung</b></td>
+            </tr>
+            <tr *ngFor="let Punkt of DB.Displayliste[i]; let j = index">
+              <td>{{(j + 1).toString()}}</td>
+              <td style="text-align: center">{{Punkt.Startzeitstring}}</td>
+              <td>
+                <div class="festlegungdivclass" (click)="FestlegungClicked(Punkt)">
+                  <table class="nobordertable">
+                    <tr>
+                      <td *ngIf="Punkt.OpenFestlegung">
+                        <div style="width: 10px; height: 10px; background: red; border-radius: 50%"></div>
+                      </td>
+                      <td *ngIf="!Punkt.Filtered">
+                        {{Punkt.Aufgabe}}
+                      </td>
+                      <td *ngIf="Punkt.Filtered">
+                        <span>{{Punkt.Text_A}}</span><span style="color: orange">{{Punkt.Text_B}}</span><span>{{Punkt.Text_C}}</span>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+              <td style="text-align: center;">{{Punkt.Leistungsphase}}</td>
+              <td align="center">
+                <ion-button *ngIf="Punkt.ProtokollID !== null" size="small" [color]="Basics.Ionicfarben.BurnicklBraun" (click)="ProtokollButtonClicked(Punkt)">P</ion-button>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </ng-container>
+    <tr>
+      <td>
+        <ion-button size="small" color="burnicklbraun"
+                    (click)="AddFestlegungClicked()">
+          <ion-icon name="add-circle-outline" color="weiss" slot="start"></ion-icon>
+          <ion-text color="weiss">Neuer Eintrag</ion-text>
+        </ion-button>
+      </td>
+    </tr>
+  </table>
+
+
+  <table *ngIf="DB.Kostengruppenliste.length === 0" class="paddingtable" width="100%">
+    <tr>
+      <td style="text-align: center; padding: 40px;">
+        keine Festlegungen für <b>{{DBProjekte.CurrentProjekt !== null ? DBProjekte.CurrentProjekt.Projektname : 'unbekannt'}}</b> vorhanden
+      </td>
+    </tr>
+  </table>
+
+</ion-content>
+<ion-footer>
+  <page-footer #PageFooter>
+
+  </page-footer>
+</ion-footer>
+<!--
+  (StatusClicked)="EditorStatusClickedHandler()"
+  (TerminButtonClicked)="ShowDateKkPicker = true"
+
+-->
+
+<pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor && DBProjektpunkte.CurrentProjektpunkt !== null" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+                        [ZIndex]="3000" [Titel]="DBProjektpunkte.CurrentProjektpunkt._id !== null ? 'Festlegung bearbeiten' : 'Neue Festlegung'" Iconname="book-outline"
+                        (FachbereichClicked)="FachbereichClickedHandler()"
+                        (KostengruppeClicked)="KostengruppeClickedHandler()"
+                        (ZustaendigInternClicked)="EditorZustaendigInternHandler()"
+                        (ZustaendigExternClicked)="EditorZustaendigExternHandler()"
+                        (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
+                        (LeistungsphaseClickedEvent)="LeistungsphaseClickedHandler('Editor')"
+                        (CancelClickedEvent)="ShowProjektpunktEditor = false"
+                        (OkClickedEvent)="ShowProjektpunktEditor = false"></pj-projektpunkt-editor>
+
+<fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
+                        [Titel]="'Zuständige Kollegen festlegen'"
+                        [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe - 200" [PositionY]="DialogPosY + 100" [ZIndex]="4000"
+                        [Multiselect]="true"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
+                        (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
+                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
+
+<pj-beteiligten-auswahl *ngIf="ShowBeteiligteauswahl"
+                        [Titel]="GetBeteiligtenauswahlTitel()"
+                        [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe - 200" [PositionY]="DialogPosY + 100" [ZIndex]="4000"
+                        [Multiselect]="true"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowBeteiligteauswahl = false"
+                        (OkClickedEvent)="BeteiligteauswahlOkButtonClicked($event)"></pj-beteiligten-auswahl>
+
+<auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"
+                [Dialogbreite]="300" [Dialoghoehe]="Auswahlhoehe" [PositionY]="200"
+                [Titel]="Auswahltitel" [Iconname]="GetDialogTitelicon()"
+                (OkClickedEvent)="AuswahlOkButtonClicked($event)"
+                (CancelClickedEvent)="ShowAuswahl = false">
+</auswahl-dialog>
+
+<pj-projekte-schnellauswahl *ngIf="ShowProjektschnellauswahl"
+                            [ZIndex]="5000"
+                            [Dialogbreite]="800"
+                            [Dialoghoehe]="Auswahlhoehe"
+                            [PositionY]="200" [Titel]="'Projekt wechsel'" [Iconname]="'star-outline'"
+                            (ProjektClickedEvent)="ProjektSchnellauswahlProjektClickedEventHandler($event)"
+                            (CancelClickedEvent)="ShowProjektschnellauswahl = false"
+                            (OkClickedEvent)="ShowProjektschnellauswahl = false">
+</pj-projekte-schnellauswahl>
+
+<pj-gebaeude-raumauswahl *ngIf="ShowRaumauswahl" [Titel]="'Gebäudeteil auswählen'" [Dialogbreite]="StrukturDialogbreite" [Dialoghoehe]="StrukturDialoghoehe"
+                         [PositionY]="DialogPosY" [ZIndex]="4000"
+                         (CancelClickedEvent)="ShowRaumauswahl = false"
+                         (OkClickedEvent)="ShowRaumauswahl = false">
+</pj-gebaeude-raumauswahl>
+
+<pj-kostengruppen-auswahl *ngIf="ShowKostengruppenauswahl" [Titel]="Kostengruppeauswahltitel"
+                          [Dialogbreite]="KostenDialogbreite" [Dialoghoehe]="KostenDialoghoehe" [PositionY]="DialogPosY"
+                          (OkClickedEvent)="KostengruppenauswahlOkClicked()"
+                          (CancelClickedEvent)="ShowKostengruppenauswahl = false"></pj-kostengruppen-auswahl>
+
+
+<pj-protokoll-editor *ngIf="ShowProtokollEditor"  [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+                     [Titel]="'Protokoll bearbeiten'" Iconname="book-outline"
+                     [ZIndex]="2000"
+                     (OkClickedEvent)="ShowProtokollEditor = false"
+                     (CancelClickedEvent)="ShowProtokollEditor = false"
+                     (TeamteilnehmerClicked)="TeamteilnehmerClickedHandler()"
+                     (BeteiligteteilnehmerClicked)="BeteiligteteilnehmerClickedHandler()"
+                     (ProtokollpunktClicked)="ProtokollpunktClickedHandler($event)"
+                     (AddProtokollpunktClicked)="AddProtokollpunktClickedHandler()">
+</pj-protokoll-editor>
+
+<pj-email-send *ngIf="ShowEmailSenden"
+               [Titel]="'Festlegungen senden'"
+               [Dialogbreite]="EmailDialogbreite"
+               [Dialoghoehe]="EmailDialoghoehe"
+               [PositionY]="DialogPosY"
+               [ZIndex]="1000"
+               Iconname="mail-outline"
+               (EmpfaengerBurnicklClicked)="EmpfaengerBurnicklClickedHandler()"
+               (CcEmpfaengerBurnicklClicked)="CcEmpfaengerBurnicklClickedHandler()"
+               (EmpfaengerExternClicked)="EmpfaengerExternClickedHandler()"
+               (CcEmpfaengerExternClicked)="CcEmpfaengerExternClickedHandler()"
+               (CancelClickedEvent)="ShowEmailSenden = false"
+               (OkClickedEvent)="EmailSendenOkButtonClicked($event)"></pj-email-send>
+

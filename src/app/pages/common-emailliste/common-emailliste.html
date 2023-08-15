@@ -1,0 +1,325 @@
+
+<ion-header>
+  <page-header #PageHeader>
+    <page-header-menu
+      (EmailDatumChanged)="PrepareDaten()"
+      (ProjektsortierungChanged)="PrepareDaten()"
+      (ShowUngelesenOnlyChanged)="PrepareDaten()"
+      (ShowProjektauswahlEvent)="ShowProjektschnellauswahl = true"></page-header-menu>
+    </page-header>
+</ion-header>
+<ion-content>
+  <div class="keeperclass">
+
+    <div class="leftdivclass" [style.width.px]="Maillistebreite">
+      <div class="lefttitleclass" [style.height.px]="ListeTitlehoehe">
+        <ion-list>
+          <ion-item class="ion-no-padding" *ngFor="let Folder of this.Folderliste; let i = index" (click)="FolderClickedHandler(Folder, i)">
+            <table class="paddingtable" style="font-size: 80%; width: 100%">
+              <tr>
+                <td style="width: 20px"><div *ngIf="Folderindex === i" class="currentcircleclass"></div></td>
+                <td style="width: auto; font-weight: bold;">
+                  {{Folder.displayName}}
+                </td>
+                <td style="width: 20px; text-align: right">
+                  <span *ngIf="Folder.totalItemCount > 0">{{Folder.totalItemCount}}</span>
+                </td>
+              </tr>
+            </table>
+          </ion-item>
+        </ion-list>
+
+      </div>
+      <div class="leftcontentclass" [style.height.px]="ListeContenthoehe">
+        <ion-list>
+          <ng-container *ngIf="DBEmail.Projektsortierung === true">
+
+            <ion-item class="ion-no-padding" >
+              <div style="width: 100%; height: 46px; padding: 4px; color: white; background: #7b6a58;">
+                keine Projektzuweisung
+              </div>
+            </ion-item>
+
+            <ion-item class="ion-no-padding" *ngFor="let Email of SortierteEmailliste[0]" (click)="EmailClickedHandler(Email)">
+              <table class="paddingsmalltable" style="font-size: 80%; width: 100%;">
+                <tr>
+                  <td rowspan="2" style="width: 20px">
+                    <div class="arrowclass">
+                      <div *ngIf="CurrentMail !== null && CurrentMail.id === Email.id" class="currentcircleclass"></div>
+                    </div>
+                  </td>
+                  <td style="width: auto" [style.font-weight]="Email.isRead ? 'normal' : 'bold'">{{Email.from.emailAddress.name}}</td>
+                  <td style="width: 70px" align="right">{{GetEmpfangszeit(Email)}}</td>
+                </tr>
+                <tr>
+                  <td style="width: auto" [style.font-weight]="Email.isRead ? 'normal' : 'bold'" [style.color]="Email.isRead ? 'black' : '#c7d304'">{{Email.subject}}</td>
+                  <td style="width: 60px" align="right">
+                    <ion-icon *ngIf="Email.hasAttachments" name="attach-outline" style="font-size: 20px"></ion-icon>
+                  </td>
+                </tr>
+              </table>
+            </ion-item>
+
+            <ng-container *ngFor="let Projekt of DBProjekte.Projektliste; let projektindex = index">
+
+              <ion-item class="ion-no-padding"  (click)="EmaillisteProjektClicked(Projekt)">
+                <div [style.background]="DBProjekte.GetProjektfarbeByProjekt(Projekt).Background"
+                     [style.color]="DBProjekte.GetProjektfarbeByProjekt(Projekt).Foreground"
+                     style="width: 100%; height: 46px; padding: 4px;">
+                  {{Projekt.Projektname}}<br>
+                  {{Projekt.Projektnummer}}
+                </div>
+              </ion-item>
+
+              <ion-item class="ion-no-padding" *ngFor="let Email of SortierteEmailliste[projektindex + 1]" (click)="EmailClickedHandler(Email)">
+                <table class="paddingsmalltable" style="font-size: 80%; width: 100%;">
+                  <tr>
+                    <td rowspan="2" style="width: 20px">
+                      <div class="arrowclass">
+                        <div *ngIf="CurrentMail !== null && CurrentMail.id === Email.id" class="currentcircleclass"></div>
+                      </div>
+                    </td>
+                    <td style="width: auto" [style.font-weight]="Email.isRead ? 'normal' : 'bold'">{{Email.from.emailAddress.name}}</td>
+                    <td style="width: 70px" align="right">{{GetEmpfangszeit(Email)}}</td>
+                  </tr>
+                  <tr>
+                    <td style="width: auto" [style.font-weight]="Email.isRead ? 'normal' : 'bold'" [style.color]="Email.isRead ? 'black' : '#c7d304'">{{Email.subject}}</td>
+                    <td style="width: 60px" align="right">
+                      <ion-icon *ngIf="Email.hasAttachments" name="attach-outline" style="font-size: 20px"></ion-icon>
+                    </td>
+                  </tr>
+                </table>
+              </ion-item>
+
+            </ng-container>
+
+
+          </ng-container>
+          <ng-container *ngIf="DBEmail.Projektsortierung === false">
+            <ion-item class="ion-no-padding" *ngFor="let Email of Emailliste" (click)="EmailClickedHandler(Email)">
+              <table class="paddingsmalltable" style="font-size: 80%; width: 100%;">
+                  <tr>
+                    <td rowspan="2" style="width: 20px">
+                      <div class="arrowclass">
+                        <div *ngIf="CurrentMail !== null && CurrentMail.id === Email.id" class="currentcircleclass"></div>
+                      </div>
+                    </td>
+                    <td style="width: auto" [style.font-weight]="Email.isRead ? 'normal' : 'bold'">{{Email.from.emailAddress.name}}</td>
+                    <td style="width: 70px" align="right">{{GetEmpfangszeit(Email)}}</td>
+                  </tr>
+                  <tr>
+                    <td style="width: auto" [style.font-weight]="Email.isRead ? 'normal' : 'bold'" [style.color]="Email.isRead ? 'black' : '#c7d304'">{{Email.subject}}</td>
+                    <td style="width: 60px" align="right">
+                      <ion-icon *ngIf="Email.hasAttachments" name="attach-outline" style="font-size: 20px"></ion-icon>
+                    </td>
+                  </tr>
+
+              </table>
+            </ion-item>
+          </ng-container>
+        </ion-list>
+
+        <abstand-element-fixed></abstand-element-fixed>
+
+      </div>
+
+    </div>
+    <div class="rightdivclass" [style.width.px]="Mailcontentbreite">
+      <div class="titledivclass" [style.height.px]="MailTitlehoehe">
+        <table class="paddingtable" *ngIf="CurrentMail !== null" style="font-size: 100%; width: 100%; background: white; font-weight: bold;">
+
+          <tr>
+            <td style="color: #c7d304; width: 120px;">Betreff: </td><td></td><td style="width: auto;">{{this.CurrentMail.subject}}</td>
+          </tr>
+          <tr>
+            <td style="color: #c7d304">Absender: </td><td></td>
+            <td>
+              <div class="adresskeeperdiv">
+                <div class="emailbuttondiv"
+                     [style.cursor]="DBProjekte.CheckEmailIsProjektmember(CurrentMail.from.emailAddress.address) === false ? 'pointer' : 'default'"
+                     (click)="DBProjekte.CheckEmailIsProjektmember(CurrentMail.from.emailAddress.address) === false ? AddProjektbeteiligten(CurrentMail.from.emailAddress) : null">
+                  <table>
+                    <tr>
+                      <td>{{CurrentMail.from.emailAddress.name}}</td>
+                      <td><ion-icon name="checkmark-outline" [color]="DBProjekte.CheckEmailIsProjektmember(CurrentMail.from.emailAddress.address) ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.Weiss"></ion-icon></td>
+                    </tr>
+                  </table>
+
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="color: #c7d304;">Empfänger: </td>
+            <td>
+              <ion-icon [color]="Basics.Ionicfarben.BAEBlau" [name]="ShowAllEmpfaenger ? 'remove-circle-outline' : 'add-circle-outline'" (click)="ShowAllEmpfaenger = !ShowAllEmpfaenger"></ion-icon>
+            </td>
+            <td>
+
+              <!--
+[style.overflow]="ShowAllEmpfaenger ? 'visible' : 'hidden'"
+              -->
+
+                <div class="adresskeeperdiv" style="overflow: hidden" [style.height.px]="ShowAllEmpfaenger ? 'auto' : 36">
+                  <ng-container *ngFor="let Empfaenger of this.CurrentMail.toRecipients">
+                    <div
+                      [style.cursor]="DBProjekte.CheckEmailIsProjektmember(Empfaenger.emailAddress.address) === false ? 'pointer' : 'default'"
+                      (click)="DBProjekte.CheckEmailIsProjektmember(Empfaenger.emailAddress.address) === false ? AddProjektbeteiligten(Empfaenger.emailAddress) : null" class="emailbuttondiv">
+                      <table>
+                        <tr>
+                          <td>{{Empfaenger.emailAddress.name}}</td>
+                          <td><ion-icon name="checkmark-outline" [color]="DBProjekte.CheckEmailIsProjektmember(Empfaenger.emailAddress.address) === true ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.Weiss"></ion-icon></td>
+                        </tr>
+                      </table>
+
+                    </div>
+
+                  </ng-container>
+
+                </div>
+
+
+
+            </td>
+          </tr>
+          <tr>
+            <td style="color: #c7d304">Cc Empfänger: </td><td></td>
+            <td>
+              <div class="adresskeeperdiv">
+                <ng-container *ngFor="let CcEmpfaenger of this.CurrentMail.ccRecipients">
+                  <div
+                    [style.cursor]="DBProjekte.CheckEmailIsProjektmember(CcEmpfaenger.emailAddress.address) === false ? 'pointer' : 'default'"
+                    (click)="DBProjekte.CheckEmailIsProjektmember(CcEmpfaenger.emailAddress.address) === false ? AddProjektbeteiligten(CcEmpfaenger.emailAddress) : null" class="emailbuttondiv" class="emailbuttondiv">
+                    <table>
+                      <tr>
+                        <td>{{CcEmpfaenger.emailAddress.name}}</td>
+                        <td><ion-icon name="checkmark-outline" [color]="DBProjekte.CheckEmailIsProjektmember(CcEmpfaenger.emailAddress.address) ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.Weiss"></ion-icon></td>
+                      </tr>
+                    </table>
+
+                  </div>
+
+                </ng-container>
+
+              </div>
+
+            </td>
+          </tr>
+          <tr>
+            <td style="color: #c7d304">Datum/Uhrzeit: </td><td></td><td [innerHTML]="CurrentMail.Zeitstring"></td>
+          </tr>
+        </table>
+      </div>
+      <div class="contentdivclass" [style.height.px]="MailContenthoehe" [innerHTML]="HTMLBody">
+        <!--
+        <editor #MyEditor [(ngModel)]="HTMLBody" [apiKey]="'7hvzif1s8dafhu40z0kjgpw1y4zwc2p5cokjkfox946qpfjc'" [init]="Editorconfig" (onChange)="EmailTextChangedHandler($event)"></editor>
+        -->
+      </div>
+    </div>
+
+  </div>
+</ion-content>
+<ion-footer>
+  <page-footer #PageFooter>
+    <table class="paddingsmalltable" width="100%">
+      <tr>
+        <td align="right">
+
+          <div class="rootbuttonclass" (click)="CreateAufgabeClicked()">
+            <table border="0">
+              <tr>
+                <td style="width: 220px">
+                  <ion-text color="burnicklgruen">Projekteintrag aus Email erstellen</ion-text>
+                </td>
+                <td>
+                  <ion-icon style="font-size: 28px" color="burnicklgruen" name="list-outline"></ion-icon>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+        </td>
+      </tr>
+    </table>
+  </page-footer>
+</ion-footer>
+
+<projektpunkt-statusdate-picker *ngIf="ShowDateStatusPicker" [Dialogbreite]="600"
+                                [Dialoghoehe]="Dialoghoehe - 200"
+                                [PositionY]="DialogPosY + 100"
+                                [ZIndex]="4000"
+                                [Iconname]="'calendar-outline'"
+                                [Titel]="'Termin und Status festlegen'"
+                                [ShowProtokollpunkte]="false"
+                                [Datum]="Datum"
+                                [Status]="DBProjektpunkt.CurrentProjektpunkt.Status"
+                                (OkClickedEvent)="ShowDateStatusPicker = false"
+                                (CancelClickedEvent)="ShowDateStatusPicker = false">
+</projektpunkt-statusdate-picker>
+
+<projektpunkt-date-kw-picker *ngIf="ShowDateKkPicker" [Dialogbreite]="380"
+                             [Dialoghoehe]="460"
+                             [PositionY]="DialogPosY + 200"
+                             [ZIndex]="5000"
+                             [Iconname]="'calendar-outline'"
+                             [Titel]="'Termin oder KW festlegen'"
+                             (OkClickedEvent)="ShowDateKkPicker = false"
+                             (CancelClickedEvent)="ShowDateKkPicker = false">
+</projektpunkt-date-kw-picker>
+
+<fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
+                        [Titel]="'Zuständige Kollegen festlegen'"
+                        [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe - 200" [PositionY]="DialogPosY + 100" [ZIndex]="4000"
+                        [Multiselect]="true"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
+                        (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
+                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
+
+<pj-beteiligten-auswahl *ngIf="ShowBeteiligteauswahl"
+                        [Titel]="GetBeteiligtenauswahlTitel()"
+                        [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe - 200" [PositionY]="DialogPosY + 100" [ZIndex]="4000"
+                        [Multiselect]="true"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowBeteiligteauswahl = false"
+                        (OkClickedEvent)="BeteiligteauswahlOkButtonClicked($event)"></pj-beteiligten-auswahl>
+
+<pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+                        [ZIndex]="3000" [Titel]="'Aufgabe bearbeiten'" Iconname="book-outline"
+                        (StatusClicked)="EditorStatusClickedHandler()" (FachbereichClicked)="FachbereichClickedHandler()"
+                        (KostengruppeClicked)="KostengruppeClickedHandler()"
+                        (ZustaendigInternClicked)="EditorZustaendigInternHandler()"
+                        (ZustaendigExternClicked)="EditorZustaendigExternHandler()"
+                        (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
+                        (TerminButtonClicked)="ShowDateKkPicker = true"
+                        (CancelClickedEvent)="ShowProjektpunktEditor = false"
+                        (OkClickedEvent)="ShowProjektpunktEditor = false"></pj-projektpunkt-editor>
+
+<pj-projekte-schnellauswahl *ngIf="ShowProjektschnellauswahl"
+                            [ZIndex]="5000"
+                            [Dialogbreite]="800"
+                            [Dialoghoehe]="Auswahlhoehe"
+                            [PositionY]="200" [Titel]="Projektschenllauswahltitel" [Iconname]="'star-outline'"
+                            (ProjektClickedEvent)="ProjektSchnellauswahlProjektClickedEventHandler($event)"
+                            (CancelClickedEvent)="ShowProjektschnellauswahl = false"
+                            (OkClickedEvent)="ShowProjektschnellauswahl = false">
+</pj-projekte-schnellauswahl>
+
+<pj-beteiligten-editor *ngIf="ShowBeteiligteneditor" [Dialogbreite]="600" [Dialoghoehe]="720" [PositionY]="200" [Titel]="'Projektbeteiligten hinzufügen'" Iconname="color-filter-outline"
+                       (CancelClickedEvent)="ShowBeteiligteneditor = false"
+                       (OkClickedEvent)="ShowBeteiligteneditor = false"
+                       (DeleteClickedEvent)="ShowBeteiligteneditor = false"
+                       (FachbereichClickedEvent)="BeteiligteFachbereichClickedEventHandler()" (FachfirmaClickedEvent)="BeteiligteFachfirmaClickedEventHandler()">
+</pj-beteiligten-editor>
+
+<auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex"
+                [Dialogbreite]="AuswahlDialogBreite" [Dialoghoehe]="AuswahlDialogHoehe" [PositionY]="200"
+                [Titel]="Auswahltitel" [Iconname]="GetDialogTitelicon()"
+                (OkClickedEvent)="AuswahlOkButtonClicked($event)"
+                (CancelClickedEvent)="ShowAuswahl = false"></auswahl-dialog>
+
+
+
+
