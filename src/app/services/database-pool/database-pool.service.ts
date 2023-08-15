@@ -94,7 +94,7 @@ export class DatabasePoolService {
       this.Changlogliste            = [];
       this.Bautagebuchliste         = [];
       this.LOPListe                 = [];
-      this.CockpitserverURL         = environment.production === true ? 'https://bib-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
+      this.CockpitserverURL         = environment.production === true ? 'https://bae-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
       this.Emailcontent             = this.Emailcontentvarinaten.NONE;
 
     } catch (error) {

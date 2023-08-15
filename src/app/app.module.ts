@@ -29,8 +29,10 @@ import {BrowserCacheLocation, InteractionType, IPublicClientApplication, LogLeve
 import {LocalstorageService} from "./services/localstorage/localstorage";
 import {environment} from "../environments/environment";
 import { EditorModule } from '@tinymce/tinymce-angular';
-
 const appurl: string                   = environment.production === false ? 'http://localhost:4200' : 'https://nice-glacier-0c9ec7703.3.azurestaticapps.net';
+
+// !! Server URL auch in Pool service anpassen
+
 const serverurl: string                = environment.production === false ? 'http://localhost:8080' : 'https://bae-cockpit-server.azurewebsites.net';
 const MandantenID: string              = '8870822d-b5ee-4a63-b4ea-7147f0ee753d';
 const clientappregistration: string    = 'bc457d46-6f13-4fa7-a973-e94cf4102dd9'; // Login funktioniert mit peter.hornburger
