@@ -1180,6 +1180,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
         if(this.DBProjekte.CurrentProjekt !== null && this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
 
+
           for(Projektpunkt of this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
 
             if(this.DBProjektpunkte.CheckFilter(Projektpunkt, false)) this.FavoritenProjektpunkteliste.push(Projektpunkt);
@@ -1695,6 +1696,19 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
         case this.Projektschnellauswahlursprungvarianten.Schnelle_Aufgabe:
 
+          this.DBProjekte.CurrentProjekt      = projekt;
+          this.DBProjekte.CurrentProjektindex = lodash.findIndex(this.DBProjekte.Projektliste, {_id: projekt._id});
+
+          // let Anzahl: number = this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey].length + 1;
+          let Anzahl: number = this.Pool.Projektpunkteliste[projekt.Projektkey].length + 1;
+          // let Projektpunkt: Projektpunktestruktur = this.DBProjektpunkte.GetNewProjektpunkt(this.DBProjekte.CurrentProjekt, Anzahl);
+          let Projektpunkt: Projektpunktestruktur = this.DBProjektpunkte.GetNewProjektpunkt(projekt, Anzahl);
+
+
+          // this.SetProjektindexAndUrsprung(projektindex, ursprung);
+
+          this.ShowProjektpunktEditor              = true;
+          this.DBProjektpunkte.CurrentProjektpunkt = Projektpunkt;
 
           break;
       }

@@ -84,6 +84,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
   @Input() Datepickerprefix : string;
   @Input() ShowProjektnamen : boolean;
   @Input() CheckFilterEnabled : boolean;
+  @Input() ShowListentitel: boolean;
 
   public Settings: Mitarbeitersettingsstruktur;
   private SettingsSubscription: Subscription;
@@ -113,6 +114,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
       this.Datepickerprefix   = '';
       this.ShowProjektnamen   = false;
       this.CheckFilterEnabled = true;
+      this.ShowListentitel    = true;
 
     } catch (error) {
 
@@ -678,6 +680,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
   }
 
    */
+
 
   GetEndedatumstyle(Projektpunkt: Projektpunktestruktur) {
 

@@ -66,7 +66,7 @@
 
             </td>
 
-            <td align="center" class="trennertdclass">
+            <td align="center" style="width: 12px">
               <div [class]="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte ? 'trennerbigdivclass' : 'trennerdivclass'"></div>
             </td>
               <td *ngIf="ShowStandorttitle === true">
@@ -119,11 +119,9 @@
               <td>
                 <table>
                   <tr>
-                    <td colspan="3">
-                      <div class="planungheaderdiv">Planung</div>
+                    <td>
+                      <div class="planungheaderdiv"><ion-icon name="create" style="font-size: 28px"></ion-icon></div>
                     </td>
-                  </tr>
-                  <tr>
                     <td>
                       <div  class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Aufgabenliste)">
                         <table class="paddingsmalltable">
@@ -149,20 +147,18 @@
                 </table>
 
               </td>
-              <td align="center" class="trennertdclass"><div class="trennerbigdivclass"></div></td>
+              <td align="center" style="width: 13px; padding-right: 4px" align="right"><div class="trennerbigdivclass"></div></td>
               <td>
                 <table>
                   <tr>
                     <td colspan="3">
-                      <div class="planungheaderdiv">Ausführung</div>
+                      <div class="planungheaderdiv"><ion-icon name="hammer" style="font-size: 22px"></ion-icon></div>
                     </td>
-                  </tr>
-                  <tr>
                     <td>
                       <div  class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.LOPListe)">
                         <table class="paddingsmalltable">
                           <tr>
-                            <td><ion-icon name="hammer-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.LOPListe)"></ion-icon></td>
+                            <td><ion-icon name="list" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.LOPListe)"></ion-icon></td>
                             <td style="white-space: nowrap;" [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.LOPListe)">LOP Liste</td>
                           </tr>
                         </table>
@@ -183,16 +179,14 @@
                 </table>
 
               </td>
-              <td align="center" class="trennertdclass"><div class="trennerbigdivclass"></div></td>
+              <td align="center" style="width: 13px; padding-right: 4px" align="right"><div class="trennerbigdivclass"></div></td>
               <td>
 
                 <table>
                   <tr>
                     <td colspan="3">
-                      <div class="planungheaderdiv">Allgemein</div>
+                      <div class="planungheaderdiv"><ion-icon name="book" style="font-size: 22px"></ion-icon></div>
                     </td>
-                  </tr>
-                  <tr>
                     <td>
                       <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Festlegungen)">
                         <table class="paddingsmalltable">

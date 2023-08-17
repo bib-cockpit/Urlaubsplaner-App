@@ -8,7 +8,7 @@
         <page-header-center>
           <table class="paddingsmalltable">
             <tr>
-              <td><ion-icon [name]="Iconname" color="burnicklgruen"></ion-icon></td>
+              <td><ion-icon [name]="Iconname" color="weiss"></ion-icon></td>
               <td [style.color]="'white'">{{Titel}}</td>
             </tr>
           </table>
@@ -29,16 +29,16 @@
                         <table class="paddingsmalltable">
                           <tr>
                             <td style="width: 30px">
-                              <ion-icon *ngIf="CurrentIndex === i"  color="burnicklbraun"  name="arrow-forward-outline"></ion-icon>
+                              <ion-icon *ngIf="CurrentIndex === i"  color="baeblau"  name="arrow-forward-outline"></ion-icon>
                             </td>
                             <td style="width: 80px">
-                              <ion-text color="burnicklbraun">
+                              <ion-text [color]="CurrentIndex === i ? 'baeblau' : 'grau'">
                               <b>{{Projekt.Projektnummer}}</b>
 
                               </ion-text>
                             </td>
                             <td style="width: 400px">
-                              <ion-text color="burnicklgruen">
+                              <ion-text color="schwarz">
                                 <b>{{Projekt.Projektname}}</b>
 
                               </ion-text>
@@ -66,7 +66,7 @@
             <tr>
               <td>
                 <div class="rootbuttonclass" (click)="CancelButtonClicked()">
-                  <ion-icon style="font-size: 28px" color="burnicklgruen" name="close-outline"></ion-icon>
+                  <ion-icon style="font-size: 28px" color="weiss" name="close-outline"></ion-icon>
                 </div>
               <td style="width: 100%"></td>
               <td>

@@ -5,7 +5,7 @@
       {{Projekt.Projektname}}
     </td>
   </tr>
-  <tr>
+  <tr *ngIf="ShowListentitel">
     <!--
     <td style="width: 70px; text-align: center"><b>Debug</b></td>
     -->
@@ -13,23 +13,26 @@
     <td *ngIf="Settings.AufgabenShowStartdatum" style="min-width: 60px; text-align: center"><b>Start</b></td>
     <!--
     <td *ngIf="Settings.AufgabenShowMeintag" style="width: 90px; text-align: center"><b>Meintag</b></td>
+
+      class="verticalclass"
+      class="verticalclass"
     -->
     <td *ngIf="Settings.AufgabenShowMeinewoche" style="width: 90px; text-align: center"><b>Meine Woche</b></td>
     <td *ngIf="Settings.AufgabenShowMeilensteine" style="width: 90px; text-align: center"><b>Meilenstein</b></td>
 
-    <td class="verticalclass">
+    <td style="width: 50px">
       <table  class="nobordertable">
         <tr>
+          <td><ion-icon name="create" style="font-size: 28px"></ion-icon></td>
           <td><checkbox-clon [Checked]="Settings.AufgabenShowPlanung" (CheckChanged)="PlanungCheckedChanged($event)"></checkbox-clon></td>
-          <td><b>Planung</b></td>
         </tr>
       </table>
     </td>
-    <td class="verticalclass">
+    <td style="width: 50px;">
       <table  class="nobordertable">
         <tr>
+          <td><ion-icon name="hammer" style="font-size: 22px"></ion-icon></td>
           <td><checkbox-clon [Checked]="Settings.AufgabenShowAusfuehrung" (CheckChanged)="AusfuehrungCheckedChanged($event)"></checkbox-clon></td>
-          <td><b>Ausführung</b></td>
         </tr>
       </table>
     </td>

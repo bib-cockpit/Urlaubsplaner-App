@@ -363,7 +363,7 @@ export class DatabaseProjekteService {
 
     try {
 
-      let key: string = projekt.TeamsName.toUpperCase();
+      let key: string = projekt.Projektname.toUpperCase();
 
       key = key.replace('UMBAU', '');
       key = key.replace('SANIERUNG', '');
