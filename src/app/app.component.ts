@@ -32,6 +32,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
   private AuthSubscription: Subscription;
   private isIframe: boolean;
   private readonly Destroying = new Subject<void>();
+  public Zoomfaktor: number;
+  private Settingssubscription: Subscription;
 
   constructor(private platform: Platform,
               private Pool: DatabasePoolService,
@@ -54,8 +56,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
     try {
 
-      this.AuthSubscription = null;
-      this.isIframe         = false;
+      this.AuthSubscription     = null;
+      this.isIframe             = false;
+      this.Zoomfaktor           = 100;
+      this.Settingssubscription = null;
 
     } catch (error) {
 
@@ -83,6 +87,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
   ngOnInit(): void {
 
     try {
+
+      this.Settingssubscription = this.Pool.MitarbeitersettingsChanged.subscribe(() => {
+
+        this.Zoomfaktor = this.Pool.Mitarbeitersettings.Zoomfaktor;
+      });
 
       if(this.AuthService.SecurityEnabled) {
 
@@ -156,10 +165,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           this.Pool.ProgressMessage = 'Lade eigens Bild';
           this.Pool.CurrentProgressValue++;
 
-          // await this.GraphService.GetOwnUserteams(); // 3
+          this.Pool.Outlookkatekorien = await this.GraphService.GetOwnOutlookCategories(); // 3
 
-          // this.Pool.ProgressMessage = 'Lade eigene Projekte';
-          // this.Pool.CurrentProgressValue++;
+          this.Pool.ProgressMessage = 'Lade eigene Outlookkategorien';
+          this.Pool.CurrentProgressValue++;
 
           await this.Pool.ReadChangelogliste(); // 4
 
@@ -257,7 +266,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
         this.Pool.ProgressMessage = 'Aktualisiere Mitarbeitereinstellungen';
         this.Pool.CurrentProgressValue++;
 
-
+        this.Zoomfaktor = this.Pool.Mitarbeitersettings.Zoomfaktor;
 
         this.Pool.MitarbeitersettingsChanged.emit();
 

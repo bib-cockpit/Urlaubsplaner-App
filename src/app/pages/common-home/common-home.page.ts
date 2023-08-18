@@ -399,8 +399,6 @@ export class CommonHomePage implements OnInit, OnDestroy {
         this.Basics.AppVersionDatum = 'none';
       }
 
-
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Home', 'PrepareDaten', this.Debug.Typen.Page);

@@ -52,8 +52,6 @@ export class CommonEinstellungenPage implements OnInit {
 
   }
 
-
-
   ListesettingCheckChanged(event: { status: boolean; index: number; event: any }, bereich: string) {
 
     try {
@@ -196,13 +194,37 @@ export class CommonEinstellungenPage implements OnInit {
           this.Pool.Mitarbeitersettings.AufgabenMeilensteineNachlauf = data;
 
           break;
+
+        case 'Zoomfaktor':
+
+          this.Pool.Mitarbeitersettings.Zoomfaktor = data;
+
+          break;
       }
 
       this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
 
-        // this.ProjekteDB.InitMenuProjektauswahl();
 
-        this.ProjekteDB.CurrentFavoritenChanged.emit();
+        switch (this.Auswahldialogorigin) {
+
+          case 'Favoritenanzahl':
+
+            this.ProjekteDB.CurrentFavoritenChanged.emit();
+
+            break;
+
+          case 'MeielnsteineNachlauf':
+
+
+            break;
+
+          case 'Zoomfaktor':
+
+            this.Pool.MitarbeitersettingsChanged.emit();
+
+            break;
+        }
+
 
       }).catch((error: HttpErrorResponse) => {
 
@@ -244,5 +266,34 @@ export class CommonEinstellungenPage implements OnInit {
       this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Settings', 'MeilensteineNachlaufClicked', this.Debug.Typen.Page);
     }
 
+  }
+
+  ZoomfaktorClicked() {
+
+    try {
+
+      this.Auswahldialogorigin = 'Zoomfaktor';
+      this.ShowAuswahl         = true;
+      this.Auswahltitel        = 'Zoomfaktor festlegen';
+      this.Auswahlliste        = [];
+
+      this.Auswahlliste.push({ Index:  0, FirstColumn:  '120', SecoundColumn: '', Data:  120 });
+      this.Auswahlliste.push({ Index:  1, FirstColumn:  '110', SecoundColumn: '', Data:  110 });
+      this.Auswahlliste.push({ Index:  2, FirstColumn:  '100', SecoundColumn: '', Data:  100 });
+      this.Auswahlliste.push({ Index:  3, FirstColumn:   '90', SecoundColumn: '', Data:   90 });
+      this.Auswahlliste.push({ Index:  4, FirstColumn:   '80', SecoundColumn: '', Data:   80 });
+      this.Auswahlliste.push({ Index:  5, FirstColumn:   '70', SecoundColumn: '', Data:   70 });
+
+      this.Auswahlindex = this.Auswahlliste.findIndex((eintrag: Auswahldialogstruktur) => {
+
+        return eintrag.Data === this.Pool.Mitarbeitersettings.Zoomfaktor;
+      });
+
+      if(this.Auswahlindex === -1) this.Auswahlindex = 0;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Settings', 'ZoomfaktorClicked', this.Debug.Typen.Page);
+    }
   }
 }

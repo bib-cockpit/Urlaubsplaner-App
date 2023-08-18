@@ -44,7 +44,7 @@
                             <table class="paddingsmalltable">
                               <tr>
                                 <td style="width: 30px">
-                                  <div class="projecticonclass" [style.background]="DB.GetProjektfarbeByProjekt(Projekt).Background">
+                                  <div class="projecticonclass" [style.background]="DB.GetProjektfarbeByProjekt(Projekt)">
                                     <img  *ngIf="DB.CheckProjektdaten(Projekt) === false" src="/assets/svgs/alert.svg" style="height: 26px"/>
                                   </div>
                                 </td>

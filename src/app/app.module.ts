@@ -103,6 +103,8 @@ const MSALGuardConfigFactory = (): MsalGuardConfiguration => {
         'Mail.ReadBasic',
         'Mail.ReadWrite',
         'Mail.Send',
+        'MailboxSettings.Read',
+        'MailboxSettings.ReadWrite',
         'User.Read',
         'User.ReadBasic.All',
         'offline_access',

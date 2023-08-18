@@ -373,13 +373,15 @@
                           <ion-row>
                             <ion-col>
                               <table class="paddingtable">
-                                <tr *ngFor="let Farbe of DB.Projektfarbenliste">
+                                <tr *ngFor="let Kategorie of Pool.Outlookkatekorien">
                                   <td>
-                                    <ion-radio [value]="Farbe.Name"></ion-radio>
+                                    <ion-radio [value]="Kategorie.id"></ion-radio>
                                   </td>
                                   <td>
-                                    <div style="width: 40px; height: 40px; border-radius: 4px;" [style.background]="Farbe.Background"></div>
+                                    <div style="width: 40px; height: 40px; border-radius: 4px;" [style.background]="GetOutlookkategorienColor(Kategorie)"></div>
                                   </td>
+                                  <td>{{Kategorie.displayName}}</td>
+
                                 </tr>
                               </table>
                             </ion-col>

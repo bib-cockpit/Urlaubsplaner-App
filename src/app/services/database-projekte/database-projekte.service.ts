@@ -22,6 +22,8 @@ import {Teamsstruktur} from "../../dataclasses/teamsstruktur";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Protokollstruktur} from "../../dataclasses/protokollstruktur";
 import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
+import {Outlookpresetcolorsstruktur} from "../../dataclasses/outlookpresetcolorsstruktur";
+import {Outlookkategoriesstruktur} from "../../dataclasses/outlookkategoriesstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -181,32 +183,68 @@ export class DatabaseProjekteService {
   }
 
 
-  public GetProjektFarbeByProjektpunkt(Punkt: Projektpunktestruktur): Projektfarbenstruktur {
+  public GetProjektFarbeByProjektpunkt(Punkt: Projektpunktestruktur): string {
 
     try {
 
       let Projekt: Projektestruktur = this.GetProjektByID(Punkt.ProjektID);
 
-
-
       if(!lodash.isUndefined(Projekt)) {
 
-        if(this.CheckProjektmembership(Projekt) === true) return this.GetProjektfarbeByProjektfarbnamen(Projekt.Projektfarbe);
-        else return {
-          Background: "silver",
-          Foreground: "white",
-          Name: ""
-        };
+        debugger;
+
+        let Farbe: Outlookpresetcolorsstruktur = lodash.find(this.GraphService.Outlookpresetcolors, (farbe: Outlookpresetcolorsstruktur) => {
+
+          return farbe.Name === Projekt.Projektfarbe;
+        });
+
+        if (!lodash.isUndefined(Farbe)) return Farbe.Value;
+        else return 'none';
       }
-      else return {
-        Background: "#444444",
-        Foreground: "white",
-        Name: ""
-      };
+      else {
+
+        return 'none';
+      }
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'GetProjektFarbeByProjektpunkt', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetProjektFarbeByProjektpunktkategorie(Punkt: Projektpunktestruktur): Outlookpresetcolorsstruktur {
+
+    try {
+
+      let Kategorie: Outlookkategoriesstruktur = lodash.find(this.Pool.Outlookkatekorien, (kategorie: Outlookkategoriesstruktur) => {
+
+        return kategorie.displayName === Punkt.Outlookkatgorie;
+      });
+
+      if(!lodash.isUndefined(Kategorie)) {
+
+        let Farbe: Outlookpresetcolorsstruktur = lodash.find(this.GraphService.Outlookpresetcolors, (farbe: Outlookpresetcolorsstruktur) => {
+
+          return farbe.Name.toLowerCase() === Kategorie.color.toLowerCase();
+        });
+
+        if (!lodash.isUndefined(Farbe)) return Farbe;
+        else return {
+
+          Name: 'Standard', Value: '#b0d7f3', Fontcolor: 'black'
+        };
+      }
+      else {
+
+        return {
+
+          Name: 'Standard', Value: '#b0d7f3', Fontcolor: 'black'
+        };
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'GetProjektFarbeByProjektpunktkategorie', this.Debug.Typen.Service);
     }
   }
 
@@ -790,23 +828,37 @@ export class DatabaseProjekteService {
     }
   }
 
-  GetProjektfarbeByProjekt(projekt: Projektestruktur): Projektfarbenstruktur {
+  GetProjektfarbeByProjekt(projekt: Projektestruktur): string {
 
     try {
 
-      let Farbe = this.GetProjektfarbeByProjektfarbnamen(projekt.Projektfarbe);
+      if(!lodash.isUndefined(projekt)) {
 
-      return Farbe;
+        debugger;
 
-      /*
-      if(this.CheckProjektmembership(projekt)) return Farbe;
-      else return {
-        Background: "silver",
-        Foreground: "black",
-        Name: ""
-      };
+        let Kategorie: Outlookkategoriesstruktur = lodash.find(this.Pool.Outlookkatekorien, (kategorie: Outlookkategoriesstruktur) => {
 
-       */
+          return kategorie.id === projekt.Projektfarbe;
+        });
+
+        if (!lodash.isUndefined(Kategorie)) {
+
+          let Color: Outlookpresetcolorsstruktur = this.GraphService.Outlookpresetcolors.find((color) => {
+
+            return color.Name.toLowerCase() === Kategorie.color;
+          });
+
+          if (!lodash.isUndefined(Color)) return Color.Value;
+          else return 'none';
+
+        }
+        else return 'none';
+      }
+      else {
+
+        return 'none';
+      }
+
 
     } catch (error) {
 

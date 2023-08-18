@@ -17,6 +17,7 @@ export type Projektpunktestruktur = {
   Nummer:              string;
   Aufgabe:             string;
   Thematik:            string;
+  Outlookkatgorie:     string;
 
   Startzeitsptempel:   number;
   Startzeitstring:     string;

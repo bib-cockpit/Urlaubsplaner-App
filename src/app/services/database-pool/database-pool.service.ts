@@ -20,6 +20,7 @@ import {Bauteilstruktur} from "../../dataclasses/bauteilstruktur";
 import {environment} from "../../../environments/environment";
 import {Bautagebuchstruktur} from "../../dataclasses/bautagebuchstruktur";
 import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
+import {Outlookkategoriesstruktur} from "../../dataclasses/outlookkategoriesstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +45,7 @@ export class DatabasePoolService {
   public Changlogliste: Changelogstruktur[];
   public MitarbeiterdatenHasError:boolean;
   public Emailcontent: string;
+  public Outlookkatekorien: Outlookkategoriesstruktur[];
   public Emailcontentvarinaten = {
 
     NONE: this.Const.NONE,
@@ -94,6 +96,7 @@ export class DatabasePoolService {
       this.Changlogliste            = [];
       this.Bautagebuchliste         = [];
       this.LOPListe                 = [];
+      this.Outlookkatekorien        = [];
       this.CockpitserverURL         = environment.production === true ? 'https://bae-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
       this.Emailcontent             = this.Emailcontentvarinaten.NONE;
 
@@ -149,6 +152,7 @@ export class DatabasePoolService {
               if(lodash.isUndefined(Projektpunkt.Thematik))               Projektpunkt.Thematik               = '';
               if(lodash.isUndefined(Projektpunkt.EmailID))                Projektpunkt.EmailID                = null;
               if(lodash.isUndefined(Projektpunkt.Leistungsphase))         Projektpunkt.Leistungsphase         = this.Const.Leistungsphasenvarianten.LPH3;
+              if(lodash.isUndefined(Projektpunkt.Outlookkatgorie))        Projektpunkt.Outlookkatgorie        = this.Const.NONE;
 
               Projektpunkt.Anmerkungenliste.forEach((Anmerkung: Projektpunktanmerkungstruktur) => {
 
@@ -725,6 +729,7 @@ export class DatabasePoolService {
         FavoritenID:             null,
         ProjektID:               null,
         Favoritprojektindex:     null,
+        Zoomfaktor:              100,
         StandortFilter:          null,
         LeistungsphaseFilter:    this.Const.Leistungsphasenvarianten.UNBEKANNT,
         AufgabenShowBearbeitung: true,
@@ -796,6 +801,7 @@ export class DatabasePoolService {
           if(lodash.isUndefined(Settings.Favoritprojektindex))      Settings.Favoritprojektindex           = 3000;
 
           if(lodash.isUndefined(Settings.HeadermenueMaxFavoriten))  Settings.HeadermenueMaxFavoriten  = 6;
+          if(lodash.isUndefined(Settings.Zoomfaktor))               Settings.Zoomfaktor               = 100;
           if(lodash.isUndefined(Settings.Deleted))                  Settings.Deleted                  = false;
           if(lodash.isUndefined(Settings.AufgabenShowNummer))       Settings.AufgabenShowNummer       = true;
           if(lodash.isUndefined(Settings.AufgabenShowStartdatum))   Settings.AufgabenShowStartdatum   = true;

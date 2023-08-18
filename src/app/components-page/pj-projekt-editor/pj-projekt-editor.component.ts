@@ -24,6 +24,8 @@ import {Graphservice} from "../../services/graph/graph";
 import {Teamsmitgliederstruktur} from "../../dataclasses/teamsmitgliederstruktur";
 import {Graphuserstruktur} from "../../dataclasses/graphuserstruktur";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import { Outlookkategoriesstruktur } from 'src/app/dataclasses/outlookkategoriesstruktur';
+import {Outlookpresetcolorsstruktur} from "../../dataclasses/outlookpresetcolorsstruktur";
 
 @Component({
   selector: 'pj-projekt-editor',
@@ -832,6 +834,24 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'SelectBaustelleLOPListefolderClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  GetOutlookkategorienColor(Kategorie: Outlookkategoriesstruktur) {
+
+    try {
+
+      let Color: Outlookpresetcolorsstruktur = this.GraphService.Outlookpresetcolors.find((color) => {
+
+        return color.Name.toLowerCase() === Kategorie.color;
+      });
+
+       if(!lodash.isUndefined(Color)) return Color.Value;
+       else return 'none';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'GetOutlookkategorienColor', this.Debug.Typen.Component);
     }
   }
 }

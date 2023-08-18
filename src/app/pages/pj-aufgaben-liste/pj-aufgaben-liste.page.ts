@@ -203,6 +203,11 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
       let Hoehe: number;
 
+      if(Punkt.Minuten > 8 * 60) {
+
+        Punkt.Minuten = 8 * 60;
+      }
+
       Hoehe = Punkt.Minuten * this.Minutenhoehe;
 
       return Hoehe;
@@ -293,12 +298,30 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     try {
 
+      let Kategorietext: string;
+
       let Projekt: Projektestruktur = Punkt. ProjektID !== null ? this.DBProjekte.GetProjektByID(Punkt.ProjektID) : null;
 
       let Text = Punkt.Aufgabe.replace(/<p[^>]*>/g, '').replace(/<\/p>/g, '<br />');
 
       if(Projekt !== null) Text = '<b>' + Projekt.Projektkurzname + ': </b>' + Text;
-      else Text = '<b>Termin: </b>' + Text;
+      else {
+
+        Kategorietext = '';
+
+        if(Punkt.Outlookkatgorie !== this.Const.NONE) {
+
+          Kategorietext = ' ' + Punkt.Outlookkatgorie;
+        }
+
+        Text  = '<b>Termin' + Kategorietext + ': </b>' + Text + '<br>';
+        Text += moment(Punkt.Startzeitsptempel).format('HH:mm') + ' - ' + moment(Punkt.Endezeitstempel).format('HH:mm');
+
+        /*
+        Text += '<br>';
+        Text += Punkt.Minuten
+         */
+      }
 
       return Text;
 
@@ -1202,9 +1225,8 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
         Liste = await this.GraphService.GetOwnCalendar();
 
+
         this.Kalenderliste = [];
-
-
 
         for(let i = 0; i < 6; i++) {
 
@@ -1238,13 +1260,24 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
           for(let Termin of Liste) {
 
-            Terminprojektpunkt         = this.DBProjektpunkte.GetNewProjektpunkt(null, 0);
-            Terminprojektpunkt.Aufgabe = Termin.subject;
-            Terminprojektpunkt._id     = Termin.id;
-            Tag                        = this.Tageliste[i].Tag;
-            Startzeitpunkt             = moment(Termin.start.Zeitstempel);
-            Endezeitpunkt              = moment(Termin.end.Zeitstempel);
-            Terminprojektpunkt.Minuten = moment.duration(Endezeitpunkt.diff(Startzeitpunkt)).asMinutes();
+            Terminprojektpunkt                   = this.DBProjektpunkte.GetNewProjektpunkt(null, 0);
+            Terminprojektpunkt.Aufgabe           = Termin.subject;
+            Terminprojektpunkt._id               = Termin.id;
+            Tag                                  = this.Tageliste[i].Tag;
+            Startzeitpunkt                       = moment(Termin.start.Zeitstempel);
+            Endezeitpunkt                        = moment(Termin.end.Zeitstempel);
+            Terminprojektpunkt.Startzeitsptempel = Startzeitpunkt.valueOf();
+            Terminprojektpunkt.Endezeitstempel   = Endezeitpunkt.valueOf();
+            Terminprojektpunkt.Minuten           = moment.duration(Endezeitpunkt.diff(Startzeitpunkt)).asMinutes();
+
+            if(Termin.categories !== null && Termin.categories.length > 0) {
+
+              Terminprojektpunkt.Outlookkatgorie = Termin.categories[0];
+            }
+            else {
+
+              Terminprojektpunkt.Outlookkatgorie = this.Const.NONE;
+            }
 
             if(lodash.isUndefined(lodash.find(this.DBProjektpunkte.Wochenpunkteliste[Tag], {_id : Termin.id}))) {
 
@@ -1254,8 +1287,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
           }
         }
       }
-
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'PrepareDaten', this.Debug.Typen.Page);
@@ -1425,8 +1456,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
       event.preventDefault();
       event.stopPropagation();
-
-      debugger;
 
       this.Datenursprung                       = this.Datenursprungsvarianten.MeineWoche;
       this.ShowProjektpunktEditor              = true;
@@ -1680,8 +1709,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
         case this.Projektschnellauswahlursprungvarianten.Projektfavoriten:
 
-          debugger;
-
           this.DBProjekte.CurrentProjekt      = projekt;
           this.DBProjekte.CurrentProjektindex = lodash.findIndex(this.DBProjekte.Projektliste, {_id: projekt._id});
 
@@ -1689,8 +1716,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
           this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
 
           this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
-
-
 
           break;
 

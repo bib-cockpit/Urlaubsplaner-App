@@ -29,6 +29,8 @@ import {Emailfolderstruktur} from "../../dataclasses/emailfolderstruktur";
 import {folder} from "ionicons/icons";
 import {DatabaseOutlookemailService} from "../database-email/database-outlookemail.service";
 import {Outlookkalenderstruktur} from "../../dataclasses/outlookkalenderstruktur";
+import {Outlookpresetcolorsstruktur} from "../../dataclasses/outlookpresetcolorsstruktur";
+import {Outlookkategoriesstruktur} from "../../dataclasses/outlookkategoriesstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +47,7 @@ export class Graphservice {
   public Outlookkontakteliste: Outlookkontaktestruktur[];
   public CurrentPDFDownload: Teamsdownloadstruktur;
   public KalenderKW: number;
+  public Outlookpresetcolors:Outlookpresetcolorsstruktur[];
 
   constructor(
               @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
@@ -71,6 +74,37 @@ export class Graphservice {
       this.CurrentPDFDownload    = null;
       this.Outlookkontakteliste  = [];
       this.KalenderKW            = moment().locale('de').isoWeek();
+      this.Outlookpresetcolors   = [
+
+        { Name: 'none',     Value: 'none',    Fontcolor: 'white' },
+        { Name: 'Preset0',  Value: '#dc626d', Fontcolor: 'black' }, // Red
+        { Name: 'Preset1',  Value: '#e8825d', Fontcolor: 'black' },
+        { Name: 'Preset2',  Value: '#ffcd8f', Fontcolor: 'black' }, // Brown
+        { Name: 'Preset3',  Value: '#5f5f58', Fontcolor: 'white' }, // Yellow
+        { Name: 'Preset4',  Value: '#52ce90', Fontcolor: 'black' }, // Green
+        { Name: 'Preset5',  Value: '#57d2da', Fontcolor: 'white' }, // Teal
+        { Name: 'Preset6',  Value: '#5c5f53', Fontcolor: 'white' }, // Olive
+        { Name: 'Preset7',  Value: '#5ca9e5', Fontcolor: 'white' },  // Blue
+        { Name: 'Preset8',  Value: '#53525a', Fontcolor: 'white' }, // Purple
+        { Name: 'Preset9',  Value: '#ee5fb7', Fontcolor: 'black' },
+        { Name: 'Preset10', Value: '#c5ced1', Fontcolor: 'white' }, // 'Steel'
+        { Name: 'Preset11', Value: '#5d6567', Fontcolor: 'white' },
+        { Name: 'Preset12', Value: '#c3c5bb', Fontcolor: 'white' },
+        { Name: 'Preset13', Value: '#9fadb1', Fontcolor: 'white' },
+        { Name: 'Preset14', Value: '#8f8f8f', Fontcolor: 'white'}, // Black
+        { Name: 'Preset15', Value: '#ac4e5e', Fontcolor: 'black' },
+        { Name: 'Preset16', Value: '#df8e64', Fontcolor: 'white' },
+        { Name: 'Preset17', Value: '#bc8f6f', Fontcolor: 'white' },
+        { Name: 'Preset18', Value: '#dac257', Fontcolor: 'black' },
+        { Name: 'Preset19', Value: '#4ca64c', Fontcolor: 'white' },
+        { Name: 'Preset20', Value: '#4bb4b7', Fontcolor: 'white' },
+        { Name: 'Preset21', Value: '#85b44c', Fontcolor: 'white' }, // DarkOlive
+        { Name: 'Preset22', Value: '#4179a3', Fontcolor: 'white' }, // DarkBlue
+        { Name: 'Preset23', Value: '#8f6fbc', Fontcolor: 'white' },
+        { Name: 'Preset24', Value: '#c34e98', Fontcolor: 'black' },
+
+        { Name: 'PresetFeiertag', Value: '#b0d6f2', Fontcolor: 'black' },
+      ];
 
 
     } catch (error) {
@@ -599,6 +633,62 @@ export class Graphservice {
       this.Debug.ShowErrorMessage(error, 'Graph', 'GetOwnEmailfolders', this.Debug.Typen.Service);
     }
   }
+
+  public async GetOwnOutlookCategories(): Promise<Outlookkategoriesstruktur[]> {
+
+    try {
+
+      let token = await this.AuthService.RequestToken('MailboxSettings.Read');
+      let data: any;
+      let Liste: Outlookkategoriesstruktur[] = [];
+
+      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
+
+          done(null, token);
+        }
+      });
+
+      try {
+
+        data = await graphClient.api('/me/outlook/masterCategories').get();
+
+        if(!lodash.isUndefined(data.value)) {
+
+          for(let Eintrag of data.value) {
+
+            Liste.push(Eintrag);
+
+            console.log(Eintrag.id);
+          }
+        }
+
+        Liste.push({
+
+          displayName: 'Feiertag',
+          id:          'id_feiertrag',
+          color:       'PresetFeiertag'
+        });
+
+        Liste.sort( (a: Outlookkategoriesstruktur, b: Outlookkategoriesstruktur) => {
+
+          if (a.displayName < b.displayName) return -1;
+          if (a.displayName > b.displayName) return 1;
+          return 0;
+        });
+
+        return Liste;
+      }
+      catch(error: any) {
+
+        return error;
+      }
+    }
+    catch (error)  {
+
+      this.Debug.ShowErrorMessage(error, 'Graph', 'GetOwnOutlookCategories', this.Debug.Typen.Service);
+    }
+  }
+
 
   public async GetOwnEmailliste(folderid: string): Promise<any> {
 
