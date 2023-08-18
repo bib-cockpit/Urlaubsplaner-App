@@ -29,7 +29,9 @@
                     <tr>
                       <td><ion-icon name="people-outline" [color]="Bereich === Bereiche.Beteiligte ? 'schwarz' : 'weiss'"></ion-icon></td>
                       <td [style.color]="Bereich === Bereiche.Beteiligte ? '#000000' : 'white'">Projektbeteiligte</td>
-                      <td *ngIf="DB.CurrentProjekt.Beteiligtenliste.length > 0" [style.color]="Bereich === Bereiche.Beteiligte ? Basics.Farben.Burnicklgruen : 'white'">[{{DB.CurrentProjekt.Beteiligtenliste.length}}]</td>
+                      <td [style.color]="Bereich === Bereiche.Beteiligte ? '#000000' : 'white'">[{{DB.CurrentProjekt.Beteiligtenliste.length}}</td>
+                      <td [style.color]="Bereich === Bereiche.Beteiligte ? '#000000' : 'white'">/</td>
+                      <td [style.color]="Bereich === Bereiche.Beteiligte ? '#000000' : 'white'">{{DB.CurrentProjekt.MitarbeiterIDListe.length}}]</td>
                     </tr>
                   </table>
                 </div>
@@ -363,7 +365,7 @@
                     </td>
                     -->
                     <td valign="top">
-                      <ion-radio-group [value]="DB.CurrentProjekt.Projektfarbe" (ionChange)="ProjektfarbeChangedHandler($event)">
+                      <ion-radio-group [value]="DB.CurrentProjekt.OutlookkategorieID" (ionChange)="ProjektfarbeChangedHandler($event)">
                         <ion-grid *ngIf="DB.CurrentProjekt">
                           <ion-row>
                             <ion-col>
@@ -373,13 +375,15 @@
                           <ion-row>
                             <ion-col>
                               <table class="paddingtable">
-                                <tr *ngFor="let Farbe of DB.Projektfarbenliste">
+                                <tr *ngFor="let Kategorie of Pool.Outlookkatekorien">
                                   <td>
-                                    <ion-radio [value]="Farbe.Name"></ion-radio>
+                                    <ion-radio [value]="Kategorie.id"></ion-radio>
                                   </td>
                                   <td>
-                                    <div style="width: 40px; height: 40px; border-radius: 4px;" [style.background]="Farbe.Background"></div>
+                                    <div style="width: 40px; height: 40px; border-radius: 4px;" [style.background]="GetOutlookkategorienColor(Kategorie)"></div>
                                   </td>
+                                  <td>{{Kategorie.displayName}}</td>
+
                                 </tr>
                               </table>
                             </ion-col>
@@ -394,116 +398,183 @@
 
             <div *ngSwitchCase="Bereiche.Beteiligte" class="contentrightinnerclass">
             <!-- Projektbeteiligtenliste -->
-              <div class="projektbeteiligtenheaderclass">
-                <ion-grid *ngIf="DB.CurrentProjekt">
-                  <ion-row>
-                    <ion-col>
-                      <ion-text color="burnicklgruen"><b>Projektbeteiligte</b></ion-text>
-                    </ion-col>
-                  </ion-row>
-                </ion-grid>
-              </div>
-              <div class="projektbeteiligtencontentclass">
-                <!--
-                <div class="projektbeteiligtencontentframeclass">
-                -->
-                  <!--
-                  <div class="beteiligtelisteclass">
-                  -->
-
-                    <ion-list class="ion-no-padding">
-                      <ion-item class="ion-text-wrap" class="ion-no-padding" *ngFor="let Beteiligt of Beteiligtenliste, let i = index" (click)="BeteiligteButtonClicked(Beteiligt)">
-                        <table class="paddingsmalltable" width="100%">
-                          <tr>
-                            <td>
-                              <table>
-                                <tr>
-                                  <td style="padding-top: 3px;font-size: 90%">
-                                    <ng-container *ngIf="Beteiligt.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Person">
-                                      {{DBBeteiligte.GetBeteiligtenvorname(Beteiligt)}} {{Beteiligt.Name}}
-                                    </ng-container>
-                                    <ng-container *ngIf="Beteiligt.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Firma">
+                <table  *ngIf="DB.CurrentProjekt" style="width: 100%">
+                  <tr>
+                    <td style="height: 42px; font-size: 120%; font-weight: bold"><b>Projektbeteiligte</b></td>
+                    <td rowspan="4">
+                      <div style="padding-right: 8px; padding-left: 8px;">
+                        <div [style.height.px]="Listentrennerhoehe" style=" width: 3px; background: #2190df;"></div>
+                      </div>
+                    </td>
+                    <td style="height: 42px; font-size: 120%;"><b>Mitarbeiter</b></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><div style="height: 3px; width: 100%; background: #2190df"></div></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 50%" valign="top">
+                      <ion-list class="ion-no-padding">
+                        <ion-item class="ion-text-wrap" class="ion-no-padding" *ngFor="let Beteiligt of Beteiligtenliste, let i = index" (click)="BeteiligteButtonClicked(Beteiligt)">
+                          <table class="paddingsmalltable" width="100%">
+                            <tr>
+                              <td>
+                                <table>
+                                  <tr>
+                                    <td style="padding-top: 3px;font-size: 90%">
+                                      <ng-container *ngIf="Beteiligt.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Person">
+                                        {{DBBeteiligte.GetBeteiligtenvorname(Beteiligt)}} {{Beteiligt.Name}}
+                                      </ng-container>
+                                      <ng-container *ngIf="Beteiligt.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Firma">
+                                        {{Beteiligt.Firma}}
+                                      </ng-container>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="height: 3px"></td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <table class="infotable" style="white-space:nowrap;">
+                                  <tr>
+                                    <td *ngIf="Beteiligt.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Person && Beteiligt.Firma !== ''">
                                       {{Beteiligt.Firma}}
+                                    </td>
+                                    <ng-container *ngIf="Beteiligt.Beteiligtentyp !== 0">
+                                      <td *ngIf="Beteiligt.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Person" style="padding: 4px"><div class="bullclass"></div></td>
+                                      <td>{{DBBeteiligte.GetBeteiligtenFachbereichname(Beteiligt.Beteiligtentyp)}}</td>
                                     </ng-container>
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td style="height: 3px"></td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <table class="infotable" style="white-space:nowrap;">
+                                    <ng-container *ngIf="Beteiligt.Email !== ''">
+                                      <td *ngIf="Beteiligt.Beteiligtentyp !== 0" style="padding: 4px"><div class="bullclass"></div></td>
+                                      <td>{{Beteiligt.Email}}</td>
+                                    </ng-container>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="height: 4px"></td>
+                            </tr>
+                          </table>
+                        </ion-item>
+
+                      </ion-list>
+
+                      <table *ngIf="Beteiligtenliste.length === 0" class="paddingtable" width="100%">
+                        <tr>
+                          <td style="height: 60px; text-align: center; vertical-align: center">
+                            keine Einträge vorhanden
+                          </td>
+                        </tr>
+                      </table>
+
+                    </td>
+                    <!--
+                    <td style="width: 3px; background: red;"></td>
+                    -->
+                    <td style="width: 50%" valign="top">
+
+                      <ion-list class="ion-no-padding">
+                        <ion-item class="ion-text-wrap" class="ion-no-padding" *ngFor="let Mitarbeiter of Mitarbeiterliste, let i = index" (click)="MitarbeiterButtonClcicked(Mitarbeiter)">
+                          <table class="paddingsmalltable" width="100%">
+                            <tr>
+                              <td>
+                                <table>
+                                  <tr>
+                                    <td style="padding-top: 3px; font-size: 90%">{{Mitarbeiter.Name}} {{Mitarbeiter.Vorname}}</td>
+                                    <td>/</td>
+                                    <td style="font-size: 90%; color: gray;">{{DBStandort.GetStandort(Mitarbeiter.StandortID)}}</td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="height: 3px"></td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <table class="infotable" style="white-space:nowrap;">
+                                  <tr>
+                                      <td>{{Mitarbeiter.Email}}</td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="height: 4px"></td>
+                            </tr>
+                          </table>
+                        </ion-item>
+
+                      </ion-list>
+
+                      <table *ngIf="Mitarbeiterliste.length === 0" class="paddingtable" width="100%">
+                        <tr>
+                          <td style="height: 60px; text-align: center; vertical-align: center">
+                            keine Einträge vorhanden
+                          </td>
+                        </tr>
+                      </table>
+
+                    </td>
+                  </tr>
+                  <tr style="height: 40px">
+                    <td>
+
+                      <table class="paddingtable">
+                        <tr>
+                          <td>
+                            <div class="importoutlookbutton" (click)="AddBeteiligteButtonClicked()">
+                              <table class="paddingtable">
                                 <tr>
-                                  <td *ngIf="Beteiligt.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Person && Beteiligt.Firma !== ''">
-                                    {{Beteiligt.Firma}}
-                                  </td>
-                                  <ng-container *ngIf="Beteiligt.Beteiligtentyp !== 0">
-                                    <td *ngIf="Beteiligt.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Person" style="padding: 4px"><div class="bullclass"></div></td>
-                                    <td>{{DBBeteiligte.GetBeteiligtenFachbereichname(Beteiligt.Beteiligtentyp)}}</td>
-                                  </ng-container>
-                                  <ng-container *ngIf="Beteiligt.Email !== ''">
-                                    <td *ngIf="Beteiligt.Beteiligtentyp !== 0" style="padding: 4px"><div class="bullclass"></div></td>
-                                    <td>{{Beteiligt.Email}}</td>
-                                  </ng-container>
+                                  <td><ion-icon name="add-circle-outline" color="weiss"></ion-icon></td>
+                                  <td style="color: white; font-size: 100%">NEUER EINTRAG</td>
                                 </tr>
                               </table>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td style="height: 4px"></td>
-                          </tr>
-                        </table>
-                      </ion-item>
+                            </div>
+                          </td>
+                          <td style="width: 4px"></td>
+                          <td>
+                            <div class="importoutlookbutton" (click)="ImportOutlookKontakteEvent.emit()">
+                              <table class="paddingtable">
+                                <tr>
+                                  <td><img src="assets/svgs/outlookicon.svg" style="width: 60px"></td>
+                                  <td style="color: white; font-size: 100%">OUTLOOK KONTAKTE IMPORTIEREN</td>
+                                </tr>
+                              </table>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
 
-                    </ion-list>
+                    </td>
+                    <!--
+                    <td></td>
+                    -->
+                    <td>
 
-                    <table *ngIf="Beteiligtenliste.length === 0" class="paddingtable" width="100%">
-                      <tr>
-                        <td style="height: 60px; text-align: center; vertical-align: center">
-                          keine Einträge vorhanden
-                        </td>
-                      </tr>
-                    </table>
+                      <table class="paddingtable">
+                        <tr>
+                          <td>
+                            <div class="importoutlookbutton" (click)="EditMitarbeiterEvent.emit()">
+                              <table class="paddingtable">
+                                <tr>
+                                  <td><ion-icon name="book" color="weiss"></ion-icon></td>
+                                  <td style="color: white; font-size: 100%">Mitarbeiterauswahl</td>
+                                </tr>
+                              </table>
+                            </div>
+                          </td>
+                        </tr>
 
-                    <table>
-                      <tr>
-                        <td colspan="3" style="height: 4px"></td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div class="importoutlookbutton" (click)="AddBeteiligteButtonClicked()">
-                            <table class="paddingtable">
-                              <tr>
-                                <td><ion-icon name="add-circle-outline" color="weiss"></ion-icon></td>
-                                <td style="color: white; font-size: 100%">NEUER EINTRAG</td>
-                              </tr>
-                            </table>
-                          </div>
-                        </td>
-                        <td style="width: 4px"></td>
-                        <td>
-                          <div class="importoutlookbutton" (click)="ImportOutlookKontakteEvent.emit()">
-                            <table class="paddingtable">
-                              <tr>
-                                <td><img src="assets/svgs/outlookicon.svg" style="width: 60px"></td>
-                                <td style="color: white; font-size: 100%">OUTLOOK KONTAKTE IMPORTIEREN</td>
-                              </tr>
-                            </table>
-                          </div>
-                        </td>
-                      </tr>
-                    </table>
+                      </table>
 
-                  <!--
-                  </div>
-                  -->
-                <!--
-                </div>
-                -->
-              </div>
+                    </td>
+                  </tr>
+                </table>
+
           </div>
 
             <ng-container *ngSwitchCase="Bereiche.Gebaeudestruktur">

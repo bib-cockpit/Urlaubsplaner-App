@@ -9,15 +9,15 @@
           <table class="paddingsmalltable">
             <tr>
               <td style="width: 4px"></td>
-              <td><ion-icon [name]="Iconname" color="burnicklgruen"></ion-icon></td>
+              <td><ion-icon [name]="Iconname" color="weiss"></ion-icon></td>
               <td [style.color]="'white'">{{Titel}}</td>
               <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
               <td>
                 <div class="menubuttonclass" (click)="AllgemeinMenuButtonClicked()">
                   <table class="paddingsmalltable">
                     <tr>
-                      <td><ion-icon name="reader-outline" [color]="Bereich === DB.LOPListeEditorViewModusvarianten.Allgemein ? 'burnicklgruen' : 'weiss'"></ion-icon></td>
-                      <td [style.color]="Bereich === DB.LOPListeEditorViewModusvarianten.Allgemein ? Basics.Farben.Burnicklgruen : 'white'">Allgemein</td>
+                      <td><ion-icon name="reader-outline" [color]="Bereich === DB.LOPListeEditorViewModusvarianten.Allgemein ? 'schwarz' : 'weiss'"></ion-icon></td>
+                      <td [style.color]="Bereich === DB.LOPListeEditorViewModusvarianten.Allgemein ? 'black' : 'white'">Allgemein</td>
                     </tr>
                   </table>
                 </div>
@@ -286,7 +286,7 @@
             <tr>
               <td>
                 <div class="rootbuttonclass" (click)="CancelButtonClicked()">
-                  <ion-icon style="font-size: 28px" color="burnicklgruen" name="close-outline"></ion-icon>
+                  <ion-icon style="font-size: 28px" color="weiss" name="close-outline"></ion-icon>
                 </div>
               <td style="width: 100%"></td>
               <!--
@@ -300,7 +300,7 @@
               <td>
 
                 <div class="rootbuttonclass" (click)="Valid === true ? OkButtonClicked() : null">
-                  <ion-icon style="font-size: 28px" [color]="Valid === true ? 'burnicklgruen' : 'burnicklbraun'" name="save-outline"></ion-icon>
+                  <ion-icon style="font-size: 28px" [color]="Valid === true ? 'weiss' : 'grau'" name="save-outline"></ion-icon>
                 </div>
               </td>
             </tr>

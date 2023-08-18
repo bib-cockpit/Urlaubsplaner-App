@@ -89,6 +89,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     Bautagebuch:       'Bautagebuch',
     BaustelleLOPListe: 'BaustelleLOPListe'
   };
+  public Multiselect: boolean;
 
   constructor(public  Basics: BasicsProvider,
               public  Debug: DebugProvider,
@@ -114,6 +115,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
       this.Kontaktephabet    = [];
       this.Alphabetauswahl   = 'Alle';
       this.Liste             = [];
+      this.Multiselect       = true;
       this.Dialoghoehe       = 400;
       this.Dialogbreite      = 600;
       this.DialogPosY        = 100;
@@ -180,6 +182,23 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'ngOnInit', this.Debug.Typen.Page);
+    }
+  }
+
+
+  EditMitarbeiterauswahl() {
+
+    try {
+
+      this.AuswahlIDliste          = this.DB.CurrentProjekt.MitarbeiterIDListe;
+      this.Auswahldialogorigin     = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Mitarbeiterauswahl;
+      this.ShowMitarbeiterauswahl  = true;
+      this.Multiselect             = true;
+      this.MitarbeiterauswahlTitel = 'Mitarbeiter auswählen';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'EditMitarbeiterauswahl', this.Debug.Typen.Page);
     }
   }
 
@@ -776,8 +795,10 @@ export class PjProjektListePage implements OnInit, OnDestroy {
       if(this.DB.CurrentProjekt.ProjektleiterID !== this.Const.NONE) this.AuswahlIDliste = [this.DB.CurrentProjekt.ProjektleiterID];
       else this.AuswahlIDliste = [];
 
-      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Mitarbeiterauswahl_Projektleiter;
-      this.ShowMitarbeiterauswahl = true;
+      this.Auswahldialogorigin     = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Mitarbeiterauswahl_Projektleiter;
+      this.ShowMitarbeiterauswahl  = true;
+      this.Multiselect             = false;
+      this.MitarbeiterauswahlTitel = 'Projektleiter fetlegen';
 
     } catch (error) {
 
@@ -794,6 +815,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
       this.Auswahldialogorigin     = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Mitarbeiterauswahl_Stellvertreter;
       this.ShowMitarbeiterauswahl  = true;
+      this.Multiselect             = false;
       this.MitarbeiterauswahlTitel = 'Stellvertreter fetlegen';
 
 
@@ -862,6 +884,15 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
           if(idliste.length > 0) this.DB.CurrentProjekt.StellvertreterID = idliste[0];
           else                   this.DB.CurrentProjekt.StellvertreterID = this.Const.NONE;
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Mitarbeiterauswahl:
+
+          if(idliste.length > 0) this.DB.CurrentProjekt.MitarbeiterIDListe = idliste;
+          else                   this.DB.CurrentProjekt.MitarbeiterIDListe = [];
+
+          this.Pool.MitarbeiterAuswahlChanged.emit();
 
           break;
       }

@@ -1535,12 +1535,12 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
       if(this.Valid) {
 
-        return this.Bereich === this.Bereiche.Themenliste ? 'burnicklgruen' : 'weis';
+        return this.Bereich === this.Bereiche.Themenliste ? 'schwarz' : 'weiss';
 
       }
       else {
 
-        return 'burnicklbraun';
+        return 'grau';
       }
 
 
@@ -1556,11 +1556,11 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
       if(this.Valid) {
 
-        return this.Bereich === this.Bereiche.Themenliste ? this.Basics.Farben.Burnicklgruen : 'white';
+        return this.Bereich === this.Bereiche.Themenliste ? 'black' : 'white';
       }
       else {
 
-        return this.Basics.Farben.Burnicklbraun;
+        return '#454545';
       }
 
     } catch (error) {

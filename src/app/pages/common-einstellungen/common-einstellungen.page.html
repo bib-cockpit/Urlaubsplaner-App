@@ -29,6 +29,18 @@
     </tr>
   </table>
 
+  <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
+    <tr>
+      <td style="width: 460px">
+        <button-value [Buttontext]="'Zoomfaktor'"
+                      [Wert_A]="Pool.Mitarbeitersettings.Zoomfaktor.toString()"
+                      [Buttoncolor]="Basics.Farben.Burnicklbraun"
+                      (ButtonClicked)="ZoomfaktorClicked()">
+        </button-value>
+      </td>
+    </tr>
+  </table>
+
   <ion-grid *ngIf="Pool.Mitarbeitersettings !== null">
     <ion-row>
       <ion-col>
@@ -67,7 +79,7 @@
             <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowMeintag" (CheckChanged)="ListesettingCheckChanged($event, 'Meintag')"></checkbox-clon></td><td>Meintag</td>
           </tr>
           <tr>
-            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowMeinewoche" (CheckChanged)="ListesettingCheckChanged($event, 'Meine Woche')"></checkbox-clon></td><td>Meintag</td>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowMeinewoche" (CheckChanged)="ListesettingCheckChanged($event, 'Meine Woche')"></checkbox-clon></td><td>Meine Woche</td>
           </tr>
         </table>
       </ion-col>

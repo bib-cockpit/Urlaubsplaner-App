@@ -68,14 +68,14 @@
 
           </div>
 
-          <ion-grid *ngIf="DB.CurrentMeinewoche !== null">
+          <ion-grid *ngIf="DB.CurrentMeinewoche !== null && DBProjekte.CurrentProjekt !== null">
             <ion-row>
               <ion-col size="12">
                 <table *ngIf="DBProjekte.CurrentProjekt !== null && DBProjektpunkte.CurrentProjektpunkt !== null" class="paddingtable">
                   <tr>
                     <td  style="vertical-align: top">
                       <div class="projectcircleclass"
-                           [style.background]="DBProjekte.GetProjektfarbeByProjektfarbnamen(DBProjekte.CurrentProjekt.Projektfarbe).Background">
+                           [style.background]="DBProjekte.GetProjektfarbeByOutlookkategorie(DBProjekte.CurrentProjekt.OutlookkategorieID).Background">
                       </div>
                     </td>
                     <td style="vertical-align: top"><b>{{DBProjekte.CurrentProjekt.Projektkurzname}}:</b></td>

@@ -24,6 +24,9 @@ import {Graphservice} from "../../services/graph/graph";
 import {Teamsmitgliederstruktur} from "../../dataclasses/teamsmitgliederstruktur";
 import {Graphuserstruktur} from "../../dataclasses/graphuserstruktur";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import { Outlookkategoriesstruktur } from 'src/app/dataclasses/outlookkategoriesstruktur';
+import {Outlookpresetcolorsstruktur} from "../../dataclasses/outlookpresetcolorsstruktur";
+import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 
 @Component({
   selector: 'pj-projekt-editor',
@@ -55,6 +58,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
   @Output() SelectBaustelleLOPListefolderEvent = new EventEmitter<any>();
   @Output() SelectProtokollfolderEvent         = new EventEmitter<any>();
   @Output() LeistungsphaseClickedEvent         = new EventEmitter<any>();
+  @Output() EditMitarbeiterEvent               = new EventEmitter<any>();
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -79,11 +83,13 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
   private BeteiligtenSubscription: Subscription;
   private PathesSubscription: Subscription;
   private JoiShema: ObjectSchema;
-  public Mitgliederliste: Teamsmitgliederstruktur[];
+  public Mitarbeiterliste: Mitarbeiterstruktur[];
   public OtherUserinfo: Graphuserstruktur;
   public Protokollfolder: string;
   public Bautagebuchfolder: string;
   public BaustelleLOPListefolder:string;
+  public Listentrennerhoehe: number;
+  private MitarbeiterSubscription: Subscription;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -111,7 +117,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       this.Bereich             = this.Bereiche.Allgemein;
       this.ShowRaumVerschieber = false;
       this.PositionChanged     = false;
-      this.Mitgliederliste     = [];
+      this.Mitarbeiterliste    = [];
       this.OtherUserinfo       = null;
       this.PathesSubscription  = null;
       this.Protokollfolder     = '/';
@@ -119,6 +125,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       this.BaustelleLOPListefolder = '/';
 
       this.BeteiligtenSubscription = null;
+      this.MitarbeiterSubscription = null;
 
     } catch (error) {
 
@@ -138,6 +145,9 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       this.PathesSubscription.unsubscribe();
       this.PathesSubscription = null;
 
+      this.MitarbeiterSubscription.unsubscribe();
+      this.MitarbeiterSubscription = null;
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'OnDestroy', this.Debug.Typen.Component);
@@ -155,6 +165,11 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
 
       this.BeteiligtenSubscription = this.DBBeteiligte.BeteiligtenlisteChanged.subscribe(() => {
+
+        this.PrepareData();
+      });
+
+      this.MitarbeiterSubscription = this.Pool.MitarbeiterAuswahlChanged.subscribe(() => {
 
         this.PrepareData();
       });
@@ -205,6 +220,8 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
       // Seicherpfade prüfen
 
+      /*
+
       RootFileinfo = await this.GraphService.GetTeamsRootDirectory(this.DB.CurrentProjekt.TeamsID);
 
       if(this.DB.CurrentProjekt.ProtokolleFolderID === this.Const.NONE || this.DB.CurrentProjekt.ProtokolleFolderID.startsWith('ROOT:')) {
@@ -242,6 +259,8 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
         this.BaustelleLOPListefolder = 'Dokumente/' + FileinfoC.parentReference.path.split('root:')[1] + '/' + FileinfoC.name;
       }
 
+       */
+
       this.ValidateInput();
 
     } catch (error) {
@@ -254,11 +273,14 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     try {
 
+      let Liste: Mitarbeiterstruktur[] = [];
+      let Mitarbeiter: Mitarbeiterstruktur;
+
       await this.CheckTeamsPathes();
 
-      this.Mitgliederliste  = [];
+      this.Listentrennerhoehe = this.Dialoghoehe;
 
-      this.Beteiligtenliste = lodash.cloneDeep(this.DB.CurrentProjekt.Beteiligtenliste);
+      this.Beteiligtenliste  = lodash.cloneDeep(this.DB.CurrentProjekt.Beteiligtenliste);
 
       this.Beteiligtenliste.sort( (a: Projektbeteiligtestruktur, b: Projektbeteiligtestruktur) => {
 
@@ -268,25 +290,27 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
         return 0;
       });
 
-      // Gebäudestruktur
+      this.Mitarbeiterliste = lodash.cloneDeep(this.Pool.Mitarbeiterliste);
+      Liste                 = [];
 
-      try {
+      for(let ID of this.DB.CurrentProjekt.MitarbeiterIDListe) {
 
-        /*
+        Mitarbeiter = lodash.find(this.Mitarbeiterliste, {_id: ID});
 
-        this.Mitgliederliste = await this.GraphService.GetTeamsMitglieder(this.DB.CurrentProjekt.TeamsID);
-
-        for(let Mitglied of this.Mitgliederliste) {
-
-          Mitglied.UserImageSRC = await this.GraphService.GetOtherUserimage(Mitglied.userId);
-        }
-
-         */
-
-      } catch(error) {
-
-        this.Mitgliederliste = [];
+        if(!lodash.isUndefined(Mitarbeiter)) Liste.push(Mitarbeiter);
       }
+
+      this.Mitarbeiterliste = lodash.clone(Liste);
+
+      this.Mitarbeiterliste.sort( (a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
+
+        if (a.Name < b.Name) return -1;
+        if (a.Name > b.Name) return 1;
+
+        return 0;
+      });
+
+      debugger;
 
     } catch (error) {
 
@@ -745,7 +769,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     try {
 
-      this.DB.CurrentProjekt.Projektfarbe = event.detail.value;
+      this.DB.CurrentProjekt.OutlookkategorieID = event.detail.value;
 
     } catch (error) {
 
@@ -832,6 +856,34 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'SelectBaustelleLOPListefolderClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  GetOutlookkategorienColor(Kategorie: Outlookkategoriesstruktur) {
+
+    try {
+
+      let Color: Outlookpresetcolorsstruktur = this.GraphService.Outlookpresetcolors.find((color) => {
+
+        return color.Name.toLowerCase() === Kategorie.color;
+      });
+
+       if(!lodash.isUndefined(Color)) return Color.Value;
+       else return 'none';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'GetOutlookkategorienColor', this.Debug.Typen.Component);
+    }
+  }
+
+  MitarbeiterButtonClcicked(mitarbeiter: Mitarbeiterstruktur) {
+
+    try {
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'MitarbeiterButtonClcicked', this.Debug.Typen.Component);
     }
   }
 }

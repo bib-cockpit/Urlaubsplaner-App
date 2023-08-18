@@ -7,6 +7,27 @@
   }
 }
 
+.timelinelabelclass {
+
+  position: absolute;
+  left: 0px;
+  color: white;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  font-size: 80%;
+  font-weight: bold;
+}
+
+.timelinedivclass {
+
+  width: 100%;
+  position: relative;
+  /* background: #2190df; */
+  background:  #354547;
+  border-left: 1px solid white;
+}
+
 .nobordertitelbuttonclass {
 
   border-left-style: hidden !important;
@@ -16,6 +37,15 @@
   color: #2190df;
   font-size: 120%;
   font-weight: bold;
+}
+
+.timelinelinieclass {
+
+  position: absolute;
+  width: 100%;
+  background: white;
+  height: 1px;
+  z-index: 10;
 }
 
 .keineintragclass {
@@ -50,6 +80,7 @@
 
 .tagaufteilungkeeperdivclass {
 
+  position: relative;
   border-top: 1px solid white;
   width: 100%;
   height: 100%;
@@ -61,6 +92,7 @@
 
 .tagaufteilungeintragdivclass {
 
+  position: absolute;
   width: 100%;
   color: white;
   padding: 4px;
@@ -68,6 +100,7 @@
   overflow: hidden;
   font-size: 90%;
   cursor: pointer;
+  z-index: 100;
 }
 
 .meintagstatusdivclass {

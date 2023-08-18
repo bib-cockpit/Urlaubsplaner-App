@@ -22,6 +22,8 @@ import {Teamsstruktur} from "../../dataclasses/teamsstruktur";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Protokollstruktur} from "../../dataclasses/protokollstruktur";
 import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
+import {Outlookpresetcolorsstruktur} from "../../dataclasses/outlookpresetcolorsstruktur";
+import {Outlookkategoriesstruktur} from "../../dataclasses/outlookkategoriesstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -147,13 +149,14 @@ export class DatabaseProjekteService {
 
             for(let Projekt of this.Gesamtprojektliste) {
 
-              if(lodash.isUndefined(Projekt.Projektfarbe))  Projekt.Projektfarbe  = 'Burnicklgruen';
-              if(lodash.isUndefined(Projekt.ProjektIsReal)) Projekt.ProjektIsReal = true;
+              if(lodash.isUndefined(Projekt.OutlookkategorieID))  Projekt.OutlookkategorieID  = this.Const.NONE;
+              if(lodash.isUndefined(Projekt.ProjektIsReal))       Projekt.ProjektIsReal = true;
 
               if(lodash.isUndefined(Projekt.BaustellenLOPFolderID)) Projekt.BaustellenLOPFolderID = this.Const.NONE;
               if(lodash.isUndefined(Projekt.ProtokolleFolderID))    Projekt.ProtokolleFolderID    = this.Const.NONE;
               if(lodash.isUndefined(Projekt.BautagebuchFolderID))   Projekt.BautagebuchFolderID   = this.Const.NONE;
               if(lodash.isUndefined(Projekt.Leistungsphase))        Projekt.Leistungsphase        = 'unbekannt';
+              if(lodash.isUndefined(Projekt.MitarbeiterIDListe))    Projekt.MitarbeiterIDListe    = [];
 
               for(let Beteiligter of Projekt.Beteiligtenliste) {
 
@@ -181,32 +184,66 @@ export class DatabaseProjekteService {
   }
 
 
-  public GetProjektFarbeByProjektpunkt(Punkt: Projektpunktestruktur): Projektfarbenstruktur {
+  public GetProjektFarbeByProjektpunkt(Punkt: Projektpunktestruktur): string {
 
     try {
 
       let Projekt: Projektestruktur = this.GetProjektByID(Punkt.ProjektID);
 
-
-
       if(!lodash.isUndefined(Projekt)) {
 
-        if(this.CheckProjektmembership(Projekt) === true) return this.GetProjektfarbeByProjektfarbnamen(Projekt.Projektfarbe);
-        else return {
-          Background: "silver",
-          Foreground: "white",
-          Name: ""
-        };
+        let Farbe: Outlookpresetcolorsstruktur = lodash.find(this.GraphService.Outlookpresetcolors, (farbe: Outlookpresetcolorsstruktur) => {
+
+          return farbe.Name === Projekt.OutlookkategorieID;
+        });
+
+        if (!lodash.isUndefined(Farbe)) return Farbe.Value;
+        else return 'none';
       }
-      else return {
-        Background: "#444444",
-        Foreground: "white",
-        Name: ""
-      };
+      else {
+
+        return 'none';
+      }
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'GetProjektFarbeByProjektpunkt', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetProjektFarbeByProjektpunktkategorie(Punkt: Projektpunktestruktur): Outlookpresetcolorsstruktur {
+
+    try {
+
+      let Kategorie: Outlookkategoriesstruktur = lodash.find(this.Pool.Outlookkatekorien, (kategorie: Outlookkategoriesstruktur) => {
+
+        return kategorie.id === Punkt.OutlookkatgorieID;
+      });
+
+      if(!lodash.isUndefined(Kategorie)) {
+
+        let Farbe: Outlookpresetcolorsstruktur = lodash.find(this.GraphService.Outlookpresetcolors, (farbe: Outlookpresetcolorsstruktur) => {
+
+          return farbe.Name.toLowerCase() === Kategorie.color.toLowerCase();
+        });
+
+        if (!lodash.isUndefined(Farbe)) return Farbe;
+        else return {
+
+          Name: 'Standard', Value: '#b0d7f3', Fontcolor: 'black'
+        };
+      }
+      else {
+
+        return {
+
+          Name: 'Standard', Value: '#b0d7f3', Fontcolor: 'black'
+        };
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Projekte', 'GetProjektFarbeByProjektpunktkategorie', this.Debug.Typen.Service);
     }
   }
 
@@ -418,8 +455,9 @@ export class DatabaseProjekteService {
         Zeitpunkt:   Zeit.format('HH:mm DD.MM.YYYY'),
         Zeitstempel: Zeit.valueOf(),
         Deleted: false,
-        Projektfarbe: this.Const.NONE,
+        OutlookkategorieID: this.Const.NONE,
         Beteiligtenliste: [],
+        MitarbeiterIDListe: [],
         Bauteilliste: [],
         ProjektIsReal: true,
         Leistungsphase: 'unbekannt',
@@ -790,23 +828,35 @@ export class DatabaseProjekteService {
     }
   }
 
-  GetProjektfarbeByProjekt(projekt: Projektestruktur): Projektfarbenstruktur {
+  GetProjektfarbeByProjekt(projekt: Projektestruktur): string {
 
     try {
 
-      let Farbe = this.GetProjektfarbeByProjektfarbnamen(projekt.Projektfarbe);
+      if(!lodash.isUndefined(projekt)) {
 
-      return Farbe;
+        let Kategorie: Outlookkategoriesstruktur = lodash.find(this.Pool.Outlookkatekorien, (kategorie: Outlookkategoriesstruktur) => {
 
-      /*
-      if(this.CheckProjektmembership(projekt)) return Farbe;
-      else return {
-        Background: "silver",
-        Foreground: "black",
-        Name: ""
-      };
+          return kategorie.id === projekt.OutlookkategorieID;
+        });
 
-       */
+        if (!lodash.isUndefined(Kategorie)) {
+
+          let Color: Outlookpresetcolorsstruktur = this.GraphService.Outlookpresetcolors.find((color) => {
+
+            return color.Name.toLowerCase() === Kategorie.color;
+          });
+
+          if (!lodash.isUndefined(Color)) return Color.Value;
+          else return 'none';
+
+        }
+        else return 'none';
+      }
+      else {
+
+        return 'none';
+      }
+
 
     } catch (error) {
 
@@ -815,13 +865,29 @@ export class DatabaseProjekteService {
 
   }
 
-  GetProjektfarbeByProjektfarbnamen(name: string) {
+  GetProjektfarbeByOutlookkategorie(katid: string) {
 
     try {
 
-      let Farbe: Projektfarbenstruktur = lodash.find(this.Projektfarbenliste, {Name: name});
+      let Farbe: Projektfarbenstruktur;
+      let Kategorie: Outlookkategoriesstruktur = lodash.find(this.Pool.Outlookkatekorien, {id: katid});
 
-      if(lodash.isUndefined(Farbe)) {
+      if(!lodash.isUndefined(Kategorie)) {
+
+        Farbe = lodash.find(this.Projektfarbenliste, {Name: Kategorie.color});
+
+        if(lodash.isUndefined(Farbe)) {
+
+          Farbe =  {
+
+            Background: this.Basics.Farben.Burnicklgruen,
+            Foreground: 'white',
+            Name: ''
+          };
+        }
+
+      }
+      else {
 
         Farbe =  {
 

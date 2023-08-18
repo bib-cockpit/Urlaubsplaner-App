@@ -17,6 +17,7 @@ export type Projektpunktestruktur = {
   Nummer:              string;
   Aufgabe:             string;
   Thematik:            string;
+  OutlookkatgorieID:   string;
 
   Startzeitsptempel:   number;
   Startzeitstring:     string;
@@ -65,6 +66,7 @@ export type Projektpunktestruktur = {
   ZustaendigeExternIDListe: string[];
   ZustaendigeInternIDListe: string[];
   Zustaendigkeitsliste?:    string[];
+  Teilnehmeremailliste?:    string[];
   __v?: any;
   Minuten?: number;
   Kostengruppenname?: string;

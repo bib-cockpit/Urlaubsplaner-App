@@ -564,7 +564,7 @@ export class PjMeinewocheEditorComponent implements OnInit, OnDestroy, AfterView
       let Projekt: Projektestruktur = this.DBProjekte.GetProjektByID(Punkt.ProjektID);
 
       if(!lodash.isUndefined(Projekt) &&
-        Projekt._id === this.DBProjekte.CurrentProjekt._id && this.DBProjektpunkte.CurrentProjektpunkt._id === Punkt._id) return this.DBProjekte.GetProjektfarbeByProjektfarbnamen(Projekt.Projektfarbe);
+        Projekt._id === this.DBProjekte.CurrentProjekt._id && this.DBProjektpunkte.CurrentProjektpunkt._id === Punkt._id) return this.DBProjekte.GetProjektfarbeByOutlookkategorie(Projekt.OutlookkategorieID);
       else return {
         Background: "#444444",
         Foreground: "white",

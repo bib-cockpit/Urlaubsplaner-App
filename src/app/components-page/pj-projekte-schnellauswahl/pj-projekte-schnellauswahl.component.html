@@ -31,6 +31,10 @@
                             <td style="width: 30px">
                               <ion-icon *ngIf="CurrentIndex === i"  color="baeblau"  name="arrow-forward-outline"></ion-icon>
                             </td>
+                            <td>
+                              <div class="projecticonclass" [style.background]="DBProjekte.GetProjektfarbeByProjekt(Projekt)"></div>
+                            </td>
+                            <td style="width: 6px"></td>
                             <td style="width: 80px">
                               <ion-text [color]="CurrentIndex === i ? 'baeblau' : 'grau'">
                               <b>{{Projekt.Projektnummer}}</b>

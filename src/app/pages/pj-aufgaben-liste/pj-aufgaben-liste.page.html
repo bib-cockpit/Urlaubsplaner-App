@@ -5,7 +5,7 @@
 <ion-header>
   <page-header #PageHeader>
     <page-header-menu
-      [Filterorigin]="Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Zeitfilter"
+      [Filterorigin]="Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Zeitfilter" [Timelineindex]="Timelineindex"
       (ShowProjektauswahlEvent)="ShowProjektauswahlEventHandler()"
       (FilterChanged)="FilterChangedHandler($event)"
       (ShowProjektfilesEvent)="ShowProjektfilesHandler()"
@@ -86,6 +86,7 @@
 
       </div>
 
+      <!--
       <ng-container *ngIf="DBProjekte.CurrentProjekt !== null && GetMeinTagTerminanzahl() > 0">
         <table  style="width: 100%" class="docinnertable">
           <tr>
@@ -113,6 +114,7 @@
         </table>
 
       </ng-container>
+      -->
 
 
     </ng-container>
@@ -126,120 +128,184 @@
 
   <ng-container *ngIf="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meine_Woche">
 
-    <div style="width: 100%; background: red; overflow: hidden">
+    <div style="width: 100%; background: none; overflow: hidden">
       <table style="width: 100%">
         <tr>
           <td [style.width.px]="Tagbreite" [style.height.px]="Listenhoehe">
             <div class="tagaufteilungkeeperdivclass">
+              <ng-container *ngFor="let LabelPosY of Timelinelabelpossitionen; let i = index">
+                <div *ngIf="i !== 0 && i < Timelinelabelpossitionen.length - 1" class="timelinelinieclass" [style.top.px]="LabelPosY + Timelinelabelhoehe / 2"></div>
+              </ng-container>
               <div *ngFor="let Punkt of DBProjektpunkte.Wochenpunkteliste['Montag']" class="tagaufteilungeintragdivclass"
-                   [style.background]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Background"
-                   [style.color]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Foreground"
+                   [style.background]="DBProjekte.GetProjektFarbeByProjektpunktkategorie(Punkt).Value"
+                   [style.color]="DBProjekte.GetProjektFarbeByProjektpunktkategorie(Punkt).Fontcolor"
                    [style.height.px]="GetProjektpunthoehe(Punkt)"
+                   [style.top.px]="GetProjektpunktPosY(Punkt)"
                    (click)="Punkt.ProjektID !== null ? MeineWocheEintragEditClicked($event, Punkt, 'Montag') : null">
                 <table style="width: 100%">
                   <tr>
                     <td [innerHTML]="GetProjektpunktAufgabentext(Punkt)"></td>
-                    <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
-                      <ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Montag')"></ion-icon></td>
+                    <td *ngIf="Punkt.OutlookkatgorieID !== 'feiertrag' && Punkt.OutlookkatgorieID !== Const.NONE" style="width: 30px" align="right" valign="top">
+                      <ion-icon name="book" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Montag')"></ion-icon>
+                    </td>
                   </tr>
+                  <!--
                   <tr>
                     <td><div *ngIf="Punkt.ProjektID !== null" (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
                     <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
                       <ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Montag')"></ion-icon></td>
                   </tr>
+                  -->
                 </table>
               </div>
             </div>
           </td>
+          <td *ngIf="Timelineindex === 0" [style.width.px]="Timelinebreite">
+            <div [style.height.px]="Listenhoehe" class="timelinedivclass">
+              <ng-container *ngFor="let LabelPosY of Timelinelabelpossitionen; let i = index">
+                <div *ngIf="i !== 0 && i < Timelinelabelpossitionen.length - 1" class="timelinelabelclass" [style.height.px]="Timelinelabelhoehe" [style.width.px]="Timelinelabelbreite" [style.top.px]="LabelPosY">{{Timelinelabeltexte[i]}}</div>
+              </ng-container>
+            </div>
+
+          </td>
           <td style="width: 1px; background: white"></td>
           <td [style.width.px]="Tagbreite" [style.height.px]="Listenhoehe">
             <div class="tagaufteilungkeeperdivclass">
+              <ng-container *ngFor="let LabelPosY of Timelinelabelpossitionen; let i = index">
+                <div *ngIf="i !== 0 && i < Timelinelabelpossitionen.length - 1" class="timelinelinieclass" [style.top.px]="LabelPosY + Timelinelabelhoehe / 2"></div>
+              </ng-container>
               <div *ngFor="let Punkt of DBProjektpunkte.Wochenpunkteliste['Dienstag']" class="tagaufteilungeintragdivclass"
-                   [style.background]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Background"
-                   [style.color]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Foreground"
+                   [style.background]="DBProjekte.GetProjektFarbeByProjektpunktkategorie(Punkt).Value"
+                   [style.color]="DBProjekte.GetProjektFarbeByProjektpunktkategorie(Punkt).Fontcolor"
                    [style.height.px]="GetProjektpunthoehe(Punkt)"
+                   [style.top.px]="GetProjektpunktPosY(Punkt)"
                    (click)="Punkt.ProjektID !== null ? MeineWocheEintragEditClicked($event,Punkt,'Dienstag') : null">
                 <table style="width: 100%">
                   <tr>
                     <td [innerHTML]="GetProjektpunktAufgabentext(Punkt)"></td>
-                    <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
-                      <ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Dienstag')"></ion-icon></td>
+                    <td *ngIf="Punkt.OutlookkatgorieID !== 'feiertag' && Punkt.OutlookkatgorieID !== Const.NONE" style="width: 30px" align="right" valign="top">
+                      <ion-icon name="book" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Montag')"></ion-icon>
+                    </td>
                   </tr>
+                  <!--
                   <tr>
                     <td><div *ngIf="Punkt.ProjektID !== null" (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
                     <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
                       <ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Dienstag')"></ion-icon></td>
                   </tr>
+                  -->
                 </table>
               </div>
+            </div>
+          </td>
+          <td *ngIf="Timelineindex === 1" [style.width.px]="Timelinebreite">
+            <div [style.height.px]="Listenhoehe" class="timelinedivclass">
+              <ng-container *ngFor="let LabelPosY of Timelinelabelpossitionen; let i = index">
+                <div *ngIf="i !== 0 && i < Timelinelabelpossitionen.length - 1" class="timelinelabelclass" [style.height.px]="Timelinelabelhoehe" [style.width.px]="Timelinelabelbreite" [style.top.px]="LabelPosY">{{Timelinelabeltexte[i]}}</div>
+              </ng-container>
             </div>
           </td>
           <td style="width: 1px; background: white"></td>
           <td [style.width.px]="Tagbreite" [style.height.px]="Listenhoehe">
             <div class="tagaufteilungkeeperdivclass">
+              <ng-container *ngFor="let LabelPosY of Timelinelabelpossitionen; let i = index">
+                <div *ngIf="i !== 0 && i < Timelinelabelpossitionen.length - 1" class="timelinelinieclass" [style.top.px]="LabelPosY + Timelinelabelhoehe / 2"></div>
+              </ng-container>
               <div *ngFor="let Punkt of DBProjektpunkte.Wochenpunkteliste['Mittwoch']" class="tagaufteilungeintragdivclass"
-                   [style.background]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Background"
-                   [style.color]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Foreground"
+                   [style.background]="DBProjekte.GetProjektFarbeByProjektpunktkategorie(Punkt).Value"
+                   [style.color]="DBProjekte.GetProjektFarbeByProjektpunktkategorie(Punkt).Fontcolor"
                    [style.height.px]="GetProjektpunthoehe(Punkt)"
+                   [style.top.px]="GetProjektpunktPosY(Punkt)"
                    (click)="Punkt.ProjektID !== null ? MeineWocheEintragEditClicked($event, Punkt, 'Mittwoch') : null">
                 <table style="width: 100%">
                   <tr>
                     <td [innerHTML]="GetProjektpunktAufgabentext(Punkt)"></td>
-                    <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
-                      <ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Mittwoch')"></ion-icon></td>
+                    <td *ngIf="Punkt.OutlookkatgorieID !== 'feiertrag' && Punkt.OutlookkatgorieID !== Const.NONE" style="width: 30px" align="right" valign="top">
+                      <ion-icon name="book" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Montag')"></ion-icon>
+                    </td>
                   </tr>
+                  <!--
                   <tr>
                     <td><div *ngIf="Punkt.ProjektID !== null" (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
                     <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
                       <ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Mittwoch')"></ion-icon></td>
                   </tr>
+                  -->
                 </table>
               </div>
+            </div>
+          </td>
+          <td *ngIf="Timelineindex === 2" [style.width.px]="Timelinebreite">
+            <div [style.height.px]="Listenhoehe" class="timelinedivclass">
+              <ng-container *ngFor="let LabelPosY of Timelinelabelpossitionen; let i = index">
+                <div *ngIf="i !== 0 && i < Timelinelabelpossitionen.length - 1" class="timelinelabelclass" [style.height.px]="Timelinelabelhoehe" [style.width.px]="Timelinelabelbreite" [style.top.px]="LabelPosY">{{Timelinelabeltexte[i]}}</div>
+              </ng-container>
             </div>
           </td>
           <td style="width: 1px; background: white"></td>
           <td [style.width.px]="Tagbreite" [style.height.px]="Listenhoehe">
             <div class="tagaufteilungkeeperdivclass">
+              <ng-container *ngFor="let LabelPosY of Timelinelabelpossitionen; let i = index">
+                <div *ngIf="i !== 0 && i < Timelinelabelpossitionen.length - 1" class="timelinelinieclass" [style.top.px]="LabelPosY + Timelinelabelhoehe / 2"></div>
+              </ng-container>
               <div *ngFor="let Punkt of DBProjektpunkte.Wochenpunkteliste['Donnerstag']" class="tagaufteilungeintragdivclass"
-                   [style.background]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Background"
-                   [style.color]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Foreground"
+                   [style.background]="DBProjekte.GetProjektFarbeByProjektpunktkategorie(Punkt).Value"
+                   [style.color]="DBProjekte.GetProjektFarbeByProjektpunktkategorie(Punkt).Fontcolor"
                    [style.height.px]="GetProjektpunthoehe(Punkt)"
+                   [style.top.px]="GetProjektpunktPosY(Punkt)"
                    (click)="Punkt.ProjektID !== null ? MeineWocheEintragEditClicked($event, Punkt, 'Donerstag') : null">
                 <table style="width: 100%">
                   <tr>
                     <td [innerHTML]="GetProjektpunktAufgabentext(Punkt)"></td>
-                    <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
-                      <ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Donnerstag')"></ion-icon></td>
+                    <td *ngIf="Punkt.OutlookkatgorieID !== 'feiertrag' && Punkt.OutlookkatgorieID !== Const.NONE" style="width: 30px" align="right" valign="top">
+                      <ion-icon name="book" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Montag')"></ion-icon>
+                    </td>
                   </tr>
+                  <!--
                   <tr>
                     <td><div *ngIf="Punkt.ProjektID !== null" (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
                     <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
                       <ion-icon name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Donnerstag')"></ion-icon></td>
                   </tr>
+                  -->
                 </table>
               </div>
+            </div>
+          </td>
+          <td *ngIf="Timelineindex === 3" [style.width.px]="Timelinebreite">
+            <div [style.height.px]="Listenhoehe" class="timelinedivclass">
+              <ng-container *ngFor="let LabelPosY of Timelinelabelpossitionen; let i = index">
+                <div *ngIf="i !== 0 && i < Timelinelabelpossitionen.length - 1" class="timelinelabelclass" [style.height.px]="Timelinelabelhoehe" [style.width.px]="Timelinelabelbreite" [style.top.px]="LabelPosY">{{Timelinelabeltexte[i]}}</div>
+              </ng-container>
             </div>
           </td>
           <td style="width: 1px; background: white"></td>
           <td [style.width.px]="Tagbreite" [style.height.px]="Listenhoehe">
             <div class="tagaufteilungkeeperdivclass">
+              <ng-container *ngFor="let LabelPosY of Timelinelabelpossitionen; let i = index">
+                <div *ngIf="i !== 0 && i < Timelinelabelpossitionen.length - 1" class="timelinelinieclass" [style.top.px]="LabelPosY + Timelinelabelhoehe / 2"></div>
+              </ng-container>
               <div *ngFor="let Punkt of DBProjektpunkte.Wochenpunkteliste['Freitag']" class="tagaufteilungeintragdivclass"
-                   [style.background]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Background"
-                   [style.color]="DBProjekte.GetProjektFarbeByProjektpunkt(Punkt).Foreground"
+                   [style.background]="DBProjekte.GetProjektFarbeByProjektpunktkategorie(Punkt).Value"
+                   [style.color]="DBProjekte.GetProjektFarbeByProjektpunktkategorie(Punkt).Fontcolor"
                    [style.height.px]="GetProjektpunthoehe(Punkt)"
+                   [style.top.px]="GetProjektpunktPosY(Punkt)"
                    (click)="Punkt.ProjektID !== null ? MeineWocheEintragEditClicked($event, Punkt, 'Freitag') : null">
                 <table style="width: 100%">
                   <tr>
                     <td [innerHTML]="GetProjektpunktAufgabentext(Punkt)"></td>
-                    <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
-                      <ion-icon name="calendar-outline" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Freitag')"></ion-icon></td>
+                    <td *ngIf="Punkt.OutlookkatgorieID !== 'feiertrag' && Punkt.OutlookkatgorieID !== Const.NONE" style="width: 30px" align="right" valign="top">
+                      <ion-icon name="book" (click)="MeineWocheEintragTagClicked($event, Punkt, 'Montag')"></ion-icon>
+                    </td>
                   </tr>
+                  <!--
                   <tr>
                     <td><div *ngIf="Punkt.ProjektID !== null" (click)="MeineWocheStatusClicked($event, Punkt)" class="meintagstatusdivclass" [style.background]="DBProjektpunkte.GetStatuscolor(Punkt)">{{Punkt.Status}}</div></td>
                     <td *ngIf="Punkt.ProjektID !== null" style="width: 30px">
                       <ion-icon tooltip="Eintrag löschen" name="trash-outline" (click)="MeineWocheDeleteClicked($event, Punkt, 'Freitag')"></ion-icon>
                     </td>
                   </tr>
+                  -->
                 </table>
               </div>
             </div>
@@ -279,6 +345,7 @@
                            (MeinewocheZuweisenClicked)="MeinewocheZuweisenClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
                            (MeinewocheBearbeitenClicked)="MeineWocheBearbeitenClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)">
     </pj-projektpunkteliste>
+    <!--
       <table *ngIf="DBProjekte.CurrentProjekt !== null && Kalenderliste.length > 0" style="width: 100%" class="docinnertable">
         <tr>
           <td colspan="20" class="nobordertitelbuttonclass">
@@ -307,6 +374,7 @@
           </ng-container>
         </ng-container>
       </table>
+      -->
 
   </div>
 

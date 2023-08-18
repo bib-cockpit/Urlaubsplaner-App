@@ -63,8 +63,8 @@
             <ng-container *ngFor="let Projekt of DBProjekte.Projektliste; let projektindex = index">
 
               <ion-item class="ion-no-padding"  (click)="EmaillisteProjektClicked(Projekt)">
-                <div [style.background]="DBProjekte.GetProjektfarbeByProjekt(Projekt).Background"
-                     [style.color]="DBProjekte.GetProjektfarbeByProjekt(Projekt).Foreground"
+                <div [style.background]="DBProjekte.GetProjektfarbeByProjekt(Projekt)"
+                     [style.color]="'white'"
                      style="width: 100%; height: 46px; padding: 4px;">
                   {{Projekt.Projektname}}<br>
                   {{Projekt.Projektnummer}}

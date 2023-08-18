@@ -1114,12 +1114,12 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
 
       if(this.Valid) {
 
-        return this.Bereich === this.DB.LOPListeEditorViewModusvarianten.Eintraege ? 'burnicklgruen' : 'weis';
+        return this.Bereich === this.DB.LOPListeEditorViewModusvarianten.Eintraege ? 'schwarz' : 'weis';
 
       }
       else {
 
-        return 'burnicklbraun';
+        return 'grau';
       }
 
 
@@ -1135,11 +1135,11 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
 
       if(this.Valid) {
 
-        return this.Bereich === this.DB.LOPListeEditorViewModusvarianten.Eintraege ? this.Basics.Farben.Burnicklgruen : 'white';
+        return this.Bereich === this.DB.LOPListeEditorViewModusvarianten.Eintraege ? 'black' : 'white';
       }
       else {
 
-        return this.Basics.Farben.Burnicklbraun;
+        return '#454545';
       }
 
     } catch (error) {

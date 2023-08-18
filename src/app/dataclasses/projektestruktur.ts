@@ -15,13 +15,14 @@ export type Projektestruktur = {
   PLZ:                  string;
   Ort:                  string;
   Projektname:          string;
-  Projektfarbe:         string;
+  OutlookkategorieID:   string;
   Projektkurzname:      string;
   Projektnummer:        string;
   Leistungsphase:       string;
   Status:               string;
   Deleted:              boolean;
   Beteiligtenliste:     Projektbeteiligtestruktur[];
+  MitarbeiterIDListe:   string[];
   Verfasser:            Verfasserstruktur;
   Bauteilliste:         Bauteilstruktur[];
 

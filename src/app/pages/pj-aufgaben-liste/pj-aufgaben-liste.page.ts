@@ -30,6 +30,10 @@ import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 import {Outlookkontaktestruktur} from "../../dataclasses/outlookkontaktestruktur";
 import {Graphservice} from "../../services/graph/graph";
 import {Outlookkalenderstruktur} from "../../dataclasses/outlookkalenderstruktur";
+import {Meintagstruktur} from "../../dataclasses/meintagstruktur";
+import {Outlookkategoriesstruktur} from "../../dataclasses/outlookkategoriesstruktur";
+import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
+import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
 
 @Component({
   selector:    'pj-aufgaben-liste-page',
@@ -109,10 +113,21 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   private FavoritenProjektSubcription: Subscription;
   public Kalenderliste: Outlookkalenderstruktur[][];
   public MeinTagindex: number;
+  public Timelineindex: number;
   public Tageliste: {
     Datum: string;
     Tag: string;
   }[];
+  public Timelinebreite: number;
+  public Timelinestart: number;
+  public Timelineende: number;
+  public Timelinestunden: number;
+  public Pixelperminute: number;
+  public Timelinelabelbreite: number;
+  public Timelinelabelhoehe: number;
+  public Timelinelabelpossitionen: number[];
+  public Timelinelabeltexte: string[];
+
 
   constructor(public Displayservice: DisplayService,
               public Basics: BasicsProvider,
@@ -133,6 +148,8 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     try {
 
+      this.Timelinelabelpossitionen = [];
+      this.Timelinelabeltexte       = [];
       this.ShowProtokollEditor      = false;
       this.Auswahlliste             = [{ Index: 0, FirstColumn: '', SecoundColumn: '', Data: null}];
       this.Auswahlindex             = 0;
@@ -177,6 +194,13 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.ShowEintragEditor         = false;
       this.ShowMitarbeiterauswahl    = false;
       this.ShowBeteiligteauswahl    = false;
+      this.Timelineindex            = 0;
+      this.Timelinebreite           = 40;
+      this.Timelinestart            = 7;
+      this.Timelineende             = 18;
+      this.Timelinelabelbreite      = this.Timelinebreite;
+      this.Timelinelabelhoehe       = 30;
+      this.Timelinestunden          = this.Timelineende - this.Timelinestart;
       this.Heute                    = moment().set({date: 6, month: 1, year: 2023, hour: 7, minute: 0, second: 0  }).locale('de'); // Month ist Zero based
       this.FavoritenProjektSubcription = null;
       this.Kalenderliste = [];
@@ -203,7 +227,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
       let Hoehe: number;
 
-      Hoehe = Punkt.Minuten * this.Minutenhoehe;
+      Hoehe = Punkt.Minuten * this.Pixelperminute;
 
       return Hoehe;
 
@@ -293,12 +317,32 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     try {
 
+      let Kategorietext: string;
+
       let Projekt: Projektestruktur = Punkt. ProjektID !== null ? this.DBProjekte.GetProjektByID(Punkt.ProjektID) : null;
 
       let Text = Punkt.Aufgabe.replace(/<p[^>]*>/g, '').replace(/<\/p>/g, '<br />');
 
       if(Projekt !== null) Text = '<b>' + Projekt.Projektkurzname + ': </b>' + Text;
-      else Text = '<b>Termin: </b>' + Text;
+      else {
+
+        Kategorietext = '';
+
+        if(Punkt.OutlookkatgorieID !== this.Const.NONE) {
+
+          let Kategorie: Outlookkategoriesstruktur = lodash.find(this.Pool.Outlookkatekorien, { id: Punkt.OutlookkatgorieID });
+
+          if(!lodash.isUndefined(Kategorie)) Kategorietext = ' ' + Kategorie.displayName;
+        }
+
+        Text  = '<b>Termin' + Kategorietext + ': </b>' + Text + '<br>';
+        Text += moment(Punkt.Startzeitsptempel).format('HH:mm') + ' - ' + moment(Punkt.Endezeitstempel).format('HH:mm');
+
+        /*
+        Text += '<br>';
+        Text += Punkt.Minuten
+         */
+      }
 
       return Text;
 
@@ -357,6 +401,49 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     try {
 
       switch (this.Auswahldialogorigin) {
+
+        case this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Meintageintrag_Termin:
+
+          switch(data) {
+
+            case 'Protokoll':
+
+              this.DBProtokolle.CurrentProtokoll                 = this.DBProtokolle.GetEmptyProtokoll();
+              this.DBProtokolle.CurrentProtokoll.Titel           = this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe;
+              this.DBProtokolle.CurrentProtokoll.Besprechungsort = this.DBProjektpunkte.CurrentProjektpunkt.RaumID;
+              this.ShowProtokollEditor                           = true;
+              this.Dialogbreite                                  = 950;
+              this.ShowProtokollEditor                           = true;
+
+              this.DBProtokolle.CurrentProtokoll.BeteiligtInternIDListe = [];
+              this.DBProtokolle.CurrentProtokoll.BeteiligExternIDListe  = [];
+
+              for(let Teilnehmeremail of this.DBProjektpunkte.CurrentProjektpunkt.Teilnehmeremailliste) {
+
+                let Mitarbeiter: Mitarbeiterstruktur = lodash.find(this.Pool.Mitarbeiterliste, {Email: Teilnehmeremail});
+
+                if(!lodash.isUndefined(Mitarbeiter)) this.DBProtokolle.CurrentProtokoll.BeteiligtInternIDListe.push(Mitarbeiter._id);
+              }
+
+              for(let Teilnehmeremail of this.DBProjektpunkte.CurrentProjektpunkt.Teilnehmeremailliste) {
+
+                let Beteiligter: Projektbeteiligtestruktur = lodash.find(this.DBProjekte.CurrentProjekt.Beteiligtenliste, {Email: Teilnehmeremail});
+
+                if(!lodash.isUndefined(Beteiligter)) this.DBProtokolle.CurrentProtokoll.BeteiligExternIDListe.push(Beteiligter.BeteiligtenID);
+              }
+
+              break;
+
+            case 'LOP Liste':
+
+              break;
+
+            case 'Bautagebuch':
+
+              break;
+          }
+
+          break;
 
         case this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_Standortfilter:
 
@@ -469,6 +556,12 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
         case this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Filter_Leistungsphase:
 
           return 'filter-circle-outline';
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Meintageintrag_Termin:
+
+          return 'book';
 
           break;
 
@@ -1031,6 +1124,30 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       let Liste: Outlookkalenderstruktur[];
       let Startzeitpunkt: Moment;
       let Endezeitpunkt: Moment;
+      let Labelzeitpunkt: Moment = moment();
+      let Stunde: number = this.Timelinestart;
+      let Dayindex: number = Labelzeitpunkt.locale('de').weekday();
+      let Meintagliste:  Meintagstruktur[];
+
+      this.Timelineindex = Dayindex <= 3 ? Dayindex : 3;
+
+      this.Pixelperminute = this.Listenhoehe / (this.Timelinestunden * 60);
+      this.Timelinelabeltexte       = [];
+      this.Timelinelabelpossitionen = [];
+
+      for(let i = 0; i <= this.Timelinestunden; i++) {
+
+        Labelzeitpunkt.set({
+          hour:   Stunde + i,
+          minute: 0,
+          second: 0
+        });
+
+        this.Timelinelabeltexte.push(Labelzeitpunkt.format('HH:mm'));
+        this.Timelinelabelpossitionen.push(i * 60 * this.Pixelperminute - this.Timelinelabelhoehe / 2);
+
+      }
+
 
       this.MeinTagindex = this.GetMeinTagindex();
 
@@ -1200,11 +1317,52 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
         this.DBProjektpunkte.PrepareWochenpunkteliste();
 
+        // Mein Tag Daten
+
+        Index  = 0;
+
+        this.MeinTagProjektliste       = [];
+        this.Meintagprojektpunkteliste = [];
+
+        for(let Projekt of this.DBProjekte.Projektliste) {
+
+          Meintagliste = lodash.filter(this.Pool.Mitarbeiterdaten.Meintagliste, (meintag: Meintagstruktur) => {
+
+            return meintag.ProjektID === Projekt._id;
+          });
+
+          if(Meintagliste.length > 0) {
+
+            Projektpunkteliste = [];
+
+            for(let Meintag of Meintagliste) {
+
+              Projektpunkt = lodash.find(this.Pool.Projektpunkteliste[Projekt.Projektkey], (punkt: Projektpunktestruktur) => {
+
+                return punkt._id === Meintag.ProjektpunktID;
+              });
+
+              if(!lodash.isUndefined(Projektpunkt)) Projektpunkteliste.push(Projektpunkt);
+            }
+
+            if(Projektpunkteliste.length > 0) {
+
+              this.SortPunkteliste(Projektpunkteliste);
+
+              this.MeinTagProjektliste.push(Projekt);
+              this.Meintagprojektpunkteliste[Index] = Projektpunkteliste;
+
+              Index++;
+            }
+          }
+        }
+
+        // Kalender
+
         Liste = await this.GraphService.GetOwnCalendar();
 
+
         this.Kalenderliste = [];
-
-
 
         for(let i = 0; i < 6; i++) {
 
@@ -1228,7 +1386,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       }
 
 
-
       for(let i = 0; i < 6; i++) {
 
         if(!lodash.isUndefined(this.Kalenderliste[i])) {
@@ -1238,13 +1395,49 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
           for(let Termin of Liste) {
 
-            Terminprojektpunkt         = this.DBProjektpunkte.GetNewProjektpunkt(null, 0);
-            Terminprojektpunkt.Aufgabe = Termin.subject;
-            Terminprojektpunkt._id     = Termin.id;
-            Tag                        = this.Tageliste[i].Tag;
-            Startzeitpunkt             = moment(Termin.start.Zeitstempel);
-            Endezeitpunkt              = moment(Termin.end.Zeitstempel);
-            Terminprojektpunkt.Minuten = moment.duration(Endezeitpunkt.diff(Startzeitpunkt)).asMinutes();
+            Terminprojektpunkt                   = this.DBProjektpunkte.GetNewProjektpunkt(null, 0);
+            Terminprojektpunkt.Aufgabe           = Termin.subject;
+            Terminprojektpunkt._id               = Termin.id;
+            Terminprojektpunkt.RaumID            = Termin.location.displayName;
+            Tag                                  = this.Tageliste[i].Tag;
+            Startzeitpunkt                       = moment(Termin.start.Zeitstempel);
+            Endezeitpunkt                        = moment(Termin.end.Zeitstempel);
+            Terminprojektpunkt.Startzeitsptempel = Startzeitpunkt.valueOf();
+            Terminprojektpunkt.Endezeitstempel   = Endezeitpunkt.valueOf();
+            Terminprojektpunkt.Minuten           = moment.duration(Endezeitpunkt.diff(Startzeitpunkt)).asMinutes();
+
+
+            if(Terminprojektpunkt.Minuten > 8 * 60) {
+
+              Terminprojektpunkt.Minuten = 8 * 60;
+
+              Startzeitpunkt = moment(Termin.start.Zeitstempel).set({hour: 8, minute: 0});
+
+              Terminprojektpunkt.Startzeitsptempel = Startzeitpunkt.valueOf();
+
+              Endezeitpunkt  = Startzeitpunkt.add({minute: 8 * 60});
+
+              Terminprojektpunkt.Endezeitstempel = Endezeitpunkt.valueOf();
+            }
+
+            Terminprojektpunkt.Teilnehmeremailliste = [];
+
+            for(let Teilnehmer of Termin.attendees) {
+
+              Terminprojektpunkt.Teilnehmeremailliste.push(Teilnehmer.emailAddress.address);
+            }
+
+            if(Termin.categories !== null && Termin.categories.length > 0) {
+
+              let Kategorie: Outlookkategoriesstruktur = lodash.find(this.Pool.Outlookkatekorien, {displayName: Termin.categories[0]});
+
+              if(!lodash.isUndefined(Kategorie)) Terminprojektpunkt.OutlookkatgorieID = Kategorie.id;
+              else Terminprojektpunkt.OutlookkatgorieID = this.Const.NONE;
+            }
+            else {
+
+              Terminprojektpunkt.OutlookkatgorieID = this.Const.NONE;
+            }
 
             if(lodash.isUndefined(lodash.find(this.DBProjektpunkte.Wochenpunkteliste[Tag], {_id : Termin.id}))) {
 
@@ -1254,8 +1447,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
           }
         }
       }
-
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'PrepareDaten', this.Debug.Typen.Page);
@@ -1404,14 +1595,50 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       event.preventDefault();
       event.stopPropagation();
 
-      this.DBProjektpunkte.CurrentProjektpunkt = punkt;
 
-      this.ShowMeinewocheEditor            = true;
-      this.DBProjekte.CurrentProjekt       = lodash.find(this.DBProjekte.Gesamtprojektliste, {_id: punkt.ProjektID});
-      this.DBMitarbeiter.CurrentMeinewoche = lodash.find(this.Pool.Mitarbeiterdaten.Meinewocheliste, (eintrag: Meinewochestruktur) => {
+      if (punkt.ProjektID === null) {
 
-        return eintrag.ProjektID === punkt.ProjektID && eintrag.ProjektpunktID === punkt._id;
-      });
+        // Outlook Termin
+
+        this.DBProjektpunkte.CurrentProjektpunkt = lodash.clone(punkt);
+        this.DBProjekte.CurrentProjekt           = lodash.find(this.DBProjekte.Gesamtprojektliste, {OutlookkategorieID: punkt.OutlookkatgorieID});
+
+        if(!lodash.isUndefined(this.DBProjekte.CurrentProjekt))  {
+
+          this.Auswahltitel = 'Dokumententyp festlegen';
+          this.Auswahlliste = [];
+          this.Auswahlhoehe = 200;
+
+          this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Meintageintrag_Termin;
+
+          this.Auswahlliste = [];
+          this.Auswahlliste.push({ Index: 0, FirstColumn: 'Protokoll',   SecoundColumn:  '',  Data: 'Protokoll'   });
+          this.Auswahlliste.push({ Index: 1, FirstColumn: 'LOP Liste',   SecoundColumn:  '',  Data: 'LOP Liste'   });
+          this.Auswahlliste.push({ Index: 2, FirstColumn: 'Bautagebuch', SecoundColumn:  '',  Data: 'Bautagebuch' });
+
+          this.Auswahlindex = 0;
+          this.ShowAuswahl  = true;
+        }
+        else {
+
+          this.DBProjekte.CurrentProjekt = null;
+
+           this.Tools.ShowHinweisDialog('Zugehöriges Projekt konnte nicht bestimmt werden.');
+        }
+
+      } else {
+
+        this.DBProjektpunkte.CurrentProjektpunkt = punkt;
+
+        this.ShowMeinewocheEditor            = true;
+        this.DBProjekte.CurrentProjekt       = lodash.find(this.DBProjekte.Gesamtprojektliste, {_id: punkt.ProjektID});
+        this.DBMitarbeiter.CurrentMeinewoche = lodash.find(this.Pool.Mitarbeiterdaten.Meinewocheliste, (eintrag: Meinewochestruktur) => {
+
+          return eintrag.ProjektID === punkt.ProjektID && eintrag.ProjektpunktID === punkt._id;
+        });
+      }
+
+
 
     } catch (error) {
 
@@ -1425,8 +1652,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
       event.preventDefault();
       event.stopPropagation();
-
-      debugger;
 
       this.Datenursprung                       = this.Datenursprungsvarianten.MeineWoche;
       this.ShowProjektpunktEditor              = true;
@@ -1680,8 +1905,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
         case this.Projektschnellauswahlursprungvarianten.Projektfavoriten:
 
-          debugger;
-
           this.DBProjekte.CurrentProjekt      = projekt;
           this.DBProjekte.CurrentProjektindex = lodash.findIndex(this.DBProjekte.Projektliste, {_id: projekt._id});
 
@@ -1689,8 +1912,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
           this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
 
           this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
-
-
 
           break;
 
@@ -1833,6 +2054,22 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error, 'Aufgabe Liste', 'GetMeinTagTerminanzahl', this.Debug.Typen.Page);
     }
+  }
+
+  GetProjektpunktPosY(Punkt: Projektpunktestruktur): number{
+
+    try {
+
+      let Starstunde: number = moment(Punkt.Startzeitsptempel).hour();
+      let Stunde: number = Starstunde - this.Timelinestart;
+
+      return (Stunde * 60 + moment(Punkt.Startzeitsptempel).minute()) * this.Pixelperminute;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgabe Liste', 'GetProjektpunktPosY', this.Debug.Typen.Page);
+    }
+
   }
 }
 

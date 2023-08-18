@@ -1,12 +1,7 @@
 import {EventEmitter, Inject, Injectable} from '@angular/core';
 import {DebugProvider} from "../debug/debug";
 import {MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService} from "@azure/msal-angular";
-import {
-  AccountInfo,
-  AuthenticationResult,
-  InteractionType,
-  PopupRequest,
-  PublicClientApplication, RedirectRequest, SilentRequest
+import {AccountInfo, AuthenticationResult, InteractionType, PopupRequest, RedirectRequest, SilentRequest
 } from "@azure/msal-browser";
 import {ConstProvider} from "../const/const";
 import {LocalstorageService} from "../localstorage/localstorage";
@@ -219,8 +214,6 @@ export class DatabaseAuthenticationService {
 
     try {
 
-      debugger;
-
       if(this.SecurityEnabled) {
 
         if (this.msalGuardConfig.interactionType === InteractionType.Popup) {
@@ -228,7 +221,6 @@ export class DatabaseAuthenticationService {
             this.authService.loginPopup({ ...this.msalGuardConfig.authRequest } as PopupRequest)
               .subscribe((response: AuthenticationResult) => {
 
-                debugger;
 
                 this.authService.instance.setActiveAccount(response.account);
               });
@@ -236,7 +228,6 @@ export class DatabaseAuthenticationService {
             this.authService.loginPopup()
               .subscribe((response: AuthenticationResult) => {
 
-                debugger;
 
                 this.SaveAccessToken(response.accessToken);
                 this.authService.instance.setActiveAccount(response.account);
@@ -245,8 +236,6 @@ export class DatabaseAuthenticationService {
         }
         else {
           if (this.msalGuardConfig.authRequest) {
-
-            debugger;
 
             this.authService.loginRedirect({ ...this.msalGuardConfig.authRequest } as RedirectRequest);
           }

@@ -40,6 +40,7 @@ export class FiOutlookkontakteAuswahlComponent implements OnInit, OnDestroy, Aft
   @Input() Dialoghoehe: number;
   @Input() PositionY: number;
   @Input() ZIndex: number;
+  @Input() ExterneKontakteOnly: boolean;
 
   @Output() OkClickedEvent     = new EventEmitter<Projektbeteiligtestruktur[]>();
   @Output() CancelClickedEvent = new EventEmitter();
@@ -94,6 +95,7 @@ export class FiOutlookkontakteAuswahlComponent implements OnInit, OnDestroy, Aft
       this.Inputtimer                  = null;
       this.SuchleisteClearSubscription = null;
       this.SuchleisteInputSubscription = null;
+      this.ExterneKontakteOnly         = false;
 
     } catch (error) {
 
@@ -214,9 +216,23 @@ export class FiOutlookkontakteAuswahlComponent implements OnInit, OnDestroy, Aft
 
         this.Lastletter = '';
 
-        // Nach Namen sortieren
 
         Liste = lodash.cloneDeep(this.GraphService.Outlookkontakteliste);
+
+        // Filter anwenden
+
+        if(this.ExterneKontakteOnly === true) {
+
+          debugger;
+
+          Liste = lodash.filter(Liste, (kontakt: Outlookkontaktestruktur) => {
+
+            return kontakt.emailAddresses[0].address.indexOf('b-a-e.eu') === -1;
+
+          });
+        }
+
+        // Nach Namen sortieren
 
         if(this.Suchmodus === this.Suchmodusvarianten.Name) {
 

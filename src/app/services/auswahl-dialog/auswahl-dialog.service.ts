@@ -14,6 +14,7 @@ export class AuswahlDialogService {
     Projekte_Editor_Standort:                          'Projekte_Editor_Standortfilter',
     Projekte_Editor_Mitarbeiterauswahl_Projektleiter:  'Projekte_Editor_Mitarbeiterauswahl_Projektleiter',
     Projekte_Editor_Mitarbeiterauswahl_Stellvertreter: 'Projekte_Editor_Mitarbeiterauswahl_Stellvertreter',
+    Projekte_Editor_Mitarbeiterauswahl:                'Projekte_Editor_Mitarbeiterauswahl',
     Projekte_Editor_Mitarbeiterauswahl_Standortfilter: 'Projekte_Editor_Mitarbeiterauswahl_Standortfilter',
     Projekte_Editor_Projektstatus:                     'Projekte_Editor_Projektstatus',
     Projekte_Editor_Beteiligteneditor_Fachbereich:     'Projekte_Editor_Beteiligteneditor_Fachbereich',
@@ -40,6 +41,7 @@ export class AuswahlDialogService {
     Aufgabenliste_Editor_Leistungsphase:                 'Aufgabenliste_Editor_Leistungsphase',
 
     Aufgabenliste_Meintageintrag_Status:                 'Aufgabenliste_Meintageintrag_Status',
+    Aufgabenliste_Meintageintrag_Termin:                 'Aufgabenliste_Meintageintrag_Termin',
 
     Festlegungsliste_Editor_Leistungsphase:        'Festlegungsliste_Editor_Leistungsphase',
     Festlegungsliste_Leistungsphasefilter:         'Festlegungsliste_Leistungsphasefilter',

@@ -44,7 +44,7 @@
                             <table class="paddingsmalltable">
                               <tr>
                                 <td style="width: 30px">
-                                  <div class="projecticonclass" [style.background]="DB.GetProjektfarbeByProjekt(Projekt).Background">
+                                  <div class="projecticonclass" [style.background]="DB.GetProjektfarbeByProjekt(Projekt)">
                                     <img  *ngIf="DB.CheckProjektdaten(Projekt) === false" src="/assets/svgs/alert.svg" style="height: 26px"/>
                                   </div>
                                 </td>
@@ -138,7 +138,8 @@
                     (SelectBautagebuchfolderEvent)="SelectBautagebuchfolderHandler()"
                     (SelectProtokollfolderEvent)="SelectProtokollfolderHandler()"
                     (EditRaumClickedEvent)="EditRaumClickedHandler($event)"
-                   (ImportOutlookKontakteEvent)="ShowOutlookkontakteAuswahl = true">
+                    (EditMitarbeiterEvent)="EditMitarbeiterauswahl()"
+                    (ImportOutlookKontakteEvent)="ShowOutlookkontakteAuswahl = true">
 </pj-projekt-editor>
 
 <pj-beteiligten-editor *ngIf="ShowBeteiligteneditor" [Dialogbreite]="600" [Dialoghoehe]="720" [PositionY]="200" [Titel]="GetBerteiligteeditorTitel()" Iconname="color-filter-outline"
@@ -168,7 +169,7 @@
 <fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
                         [Titel]="MitarbeiterauswahlTitel"
                         [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
-                        [Multiselect]="false"
+                        [Multiselect]="Multiselect"
                         [AuswahlIDliste]="AuswahlIDliste"
                         (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
                         (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
@@ -177,6 +178,7 @@
 <fi-outlookkontakte-auswahl *ngIf="ShowOutlookkontakteAuswahl"
                         [Titel]="MitarbeiterauswahlTitel"
                         [ZIndex]="2000"
+                        [ExterneKontakteOnly]="true"
                         [Dialogbreite]="800" [Dialoghoehe]="800" [PositionY]="DialogPosY"
                         (CancelClickedEvent)="ShowOutlookkontakteAuswahl = false"
                         (OkClickedEvent)="OutlookkontakteOkButtonClicked($event)"></fi-outlookkontakte-auswahl>

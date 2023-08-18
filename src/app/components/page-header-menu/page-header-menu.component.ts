@@ -44,6 +44,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   @Input()  ShowProjektetitle:    boolean;
   @Input()  ShowFavoritentitle:   boolean;
   @Input()  SendFestlegungenEnabled:   boolean;
+  @Input()  Timelineindex:   number;
 
   @Output()  SucheChanged = new EventEmitter<string>();
   @Output()  StandortfilterClicked = new EventEmitter<string>();
@@ -74,6 +75,8 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   public FilesMouseOver: boolean;
   public ShowOpenFestlegungOnly: boolean;
   public BackMouseOver: boolean;
+  public Timelinebreite: number;
+
 
   constructor(private Debug: DebugProvider,
               public Basics: BasicsProvider,
@@ -104,6 +107,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
       this.Filterorigin                 = this.Const.NONE;
       this.Wochentaghoehe               = 30;
       this.Tagbreite                    = 0;
+      this.Timelinebreite               = 40;
       this.HomeMouseOver                = false;
       this.EmailMouseOver               = false;
       this.ShowStandorttitle            = false;
@@ -114,6 +118,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
       this.ShowOpenFestlegungOnly       = false;
       this.SendFestlegungenEnabled      = false;
       this.BackMouseOver                = false;
+      this.Timelineindex                = 0;
 
     } catch (error) {
 
@@ -189,7 +194,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
       let Text: string;
 
-      this.Tagbreite = (this.Basics.Contentbreite - 4) / 5;
+      this.Tagbreite = (this.Basics.Contentbreite - 4 - this.Timelinebreite) / 5;
 
       if(this.Suchleiste) { // Muss hier stehen / funktioniert in OnInit() nicht
 
@@ -814,6 +819,57 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'EmailDatumChangedHandler', this.Debug.Typen.Component);
+    }
+  }
+
+  GetDatumtext(tag: string): string {
+
+    try {
+
+      let Heute: Moment = moment().locale('de');
+      let Montag: Moment = Heute.clone().startOf('isoWeek');
+
+      switch (tag) {
+
+        case 'Montag':
+
+          return Montag.format('DD.MM.');
+
+          break;
+
+        case 'Dienstag':
+
+          return Montag.clone().add(1,'day').format('DD.MM.');
+
+          break;
+
+        case 'Mittwoch':
+
+          return Montag.clone().add(2,'day').format('DD.MM.');
+
+          break;
+
+        case 'Donnerstag':
+
+          return Montag.clone().add(3,'day').format('DD.MM.');
+
+          break;
+
+        case 'Freitag':
+
+          return Montag.clone().add(4,'day').format('DD.MM.');
+
+          break;
+
+      }
+
+      return '';
+
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetDatumtext', this.Debug.Typen.Component);
     }
   }
 }
