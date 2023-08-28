@@ -24,13 +24,10 @@ export class PjFilebrowserPage implements OnInit, OnDestroy {
   @ViewChild('PageHeader', {static: false}) PageHeader: PageHeaderComponent;
   @ViewChild('PageFooter', {static: false}) PageFooter: PageFooterComponent;
 
-
   public BackMouseOver: boolean;
   public Browserbreite: number;
   public Browserhoehe: number;
   public Zoomfaktor: number;
-
-
 
   constructor(public Displayservice: DisplayService,
               public Basics: BasicsProvider,

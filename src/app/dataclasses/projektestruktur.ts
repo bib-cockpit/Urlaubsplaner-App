@@ -35,6 +35,16 @@ export type Projektestruktur = {
   BautagebuchFolderID:   string;
   BaustellenLOPFolderID: string;
 
+  DisplayKG410: boolean;
+  DisplayKG475: boolean;
+  DisplayKG420: boolean;
+  DisplayKG430: boolean;
+  DisplayKG434: boolean;
+  DisplayKG440: boolean;
+  DisplayKG450: boolean;
+  DisplayKG460: boolean;
+  DisplayKG480: boolean;
+
   Selected?: boolean;
   Filtered?: boolean;
   Text_A?: string;

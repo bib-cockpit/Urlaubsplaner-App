@@ -87,13 +87,22 @@ ion-progress-bar {
   justify-content: flex-start; // horizontal
   align-items: center; // vertikal
   border-radius: 3px;
-  font-size: 90%;
   color: black;
 }
 
 .aufgabedivclass:hover {
 
   text-decoration: underline;
+}
+
+.projecticonclass {
+
+  height: 34px;
+  width: 34px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
 }
 
 .bemerkungdivclass {
@@ -107,7 +116,6 @@ ion-progress-bar {
   justify-content: flex-start; // horizontal
   align-items: center; // vertikal
   border-radius: 3px;
-  font-size: 90%;
 }
 
 .bemerkungdivclass:hover {

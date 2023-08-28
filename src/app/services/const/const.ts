@@ -6,6 +6,7 @@ import {PjBaustelleTagebuchlistePage} from "../../pages/pj-baustelle-tagebuchlis
 import {
   PjFestlegungslistePage
 } from "../../pages/pj-festlegungsliste/pj-festlegungsliste.page";
+import {PjPlanungsmatrixPage} from "../../pages/pj-planungsmatrix/pj-planungsmatrix.page";
 
 const _MitarbeiterdatenKeys = {
 
@@ -238,6 +239,8 @@ const _Pages = {
   PjBaustelleLoplistePage: 'PjBaustelleLoplistePage',
   PjBaustelleTagebuchlistePage: 'PjBaustelleTagebuchlistePage',
   PjFestlegungslistePage: 'PjFestlegungslistePage',
+
+  PjPlanungsmatrixPage: 'PjPlanungsmatrixPage'
 };
 
 const _Treeitemtypvarianten = {

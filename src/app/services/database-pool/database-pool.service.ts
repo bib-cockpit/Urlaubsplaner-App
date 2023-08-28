@@ -135,7 +135,6 @@ export class DatabasePoolService {
 
             this.Projektpunkteliste[projekt.Projektkey] = <Projektpunktestruktur[]>data;
 
-
           },
           complete: () => {
 
@@ -155,11 +154,14 @@ export class DatabasePoolService {
               if(lodash.isUndefined(Projektpunkt.EmailID))                Projektpunkt.EmailID                = null;
               if(lodash.isUndefined(Projektpunkt.Leistungsphase))         Projektpunkt.Leistungsphase         = this.Const.Leistungsphasenvarianten.LPH3;
               if(lodash.isUndefined(Projektpunkt.OutlookkatgorieID))      Projektpunkt.OutlookkatgorieID      = this.Const.NONE;
+              if(lodash.isUndefined(Projektpunkt.PlanungsmatrixID))       Projektpunkt.PlanungsmatrixID       = null;
+              if(lodash.isUndefined(Projektpunkt.AufgabenbereichID))      Projektpunkt.AufgabenbereichID      = null;
+              if(lodash.isUndefined(Projektpunkt.AufgabenteilbereichID))  Projektpunkt.AufgabenteilbereichID  = null;
+              if(lodash.isUndefined(Projektpunkt.Matrixanwendung))        Projektpunkt.Matrixanwendung        = false;
 
               Projektpunkt.Anmerkungenliste.forEach((Anmerkung: Projektpunktanmerkungstruktur) => {
 
                 Anmerkung.LiveEditor = false;
-
               });
             });
 
@@ -686,11 +688,62 @@ export class DatabasePoolService {
     }
   }
 
+  public GetMusterProjekt(): Projektestruktur {
+
+    try {
+
+      return {
+        BaustellenLOPFolderID: "",
+        BautagebuchFolderID: "",
+        Bauteilliste: [],
+        Beteiligtenliste: [],
+        Deleted: false,
+        Leistungsphase: "",
+        MitarbeiterIDListe: [],
+        Ort: "",
+        OutlookkategorieID: "",
+        PLZ: "",
+        ProjektIsReal: false,
+        Projektkey: "Musterprojekt",
+        Projektkurzname: "Musterporjekt",
+        ProjektleiterID: "",
+        Projektname: "Musterprojekt",
+        Projektnummer: "000000",
+        ProtokolleFolderID: "",
+        StandortID: "",
+        Status: "",
+        StellvertreterID: "",
+        Strasse: "",
+        TeamsDescription: "",
+        TeamsID: "",
+        TeamsName: "",
+        Verfasser: undefined,
+        Zeitpunkt: "",
+        Zeitstempel: 0,
+        _id: 'MusterprojektID',
+        DisplayKG410: false,
+        DisplayKG420: false,
+        DisplayKG430: false,
+        DisplayKG434: false,
+        DisplayKG440: true,
+        DisplayKG450: true,
+        DisplayKG460: true,
+        DisplayKG475: false,
+        DisplayKG480: true,
+      };
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Pool', 'function', this.Debug.Typen.Service);
+    }
+  }
+
   public async ReadProjektdaten(projektliste: Projektestruktur[]): Promise<any> {
 
     try {
 
       let Steps: number         = 4;
+      let Musterporjekt: Projektestruktur = this.GetMusterProjekt();
       this.ShowProgress         = true;
       this.MaxProgressValue     = projektliste.length * Steps;
       this.CurrentProgressValue = 0;
@@ -700,6 +753,12 @@ export class DatabasePoolService {
       this.LOPListe             = [];
 
       try {
+
+        // Musterprojekt laden
+
+        await this.ReadProjektpunkteliste(Musterporjekt);
+
+        this.ProgressMessage = 'Projektpunkte Musterprojekt';
 
         for(let Projekt of projektliste)  {
 
@@ -773,6 +832,7 @@ export class DatabasePoolService {
         ProjektID:               null,
         Favoritprojektindex:     null,
         Zoomfaktor:              100,
+        Textsize:                14,
         StandortFilter:          null,
         LeistungsphaseFilter:    this.Const.Leistungsphasenvarianten.UNBEKANNT,
         AufgabenShowBearbeitung: true,
@@ -841,10 +901,10 @@ export class DatabasePoolService {
         }
         else {
 
-          if(lodash.isUndefined(Settings.Favoritprojektindex))      Settings.Favoritprojektindex           = 3000;
-
+          if(lodash.isUndefined(Settings.Favoritprojektindex))      Settings.Favoritprojektindex      = 3000;
           if(lodash.isUndefined(Settings.HeadermenueMaxFavoriten))  Settings.HeadermenueMaxFavoriten  = 6;
           if(lodash.isUndefined(Settings.Zoomfaktor))               Settings.Zoomfaktor               = 100;
+          if(lodash.isUndefined(Settings.Textsize))                 Settings.Textsize                 = 14;
           if(lodash.isUndefined(Settings.Deleted))                  Settings.Deleted                  = false;
           if(lodash.isUndefined(Settings.AufgabenShowNummer))       Settings.AufgabenShowNummer       = true;
           if(lodash.isUndefined(Settings.AufgabenShowStartdatum))   Settings.AufgabenShowStartdatum   = true;

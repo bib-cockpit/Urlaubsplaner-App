@@ -94,9 +94,9 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
               // private NavParams: Navparameter,
-              private Pool: DatabasePoolService,
+              public  Pool: DatabasePoolService,
               public  Database: DatabaseProjektpunkteService,
-              private ProjekteDB: DatabaseProjekteService,
+              public  ProjekteDB: DatabaseProjekteService,
               private ProtokolleDB: DatabaseProtokolleService,
               private LOPListeDB: DatabaseLoplisteService,
               private MitarbeiterDB: DatabaseMitarbeiterService,
@@ -310,6 +310,8 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
   AufgabeClickedHandler(Projektpunkt: Projektpunktestruktur) {
 
     try {
+
+      debugger;
 
       this.AufgabeClicked.emit(Projektpunkt);
 
@@ -689,7 +691,8 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
       return {
 
         textDecoration: Projektpunkt.EndeMouseOver === true ? 'underline' : 'none',
-        color:          this.Database.CheckProjektpunktFaellig(Projektpunkt) === this.Const.Faelligkeitsstatus.Nicht_faellig ? 'black' : 'white'
+        color:          this.Database.CheckProjektpunktFaellig(Projektpunkt) === this.Const.Faelligkeitsstatus.Nicht_faellig ? 'black' : 'white',
+        'font-size':    this.Pool.Mitarbeitersettings !== null ? this.Pool.Mitarbeitersettings.Textsize + 'px' : '14px'
       };
 
 
@@ -741,7 +744,10 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
       return {
 
-        color: this.Database.CheckProjektpunktFaellig(Projektpunkt) === this.Const.Faelligkeitsstatus.Nicht_faellig ? 'black' : 'white'
+        color: this.Database.CheckProjektpunktFaellig(Projektpunkt) === this.Const.Faelligkeitsstatus.Nicht_faellig ? 'black' : 'white',
+        'font-size':  this.Pool.Mitarbeitersettings !== null ? this.Pool.Mitarbeitersettings.Textsize + 'px' : '14px'
+
+
       };
 
     } catch (error) {

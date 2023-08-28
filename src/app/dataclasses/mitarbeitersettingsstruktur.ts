@@ -7,6 +7,7 @@ export type Mitarbeitersettingsstruktur = {
   FavoritenID:           string;
   ProjektID:             string;
   Zoomfaktor:            number;
+  Textsize:              number;
   Favoritprojektindex:   number;
   StandortFilter:        string;
   LeistungsphaseFilter:  string;

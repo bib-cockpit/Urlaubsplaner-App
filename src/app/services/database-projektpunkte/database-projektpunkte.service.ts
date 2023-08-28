@@ -31,6 +31,7 @@ import {Graphservice} from "../graph/graph";
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
 import {DatabaseFestlegungenService} from "../database-festlegungen/database-festlegungen.service";
+import {Teilaufgabeestruktur} from "../../dataclasses/teilaufgabeestruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -248,6 +249,8 @@ export class DatabaseProjektpunkteService {
           },
           error: (error: HttpErrorResponse) => {
 
+            debugger;
+
             reject(error);
           }
         });
@@ -396,9 +399,13 @@ export class DatabaseProjektpunkteService {
         ProjektleiterID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : null,
         ProtokollID:     null,
         LOPListeID:      null,
+        PlanungsmatrixID: null,
+        AufgabenbereichID: null,
+        AufgabenteilbereichID: null,
         EmailID:         null,
         Prioritaet:      null,
         NotizenID:       null,
+        Matrixanwendung:  false,
         FestlegungskategorieID: null,
         Leistungsphase:  this.DBProjekt.CurrentProjekt.Leistungsphase,
         Nummer:          Nummer.toString(),
@@ -461,6 +468,97 @@ export class DatabaseProjektpunkteService {
     }
   }
 
+  public GetNewPlanungsmatrixpunkt(
+
+    Projekt: Projektestruktur,
+    teilaufgabe: Teilaufgabeestruktur,
+    Kostengruppe: number,
+    Leistungsphase: number): Projektpunktestruktur {
+
+    try {
+
+      let Vorname: string = this.Pool.Mitarbeiterdaten   !== null ? this.Pool.Mitarbeiterdaten.Vorname : '';
+      let Name: string    = this.Pool.Mitarbeiterdaten   !== null ? this.Pool.Mitarbeiterdaten.Name    : '';
+      let Email: string   = this.Pool.Mitarbeiterdaten   !== null ? this.Pool.Mitarbeiterdaten.Email   : '';
+
+
+      let Punkt: Projektpunktestruktur = {
+
+        _id:              null,
+        ProjektID:       Projekt !== null ? Projekt._id : null,
+        Projektkey:      Projekt !== null ? Projekt.Projektkey : null,
+        ProjektleiterID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : null,
+        ProtokollID:     null,
+        LOPListeID:      null,
+        PlanungsmatrixID: Projekt !== null ? Projekt.Projektkey : null,
+        AufgabenbereichID:     teilaufgabe.AufgabenbereichID,
+        AufgabenteilbereichID: teilaufgabe.id,
+        EmailID:         null,
+        Prioritaet:      null,
+        NotizenID:       null,
+        FestlegungskategorieID: null,
+        Matrixanwendung: true,
+        Leistungsphase:  Leistungsphase.toString(),
+        Nummer:          null,
+        Listenposition:  null,
+        OutlookkatgorieID: this.Const.NONE,
+        Aufgabe:         "", // "Testeintrag " + moment().format('HH:mm:ss'),
+        Thematik:        "",
+        Status:          this.GetProjektpunktstusByName(this.Const.Projektpunktstatustypen.Offen.Name).Name,
+        Deleted:         false,
+        Endezeitstempel:   null,
+        Endezeitstring:    null,
+        EndeKalenderwoche: null,
+        Startzeitsptempel: null,
+        Startzeitstring:   null,
+        Geschlossenzeitstempel: null,
+        Geschlossenzeitstring: null,
+        FileDownloadURL:   this.Const.NONE,
+        Filename:          this.Const.NONE,
+        Filezoom:          1,
+        Bildbreite:        0,
+        Bildhoehe:         0,
+        Querdarstellung:   false,
+        Meilenstein:       false,
+        Meilensteinstatus: 'OFF',
+        Anmerkungenliste:   [], // Kommentarliste,
+        DataChanged:        false,
+        ProtokollOnly:      true,
+        ProtokollPublic:    true,
+        LiveEditor:         false,
+        BemerkungMouseOver: false,
+        EndeMouseOver:      false,
+        Zeitansatz:         30,
+        Zeitansatzeinheit:  this.Const.Zeitansatzeinheitvarianten.Minuten,
+        Fortschritt:        0,
+        ZustaendigeInternIDListe: [],
+        ZustaendigeExternIDListe: [],
+        BauteilID:          null,
+        GeschossID:         null,
+        RaumID:             null,
+        OpenFestlegung:     false,
+        Fachbereich:        null,
+        Oberkostengruppe:   Kostengruppe,
+        Hauptkostengruppe:  null,
+        Unterkostengruppe:  null,
+
+        Verfasser: {
+
+          Vorname: Vorname,
+          Name:  Name,
+          Email: Email
+        }
+      };
+
+      return Punkt;
+
+    }
+    catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'GetNewProjektpunkt', this.Debug.Typen.Service);
+    }
+  }
+
   public GetNewFestlegung(): Projektpunktestruktur {
 
     try {
@@ -484,6 +582,10 @@ export class DatabaseProjektpunkteService {
         ProjektleiterID: this.Pool.Mitarbeiterdaten    !== null ? this.Pool.Mitarbeiterdaten._id : null,
         ProtokollID:     null,
         LOPListeID:      null,
+        PlanungsmatrixID: null,
+        AufgabenbereichID: null,
+        AufgabenteilbereichID: null,
+        Matrixanwendung: false,
         EmailID:         null,
         Prioritaet:      null,
         NotizenID:       null,
@@ -578,6 +680,10 @@ export class DatabaseProjektpunkteService {
         ProjektleiterID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : null,
         ProtokollID:     Protokoll !== null ? Protokoll._id : null,
         LOPListeID:      null,
+        PlanungsmatrixID: null,
+        AufgabenbereichID: null,
+        AufgabenteilbereichID: null,
+        Matrixanwendung: false,
         EmailID:         null,
         Prioritaet:      this.Const.NONE,
         NotizenID:       null,
@@ -922,6 +1028,9 @@ export class DatabaseProjektpunkteService {
         ProjektleiterID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : null,
         ProtokollID:     null,
         LOPListeID:      lopliste !== null ? lopliste._id : null,
+        PlanungsmatrixID: null,
+        AufgabenbereichID: null,
+        AufgabenteilbereichID: null,
         Prioritaet:      this.Const.Projektpunktprioritaetstypen.Niedrig.Name,
         NotizenID:       null,
         EmailID:         null,
@@ -930,6 +1039,7 @@ export class DatabaseProjektpunkteService {
         Nummer:          Nummer.toString(),
         Listenposition:  null,
         Aufgabe:         "",
+        Matrixanwendung: false,
         Thematik:        "",
         OutlookkatgorieID: this.Const.NONE,
         Status:          this.Const.Projektpunktstatustypen.Offen.Name, // this.GetProjektpunktstusByName().Name,
@@ -1191,11 +1301,11 @@ export class DatabaseProjektpunkteService {
 
       let Index: number;
 
-      Index = lodash.findIndex(this.Pool.Projektpunkteliste[this.DBProjekt.CurrentProjekt.Projektkey], {_id : Projektpunkt._id});
+      Index = lodash.findIndex(this.Pool.Projektpunkteliste[Projektpunkt.Projektkey], {_id : Projektpunkt._id});
 
       if(Index !== -1) {
 
-        this.Pool.Projektpunkteliste[this.DBProjekt.CurrentProjekt.Projektkey][Index] = Projektpunkt; // aktualisieren
+        this.Pool.Projektpunkteliste[Projektpunkt.Projektkey][Index] = Projektpunkt; // aktualisieren
 
         this.Debug.ShowMessage('Projektpunktliste updated: "' + Projektpunkt.Aufgabe + '"', 'Projektpunkte', 'UpdateProjektpunkteliste', this.Debug.Typen.Service);
       }
@@ -1203,13 +1313,13 @@ export class DatabaseProjektpunkteService {
 
         this.Debug.ShowMessage('Projektpunkt nicht gefunden -> neuen Projektpunkt hinzufügen', 'Projektpunkte', 'UpdateProjektpunkteliste', this.Debug.Typen.Service);
 
-        this.Pool.Projektpunkteliste[this.DBProjekt.CurrentProjekt.Projektkey].push(Projektpunkt); // neuen
+        this.Pool.Projektpunkteliste[Projektpunkt.Projektkey].push(Projektpunkt); // neuen
       }
 
       // Gelöscht markierte Einträge entfernen
 
 
-      this.Pool.Projektpunkteliste[this.DBProjekt.CurrentProjekt.Projektkey] = lodash.filter(this.Pool.Projektpunkteliste[this.DBProjekt.CurrentProjekt.Projektkey], (currentpunkt: Projektpunktestruktur) => {
+      this.Pool.Projektpunkteliste[Projektpunkt.Projektkey] = lodash.filter(this.Pool.Projektpunkteliste[Projektpunkt.Projektkey], (currentpunkt: Projektpunktestruktur) => {
 
         return currentpunkt.Deleted === false;
       });

@@ -351,25 +351,25 @@
                   </div>
                 </ion-col>
               </ion-row>
-              <ion-row *ngIf="DB.CurrentProjektpunkt._id !== null">
-                <ion-col>
-
-                  <table>
-                    <tr>
-                      <td><checkbox-clon [Checked]="DeleteEnabled" (CheckChanged)="CanDeleteCheckedChanged($event)"></checkbox-clon></td>
-                      <td style="width: 6px"></td>
-                      <td>
-                        <ion-button size="small" color="rot" [disabled]="!DeleteEnabled" (click)="DeleteButtonClicked()">
-                          <ion-icon name="trash-outline" style="font-size: 20px"></ion-icon>
-                          <ion-text>Eintrag löschen</ion-text>
-                        </ion-button>
-                      </td>
-                    </tr>
-                  </table>
-
-                </ion-col>
-              </ion-row>
             </ng-container>
+            <ion-row *ngIf="DB.CurrentProjektpunkt._id !== null">
+              <ion-col>
+
+                <table>
+                  <tr>
+                    <td><checkbox-clon [Checked]="DeleteEnabled" (CheckChanged)="CanDeleteCheckedChanged($event)"></checkbox-clon></td>
+                    <td style="width: 6px"></td>
+                    <td>
+                      <ion-button size="small" color="rot" [disabled]="!DeleteEnabled" (click)="DeleteButtonClicked()">
+                        <ion-icon name="trash-outline" style="font-size: 20px"></ion-icon>
+                        <ion-text>Eintrag löschen</ion-text>
+                      </ion-button>
+                    </td>
+                  </tr>
+                </table>
+
+              </ion-col>
+            </ion-row>
           </ion-grid>
         </div>
       </ion-content>

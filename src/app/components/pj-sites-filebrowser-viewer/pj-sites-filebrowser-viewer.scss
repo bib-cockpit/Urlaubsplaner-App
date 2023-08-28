@@ -1,0 +1,60 @@
+.filebrowserdiv {
+
+  position: relative;
+  background: white;
+  overflow: hidden;
+}
+
+.headerdiv {
+
+  padding: 4px;
+  border-bottom: 2px solid #354547;
+  overflow: auto;
+}
+
+.filelistdiv {
+
+  padding: 4px;
+  overflow: auto;
+  border-right: 2px solid #354547;
+  overflow: auto;
+}
+
+.viewerdiv {
+
+  background: none;
+  overflow: auto;
+}
+
+a {
+  text-decoration: none;
+  color: #444444;
+}
+
+a:link {
+  text-decoration: none;
+  color: #444444;
+}
+
+a:visited {
+  text-decoration: none;
+  color: #444444;
+}
+
+a:hover {
+  text-decoration: underline;
+  cursor: pointer;
+  color: #444444;
+}
+
+a:active {
+  text-decoration: none;
+  color: #444444;
+}
+
+.folderdiv {
+
+  font-weight: bold;
+  color: #7b6a58;
+  cursor: pointer;
+}

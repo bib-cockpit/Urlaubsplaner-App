@@ -1,10 +1,16 @@
 
-<table *ngIf="Settings !== null && Projekt !== null" style="width: 100%" class="docinnertable">
-  <tr *ngIf="ShowProjektnamen === true">
-    <td colspan="20" class="nobordertitelbuttonclass">
-      {{Projekt.Projektname}}
+<table *ngIf="Settings !== null && Projekt !== null" class="nobordertable">
+  <tr>
+    <td>
+      <div class="projecticonclass" [style.background]="ProjekteDB.GetProjektfarbeByProjekt(Projekt)"></div>
+    </td>
+    <td>
+      <ion-text color="baeblau" style="font-size: 120%"><b>{{ProjekteDB.CurrentProjekt.Projektname}}</b></ion-text>
     </td>
   </tr>
+</table>
+
+<table *ngIf="Settings !== null && Projekt !== null" style="width: 100%" class="docinnertable">
   <tr *ngIf="ShowListentitel">
     <!--
     <td style="width: 70px; text-align: center"><b>Debug</b></td>
@@ -65,7 +71,7 @@
       -->
       <td *ngIf="Settings.AufgabenShowNummer" style="text-align: center; font-size: 90%">{{Projektpunkt.Nummer}}</td>
       <td *ngIf="Settings.AufgabenShowStartdatum" style="height: inherit">
-          <pj-datepicker [ElementID]="Datepickerprefix + '_start_' + Projektpunkt._id" [Projektp unkt]="Projektpunkt" [Smalldate]="true" [Smallsize]="true"
+          <pj-datepicker [ElementID]="Datepickerprefix + '_start_' + Projektpunkt._id" [Projektpunkt]="Projektpunkt" [Smalldate]="true" [Smallsize]="true"
                              [Datum]="GetStartdatum(Projektpunkt)" (TimeChanged)="StartDatumChangedHandler($event)" (DateClicked)="DateClickedHandler()">
           </pj-datepicker>
       </td>
@@ -94,12 +100,16 @@
         <div *ngIf="Projektpunkt.LOPListeID !== null" style="width: 8px; height: 8px; border-radius: 50%; background: #c7d304;"></div>
       </td>
 
-      <td *ngIf="Settings.AufgabenShowAufgabe" style="height: inherit">
+      <td *ngIf="Settings !== null && Settings.AufgabenShowAufgabe" style="height: inherit">
 
         <table  class="nobordertable" style="width: 100%">
           <tr>
             <td style="height: inherit">
-              <div class="aufgabedivclass" (click)="AufgabeClickedHandler(Projektpunkt)" [innerHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe : 'html'"></div>
+              <div class="aufgabedivclass"
+                   (click)="AufgabeClickedHandler(Projektpunkt)"
+                   [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
+                   [innerHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe : 'html'">
+              </div>
             </td>
             <td style="height: inherit; width: 30px">
               <table>
@@ -148,10 +158,12 @@
                 <tr *ngFor="let Anmerkung of Projektpunkt.Anmerkungenliste; let Detailindex = index;">
                   <td>
 
-                    <table *ngIf="Anmerkung.LiveEditor === false"  style="width: 100%;">
+                    <table *ngIf="Anmerkung.LiveEditor === false && Pool.Mitarbeitersettings !== null"  style="width: 100%;">
                       <tr>
                         <td style="width: 100%;">
-                          <div style="width: 100%" class="bemerkungdivclass" (click)="EditAnmerkungClickedHandler(Projektpunkt, Anmerkung)" [innerHTML]="Anmerkung.Anmerkung | safe : 'html'"></div>
+                          <div style="width: 100%" class="bemerkungdivclass"
+                               [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
+                               (click)="EditAnmerkungClickedHandler(Projektpunkt, Anmerkung)" [innerHTML]="Anmerkung.Anmerkung | safe : 'html'"></div>
                         </td>
                       </tr>
                       <tr *ngIf="Projektpunkt.Anmerkungenliste.length > 1 && Detailindex < Projektpunkt.Anmerkungenliste.length - 1">
@@ -160,10 +172,11 @@
                     </table>
 
 
-                    <table *ngIf="Anmerkung.LiveEditor === true"  style="width: 100%;">
+                    <table *ngIf="Anmerkung.LiveEditor === true && Pool.Mitarbeitersettings !== null"  style="width: 100%;">
                       <tr>
                         <td style="width: auto" rowspan="3">
-                          <ion-textarea style="border: 1px solid #7b6a58" auto-grow placeholder="Neue Bemerkung hier" style="width: 100%; min-height: 90px; font-size: 90%;"
+                          <ion-textarea style="border: 1px solid #7b6a58; width: 100%; min-height: 90px;" auto-grow placeholder="Neue Bemerkung hier"
+                                        [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
                                         [value]="Anmerkung.Anmerkung" (ionChange)="AnmerkungTextChangedHandler($event, Detailindex)"></ion-textarea>
                         </td>
                         <td align="center" style="width: 40px;">
@@ -219,7 +232,7 @@
           </table>
         </div>
       </td>
-      <td *ngIf="Settings.AufgabenShowZeitansatz" style="font-size: 90%; text-align: center">{{Projektpunkt.Zeitansatz + ' ' + Projektpunkt.Zeitansatzeinheit}}</td>
+      <td *ngIf="Settings.AufgabenShowZeitansatz" style="text-align: center">{{Projektpunkt.Zeitansatz + ' ' + Projektpunkt.Zeitansatzeinheit}}</td>
       <td *ngIf="Settings.AufgabenShowTermin" style="height: inherit">
 
         <table class="nobordersmalltable" style="width: 100%; height: 100%">
@@ -231,7 +244,7 @@
                 <table class="nobordersmalltable">
                   <tr>
                     <td [ngStyle]="GetEndedatumstyle(Projektpunkt)">
-                      {{Database.GetEndedatumString(Projektpunkt)}}
+                     {{Database.GetEndedatumString(Projektpunkt)}}
                     </td>
                   </tr>
                 </table>

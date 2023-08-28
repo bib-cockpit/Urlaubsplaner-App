@@ -1,10 +1,19 @@
+<ng-container *ngIf="Pool.Mitarbeitersettings !== null">
 
-<div *ngIf="Smallsize === false" class="datumdivclass" tappable  [id]="ElementID"  [style.background]="Background" [style.color]="Color" (click)="DateClickedHandler($event)">
-  {{Datum.format(Smalldate === false ? 'DD.MM.YYYY' : 'DD.MM.YY')}}
-</div>
-<span class="smalldatumclass" *ngIf="Smallsize === true"  [id]="ElementID"  [style.background]="Background" [style.color]="Color" (click)="DateClickedHandler($event)">
-  {{Datum.format(Smalldate === false ? 'DD.MM.YYYY' : 'DD.MM.YY')}}
-</span>
+  <div *ngIf="Smallsize === false" class="datumdivclass" tappable
+       [id]="ElementID"
+       [style.background]="Background"
+       [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
+       [style.color]="Color" (click)="DateClickedHandler($event)">
+    {{Datum.format(Smalldate === false ? 'DD.MM.YYYY' : 'DD.MM.YY')}}
+  </div>
+  <span class="smalldatumclass" *ngIf="Smallsize === true"
+        [id]="ElementID"
+        [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
+        [style.background]="Background" [style.color]="Color" (click)="DateClickedHandler($event)">
+    {{Datum.format(Smalldate === false ? 'DD.MM.YYYY' : 'DD.MM.YY')}}
+  </span>
+</ng-container>
 
 <!--
 <ion-button *ngIf="ToolboxDesign === false" [id]="ElementID" [size]="Buttonsize" [color]="Enabled ? Basics.Ionicfarben.Blau : Basics.Ionicfarben.GRAU">{{Buttontext}}</ion-button>

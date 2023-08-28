@@ -12,10 +12,29 @@
 </ion-header>
 <ion-content>
 
-  <table *ngIf="DBProjekte.CurrentProjekt !== null" class="paddingtable" width="100%">
+  <table *ngIf="DBProjekte.CurrentProjekt !== null" class="nobordertable">
     <tr>
       <td>
-        <ion-text color="burnicklgruen" style="font-size: 120%"><b>{{DBProjekte.CurrentProjekt.Projektname}}</b></ion-text>
+        <div class="projecticonclass" [style.background]="DBProjekte.GetProjektfarbeByProjekt(DBProjekte.CurrentProjekt)"></div>
+      </td>
+      <td>
+        <ion-text color="baeblau" style="font-size: 120%"><b>{{DBProjekte.CurrentProjekt.Projektname}}</b></ion-text>
+      </td>
+    </tr>
+  </table>
+
+  <table *ngIf="DB.Kostengruppenliste.length === 0" width="100%">
+    <tr>
+      <td>
+        <div class="keineintragclass">
+          <table  class="docinnertable" width="100%">
+            <tr>
+              <td style="text-align: center; height: 100px">
+                keine Festlegungen für <b>{{DBProjekte.CurrentProjekt !== null ? DBProjekte.CurrentProjekt.Projektname : 'unbekannt'}}</b> vorhanden
+              </td>
+            </tr>
+          </table>
+        </div>
       </td>
     </tr>
   </table>
@@ -24,7 +43,7 @@
     <ng-container *ngFor="let Kostengruppe of DB.Kostengruppenliste; let i = index">
       <tr>
         <td>
-          <ion-text color="burnicklgruen"><b>{{Kostengruppe.Kostengruppenname}}</b></ion-text>
+          <ion-text color="braun"><b>{{Kostengruppe.Kostengruppenname}}</b></ion-text>
         </td>
       </tr>
       <tr>
@@ -73,15 +92,6 @@
           <ion-icon name="add-circle-outline" color="weiss" slot="start"></ion-icon>
           <ion-text color="weiss">Neuer Eintrag</ion-text>
         </ion-button>
-      </td>
-    </tr>
-  </table>
-
-
-  <table *ngIf="DB.Kostengruppenliste.length === 0" class="paddingtable" width="100%">
-    <tr>
-      <td style="text-align: center; padding: 40px;">
-        keine Festlegungen für <b>{{DBProjekte.CurrentProjekt !== null ? DBProjekte.CurrentProjekt.Projektname : 'unbekannt'}}</b> vorhanden
       </td>
     </tr>
   </table>

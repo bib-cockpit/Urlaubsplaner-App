@@ -6,4 +6,5 @@ export interface Kostengruppenstruktur {
   Obergruppennummer:   number;
   Hauptgruppennummer:  number;
   Bezeichnung: string;
+  Display?: boolean;
 };

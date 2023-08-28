@@ -25,6 +25,7 @@ import {
 import {Graphservice} from "../../services/graph/graph";
 import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
 import {DatabaseOutlookemailService} from "../../services/database-email/database-outlookemail.service";
+import {DatabasePlanungsmatrixService} from "../../services/database-planungsmatrix/database-planungsmatrix.service";
 
 @Component({
   selector: 'page-header-menu',
@@ -60,6 +61,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   @Output()  ShowUngelesenOnlyChanged = new EventEmitter<any>();
   @Output()  ProjektsortierungChanged = new EventEmitter<any>();
   @Output()  EmailDatumChanged = new EventEmitter<any>();
+  @Output()  PlanungsmatrixLeistungsphaseClicked = new EventEmitter<any>();
 
   private SuchleisteInputSubscription: Subscription;
   private Suchleiste2InputSubscription: Subscription;
@@ -77,7 +79,6 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   public BackMouseOver: boolean;
   public Timelinebreite: number;
 
-
   constructor(private Debug: DebugProvider,
               public Basics: BasicsProvider,
               public Const: ConstProvider,
@@ -88,6 +89,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
               public DBProjekte: DatabaseProjekteService,
               public DBEmail: DatabaseOutlookemailService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
+              public DBPlanungsmatrix: DatabasePlanungsmatrixService,
               public GraphService: Graphservice,
               public  AuthService: DatabaseAuthenticationService,
               public  Pool: DatabasePoolService,
@@ -314,7 +316,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     try {
 
-      return projektemenubereich === this.Menuservice.ProjekteMenuebereich ? 'burnicklgruen' : 'weiss';
+      return projektemenubereich === this.Menuservice.ProjekteMenuebereich ? 'schwarz' : 'weiss';
 
     } catch (error) {
 
@@ -870,6 +872,171 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetDatumtext', this.Debug.Typen.Component);
+    }
+  }
+
+  ShowBeschereibungenChanged(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.DBPlanungsmatrix.ShowBeschreibungen = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ShowBeschereibungenChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  DisplayKG410Changed(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      if(this.DBPlanungsmatrix.Musterprojekt !== null) {
+
+        this.DBPlanungsmatrix.Musterprojekt.DisplayKG410 = event.status;
+      }
+
+      this.DBPlanungsmatrix.DisplayKostengruppenChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'DisplayKG410Changed', this.Debug.Typen.Page);
+    }
+  }
+  DisplayKG420Changed(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      if(this.DBPlanungsmatrix.Musterprojekt !== null) {
+
+        this.DBPlanungsmatrix.Musterprojekt.DisplayKG410 = event.status;
+      }
+
+      this.DBPlanungsmatrix.DisplayKostengruppenChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'DisplayKG420Changed', this.Debug.Typen.Page);
+    }
+  }
+  DisplayKG430Changed(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      if(this.DBPlanungsmatrix.Musterprojekt !== null) {
+
+        this.DBPlanungsmatrix.Musterprojekt.DisplayKG430 = event.status;
+      }
+
+      this.DBPlanungsmatrix.DisplayKostengruppenChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'DisplayKG430Changed', this.Debug.Typen.Page);
+    }
+  }
+
+  DisplayKG434Changed(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      if(this.DBPlanungsmatrix.Musterprojekt !== null) {
+
+        this.DBPlanungsmatrix.Musterprojekt.DisplayKG434 = event.status;
+      }
+
+      this.DBPlanungsmatrix.DisplayKostengruppenChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'DisplayKG434Changed', this.Debug.Typen.Page);
+    }
+  }
+
+  DisplayKG440Changed(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      if(this.DBPlanungsmatrix.Musterprojekt !== null) {
+
+        this.DBPlanungsmatrix.Musterprojekt.DisplayKG440 = event.status;
+      }
+
+      this.DBPlanungsmatrix.DisplayKostengruppenChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'DisplayKG440Changed', this.Debug.Typen.Page);
+    }
+  }
+
+  DisplayKG450Changed(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      if(this.DBPlanungsmatrix.Musterprojekt !== null) {
+
+        this.DBPlanungsmatrix.Musterprojekt.DisplayKG450 = event.status;
+      }
+
+      this.DBPlanungsmatrix.DisplayKostengruppenChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'DisplayKG450Changed', this.Debug.Typen.Page);
+    }
+  }
+
+  DisplayKG460Changed(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      if(this.DBPlanungsmatrix.Musterprojekt !== null) {
+
+        this.DBPlanungsmatrix.Musterprojekt.DisplayKG460 = event.status;
+      }
+
+      this.DBPlanungsmatrix.DisplayKostengruppenChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'DisplayKG460Changed', this.Debug.Typen.Page);
+    }
+  }
+
+  DisplayKG475Changed(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      if(this.DBPlanungsmatrix.Musterprojekt !== null) {
+
+        this.DBPlanungsmatrix.Musterprojekt.DisplayKG475 = event.status;
+      }
+
+      this.DBPlanungsmatrix.DisplayKostengruppenChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'DisplayKG475Changed', this.Debug.Typen.Page);
+    }
+  }
+
+  DisplayKG480Changed(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      debugger;
+
+      if(this.DBPlanungsmatrix.Musterprojekt !== null) {
+
+        this.DBPlanungsmatrix.Musterprojekt.DisplayKG480 = event.status;
+      }
+
+      this.DBPlanungsmatrix.DisplayKostengruppenChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'DisplayKG480Changed', this.Debug.Typen.Page);
     }
   }
 }

@@ -21,7 +21,7 @@
                                   [color]="BackMouseOver ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.Weiss">
                         </ion-icon>
                       </td>
-                      <td [style.color]="BackMouseOver ? '#c7d304' : 'white'">Zurück</td>
+                      <td [style.color]="BackMouseOver ? 'black' : 'white'">Zurück</td>
                     </tr>
                   </table>
                 </div>
@@ -66,7 +66,7 @@
 </ion-header>
 <ion-content>
 
-  <pj-teams-filebrowser-viewer
+  <pj-sites-filebrowser-viewer
     [TeamsID]="DBProjekte.CurrentProjekt !== null ? DBProjekte.CurrentProjekt.TeamsID : null"
     [Browserbreite]="Browserbreite"
     [Browserhoehe]="Browserhoehe"
@@ -74,7 +74,7 @@
     [Zoomfaktor]="Zoomfaktor"
     (PDFDownloadStarted)="PDFDownloadStartedHandler($event)"
     (PDFRenderedFinished)="PDFPageRenderedFinishedHandler()">
-  </pj-teams-filebrowser-viewer>
+  </pj-sites-filebrowser-viewer>
 
 </ion-content>
 <ion-footer>

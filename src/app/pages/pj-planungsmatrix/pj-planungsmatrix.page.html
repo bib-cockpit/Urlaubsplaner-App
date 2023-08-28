@@ -1,0 +1,209 @@
+<ion-header>
+  <page-header #PageHeader>
+    <page-header-menu (PlanungsmatrixLeistungsphaseClicked)="PlanungsmatrixLeistungsphaseHandler()">
+    </page-header-menu>
+  </page-header>
+</ion-header>
+<ion-content>
+
+  <div class="keeperdiv">
+    <div class="listeheaderdiv">
+
+      <table style="width: 100%" class="paddingtable">
+        <tr>
+          <td align="center">
+
+            <table class="docinnertable">
+              <tr>
+                <td [style.width.px]="Zahlenzellebreite"><b>Nr.</b></td>
+                <td [style.width.px]="Bezeichnungbreite"><b>Bezeichnung</b></td>
+                <ng-container  *ngFor="let Kostengruppe of DB.Kostengruppenliste">
+                  <td *ngIf="Kostengruppe.Display === true" [style.width.px]="Spaltenbreite" align="center">
+                    <b>
+                      {{Kostengruppe.Bezeichnung}}
+                    </b>
+                    <br>
+                    {{Kostengruppe.Kostengruppennummer}}
+                  </td>
+                </ng-container>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+    <div class="listediv">
+
+      <table style="width: 100%" class="paddingtable">
+        <tr>
+          <td align="center">
+
+            <table class="docinnertable">
+
+              <!-- Aufgabenbereiche -->
+
+              <ng-container *ngFor="let Bereich of Aufgabenbereicheliste">
+                <tr *ngIf="Bereich.Leistungsphasen.indexOf(DB.Leistungsphase) !== -1">
+                  <td [style.width.px]="Zahlenzellebreite">{{Bereich.Nummer[DB.Leistungsphase - 1]}}</td>
+                  <td [style.width.px]="Bezeichnungbreite">{{Bereich.Bezeichnung}}</td>
+                  <ng-container [ngSwitch]="Bereich.id">
+
+                    <ng-container *ngSwitchCase="'ziel'">
+                      <ng-container  *ngFor="let Kostengruppe of DB.Kostengruppenliste">
+                        <td *ngIf="Kostengruppe.Display === true" align="center" [style.width.px]="Spaltenbreite">
+                          <ng-container *ngIf="DB.ShowBeschreibungen === true">
+                            {{DB.Zielvorgabentextliste[DB.Leistungsphase][Kostengruppe.Kostengruppennummer]}}
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'berech'">
+                      <ng-container  *ngFor="let Kostengruppe of DB.Kostengruppenliste">
+                        <td *ngIf="Kostengruppe.Display === true" align="center">
+                          <ng-container *ngIf="DB.ShowBeschreibungen === true">
+                            {{DB.Berechnungentextliste[DB.Leistungsphase][Kostengruppe.Kostengruppennummer]}}
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'bemess'">
+                      <ng-container  *ngFor="let Kostengruppe of DB.Kostengruppenliste">
+                        <td *ngIf="Kostengruppe.Display === true" align="center">
+                          <ng-container *ngIf="DB.ShowBeschreibungen === true">
+                            {{DB.Bemessungentextliste[DB.Leistungsphase][Kostengruppe.Kostengruppennummer]}}
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'schema'">
+                      <ng-container  *ngFor="let Kostengruppe of DB.Kostengruppenliste">
+                        <td *ngIf="Kostengruppe.Display === true" align="center">
+                          <ng-container *ngIf="DB.ShowBeschreibungen === true">
+                            {{DB.Schematatextliste[DB.Leistungsphase][Kostengruppe.Kostengruppennummer]}}
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'plaene'">
+                      <ng-container  *ngFor="let Kostengruppe of DB.Kostengruppenliste">
+                        <td *ngIf="Kostengruppe.Display === true" align="center">
+                          <ng-container *ngIf="DB.ShowBeschreibungen === true">
+                            {{DB.Plaenetextliste[DB.Leistungsphase][Kostengruppe.Kostengruppennummer]}}
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'koord'">
+                      <ng-container  *ngFor="let Kostengruppe of DB.Kostengruppenliste">
+                        <td *ngIf="Kostengruppe.Display === true" align="center">
+                          <ng-container *ngIf="DB.ShowBeschreibungen === true">
+                            {{DB.Koordinationtextliste[DB.Leistungsphase][Kostengruppe.Kostengruppennummer]}}
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'erbe'">
+                      <ng-container  *ngFor="let Kostengruppe of DB.Kostengruppenliste">
+                        <td *ngIf="Kostengruppe.Display === true" align="center">
+                          <ng-container *ngIf="DB.ShowBeschreibungen === true">
+                            {{DB.Erlaeuterungtextliste[DB.Leistungsphase][Kostengruppe.Kostengruppennummer]}}
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'kosten'">
+                      <ng-container  *ngFor="let Kostengruppe of DB.Kostengruppenliste">
+                        <td *ngIf="Kostengruppe.Display === true" align="center">
+                          <ng-container *ngIf="DB.ShowBeschreibungen === true">
+                            {{DB.Kostentextliste[DB.Leistungsphase][Kostengruppe.Kostengruppennummer]}}
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                    </ng-container>
+
+                  </ng-container>
+                </tr>
+
+                <!-- Aufgabenteilbereiche -->
+
+                <ng-container *ngFor="let Teilaufgabe of Bereich.Teilaufgabenbereiche[DB.Leistungsphase]">
+
+                  <tr>
+                    <td class="notopbordercellclass"></td>
+                    <td class="notopbordercellclass" valign="top" *ngIf="Teilaufgabe[0].Bezeichnung">{{Teilaufgabe[0].Bezeichnung}}</td>
+                    <ng-container  *ngFor="let Kostengruppe of DB.Kostengruppenliste">
+                      <td class="notopbordercellclass" *ngIf="Kostengruppe.Display === true" valign="top">
+                        <table class="nobordertable" style="width: 100%">
+                          <tr *ngIf="DB.ShowBeschreibungen">
+                            <td>
+                              <div (click)="TeilaufgabeClicked(Teilaufgabe[Kostengruppe.Kostengruppennummer], Kostengruppe.Kostengruppennummer, DB.Leistungsphase)" *ngIf="Teilaufgabe[Kostengruppe.Kostengruppennummer].id !== Const.NONE" class="hoverdivclass">
+                                {{Teilaufgabe[Kostengruppe.Kostengruppennummer].Beschreibung}}
+                              </div>
+                            </td>
+                          </tr>
+                          <tr *ngFor="let Punkt of Displayliste[Bereich.id][Kostengruppe.Kostengruppennummer][Teilaufgabe[Kostengruppe.Kostengruppennummer].id]">
+                            <td>
+                              <table>
+                                <tr>
+                                  <td><checkbox-clon (CheckChanged)="TeilaufgabenpunktCheckedChanged($event, Punkt)" [Checked]="Punkt.Status === Const.Projektpunktstatustypen.Geschlossen.Name"></checkbox-clon></td>
+                                  <td *ngIf="Punkt.Matrixanwendung" class="aufgabeclass" (click)="EintragClicked(Punkt)">
+                                    {{Punkt.Aufgabe}}
+                                  </td>
+                                  <td *ngIf="!Punkt.Matrixanwendung" class="aufgabeunusedclass" (click)="EintragClicked(Punkt)">
+                                    {{Punkt.Aufgabe}}
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </ng-container>
+                  </tr>
+
+                </ng-container>
+              </ng-container>
+
+            </table>
+          </td>
+        </tr>
+      </table>
+
+      <abstand-element-fixed></abstand-element-fixed>
+
+
+    </div>
+  </div>
+
+
+
+</ion-content>
+<ion-footer>
+<page-footer #PageFooter>
+
+
+</page-footer>
+</ion-footer>
+
+<auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex"
+                [Dialogbreite]="200" [Dialoghoehe]="200" [PositionY]="200"
+                [Titel]="Auswahltitel" [Iconname]="''"
+                (OkClickedEvent)="AuswahlOkButtonClicked($event)"
+                (CancelClickedEvent)="ShowAuswahl = false"></auswahl-dialog>
+
+<pj-planungsmatrixeintrag-editor *ngIf="ShowEditor"
+                                 [Iconname]="'create'"
+                                 [Dialogbreite]="600"
+                                 [Dialoghoehe]="400"
+                                 [PositionY]="100"
+                                 [Titel]="GetEditortitel()" (CancelClickedEvent)="ShowEditor = false" (OkClickedEvent)="ShowEditor = false">
+</pj-planungsmatrixeintrag-editor>
+

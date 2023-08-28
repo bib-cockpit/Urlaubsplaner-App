@@ -92,6 +92,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/pj-festlegungsliste/pj-festlegungsliste.module').then(m => m.PjFestlegungslistePageModule)
   },
   {
+    path: 'PjPlanungsmatrixPage',
+    loadChildren: () => import('./pages/pj-planungsmatrix/pj-planungsmatrix.module').then(m => m.PjPlanungsmatrixModule)
+  },
+  {
     path: 'PDFViewerPage',
     loadChildren: () => import('./pages/common-pdfview/common-pdfview.module').then(m => m.CommonPdfViewerPageModule)
   },

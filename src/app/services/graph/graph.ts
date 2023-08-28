@@ -48,6 +48,7 @@ export class Graphservice {
   public CurrentPDFDownload: Teamsdownloadstruktur;
   public KalenderKW: number;
   public Outlookpresetcolors:Outlookpresetcolorsstruktur[];
+  private BAESiteID: string;
 
   constructor(
               @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
@@ -105,6 +106,8 @@ export class Graphservice {
 
         { Name: 'PresetFeiertag', Value: '#b0d6f2', Fontcolor: 'black' },
       ];
+
+      this.BAESiteID = 'baeeu.sharepoint.com,1b93d6ea-3f8b-4416-9ff1-a50aaba6f8ca,134790cc-e062-4882-ae5e-18813809cc87'; // Projekte Seite
 
 
     } catch (error) {
@@ -1047,6 +1050,66 @@ export class Graphservice {
     }
   }
 
+  public async GetSiteRootfilelist(showfiles: boolean) {
+
+    try {
+
+      let token = await this.AuthService.RequestToken('user.read');
+      let Eintrag: Teamsfilesstruktur;
+
+
+
+      this.TeamsRootfilelist     = [];
+      this.TeamsSubdirectorylist = [];
+
+      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
+
+          done(null, token);
+        }
+      });
+
+      return new Promise((resolve, reject) => {
+
+        if(token !== null) {
+
+
+          // "/groups/' + teamsid + '/drive/items/' + folderid + ':/test.txt:/content
+
+          graphClient.api('/sites/' + this.BAESiteID + '/drive/items/root/children').get().then((result: any) => {
+
+            for(Eintrag of result.value) {
+
+              if(!lodash.isUndefined(Eintrag.folder)) Eintrag.isfolder = true;
+              else Eintrag.isfolder = false;
+
+              this.TeamsRootfilelist.push(Eintrag);
+            }
+
+            if(showfiles === false) this.TeamsRootfilelist = lodash.filter(this.TeamsRootfilelist, {isfolder : true});
+
+            this.TeamsCurrentfilelist = this.TeamsRootfilelist;
+
+            resolve(true);
+
+          }).catch((error: GraphError) => {
+
+            debugger;
+
+            reject(error);
+          });
+        }
+        else {
+
+          reject(false);
+        }
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Graph', 'GetSiteRootfilelist', this.Debug.Typen.Service);
+    }
+  }
+
   public RemoveTeamsSubdirectory(file: Teamsfilesstruktur) {
 
     try {
@@ -1063,6 +1126,26 @@ export class Graphservice {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'file', 'RemoveTeamsSubdirectory', this.Debug.Typen.Service);
+    }
+  }
+
+
+  public RemoveSiteSubdirectory(file: Teamsfilesstruktur) {
+
+    try {
+
+      let Liste: Teamsfilesstruktur[] = lodash.cloneDeep(this.TeamsSubdirectorylist);
+
+      this.TeamsSubdirectorylist = [];
+
+      for(let Eintrag of Liste) {
+
+        if(Eintrag.id !== file.id) this.TeamsSubdirectorylist.push(file);
+        else break;
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'file', 'RemoveSiteSubdirectory', this.Debug.Typen.Service);
     }
   }
 
@@ -1123,6 +1206,61 @@ export class Graphservice {
     }
   }
 
+  public async GetSiteSubdirictoryfilelist(file: Teamsfilesstruktur, showfiles: boolean) {
+
+    try {
+
+      let token = await this.AuthService.RequestToken('user.read');
+      let Eintrag: Teamsfilesstruktur;
+
+      this.TeamsRootfilelist = [];
+
+      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
+
+          done(null, token);
+        }
+      });
+
+      return new Promise((resolve, reject) => {
+
+        if(token !== null) {
+
+
+          graphClient.api('/sites/' + this.BAESiteID + '/drive/items/' + file.id + '/children').get().then((result: any) => {
+
+            for(Eintrag of result.value) {
+
+              if(!lodash.isUndefined(Eintrag.folder)) Eintrag.isfolder = true;
+              else Eintrag.isfolder = false;
+
+              this.TeamsRootfilelist.push(Eintrag);
+            }
+
+            if(showfiles === false) this.TeamsRootfilelist = lodash.filter(this.TeamsRootfilelist, {isfolder : true});
+
+            this.TeamsCurrentfilelist = this.TeamsRootfilelist;
+
+            this.TeamsSubdirectorylist.push(file);
+
+            resolve(true);
+
+          }).catch((error: GraphError) => {
+
+            reject(error);
+          });
+        }
+        else {
+
+          reject(false);
+        }
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Graph', 'GetSiteSubdirictoryfilelist', this.Debug.Typen.Service);
+    }
+  }
+
   public async DownloadPDFTeamsFile(teamsid: string, file: Teamsfilesstruktur): Promise<Teamsdownloadstruktur> {
 
     try {
@@ -1172,6 +1310,58 @@ export class Graphservice {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Graph', 'DownloadPDFTeamsFile', this.Debug.Typen.Service);
+    }
+  }
+
+  public async DownloadPDFSiteFile(file: Teamsfilesstruktur): Promise<Teamsdownloadstruktur> {
+
+    try {
+
+      let token = await this.AuthService.RequestToken('user.read');
+      let Download: Teamsdownloadstruktur = {
+
+        name: file.name,
+        id: '',
+        context: '',
+        url: ''
+      };
+
+      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
+
+          done(null, token);
+        }
+      });
+
+      return new Promise((resolve, reject) => {
+
+        if(token !== null) {
+
+          graphClient.api('/sites/' +  this.BAESiteID + '/drive/items/' + file.id + '?select=id,@microsoft.graph.downloadUrl').get().then((result: any) => {
+
+            Download.id      = result.id;
+            Download.url     = result['@microsoft.graph.downloadUrl'];
+            Download.context = result['@odata.context'];
+
+            this.CurrentPDFDownload = Download;
+
+            resolve(Download);
+
+          }).catch((error: GraphError) => {
+
+            debugger;
+
+            reject(error);
+          });
+        }
+        else {
+
+          reject(null);
+        }
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Graph', 'DownloadPDFSiteFile', this.Debug.Typen.Service);
     }
   }
 
@@ -1620,8 +1810,8 @@ export class Graphservice {
 
     try {
 
-      let token = await this.AuthService.RequestToken('Sites.ReadWrite.All');
-
+      let token                = await this.AuthService.RequestToken('Sites.ReadWrite.All');
+      let Liste : any[]        = [];
       let headers: HttpHeaders = new HttpHeaders({
 
         'content-type': 'application/json',
@@ -1634,32 +1824,27 @@ export class Graphservice {
 
         SitesObservable.subscribe({
 
-          next: (data) => {
+          next: (data: any[]) => {
 
-            debugger;
-
-            //  this.Gesamtprojektliste = <Projektestruktur[]>data;
+            Liste = data;
           },
           complete: () => {
 
-            /*
+            for(let eintrag of Liste) {
 
-            for(let Projekt of this.Gesamtprojektliste) {
+              console.log(eintrag.displayName);
 
-              if(lodash.isUndefined(Projekt.Projektfarbe)) Projekt.Projektfarbe = 'Burnicklgruen';
+              if(eintrag.displayName === 'Projekte') {
 
-              for(let Beteiligter of Projekt.Beteiligtenliste) {
-
-                if(lodash.isUndefined(Beteiligter.Fachfirmentyp)) Beteiligter.Fachfirmentyp = 0;
+                console.log(eintrag);
               }
             }
 
-            this.GesamtprojektelisteChanged.emit();
 
             resolve(true);
 
 
-             */
+
 
           },
           error: (error: HttpErrorResponse) => {

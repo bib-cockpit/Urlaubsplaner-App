@@ -7,10 +7,13 @@
 </ion-header>
 <ion-content>
 
-  <table *ngIf="DBProjekte.CurrentProjekt !== null" class="paddingtable" width="100%">
+  <table *ngIf="DBProjekte.CurrentProjekt !== null" class="nobordertable">
     <tr>
       <td>
-        <ion-text color="burnicklgruen" style="font-size: 120%"><b>{{DBProjekte.CurrentProjekt.Projektname}}</b></ion-text>
+        <div class="projecticonclass" [style.background]="DBProjekte.GetProjektfarbeByProjekt(DBProjekte.CurrentProjekt)"></div>
+      </td>
+      <td>
+        <ion-text color="baeblau" style="font-size: 120%"><b>{{DBProjekte.CurrentProjekt.Projektname}}</b></ion-text>
       </td>
     </tr>
   </table>

@@ -3,7 +3,7 @@ import {
   Component,
   EventEmitter, Input, OnDestroy,
   OnInit,
-  Output,
+  Output, ViewChild,
 } from '@angular/core';
 import {DebugProvider} from "../../services/debug/debug";
 import {DisplayService} from "../../services/diplay/display.service";
@@ -20,6 +20,9 @@ import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/da
 import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {BasicsProvider} from "../../services/basics/basics";
+import {PageHeaderComponent} from "../../components/page-header/page-header";
+import {PageFooterComponent} from "../../components/page-footer/page-footer";
 
 @Component({
   selector: 'pj-projekte-schnellauswahl',
@@ -29,10 +32,14 @@ import {
 
 export class PjProjeteSchnellauswahlComponent implements OnInit, OnDestroy, AfterViewInit {
 
+  @ViewChild('PageHeader', { static: false }) PageHeader: PageHeaderComponent;
+  @ViewChild('PageFooter', { static: false }) PageFooter: PageFooterComponent;
+
   public Valid: boolean;
   public Projektliste: Projektestruktur[];
   public Datenliste: Projektestruktur[];
   public DataSubscription: Subscription;
+  public DialogPosY: number;
 
   @Output() CancelClickedEvent    = new EventEmitter<any>();
   @Output() OkClickedEvent        = new EventEmitter<any>();
@@ -51,6 +58,7 @@ export class PjProjeteSchnellauswahlComponent implements OnInit, OnDestroy, Afte
   constructor(public Debug: DebugProvider,
               public Displayservice: DisplayService,
               public Const: ConstProvider,
+              public Basics: BasicsProvider,
               public  Pool: DatabasePoolService,
               private DBMitarbeiter: DatabaseMitarbeiterService,
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
@@ -98,6 +106,11 @@ export class PjProjeteSchnellauswahlComponent implements OnInit, OnDestroy, Afte
 
     try {
 
+      this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
+
+
+      this.DialogPosY   = 100;
+      this.Dialoghoehe  = this.Basics.Contenthoehe - this.DialogPosY - 100 - 100;
 
       this.Displayservice.AddDialog(this.Displayservice.Dialognamen.AufgabeProjektauswahl, this.ZIndex);
 
@@ -163,11 +176,8 @@ export class PjProjeteSchnellauswahlComponent implements OnInit, OnDestroy, Afte
       let Projekt: Projektestruktur;
 
       this.Datenliste  = [];
-      this.Dialoghoehe = 100;
 
       if (this.Pool.Mitarbeiterdaten !== null) {
-
-        debugger;
 
         for (let ProjektID of this.Pool.Mitarbeiterdaten.Favoritenliste[this.DBProjekte.CurrentFavoritenlisteindex].Projekteliste) {
 
@@ -177,8 +187,6 @@ export class PjProjeteSchnellauswahlComponent implements OnInit, OnDestroy, Afte
 
           Projektindex++;
         }
-
-        this.Dialoghoehe = this.Datenliste.length * 40 + 2 * 56;
       }
 
 

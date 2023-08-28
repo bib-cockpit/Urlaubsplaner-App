@@ -29,6 +29,7 @@ export class MenueService {
     LOPListe:      'LOP Liste',
     Bautagebuch:   'Bautagebuch',
     Festlegungen:  'Festlegungen',
+    Planungsmatrix: 'Planungsmatrix',
     Fileliste:     'Fileliste',
   };
 
@@ -71,7 +72,7 @@ export class MenueService {
 
       this.MainMenuebereich     = this.MainMenuebereiche.Projekte;
       this.FirmaMenuebereich    = this.FirmaMenuebereiche.Projekte;
-      this.ProjekteMenuebereich = this.ProjekteMenuebereiche.Aufgabenliste;
+      this.ProjekteMenuebereich = this.ProjekteMenuebereiche.Planungsmatrix; // Aufgabenliste;
       this.Aufgabenlisteansicht = this.Aufgabenlisteansichten.Projekt;
       this.FilelisteAufrufer    = this.FilelisteAufrufervarianten.Aufgabenliste;
 
@@ -156,6 +157,12 @@ export class MenueService {
             case this.ProjekteMenuebereiche.Festlegungen:
 
               this.Tools.SetRootPage(this.Const.Pages.PjFestlegungslistePage);
+
+              break;
+
+            case this.ProjekteMenuebereiche.Planungsmatrix:
+
+              this.Tools.SetRootPage(this.Const.Pages.PjPlanungsmatrixPage);
 
               break;
           }

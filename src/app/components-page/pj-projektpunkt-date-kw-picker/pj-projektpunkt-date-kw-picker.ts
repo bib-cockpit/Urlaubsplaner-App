@@ -374,9 +374,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     try {
 
-      debugger;
-
-      this.Debug.ShowErrorMessage('Ok  Button CLicked', 'LOP Liste Date KW Picker', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowMessage('Ok  Button CLicked', 'LOP Liste Date KW Picker', 'OkButtonClicked', this.Debug.Typen.Component);
 
       this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt).then(() => {
 

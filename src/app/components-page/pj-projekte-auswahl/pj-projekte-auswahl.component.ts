@@ -19,6 +19,8 @@ import * as lodash from "lodash-es";
 import {DisplayService} from "../../services/diplay/display.service";
 import {Subscription} from "rxjs";
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
+import {PageHeaderComponent} from "../../components/page-header/page-header";
+import {PageFooterComponent} from "../../components/page-footer/page-footer";
 
 @Component({
   selector: 'pj-projekte-auswahl',
@@ -27,6 +29,8 @@ import {Projektestruktur} from "../../dataclasses/projektestruktur";
 })
 export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
 
+  @ViewChild('PageHeader', { static: false }) PageHeader: PageHeaderComponent;
+  @ViewChild('PageFooter', { static: false }) PageFooter: PageFooterComponent;
   @ViewChild('SmallAlphabet', { static: true })   Alphabetcomponent: AlphabetComponent;
 
   @Input() Titel: string;
@@ -51,6 +55,7 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
   public Lastletter: string;
   public Projektefiltertext: string;
   public Projekteliste: Projektestruktur[];
+  public DialogPosY: number;
   private StandortfilterSubsciption: Subscription;
 
   constructor(public Basics: BasicsProvider,
@@ -110,6 +115,13 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     try {
+
+      this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
+
+      this.Dialoghoehe  = 100;
+      this.Dialoghoehe  = this.Basics.Contenthoehe - this.DialogPosY - 100 - 100;
+
+      debugger;
 
       if(this.Alphabetcomponent) this.Alphabetcomponent.InitScreen();
 

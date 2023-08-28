@@ -200,6 +200,12 @@ export class CommonEinstellungenPage implements OnInit {
           this.Pool.Mitarbeitersettings.Zoomfaktor = data;
 
           break;
+
+        case 'Textgroesse':
+
+          this.Pool.Mitarbeitersettings.Textsize = data;
+
+          break;
       }
 
       this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
@@ -295,5 +301,33 @@ export class CommonEinstellungenPage implements OnInit {
 
       this.Debug.ShowErrorMessage(error, 'Mitarbeiter Settings', 'ZoomfaktorClicked', this.Debug.Typen.Page);
     }
+  }
+
+  TextsizeClicked() {
+
+    this.Auswahldialogorigin = 'Textgroesse';
+    this.ShowAuswahl         = true;
+    this.Auswahltitel        = 'Textgröße';
+    this.Auswahlliste        = [];
+
+    this.Auswahlliste.push({ Index: 0, FirstColumn: '10', SecoundColumn: '', Data: 10 });
+    this.Auswahlliste.push({ Index: 1, FirstColumn: '12', SecoundColumn: '', Data: 12 });
+    this.Auswahlliste.push({ Index: 2, FirstColumn: '14', SecoundColumn: '', Data: 14 });
+    this.Auswahlliste.push({ Index: 3, FirstColumn: '16', SecoundColumn: '', Data: 16 });
+    this.Auswahlliste.push({ Index: 4, FirstColumn: '18', SecoundColumn: '', Data: 18 });
+    this.Auswahlliste.push({ Index: 5, FirstColumn: '20', SecoundColumn: '', Data: 20 });
+    this.Auswahlliste.push({ Index: 6, FirstColumn: '22', SecoundColumn: '', Data: 22 });
+
+    this.Auswahlindex = this.Auswahlliste.findIndex((eintrag: Auswahldialogstruktur) => {
+
+      return eintrag.Data === this.Pool.Mitarbeitersettings.Textsize;
+    });
+
+    if(this.Auswahlindex === -1) this.Auswahlindex = 0;
+
+  } catch (error) {
+
+    this.Debug.ShowErrorMessage(error, 'Mitarbeiter Settings', 'ZoomfaktorClicked', this.Debug.Typen.Page);
+
   }
 }

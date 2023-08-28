@@ -7,6 +7,7 @@ import {ToolsProvider} from '../../services/tools/tools';
  import moment from "moment";
  import {Moment} from "moment";
  import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
+ import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 
 @Component({
   selector:    'pj-datepicker',
@@ -40,7 +41,11 @@ export class PjDatepickerComponent implements OnInit, OnChanges {
   public Minimumstring: string;
   public Maximumstring: string;
 
-  constructor(public Basics: BasicsProvider, public Debug: DebugProvider, public Tools: ToolsProvider, public Const: ConstProvider) {
+  constructor(public Basics: BasicsProvider,
+              public Debug: DebugProvider,
+              public Tools: ToolsProvider,
+              public Pool: DatabasePoolService,
+              public Const: ConstProvider) {
 
     try {
 

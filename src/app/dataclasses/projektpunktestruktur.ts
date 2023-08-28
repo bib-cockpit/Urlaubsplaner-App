@@ -3,15 +3,19 @@ import {Projektpunktanmerkungstruktur} from "./projektpunktanmerkungstruktur";
 
 export type Projektpunktestruktur = {
 
-  _id:                 string;
-  ProjektID:           string;
-  ProjektleiterID:     string;
-  ProtokollID:         string;
-  LOPListeID:          string;
-  EmailID:             string;
-  Prioritaet:          string;
-  Projektkey:          string;
-  NotizenID:           string;
+  _id:                    string;
+  ProjektID:              string;
+  ProjektleiterID:        string;
+  ProtokollID:            string;
+  LOPListeID:             string;
+  PlanungsmatrixID:       string;
+  AufgabenbereichID:      string;
+  AufgabenteilbereichID:  string;
+  Matrixanwendung:        boolean;
+  EmailID:                string;
+  Prioritaet:             string;
+  Projektkey:             string;
+  NotizenID:              string;
   FestlegungskategorieID: string;
   Listenposition:      number;
   Nummer:              string;

@@ -11,6 +11,10 @@ import {PdfViewerModule} from "ng2-pdf-viewer";
 import {
   PjTeamsFilebrowserViewerModule
 } from "../../components/pj-teams-filebrowser-viewer/pj-teams-filebrowser-viewer.module";
+import {PjSitesFilebrowserModule} from "../../components/pj-sites-filebrowser/pj-sites-filebrowser.module";
+import {
+    PjSitesFilebrowserViewerModule
+} from "../../components/pj-sites-filebrowser-viewer/pj-sites-filebrowser-viewer.module";
 
 const routes: Routes = [
   {
@@ -20,19 +24,21 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    IonicModule,
-    PageHeaderModule,
-    RouterModule.forChild(routes),
-    PageHeaderMenuModule,
-    PageFooterModule,
-    PjTeamsFilebrowserModule,
-    PdfViewerModule,
-    PjTeamsFilebrowserViewerModule,
+    imports: [
+        CommonModule,
+        IonicModule,
+        PageHeaderModule,
+        RouterModule.forChild(routes),
+        PageHeaderMenuModule,
+        PageFooterModule,
+        PjTeamsFilebrowserModule,
+        PdfViewerModule,
+        PjTeamsFilebrowserViewerModule,
+        PjSitesFilebrowserModule,
+        PjSitesFilebrowserViewerModule,
 
 
-  ],
+    ],
   declarations: [PjFilebrowserPage],
   exports: [
     PjFilebrowserPage

@@ -1,0 +1,54 @@
+.filebrowserdiv {
+
+  position: relative;
+  background: white;
+}
+
+.headerdiv {
+
+  padding: 4px;
+  width: 100%;
+  position: absolute;
+  top: 0px;
+}
+
+.contentdiv {
+
+  padding: 4px;
+  width: 100%;
+  position: absolute;
+  overflow: auto;
+}
+
+a {
+  text-decoration: none;
+  color: #444444;
+}
+
+a:link {
+  text-decoration: none;
+  color: #444444;
+}
+
+a:visited {
+  text-decoration: none;
+  color: #444444;
+}
+
+a:hover {
+  text-decoration: underline;
+  cursor: pointer;
+  color: #444444;
+}
+
+a:active {
+  text-decoration: none;
+  color: #444444;
+}
+
+.folderdiv {
+
+  font-weight: bold;
+  color: #7b6a58;
+  cursor: pointer;
+}

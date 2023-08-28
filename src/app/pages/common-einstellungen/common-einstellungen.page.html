@@ -14,10 +14,8 @@
                       (ButtonClicked)="FavoritenanzahlClicked()">
         </button-value>
       </td>
+      <td colspan="2"></td>
     </tr>
-  </table>
-
-  <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
     <tr>
       <td style="width: 460px">
         <button-value [Buttontext]="'Meilensteine anzeigen nach Erledigung'"
@@ -26,10 +24,8 @@
                       (ButtonClicked)="MeilensteineNachlaufClicked()">
         </button-value>
       </td>
+      <td colspan="2"></td>
     </tr>
-  </table>
-
-  <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
     <tr>
       <td style="width: 460px">
         <button-value [Buttontext]="'Zoomfaktor'"
@@ -38,6 +34,17 @@
                       (ButtonClicked)="ZoomfaktorClicked()">
         </button-value>
       </td>
+    </tr>
+    <tr>
+      <td  style="width: 460px">
+        <button-value [Buttontext]="'Textgröße'"
+                      [Wert_A]="Pool.Mitarbeitersettings.Textsize.toString() + ' Pixel'"
+                      [Buttoncolor]="Basics.Farben.Burnicklbraun"
+                      (ButtonClicked)="TextsizeClicked()">
+        </button-value>
+      </td>
+      <td style="width: 10px"></td>
+      <td *ngIf="Pool.Mitarbeitersettings !== null"><span [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">Testgrößentest</span></td>
     </tr>
   </table>
 

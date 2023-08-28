@@ -11,6 +11,26 @@
   font-size: 90%;
   color: black;
 }
+.keineintragclass {
+
+  width: 100%;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  font-weight: bold;
+  font-size: 120%;
+  padding-left: 8px; padding-right: 8px;
+}
+
+.projecticonclass {
+
+  height: 34px;
+  width: 34px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+}
 
 .festlegungdivclass:hover {
 

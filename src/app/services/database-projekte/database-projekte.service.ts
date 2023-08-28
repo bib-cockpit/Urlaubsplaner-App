@@ -157,6 +157,15 @@ export class DatabaseProjekteService {
               if(lodash.isUndefined(Projekt.BautagebuchFolderID))   Projekt.BautagebuchFolderID   = this.Const.NONE;
               if(lodash.isUndefined(Projekt.Leistungsphase))        Projekt.Leistungsphase        = 'unbekannt';
               if(lodash.isUndefined(Projekt.MitarbeiterIDListe))    Projekt.MitarbeiterIDListe    = [];
+              if(lodash.isUndefined(Projekt.DisplayKG410))          Projekt.DisplayKG410          = true;
+              if(lodash.isUndefined(Projekt.DisplayKG420))          Projekt.DisplayKG420          = true;
+              if(lodash.isUndefined(Projekt.DisplayKG430))          Projekt.DisplayKG430          = true;
+              if(lodash.isUndefined(Projekt.DisplayKG434))          Projekt.DisplayKG434          = true;
+              if(lodash.isUndefined(Projekt.DisplayKG440))          Projekt.DisplayKG440          = true;
+              if(lodash.isUndefined(Projekt.DisplayKG450))          Projekt.DisplayKG450          = true;
+              if(lodash.isUndefined(Projekt.DisplayKG460))          Projekt.DisplayKG460          = true;
+              if(lodash.isUndefined(Projekt.DisplayKG475))          Projekt.DisplayKG475          = true;
+              if(lodash.isUndefined(Projekt.DisplayKG480))          Projekt.DisplayKG480          = true;
 
               for(let Beteiligter of Projekt.Beteiligtenliste) {
 
@@ -469,6 +478,16 @@ export class DatabaseProjekteService {
         BaustellenLOPFolderID: this.Const.NONE,
         ProtokolleFolderID:    this.Const.NONE,
         BautagebuchFolderID:   this.Const.NONE,
+
+        DisplayKG410: false,
+        DisplayKG420: false,
+        DisplayKG430: false,
+        DisplayKG434: false,
+        DisplayKG440: true,
+        DisplayKG450: true,
+        DisplayKG460: true,
+        DisplayKG475: false,
+        DisplayKG480: true,
       };
 
     } catch (error) {

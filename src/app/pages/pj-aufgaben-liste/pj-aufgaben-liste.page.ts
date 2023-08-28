@@ -1129,25 +1129,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       let Dayindex: number = Labelzeitpunkt.locale('de').weekday();
       let Meintagliste:  Meintagstruktur[];
 
-      this.Timelineindex = Dayindex <= 3 ? Dayindex : 3;
-
-      this.Pixelperminute = this.Listenhoehe / (this.Timelinestunden * 60);
-      this.Timelinelabeltexte       = [];
-      this.Timelinelabelpossitionen = [];
-
-      for(let i = 0; i <= this.Timelinestunden; i++) {
-
-        Labelzeitpunkt.set({
-          hour:   Stunde + i,
-          minute: 0,
-          second: 0
-        });
-
-        this.Timelinelabeltexte.push(Labelzeitpunkt.format('HH:mm'));
-        this.Timelinelabelpossitionen.push(i * 60 * this.Pixelperminute - this.Timelinelabelhoehe / 2);
-
-      }
-
 
       this.MeinTagindex = this.GetMeinTagindex();
 
@@ -1361,7 +1342,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
         Liste = await this.GraphService.GetOwnCalendar();
 
-
         this.Kalenderliste = [];
 
         for(let i = 0; i < 6; i++) {
@@ -1447,6 +1427,25 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
           }
         }
       }
+
+      this.Timelineindex = Dayindex <= 3 ? Dayindex : 3;
+
+      this.Pixelperminute = this.Listenhoehe / (this.Timelinestunden * 60);
+      this.Timelinelabeltexte       = [];
+      this.Timelinelabelpossitionen = [];
+
+      for(let i = 0; i <= this.Timelinestunden; i++) {
+
+        Labelzeitpunkt.set({
+          hour:   Stunde + i,
+          minute: 0,
+          second: 0
+        });
+
+        this.Timelinelabeltexte.push(Labelzeitpunkt.format('HH:mm'));
+        this.Timelinelabelpossitionen.push(i * 60 * this.Pixelperminute - this.Timelinelabelhoehe / 2);
+      }
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'PrepareDaten', this.Debug.Typen.Page);

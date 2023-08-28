@@ -8,15 +8,18 @@
 </ion-header>
 <ion-content>
 
-  <table *ngIf="DBProjekte.CurrentProjekt !== null" class="paddingtable" width="100%">
+  <table *ngIf="DBProjekte.CurrentProjekt !== null" class="nobordertable">
     <tr>
+      <td>
+        <div class="projecticonclass" [style.background]="DBProjekte.GetProjektfarbeByProjekt(DBProjekte.CurrentProjekt)"></div>
+      </td>
       <td>
         <ion-text color="baeblau" style="font-size: 120%"><b>{{DBProjekte.CurrentProjekt.Projektname}}</b></ion-text>
       </td>
     </tr>
   </table>
 
-  <div style="height: 100%; width: 100%;">
+  <div *ngIf="DBProjekte.CurrentProjekt !== null" style="height: 100%; width: 100%;">
     <div  [style.height.px]="Headerhoehe" style="width: 100%; padding-left: 8px; padding-right: 8px; padding-top: 8px">
 
         <table class="listeheaderclass" style="color: black; width: 100%">

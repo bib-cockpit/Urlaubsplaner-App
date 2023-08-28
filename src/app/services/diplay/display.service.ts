@@ -42,6 +42,7 @@ export class DisplayService {
     Bautagebucheintrageditor: 'Bautagebucheintrageditor',
     LOPListeEditor: 'LOPListeEditor',
     LOPListeEintragEditor: 'LOPListeEintragEditor',
+    Planungsmatrixeintrageditor: 'Planungsmatrixeintrageditor'
 
   };
 

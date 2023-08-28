@@ -200,6 +200,24 @@
                   </tr>
                 </table>
               </td>
+              <td>
+
+                <table>
+                  <tr>
+                    <td>
+                      <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Planungsmatrix)">
+                        <table class="paddingsmalltable">
+                          <tr>
+                            <td><ion-icon name="apps-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Planungsmatrix)"></ion-icon></td>
+                            <td [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Planungsmatrix)">Planungsmatrix</td>
+                          </tr>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+
               <td align="center" class="trennertdclass"><div class="trennerbigdivclass"></div></td>
             </ng-container>
             <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte || Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Email">
@@ -468,6 +486,65 @@
                     <ion-icon name="mail-outline" color="weiss" slot="start"></ion-icon>
                     <ion-text color="weiss">Email</ion-text>
                   </ion-button>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </td>
+      </tr>
+
+
+    </ng-container>
+
+    <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Projekte &&
+                         Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Planungsmatrix">
+      <tr>
+        <td colspan="2" style="padding-left: 8px; padding-right: 8px">
+          <div style="width: 100%; height: 1px; background: white"></div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+
+          <div style="width: 100%; height: 100%; background: none">
+
+
+            <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable" width="100%">
+              <tr>
+                <td style="width: 380px">
+                  <button-value [Buttontext]="'Leitungsphase'"
+                                (ButtonClicked)="PlanungsmatrixLeistungsphaseClicked.emit()"
+                                [Wert_A]="DBPlanungsmatrix.Leistungsphase.toString()">
+                  </button-value>
+                </td>
+                <td style="width: auto">
+                  <table class="paddingtable">
+                    <tr>
+                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.ShowBeschreibungen" (CheckChanged)="ShowBeschereibungenChanged($event)"></checkbox-clon></td>
+                      <td>Beschreibungen anzeigen</td>
+                      <td style="width: 80px"></td>
+                      <ng-container *ngIf="DBPlanungsmatrix.Musterprojekt !== null">
+
+                      </ng-container>
+                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG410" (CheckChanged)="DisplayKG410Changed($event)"></checkbox-clon></td><td>410</td>
+                      <td style="width: 14px"></td>
+                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG420" (CheckChanged)="DisplayKG420Changed($event)"></checkbox-clon></td><td>420</td>
+                      <td style="width: 14px"></td>
+                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG430" (CheckChanged)="DisplayKG430Changed($event)"></checkbox-clon></td><td>430</td>
+                      <td style="width: 14px"></td>
+                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG434" (CheckChanged)="DisplayKG434Changed($event)"></checkbox-clon></td><td>434</td>
+                      <td style="width: 14px"></td>
+                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG440" (CheckChanged)="DisplayKG440Changed($event)"></checkbox-clon></td><td>440</td>
+                      <td style="width: 14px"></td>
+                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG450" (CheckChanged)="DisplayKG450Changed($event)"></checkbox-clon></td><td>450</td>
+                      <td style="width: 14px"></td>
+                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG460" (CheckChanged)="DisplayKG460Changed($event)"></checkbox-clon></td><td>460</td>
+                      <td style="width: 14px"></td>
+                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG475" (CheckChanged)="DisplayKG475Changed($event)"></checkbox-clon></td><td>475</td>
+                      <td style="width: 14px"></td>
+                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG480" (CheckChanged)="DisplayKG480Changed($event)"></checkbox-clon></td><td>480</td>
+                    </tr>
+                  </table>
                 </td>
               </tr>
             </table>
