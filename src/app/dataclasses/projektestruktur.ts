@@ -44,6 +44,8 @@ export type Projektestruktur = {
   DisplayKG450: boolean;
   DisplayKG460: boolean;
   DisplayKG480: boolean;
+  DisplayBeschreibungen: boolean;
+  DisplayUngenutzte: boolean;
 
   Selected?: boolean;
   Filtered?: boolean;

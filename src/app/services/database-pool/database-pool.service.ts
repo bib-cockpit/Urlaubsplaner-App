@@ -688,62 +688,11 @@ export class DatabasePoolService {
     }
   }
 
-  public GetMusterProjekt(): Projektestruktur {
-
-    try {
-
-      return {
-        BaustellenLOPFolderID: "",
-        BautagebuchFolderID: "",
-        Bauteilliste: [],
-        Beteiligtenliste: [],
-        Deleted: false,
-        Leistungsphase: "",
-        MitarbeiterIDListe: [],
-        Ort: "",
-        OutlookkategorieID: "",
-        PLZ: "",
-        ProjektIsReal: false,
-        Projektkey: "Musterprojekt",
-        Projektkurzname: "Musterporjekt",
-        ProjektleiterID: "",
-        Projektname: "Musterprojekt",
-        Projektnummer: "000000",
-        ProtokolleFolderID: "",
-        StandortID: "",
-        Status: "",
-        StellvertreterID: "",
-        Strasse: "",
-        TeamsDescription: "",
-        TeamsID: "",
-        TeamsName: "",
-        Verfasser: undefined,
-        Zeitpunkt: "",
-        Zeitstempel: 0,
-        _id: 'MusterprojektID',
-        DisplayKG410: false,
-        DisplayKG420: false,
-        DisplayKG430: false,
-        DisplayKG434: false,
-        DisplayKG440: true,
-        DisplayKG450: true,
-        DisplayKG460: true,
-        DisplayKG475: false,
-        DisplayKG480: true,
-      };
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'function', this.Debug.Typen.Service);
-    }
-  }
-
   public async ReadProjektdaten(projektliste: Projektestruktur[]): Promise<any> {
 
     try {
 
       let Steps: number         = 4;
-      let Musterporjekt: Projektestruktur = this.GetMusterProjekt();
       this.ShowProgress         = true;
       this.MaxProgressValue     = projektliste.length * Steps;
       this.CurrentProgressValue = 0;
@@ -753,10 +702,6 @@ export class DatabasePoolService {
       this.LOPListe             = [];
 
       try {
-
-        // Musterprojekt laden
-
-        await this.ReadProjektpunkteliste(Musterporjekt);
 
         this.ProgressMessage = 'Projektpunkte Musterprojekt';
 

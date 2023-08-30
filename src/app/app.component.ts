@@ -193,7 +193,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           this.Pool.ProgressMessage = 'Lade Gesamtprojektliste';
           this.Pool.CurrentProgressValue++;
 
-          let Liste = await this.GraphService.GetAllUsers(); // 8
+          await this.ProjekteDB.AddMusterprojekt(); // 8
+
+          this.Pool.ProgressMessage = 'Erstelle Musterprojekt';
+          this.Pool.CurrentProgressValue++;
+
+          let Liste = await this.GraphService.GetAllUsers(); // 9
 
           this.Pool.ProgressMessage = 'Aktuallisiere Mitarbeiterliste';
           this.Pool.CurrentProgressValue++;
@@ -299,7 +304,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           }
           else {
 
-            Page = this.Const.Pages.PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
+            Page = this.Const.Pages.PjPlanungsmatrixPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
 
             this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
             await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);                 // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden

@@ -3,7 +3,11 @@
   <div  class="keeperdivclass" [style.background]="Displayservice.ShowOpacity(Displayservice.Dialognamen.Projekteauswahl) ? 'rgba(0, 0, 0, 0.5)' : 'none'" (click)="ContentClicked($event)">
     <div class="contentdivclass"
          [style.width.px]="Dialogbreite"
-         [style.height.px]="Dialoghoehe" [style.top.px]="DialogPosY" (click)="ContentClicked($event)">
+          [style.top.px]="PositionY" [style.bottom.px]="PositionY" (click)="ContentClicked($event)">
+
+      <!--
+      [style.height.px]="Dialoghoehe"
+      -->
       <ion-header>
         <page-header-center>
           <table>
@@ -12,7 +16,7 @@
                 <table class="paddingsmalltable">
                   <tr>
                     <td><ion-icon [name]="Iconname" color="weiss"></ion-icon></td>
-                    <td [style.color]="'white'">{{Titel}}</td>
+                    <td [style.color]="'white'">{{Titel}} {{PositionY}}</td>
                   </tr>
                 </table>
               </td>

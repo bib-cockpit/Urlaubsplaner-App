@@ -124,6 +124,103 @@ export class DatabaseProjekteService {
     }
   }
 
+  private GetMusterProjekt(): Projektestruktur {
+
+    try {
+
+      let Zeit: Moment = moment();
+
+      return {
+        _id: null,
+        BaustellenLOPFolderID: "",
+        BautagebuchFolderID: "",
+        Bauteilliste: [],
+        Beteiligtenliste: [],
+        Deleted: false,
+        Leistungsphase: "",
+        MitarbeiterIDListe: [],
+        Ort: "",
+        OutlookkategorieID: "",
+        PLZ: "",
+        ProjektIsReal: false,
+        Projektkey: "Musterprojekt",
+        Projektkurzname: "Musterporjekt",
+        ProjektleiterID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : this.Const.NONE,
+        Projektname: "Musterprojekt",
+        Projektnummer: "000000",
+        ProtokolleFolderID: "",
+        StandortID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten.StandortID : this.Const.NONE,
+        Status: "Bearbeitung",
+        StellvertreterID: this.Const.NONE,
+        Strasse: "",
+        TeamsDescription: "",
+        TeamsID: "",
+        TeamsName: "",
+        Verfasser: {
+
+          Email:    this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten.Email : this.Const.NONE,
+          Vorname: this.Pool.Mitarbeiterdaten  !== null ? this.Pool.Mitarbeiterdaten.Vorname : this.Const.NONE,
+          Name:    this.Pool.Mitarbeiterdaten  !== null ? this.Pool.Mitarbeiterdaten.Name : this.Const.NONE
+        },
+        Zeitpunkt:   Zeit.format('HH:mm DD.MM.YYYY'),
+        Zeitstempel: Zeit.valueOf(),
+        DisplayKG410: false,
+        DisplayKG420: false,
+        DisplayKG430: false,
+        DisplayKG434: false,
+        DisplayKG440: true,
+        DisplayKG450: true,
+        DisplayKG460: true,
+        DisplayKG475: false,
+        DisplayKG480: true,
+        DisplayBeschreibungen: true,
+        DisplayUngenutzte: true,
+      };
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'function', this.Debug.Typen.Service);
+    }
+  }
+
+
+  public AddMusterprojekt(): Promise<any> {
+
+    try {
+
+      let Projekt: Projektestruktur;
+
+      return new Promise((resolve, reject) => {
+
+        Projekt = lodash.find(this.Gesamtprojektliste, {Projektkey: 'Musterprojekt'});
+
+        if(lodash.isUndefined(Projekt)) {
+
+          Projekt = this.GetMusterProjekt();
+
+          this.AddProjekt(Projekt).then(() => {
+
+            resolve(true);
+
+          }).catch((error) => {
+
+            reject(error);
+          });
+        }
+        else {
+
+          resolve(true);
+        }
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'AddMusterprojekt', this.Debug.Typen.Service);
+    }
+
+
+  }
+
   public ReadGesamtprojektliste(): Promise<any> {
 
     try {
@@ -166,6 +263,8 @@ export class DatabaseProjekteService {
               if(lodash.isUndefined(Projekt.DisplayKG460))          Projekt.DisplayKG460          = true;
               if(lodash.isUndefined(Projekt.DisplayKG475))          Projekt.DisplayKG475          = true;
               if(lodash.isUndefined(Projekt.DisplayKG480))          Projekt.DisplayKG480          = true;
+              if(lodash.isUndefined(Projekt.DisplayBeschreibungen)) Projekt.DisplayBeschreibungen = true;
+              if(lodash.isUndefined(Projekt.DisplayUngenutzte))     Projekt.DisplayUngenutzte     = false;
 
               for(let Beteiligter of Projekt.Beteiligtenliste) {
 
@@ -488,6 +587,8 @@ export class DatabaseProjekteService {
         DisplayKG460: true,
         DisplayKG475: false,
         DisplayKG480: true,
+        DisplayBeschreibungen: true,
+        DisplayUngenutzte: true,
       };
 
     } catch (error) {
@@ -577,6 +678,8 @@ export class DatabaseProjekteService {
       let Params = new HttpParams();
 
       Params.set('id', projekt._id);
+
+      delete projekt.__v;
 
       return new Promise<any>((resove, reject) => {
 

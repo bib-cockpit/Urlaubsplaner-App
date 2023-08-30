@@ -509,40 +509,41 @@
           <div style="width: 100%; height: 100%; background: none">
 
 
-            <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable" width="100%">
+            <table *ngIf="Pool.Mitarbeitersettings !== null && DBProjekte.CurrentProjekt !== null" class="paddingtable" width="100%">
               <tr>
                 <td style="width: 380px">
                   <button-value [Buttontext]="'Leitungsphase'"
                                 (ButtonClicked)="PlanungsmatrixLeistungsphaseClicked.emit()"
-                                [Wert_A]="DBPlanungsmatrix.Leistungsphase.toString()">
+                                [Wert_A]="DBProjekte.CurrentProjekt.Leistungsphase">
                   </button-value>
                 </td>
                 <td style="width: auto">
                   <table class="paddingtable">
                     <tr>
-                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.ShowBeschreibungen" (CheckChanged)="ShowBeschereibungenChanged($event)"></checkbox-clon></td>
+                      <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayBeschreibungen" (CheckChanged)="ShowBeschereibungenChanged($event)"></checkbox-clon></td>
                       <td>Beschreibungen anzeigen</td>
+                      <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayUngenutzte" (CheckChanged)="ShowUngenutzteChanged($event)"></checkbox-clon></td>
+                      <td>Ungenutze anzeigen</td>
                       <td style="width: 80px"></td>
-                      <ng-container *ngIf="DBPlanungsmatrix.Musterprojekt !== null">
-
+                      <ng-container *ngIf="DBProjekte.CurrentProjekt !== null">
+                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG410" (CheckChanged)="DisplayKG410Changed($event)"></checkbox-clon></td><td>KG 410</td>
+                        <td style="width: 14px"></td>
+                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG420" (CheckChanged)="DisplayKG420Changed($event)"></checkbox-clon></td><td>KG 420</td>
+                        <td style="width: 14px"></td>
+                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG430" (CheckChanged)="DisplayKG430Changed($event)"></checkbox-clon></td><td>KG 430</td>
+                        <td style="width: 14px"></td>
+                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG434" (CheckChanged)="DisplayKG434Changed($event)"></checkbox-clon></td><td>KG 434</td>
+                        <td style="width: 14px"></td>
+                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG440" (CheckChanged)="DisplayKG440Changed($event)"></checkbox-clon></td><td>KG 440</td>
+                        <td style="width: 14px"></td>
+                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG450" (CheckChanged)="DisplayKG450Changed($event)"></checkbox-clon></td><td>KG 450</td>
+                        <td style="width: 14px"></td>
+                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG460" (CheckChanged)="DisplayKG460Changed($event)"></checkbox-clon></td><td>KG 460</td>
+                        <td style="width: 14px"></td>
+                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG475" (CheckChanged)="DisplayKG475Changed($event)"></checkbox-clon></td><td>KG 475</td>
+                        <td style="width: 14px"></td>
+                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG480" (CheckChanged)="DisplayKG480Changed($event)"></checkbox-clon></td><td>KG 480</td>
                       </ng-container>
-                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG410" (CheckChanged)="DisplayKG410Changed($event)"></checkbox-clon></td><td>410</td>
-                      <td style="width: 14px"></td>
-                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG420" (CheckChanged)="DisplayKG420Changed($event)"></checkbox-clon></td><td>420</td>
-                      <td style="width: 14px"></td>
-                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG430" (CheckChanged)="DisplayKG430Changed($event)"></checkbox-clon></td><td>430</td>
-                      <td style="width: 14px"></td>
-                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG434" (CheckChanged)="DisplayKG434Changed($event)"></checkbox-clon></td><td>434</td>
-                      <td style="width: 14px"></td>
-                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG440" (CheckChanged)="DisplayKG440Changed($event)"></checkbox-clon></td><td>440</td>
-                      <td style="width: 14px"></td>
-                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG450" (CheckChanged)="DisplayKG450Changed($event)"></checkbox-clon></td><td>450</td>
-                      <td style="width: 14px"></td>
-                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG460" (CheckChanged)="DisplayKG460Changed($event)"></checkbox-clon></td><td>460</td>
-                      <td style="width: 14px"></td>
-                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG475" (CheckChanged)="DisplayKG475Changed($event)"></checkbox-clon></td><td>475</td>
-                      <td style="width: 14px"></td>
-                      <td><checkbox-clon [Checked]="DBPlanungsmatrix.Musterprojekt.DisplayKG480" (CheckChanged)="DisplayKG480Changed($event)"></checkbox-clon></td><td>480</td>
                     </tr>
                   </table>
                 </td>

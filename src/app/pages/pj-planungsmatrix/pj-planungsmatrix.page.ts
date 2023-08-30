@@ -17,10 +17,10 @@ import {DatabasePlanungsmatrixService} from "../../services/database-planungsmat
 import {Aufgabenbereichestruktur} from "../../dataclasses/aufgabenbereichestruktur";
 import {Teilaufgabeestruktur} from "../../dataclasses/teilaufgabeestruktur";
 import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
-import {Projektestruktur} from "../../dataclasses/projektestruktur";
 import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
 import {Subscription} from "rxjs";
 import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
+import {Projektestruktur} from "../../dataclasses/projektestruktur";
 
 @Component({
   selector: 'pj-planungsmatrix-page',
@@ -44,7 +44,11 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
   public Auswahlindex: number;
   public Auswahltitel: string;
   public ShowAuswahl: boolean;
+  public Matrixpunkteanzahl: number;
+
   private KostengruppenSubscription: Subscription;
+  private FavoritenProjektSubcription: Subscription;
+  ShowProjektschnellauswahl: boolean;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -55,6 +59,7 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
               public DBProjekte: DatabaseProjekteService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public GraphService: Graphservice,
+              public LoadingAnimation: LoadingAnimationService,
               public AuthService: DatabaseAuthenticationService) {
     try
     {
@@ -68,9 +73,13 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
       this.ShowAuswahl           = false;
       this.Auswahltitel          = 'Leistungsphase';
       this.Auswahlliste          = [];
+      this.Matrixpunkteanzahl    = 0;
 
-      this.KostengruppenSubscription = null;
-      this.ProjektpunkteSubscription = null;
+      this.ShowProjektschnellauswahl = false;
+
+      this.KostengruppenSubscription   = null;
+      this.ProjektpunkteSubscription   = null;
+      this.FavoritenProjektSubcription = null;
     }
     catch (error) {
 
@@ -88,13 +97,16 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
       this.ProjektpunkteSubscription = this.Pool.ProjektpunktelisteChanged.subscribe(() => {
 
         this.PrepareDaten();
-
       });
 
       this.KostengruppenSubscription = this.DB.DisplayKostengruppenChanged.subscribe(() => {
 
         this.PrepareDaten();
+      });
 
+      this.FavoritenProjektSubcription = this.DBProjekte.CurrentFavoritenProjektChanged.subscribe(() => {
+
+        this.PrepareDaten();
       });
 
       this.PrepareDaten();
@@ -102,6 +114,23 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Planungsmatrix', 'OnInit', this.Debug.Typen.Page);
+    }
+  }
+
+
+
+
+  public ProjektSchnellauswahlProjektClickedEventHandler(projekt: Projektestruktur) {
+
+    try {
+
+      this.CopyPlanungsmatrix(projekt);
+
+      this.ShowProjektschnellauswahl = false;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'ProjektSchnellauswahlProjektClickedEventHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -134,6 +163,7 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
 
       this.ProjektpunkteSubscription.unsubscribe();
       this.KostengruppenSubscription.unsubscribe();
+      this.FavoritenProjektSubcription.unsubscribe();
 
     } catch (error) {
 
@@ -149,110 +179,99 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
       let Zellenanzahl;
       let Gesamtpunkteliste: Projektpunktestruktur[] = [];
       let Punkteliste: Projektpunktestruktur[] = [];
+      let Phase: string;
 
-      if(this.DB.Musterprojekt === null) this.DB.Musterprojekt = this.Pool.GetMusterProjekt();
-      this.Zahlenzellebreite = 40;
-      this.Bezeichnungbreite = 140;
+      this.Zahlenzellebreite  = 40;
+      this.Bezeichnungbreite  = 140;
+      this.Matrixpunkteanzahl = 0;
 
+      if(this.DBProjekte.CurrentProjekt !== null) {
 
+        Phase = this.DBProjekte.CurrentProjekt.Leistungsphase.split('H')[1];
 
-      this.DB.SetuoKostengruppendisplay(this.DB.Musterprojekt);
+        this.Leistungsphase = parseInt(Phase);
 
-      Zellenanzahl = this.DB.CountVisisbleKosten();
+        this.DB.SetuoKostengruppendisplay(this.DBProjekte.CurrentProjekt);
 
-      this.Spaltenbreite = (this.Basics.Contentbreite - Abstand - this.Zahlenzellebreite - this.Bezeichnungbreite) / Zellenanzahl;
+        Zellenanzahl = this.DB.CountVisisbleKosten();
 
-      this.Aufgabenbereicheliste = [];
+        this.Spaltenbreite = (this.Basics.Contentbreite - Abstand - this.Zahlenzellebreite - this.Bezeichnungbreite) / Zellenanzahl;
 
-      for(let Bereich of this.DB.Aufgabenbereicheliste) {
+        this.Aufgabenbereicheliste = [];
 
-        if(Bereich.Leistungsphasen.indexOf(this.DB.Leistungsphase) !== -1) {
+        for(let Bereich of this.DB.Aufgabenbereicheliste) {
 
-          this.Aufgabenbereicheliste.push(Bereich);
+          if(Bereich.Leistungsphasen.indexOf(this.Leistungsphase) !== -1) {
+
+            this.Aufgabenbereicheliste.push(Bereich);
+          }
         }
-      }
 
-      this.Aufgabenbereicheliste.sort( (a: Aufgabenbereichestruktur, b: Aufgabenbereichestruktur) => {
+        this.Aufgabenbereicheliste.sort( (a: Aufgabenbereichestruktur, b: Aufgabenbereichestruktur) => {
 
-        if (a.Nummer[this.DB.Leistungsphase - 1] < b.Nummer[this.DB.Leistungsphase - 1]) return -1;
-        if (a.Nummer[this.DB.Leistungsphase - 1] > b.Nummer[this.DB.Leistungsphase - 1]) return 1;
-        return 0;
-      });
+          if (a.Nummer[this.Leistungsphase - 1] < b.Nummer[this.Leistungsphase - 1]) return -1;
+          if (a.Nummer[this.Leistungsphase - 1] > b.Nummer[this.Leistungsphase - 1]) return 1;
+          return 0;
+        });
 
-      // Projektounkte zusammenstellen
+        // Projektpunkte zusammenstellen
 
-      if(this.DB.MusterprojektAktiv === true) {
+        if(!lodash.isUndefined(this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey])) {
 
-        if(!lodash.isUndefined(this.Pool.Projektpunkteliste[this.DB.Musterprojekt.Projektkey])) {
+          Gesamtpunkteliste = lodash.filter(this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey], (punkt: Projektpunktestruktur) => {
 
-          Gesamtpunkteliste = this.Pool.Projektpunkteliste[this.DB.Musterprojekt.Projektkey];
+            return punkt.PlanungsmatrixID !== null;
+          });
 
           this.DBProjektpunkte.CurrentProjektpunkt = Gesamtpunkteliste[0];
         }
-      }
 
-      debugger;
+        // Projektpunkte einsortieren
 
-      // Projektpunkte einsortieren
+        this.Displayliste = [];
 
-      this.Displayliste = [];
+        for(let Bereich of this.DB.Aufgabenbereicheliste) {
 
-      for(let Bereich of this.DB.Aufgabenbereicheliste) {
+          this.Displayliste[Bereich.id] = [];
 
-        this.Displayliste[Bereich.id] = [];
+          for(let Kostengruppe of this.DB.Kostengruppenliste) {
 
-        for(let Kostengruppe of this.DB.Kostengruppenliste) {
+            if(Kostengruppe.Display) {
 
-          if(Kostengruppe.Display) {
+              this.Displayliste[Bereich.id][Kostengruppe.Kostengruppennummer] = [];
 
-            this.Displayliste[Bereich.id][Kostengruppe.Kostengruppennummer] = [];
+              for(let Teilaufgabe of Bereich.Teilaufgabenbereiche[this.Leistungsphase]) {
 
-            for(let Teilaufgabe of Bereich.Teilaufgabenbereiche[this.DB.Leistungsphase]) {
+                this.Displayliste[Bereich.id][Kostengruppe.Kostengruppennummer][Teilaufgabe[Kostengruppe.Kostengruppennummer].id] = [];
 
-              this.Displayliste[Bereich.id][Kostengruppe.Kostengruppennummer][Teilaufgabe[Kostengruppe.Kostengruppennummer].id] = [];
+                Punkteliste = lodash.filter(Gesamtpunkteliste, (punkt: Projektpunktestruktur) => {
 
-              Punkteliste = lodash.filter(Gesamtpunkteliste, (punkt: Projektpunktestruktur) => {
+                  return punkt.Oberkostengruppe      === Kostengruppe.Kostengruppennummer &&
+                         punkt.AufgabenbereichID     === Bereich.id &&
+                         punkt.AufgabenteilbereichID === Teilaufgabe[Kostengruppe.Kostengruppennummer].id &&
+                         punkt.Leistungsphase        === this.Leistungsphase.toString();
+                });
 
-                return punkt.Oberkostengruppe      === Kostengruppe.Kostengruppennummer &&
-                       punkt.AufgabenbereichID     === Bereich.id &&
-                       punkt.AufgabenteilbereichID === Teilaufgabe[Kostengruppe.Kostengruppennummer].id;
-              });
+                this.Matrixpunkteanzahl += Punkteliste.length;
 
-              this.Displayliste[Bereich.id][Kostengruppe.Kostengruppennummer][Teilaufgabe[Kostengruppe.Kostengruppennummer].id] = Punkteliste;
-
+                this.Displayliste[Bereich.id][Kostengruppe.Kostengruppennummer][Teilaufgabe[Kostengruppe.Kostengruppennummer].id] = Punkteliste;
+              }
             }
           }
         }
       }
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'PrepareDaten', this.Debug.Typen.Page);
     }
   }
 
-  PrintConsole(Teilaufgabe: Teilaufgabeestruktur, Teilaufgabeliste: Teilaufgabeestruktur[]) {
-
-    try {
-
-      debugger;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'function', this.Debug.Typen.Page);
-    }
-
-  }
-
   TeilaufgabeClicked(teilaufgabe: Teilaufgabeestruktur, Kostengruppennummer: number, Leistungsphase: number) {
 
     try {
 
-      if(this.DB.MusterprojektAktiv === true) {
 
-        this.DBProjektpunkte.CurrentProjektpunkt = this.DBProjektpunkte.GetNewPlanungsmatrixpunkt(this.DB.Musterprojekt, teilaufgabe, Kostengruppennummer, Leistungsphase);
-
-      }
+      this.DBProjektpunkte.CurrentProjektpunkt = this.DBProjektpunkte.GetNewPlanungsmatrixpunkt(this.DBProjekte.CurrentProjekt, teilaufgabe, Kostengruppennummer, Leistungsphase);
 
       this.ShowEditor = true;
 
@@ -334,16 +353,16 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
 
       this.Auswahltitel  = 'Leistungsphase festlegen';
       this.Auswahlliste  = [];
-      this.Auswahlliste.push({ Index: 0, FirstColumn: this.Const.Leistungsphasenvarianten.LPH1, SecoundColumn: '', Data: 1 });
-      this.Auswahlliste.push({ Index: 1, FirstColumn: this.Const.Leistungsphasenvarianten.LPH2, SecoundColumn: '', Data: 2 });
-      this.Auswahlliste.push({ Index: 2, FirstColumn: this.Const.Leistungsphasenvarianten.LPH3, SecoundColumn: '', Data: 3 });
-      this.Auswahlliste.push({ Index: 3, FirstColumn: this.Const.Leistungsphasenvarianten.LPH4, SecoundColumn: '', Data: 4 });
-      this.Auswahlliste.push({ Index: 4, FirstColumn: this.Const.Leistungsphasenvarianten.LPH5, SecoundColumn: '', Data: 5 });
-      this.Auswahlliste.push({ Index: 5, FirstColumn: this.Const.Leistungsphasenvarianten.LPH6, SecoundColumn: '', Data: 6 });
-      this.Auswahlliste.push({ Index: 6, FirstColumn: this.Const.Leistungsphasenvarianten.LPH7, SecoundColumn: '', Data: 7 });
-      this.Auswahlliste.push({ Index: 7, FirstColumn: this.Const.Leistungsphasenvarianten.LPH8, SecoundColumn: '', Data: 8 });
+      this.Auswahlliste.push({ Index: 0, FirstColumn: this.Const.Leistungsphasenvarianten.LPH1, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH1 });
+      this.Auswahlliste.push({ Index: 1, FirstColumn: this.Const.Leistungsphasenvarianten.LPH2, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH2 });
+      this.Auswahlliste.push({ Index: 2, FirstColumn: this.Const.Leistungsphasenvarianten.LPH3, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH3 });
+      this.Auswahlliste.push({ Index: 3, FirstColumn: this.Const.Leistungsphasenvarianten.LPH4, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH4 });
+      this.Auswahlliste.push({ Index: 4, FirstColumn: this.Const.Leistungsphasenvarianten.LPH5, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH5 });
+      this.Auswahlliste.push({ Index: 5, FirstColumn: this.Const.Leistungsphasenvarianten.LPH6, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH6 });
+      this.Auswahlliste.push({ Index: 6, FirstColumn: this.Const.Leistungsphasenvarianten.LPH7, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH7 });
+      this.Auswahlliste.push({ Index: 7, FirstColumn: this.Const.Leistungsphasenvarianten.LPH8, SecoundColumn: '', Data: this.Const.Leistungsphasenvarianten.LPH8 });
 
-      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.DB.Leistungsphase });
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: 'LPH' + this.Leistungsphase.toString() });
       this.ShowAuswahl  = true;
 
     } catch (error) {
@@ -352,19 +371,186 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
     }
   }
 
-  AuswahlOkButtonClicked(data: any) {
+  AuswahlOkButtonClicked(data: string) {
 
     try {
 
-      this.DB.Leistungsphase = data;
-      this.ShowAuswahl       = false;
+      let Phase: string;
 
-      this.PrepareDaten();
+      Phase               = data.split('H')[1];
+      this.Leistungsphase = parseInt(Phase);
+
+      this.DBProjekte.CurrentProjekt.Leistungsphase = data;
+
+      this.DBProjekte.UpdateProjekt(this.DBProjekte.CurrentProjekt).then(() => {
+
+        this.PrepareDaten();
+      });
+
+      this.ShowAuswahl = false;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
     }
+  }
 
+  private async CopyPlanungsmatrix(Zielprojekt: Projektestruktur) {
+
+    try {
+
+      let Quelle: Projektpunktestruktur[] = [];
+      let Senke: Projektpunktestruktur[]  = [];
+      let New: Projektpunktestruktur[]    = [];
+      let Senkepunkt: Projektpunktestruktur;
+
+      Quelle = lodash.filter(this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey], (punkt: Projektpunktestruktur) => {
+
+        return punkt.PlanungsmatrixID !== null;
+      });
+
+      Senke = lodash.filter(this.Pool.Projektpunkteliste[Zielprojekt.Projektkey], (punkt: Projektpunktestruktur) => {
+
+        return punkt.PlanungsmatrixID !== null;
+      });
+
+      for(let Quellepunkt of Quelle) {
+
+        Senkepunkt = lodash.find(Senke, (currentpunkt: Projektpunktestruktur) => {
+
+          return currentpunkt.AufgabenbereichID === Quellepunkt.AufgabenbereichID &&
+            currentpunkt.AufgabenteilbereichID  === Quellepunkt.AufgabenteilbereichID &&
+            currentpunkt.Oberkostengruppe       === Quellepunkt.Oberkostengruppe &&
+            currentpunkt.UrsprungID             === Quellepunkt._id &&
+            currentpunkt.Leistungsphase         === Quellepunkt.Leistungsphase;
+        });
+
+        if(lodash.isUndefined(Senkepunkt)) {
+
+          Senkepunkt                  = lodash.cloneDeep(Quellepunkt);
+          Senkepunkt._id              = null;
+          Senkepunkt.UrsprungID       = Quellepunkt._id;
+          Senkepunkt.Projektkey       = Zielprojekt.Projektkey;
+          Senkepunkt.ProjektID        = Zielprojekt._id;
+          Senkepunkt.PlanungsmatrixID = Zielprojekt.Projektkey;
+          Senkepunkt.Verfasser =
+            {
+              Name:    this.Pool.Mitarbeiterdaten.Name,
+              Vorname: this.Pool.Mitarbeiterdaten.Vorname,
+              Email:   this.Pool.Mitarbeiterdaten.Email,
+            };
+
+          New.push(Senkepunkt);
+        }
+      }
+
+      debugger;
+
+      if(New.length > 0) {
+
+        await this.LoadingAnimation.ShowLoadingAnimation('Planungsmatrix', 'Einträge werden in Projekt ' + Zielprojekt.Projektname + ' kopiert.');
+
+        for(let Neweintrag of New) {
+
+          await this.DBProjektpunkte.AddProjektpunkt(Neweintrag);
+        }
+
+        await this.LoadingAnimation.HideLoadingAnimation(true);
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'CopyPlanungsmatrixClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  async CopyPlanungsmatrixClicked() {
+
+    try {
+
+      this.ShowProjektschnellauswahl = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'CopyPlanungsmatrixClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  CheckPrintPunkt(Punkt: Projektpunktestruktur): boolean {
+
+    try {
+
+      if(Punkt.Matrixanwendung === true) return true;
+      else {
+
+        if(this.DBProjekte.CurrentProjekt.DisplayUngenutzte === true) return true;
+        else return false;
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'CheckPrintPunkt', this.Debug.Typen.Page);
+    }
+  }
+
+  GetLeistungsphasenTitel(): string {
+
+    try {
+
+      if(this.DBProjekte.CurrentProjekt !== null) {
+
+        switch (this.DBProjekte.CurrentProjekt.Leistungsphase) {
+
+          case this.Const.Leistungsphasenvarianten.LPH1:
+
+            return '- LPH 1: Grundlagenermittlung';
+
+            break;
+
+          case this.Const.Leistungsphasenvarianten.LPH2:
+
+            return '- LPH 2: Vorplanung';
+
+            break;
+
+          case this.Const.Leistungsphasenvarianten.LPH3:
+
+            return '- LPH 3: Entwurfsplanung';
+
+            break;
+
+          case this.Const.Leistungsphasenvarianten.LPH4:
+
+            return  '- LPH 4: Genehmigungsplanung';
+
+            break;
+
+          case this.Const.Leistungsphasenvarianten.LPH5:
+
+            return '- LPH 5: Ausführungsplanung';
+
+            break;
+
+          case this.Const.Leistungsphasenvarianten.LPH6:
+
+            break;
+
+          case this.Const.Leistungsphasenvarianten.LPH7:
+
+            break;
+
+          case this.Const.Leistungsphasenvarianten.LPH8:
+
+            return '- LPH 8: Objektüberwachung';
+
+            break;
+        }
+      }
+      else return '';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'GetLeistungsphasenTitel', this.Debug.Typen.Page);
+    }
   }
 }

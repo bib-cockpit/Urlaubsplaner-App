@@ -55,7 +55,6 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
   public Lastletter: string;
   public Projektefiltertext: string;
   public Projekteliste: Projektestruktur[];
-  public DialogPosY: number;
   private StandortfilterSubsciption: Subscription;
 
   constructor(public Basics: BasicsProvider,
@@ -119,7 +118,7 @@ export class PjProjekteAuswahlComponent implements OnInit, OnDestroy {
       this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
 
       this.Dialoghoehe  = 100;
-      this.Dialoghoehe  = this.Basics.Contenthoehe - this.DialogPosY - 100 - 100;
+      this.Dialoghoehe  = this.Basics.Contenthoehe - this.PositionY - 100 - 100;
 
       debugger;
 

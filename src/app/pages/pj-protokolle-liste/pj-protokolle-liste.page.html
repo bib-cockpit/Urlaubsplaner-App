@@ -111,7 +111,7 @@
 </ion-footer>
 
 
-<pj-protokoll-editor *ngIf="ShowProtokollEditor"  [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+<pj-protokoll-editor *ngIf="ShowProtokollEditor"  [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="100"
                      [Titel]="GetProtokollTitel()" Iconname="book-outline"
                      [ZIndex]="2000"
                      (OkClickedEvent)="ShowProtokollEditor = false"
@@ -121,7 +121,7 @@
                      (ProtokollpunktClicked)="ProtokollpunktClickedHandler($event)"
                      (AddProtokollpunktClicked)="AddProtokollpunktClickedHandler()"></pj-protokoll-editor>
 
-<pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+<pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="100"
                         [ZIndex]="3000" [Titel]="GetProjektpunkteditorTitel()" Iconname="book-outline"
                         (StatusClicked)="StatusClickedHandler()"
                         (FachbereichClicked)="FachbereichClickedHandler()"
@@ -195,7 +195,7 @@
                             [ZIndex]="5000"
                             [Dialogbreite]="800"
                             [Dialoghoehe]="Auswahlhoehe"
-                            [PositionY]="200" [Titel]="'Projekt wechsel'" [Iconname]="'star-outline'"
+                            [PositionY]="100" [Titel]="'Projekt wechsel'" [Iconname]="'star-outline'"
                             (ProjektClickedEvent)="ProjektSchnellauswahlProjektClickedEventHandler($event)"
                             (CancelClickedEvent)="ShowProjektschnellauswahl = false"
                             (OkClickedEvent)="ShowProjektschnellauswahl = false">

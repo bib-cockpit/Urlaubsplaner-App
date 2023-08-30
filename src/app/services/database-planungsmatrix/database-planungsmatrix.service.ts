@@ -15,18 +15,15 @@ export class DatabasePlanungsmatrixService {
 
   public Kostengruppenliste: Kostengruppenstruktur[];
   public Aufgabenbereicheliste: Aufgabenbereichestruktur[];
-  public Leistungsphase: number;
-  public MusterprojektAktiv: boolean;
   public Zielvorgabentextliste: string[][];
   public Berechnungentextliste: string[][];
   public Bemessungentextliste: string[][];
   public Schematatextliste: string[][];
   public Plaenetextliste: string[][];
   public Koordinationtextliste: string[][];
+  public Bauangabentextliste: string[][];
   public Erlaeuterungtextliste: string[][];
   public Kostentextliste: string[][];
-  public ShowBeschreibungen: boolean;
-  public Musterprojekt: Projektestruktur;
 
   public DisplayKostengruppenChanged = new EventEmitter<any>();
 
@@ -35,11 +32,6 @@ export class DatabasePlanungsmatrixService {
               private Const: ConstProvider) {
     try {
 
-      this.Leistungsphase     = 2;
-      this.MusterprojektAktiv = true;
-      this.ShowBeschreibungen = true;
-      this.Musterprojekt      = null;
-
       this.InitAufgabenbereicheliste();
       this.InitZielvorgabentextliste();
       this.InitBerechnungentextliste();
@@ -47,6 +39,7 @@ export class DatabasePlanungsmatrixService {
       this.InitSchematatextliste();
       this.InitPlaenetextliste();
       this.InitKoordinationtextliste();
+      this.InitBauangabentextliste();
       this.InitErlaeuterungtextliste();
       this.InitKostentextliste();
 
@@ -56,15 +49,16 @@ export class DatabasePlanungsmatrixService {
     }
   }
 
-
   private InitKoordinationtextliste() {
 
     try {
 
+      let Text: string;
+
       this.Koordinationtextliste = [];
       this.Koordinationtextliste[1] = [];
 
-      let Text = `Abstimmung des technischen Gesamtkonzepts für eine passende technische und wirtschaftliche Gesamtlösung unter Beachtung der Zielvorgaben
+      Text = `Abstimmung des technischen Gesamtkonzepts für eine passende technische und wirtschaftliche Gesamtlösung unter Beachtung der Zielvorgaben
                   Abstimmen des Raumbedarfs aller Gewerke (z.B. VDI 2050) und Mitwirkung bei der Koordinierung zu einem Ganzen`;
 
       this.Koordinationtextliste[2]   = [];
@@ -78,7 +72,22 @@ export class DatabasePlanungsmatrixService {
       this.Koordinationtextliste[2][460] = Text;
       this.Koordinationtextliste[2][480] = Text;
 
-      this.Koordinationtextliste[3] = [];
+      Text = `gemeinsame Schnittstellendefinition zwischen den Gewerken der KG 400,
+nutzer- bzw. bauherrenseitigen oder bauseitigen Leistungen (Listen)
+Die Koordination erstreckt sich in dieser Phase bereits auf die Ausführbarkeit der Planung.
+Dazu sind eventuell Schnitte und Schachtausfädelungen erforderlich.`;
+
+      this.Koordinationtextliste[3]   = [];
+      this.Koordinationtextliste[3][410] = Text;
+      this.Koordinationtextliste[3][475] = Text;
+      this.Koordinationtextliste[3][420] = Text;
+      this.Koordinationtextliste[3][430] = Text;
+      this.Koordinationtextliste[3][434] = Text;
+      this.Koordinationtextliste[3][440] = Text;
+      this.Koordinationtextliste[3][450] = Text;
+      this.Koordinationtextliste[3][460] = Text;
+      this.Koordinationtextliste[3][480] = Text;
+
       this.Koordinationtextliste[4] = [];
       this.Koordinationtextliste[5] = [];
       this.Koordinationtextliste[6] = [];
@@ -92,33 +101,48 @@ export class DatabasePlanungsmatrixService {
   }
   private InitErlaeuterungtextliste() {
 
-    this.Erlaeuterungtextliste = [];
-    this.Erlaeuterungtextliste[1] = [];
-
-    let Text = `Fazit aus der Grundlagenermittlung bzw. Stellungsnahme, falls diese durch Dritte erstellt wurde. Der Erläuterungsbericht enthält alle
-    Angaben, Anlagenbeschreibungen und Daten zur Darstellung der Planung sowie der Variantenbetrachtungen, inklusive eines Vorschlags zum technischen
-    Gesamtkonzept oder einer Empfehlung.`;
-
-    this.Erlaeuterungtextliste[2]   = [];
-    this.Erlaeuterungtextliste[2][410] = Text;
-    this.Erlaeuterungtextliste[2][475] = Text;
-    this.Erlaeuterungtextliste[2][420] = Text;
-    this.Erlaeuterungtextliste[2][430] = Text;
-    this.Erlaeuterungtextliste[2][434] = Text;
-    this.Erlaeuterungtextliste[2][440] = Text;
-    this.Erlaeuterungtextliste[2][450] = Text;
-    this.Erlaeuterungtextliste[2][460] = Text;
-    this.Erlaeuterungtextliste[2][480] = Text;
-
-    this.Erlaeuterungtextliste[3] = [];
-    this.Erlaeuterungtextliste[4] = [];
-    this.Erlaeuterungtextliste[5] = [];
-    this.Erlaeuterungtextliste[6] = [];
-    this.Erlaeuterungtextliste[7] = [];
-    this.Erlaeuterungtextliste[8] = [];
-
     try {
 
+      let Text: string;
+
+      this.Erlaeuterungtextliste = [];
+      this.Erlaeuterungtextliste[1] = [];
+
+      Text = `Fazit aus der Grundlagenermittlung bzw. Stellungsnahme, falls diese durch Dritte erstellt wurde. Der Erläuterungsbericht enthält alle
+      Angaben, Anlagenbeschreibungen und Daten zur Darstellung der Planung sowie der Variantenbetrachtungen, inklusive eines Vorschlags zum technischen
+      Gesamtkonzept oder einer Empfehlung.`;
+
+      this.Erlaeuterungtextliste[2]   = [];
+      this.Erlaeuterungtextliste[2][410] = Text;
+      this.Erlaeuterungtextliste[2][475] = Text;
+      this.Erlaeuterungtextliste[2][420] = Text;
+      this.Erlaeuterungtextliste[2][430] = Text;
+      this.Erlaeuterungtextliste[2][434] = Text;
+      this.Erlaeuterungtextliste[2][440] = Text;
+      this.Erlaeuterungtextliste[2][450] = Text;
+      this.Erlaeuterungtextliste[2][460] = Text;
+      this.Erlaeuterungtextliste[2][480] = Text;
+
+      Text = `Fazit aus der Vorplanung bzw. Stellungnahme, falls diese durch Dritte erstellt wurde.
+Der Erläuterungsbericht enthält alle Angaben, Beschreibungen, Daten und
+Zusammenstellungen, um die Planung nachvollziehen und beurteilen zu können.`;
+
+      this.Erlaeuterungtextliste[3]      = [];
+      this.Erlaeuterungtextliste[3][410] = Text;
+      this.Erlaeuterungtextliste[3][475] = Text;
+      this.Erlaeuterungtextliste[3][420] = Text;
+      this.Erlaeuterungtextliste[3][430] = Text;
+      this.Erlaeuterungtextliste[3][434] = Text;
+      this.Erlaeuterungtextliste[3][440] = Text;
+      this.Erlaeuterungtextliste[3][450] = Text;
+      this.Erlaeuterungtextliste[3][460] = Text;
+      this.Erlaeuterungtextliste[3][480] = Text;
+
+      this.Erlaeuterungtextliste[4] = [];
+      this.Erlaeuterungtextliste[5] = [];
+      this.Erlaeuterungtextliste[6] = [];
+      this.Erlaeuterungtextliste[7] = [];
+      this.Erlaeuterungtextliste[8] = [];
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Planungsmatrix', 'InitErlaeuterungtextliste', this.Debug.Typen.Service);
@@ -128,10 +152,12 @@ export class DatabasePlanungsmatrixService {
 
     try {
 
+      let Text: string;
+
       this.Kostentextliste = [];
       this.Kostentextliste[1] = [];
 
-      let Text = `Anlagenspezifisch getrennt nach Zonen, Bauteilen oder Funktionsbereichen nach Vorgaben des AG bzw. des Architekten bis zur 2.
+      Text = `Anlagenspezifisch getrennt nach Zonen, Bauteilen oder Funktionsbereichen nach Vorgaben des AG bzw. des Architekten bis zur 2.
       Stufe der DIN 276`;
 
       this.Kostentextliste[2]      = [];
@@ -145,7 +171,19 @@ export class DatabasePlanungsmatrixService {
       this.Kostentextliste[2][460] = Text;
       this.Kostentextliste[2][480] = Text;
 
-      this.Kostentextliste[3] = [];
+      Text = `Grundlage: Berechnung der Mengen von Bezugseinheiten der Kostengruppe und Multiplikation mit Kostenansatz bis zur 2. Stufe der DIN 276`;
+
+      this.Kostentextliste[3]      = [];
+      this.Kostentextliste[3][410] = Text;
+      this.Kostentextliste[3][475] = Text;
+      this.Kostentextliste[3][420] = Text;
+      this.Kostentextliste[3][430] = Text;
+      this.Kostentextliste[3][434] = Text;
+      this.Kostentextliste[3][440] = Text;
+      this.Kostentextliste[3][450] = Text;
+      this.Kostentextliste[3][460] = Text;
+      this.Kostentextliste[3][480] = Text;
+
       this.Kostentextliste[4] = [];
       this.Kostentextliste[5] = [];
       this.Kostentextliste[6] = [];
@@ -162,10 +200,12 @@ export class DatabasePlanungsmatrixService {
 
     try {
 
+      let Text: string;
+
       this.Bemessungentextliste = [];
       this.Bemessungentextliste[1] = [];
 
-      let Text = `Grobbemessung`;
+      Text = `Grobbemessung`;
 
       this.Bemessungentextliste[2]   = [];
       this.Bemessungentextliste[2][410] = Text;
@@ -178,7 +218,22 @@ export class DatabasePlanungsmatrixService {
       this.Bemessungentextliste[2][460] = Text;
       this.Bemessungentextliste[2][480] = Text;
 
-      this.Bemessungentextliste[3] = [];
+      Text = `Die Bemessung erfolgt auf der Grundlage der vorliegenden Berechnungen.
+Die Bemessung hat so zu erfolgen, dass grundsätzliche Änderungen in der
+Ausführungsplanung bei unveränderten Planungsgrundlagen vermieden werden.\nAlle für das Brandschutzkonzept
+      notwendigen Dimensionierungen.`;
+
+      this.Bemessungentextliste[3]   = [];
+      this.Bemessungentextliste[3][410] = Text;
+      this.Bemessungentextliste[3][475] = Text;
+      this.Bemessungentextliste[3][420] = Text;
+      this.Bemessungentextliste[3][430] = Text;
+      this.Bemessungentextliste[3][434] = Text;
+      this.Bemessungentextliste[3][440] = Text;
+      this.Bemessungentextliste[3][450] = Text;
+      this.Bemessungentextliste[3][460] = Text;
+      this.Bemessungentextliste[3][480] = Text;
+
       this.Bemessungentextliste[4] = [];
       this.Bemessungentextliste[5] = [];
       this.Bemessungentextliste[6] = [];
@@ -195,10 +250,12 @@ export class DatabasePlanungsmatrixService {
 
     try {
 
+      let Text: string;
+
       this.Plaenetextliste = [];
       this.Plaenetextliste[1] = [];
 
-      let Text = `Einstrichdarstellung`;
+      Text = `Einstrichdarstellung`;
 
       this.Plaenetextliste[2]   = [];
       this.Plaenetextliste[2][410] = Text;
@@ -211,7 +268,19 @@ export class DatabasePlanungsmatrixService {
       this.Plaenetextliste[2][460] = Text;
       this.Plaenetextliste[2][480] = Text;
 
-      this.Plaenetextliste[3] = [];
+      Text = `Darstellung aller Ver- und Entsorgungsnetze mit den wesentlichen Funktionsgruppen und Funktionselementen`;
+
+      this.Plaenetextliste[3]   = [];
+      this.Plaenetextliste[3][410] = Text;
+      this.Plaenetextliste[3][475] = Text;
+      this.Plaenetextliste[3][420] = Text;
+      this.Plaenetextliste[3][430] = Text;
+      this.Plaenetextliste[3][434] = Text;
+      this.Plaenetextliste[3][440] = Text;
+      this.Plaenetextliste[3][450] = Text;
+      this.Plaenetextliste[3][460] = Text;
+      this.Plaenetextliste[3][480] = Text;
+
       this.Plaenetextliste[4] = [];
       this.Plaenetextliste[5] = [];
       this.Plaenetextliste[6] = [];
@@ -258,7 +327,20 @@ export class DatabasePlanungsmatrixService {
       this.Berechnungentextliste[2][460] = Text;
       this.Berechnungentextliste[2][480] = '';
 
-      this.Berechnungentextliste[3] = [];
+      Text = `Es dürfen aus der Tiefe der Berechnungen später keine grundsätzlichen Änderungen mehr resultieren.\nAlle für das Brandschutzkonzept
+      notwendigen Berechnungen.`;
+
+      this.Berechnungentextliste[3]      = [];
+      this.Berechnungentextliste[3][410] = Text;
+      this.Berechnungentextliste[3][475] = Text;
+      this.Berechnungentextliste[3][420] = Text;
+      this.Berechnungentextliste[3][430] = Text;
+      this.Berechnungentextliste[3][434] = Text;
+      this.Berechnungentextliste[3][440] = Text;
+      this.Berechnungentextliste[3][450] = Text;
+      this.Berechnungentextliste[3][460] = Text;
+      this.Berechnungentextliste[3][480] = '';
+
       this.Berechnungentextliste[4] = [];
       this.Berechnungentextliste[5] = [];
       this.Berechnungentextliste[6] = [];
@@ -268,6 +350,42 @@ export class DatabasePlanungsmatrixService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Planungsmatrix', 'InitBerechnungentextliste', this.Debug.Typen.Service);
+    }
+  }
+
+  private InitBauangabentextliste() {
+
+    try {
+
+      let Text: string;
+
+      this.Bauangabentextliste = [];
+
+      this.Bauangabentextliste[1]      = [];
+      this.Bauangabentextliste[2]      = [];
+
+      Text = `statisch relevante Durchbruchsgrößen und Lasten`;
+
+      this.Bauangabentextliste[3]      = [];
+      this.Bauangabentextliste[3][410] = Text;
+      this.Bauangabentextliste[3][475] = Text;
+      this.Bauangabentextliste[3][420] = Text;
+      this.Bauangabentextliste[3][430] = Text;
+      this.Bauangabentextliste[3][434] = Text;
+      this.Bauangabentextliste[3][440] = Text;
+      this.Bauangabentextliste[3][450] = Text;
+      this.Bauangabentextliste[3][460] = Text;
+      this.Bauangabentextliste[3][480] = '';
+
+      this.Bauangabentextliste[4] = [];
+      this.Bauangabentextliste[5] = [];
+      this.Bauangabentextliste[6] = [];
+      this.Bauangabentextliste[7] = [];
+      this.Bauangabentextliste[8] = [];
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Planungsmatrix', 'InitBauangabentextliste', this.Debug.Typen.Service);
     }
   }
 
@@ -309,7 +427,21 @@ export class DatabasePlanungsmatrixService {
       this.Zielvorgabentextliste[2][460] = Text;
       this.Zielvorgabentextliste[2][480] = Text;
 
-      this.Zielvorgabentextliste[3] = [];
+      Text = `Darstellung der Nutzervorgaben, Berechnungen bzw. Vorgaben aus den anerkannten Regeln der Technik = Grundlagen\n
+Die Entwurfsplanung ist durch den Auftraggeber auf Übereinstimmung mit seinen funktionalen
+Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.`;
+
+      this.Zielvorgabentextliste[3]      = [];
+      this.Zielvorgabentextliste[3][410] = Text;
+      this.Zielvorgabentextliste[3][475] = Text;
+      this.Zielvorgabentextliste[3][420] = Text;
+      this.Zielvorgabentextliste[3][430] = Text;
+      this.Zielvorgabentextliste[3][434] = Text;
+      this.Zielvorgabentextliste[3][440] = Text;
+      this.Zielvorgabentextliste[3][450] = Text;
+      this.Zielvorgabentextliste[3][460] = Text;
+      this.Zielvorgabentextliste[3][480] = Text;
+
       this.Zielvorgabentextliste[4] = [];
       this.Zielvorgabentextliste[5] = [];
       this.Zielvorgabentextliste[6] = [];
@@ -373,6 +505,7 @@ export class DatabasePlanungsmatrixService {
       let Bemessungenteilaufgaben:       Teilaufgabeestruktur[][][];
       let Schematateilaufgabenliste:     Teilaufgabeestruktur[][][];
       let Plaeneteilaufgabenliste:       Teilaufgabeestruktur[][][];
+      let Bauangabenteilaufgabenliste:   Teilaufgabeestruktur[][][];
       let Koordinationteilaufgabenliste: Teilaufgabeestruktur[][][];
       let Erlaeuterungteilaufgabenliste: Teilaufgabeestruktur[][][];
       let Kostenteilaufgabenliste:       Teilaufgabeestruktur[][][];
@@ -381,6 +514,13 @@ export class DatabasePlanungsmatrixService {
       this.Aufgabenbereicheliste  = [];
       Zielvorgabenteilaufgaben    = [];
       Zielvorgabenteilaufgaben[1] = [];
+      Zielvorgabenteilaufgaben[2] = [];
+      Zielvorgabenteilaufgaben[3] = [];
+      Zielvorgabenteilaufgaben[4] = [];
+      Zielvorgabenteilaufgaben[5] = [];
+      Zielvorgabenteilaufgaben[6] = [];
+      Zielvorgabenteilaufgaben[7] = [];
+      Zielvorgabenteilaufgaben[8] = [];
 
       Text = 'Kontaktaufnahme mit Versorgungsunternehmen';
 
@@ -396,13 +536,20 @@ export class DatabasePlanungsmatrixService {
       Zielvorgabenteilaufgaben[1][0][460] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_kontakt" };
       Zielvorgabenteilaufgaben[1][0][480] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_kontakt" };
 
-      Zielvorgabenteilaufgaben[2] = [];
-      Zielvorgabenteilaufgaben[3] = [];
-      Zielvorgabenteilaufgaben[4] = [];
-      Zielvorgabenteilaufgaben[5] = [];
-      Zielvorgabenteilaufgaben[6] = [];
-      Zielvorgabenteilaufgaben[7] = [];
-      Zielvorgabenteilaufgaben[8] = [];
+
+      Text = 'Prüfung und Abnahme der Planungsleistung';
+
+      Zielvorgabenteilaufgaben[3][0]      = [];
+      Zielvorgabenteilaufgaben[3][0][0]   = { AufgabenbereichID: "ziel", Beschreibung: "",   Bezeichnung: "Abnahme",     id: "ziel_abnahme" };
+      Zielvorgabenteilaufgaben[3][0][410] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_abnahme" };
+      Zielvorgabenteilaufgaben[3][0][475] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_abnahme" };
+      Zielvorgabenteilaufgaben[3][0][420] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_abnahme" };
+      Zielvorgabenteilaufgaben[3][0][430] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_abnahme" };
+      Zielvorgabenteilaufgaben[3][0][434] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_abnahme" };
+      Zielvorgabenteilaufgaben[3][0][440] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_abnahme" };
+      Zielvorgabenteilaufgaben[3][0][450] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_abnahme" };
+      Zielvorgabenteilaufgaben[3][0][460] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_abnahme" };
+      Zielvorgabenteilaufgaben[3][0][480] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_abnahme" };
 
       this.Aufgabenbereicheliste.push({
         id:              'ziel',
@@ -449,6 +596,18 @@ export class DatabasePlanungsmatrixService {
       Berechnungenteilaufgaben[2][0][460] = { AufgabenbereichID: "berech", Beschreibung: "Förderleistungsberechnung", Bezeichnung: "",          id: "berech_ausegung" };
       Berechnungenteilaufgaben[2][0][480] = { AufgabenbereichID: "berech", Beschreibung: "", Bezeichnung: "",          id: this.Const.NONE };
 
+      Berechnungenteilaufgaben[3][0]      = [];
+      Berechnungenteilaufgaben[3][0][0]   = { AufgabenbereichID: "berech", Beschreibung: "", Bezeichnung: "Allgemein", id: "berech_allgemein" };
+      Berechnungenteilaufgaben[3][0][410] = { AufgabenbereichID: "berech", Beschreibung: "Medienbedarf", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[3][0][475] = { AufgabenbereichID: "berech", Beschreibung: "Medienbedarf", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[3][0][420] = { AufgabenbereichID: "berech", Beschreibung: "Heizlast\nLeistungsbilanz\nthermische Gebäudesimulation für relevante Bereiche falls erforderlich", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[3][0][430] = { AufgabenbereichID: "berech", Beschreibung: "Volumenströme\nKühllast\nHeizlast\nThermische Gebäudesimulation\nbzw. Strömungssimulationen\nsind ggf.\nprojektspezifisch mit Zielsetzung\nder Untersuchung\nzu vereinbaren.", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[3][0][434] = { AufgabenbereichID: "berech", Beschreibung: "Kühlflächenauslegung\nLeistungsbilanz\nthermische Gebäudesimulation\nfür\nrelevante Bereiche\nfalls erforderlich", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[3][0][440] = { AufgabenbereichID: "berech", Beschreibung: "Beleuchtungsberech.\n Leistungsbilanz", Bezeichnung: "",          id: "berech_ausegung" };
+      Berechnungenteilaufgaben[3][0][450] = { AufgabenbereichID: "berech", Beschreibung: "", Bezeichnung: "",          id: this.Const.NONE };
+      Berechnungenteilaufgaben[3][0][460] = { AufgabenbereichID: "berech", Beschreibung: "Förderleistungsberech.\nin Vorplanung\nNachberechnung\nin Entwurf", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[3][0][480] = { AufgabenbereichID: "berech", Beschreibung: "", Bezeichnung: "",          id: this.Const.NONE };
+
 
       this.Aufgabenbereicheliste.push(
         {
@@ -456,7 +615,7 @@ export class DatabasePlanungsmatrixService {
           Bezeichnung:          "Berechnungen",
           Beschreibung:         '',
           Leistungsphasen:      [1, 2, 3, 4, 5, 6, 7, 8],
-          Nummer:               [2, 2, 1, 1, 1, 1, 1, 1],
+          Nummer:               [2, 2, 2, 0, 2, 0, 0, 0],
           Teilaufgabenbereiche: Berechnungenteilaufgaben
         });
 
@@ -510,12 +669,24 @@ export class DatabasePlanungsmatrixService {
       Bemessungenteilaufgaben[2][2][460] = { AufgabenbereichID: "bemess", Beschreibung: `Maschine`, Bezeichnung: "",   id: "bemess_anschluesse" };
       Bemessungenteilaufgaben[2][2][480] = { AufgabenbereichID: "bemess", Beschreibung: ``,         Bezeichnung: "",   id: this.Const.NONE };
 
+      Bemessungenteilaufgaben[3][0]      = [];
+      Bemessungenteilaufgaben[3][0][0]   = { AufgabenbereichID: "bemess", Beschreibung: "", Bezeichnung: "Allgemein", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[3][0][410] = { AufgabenbereichID: "bemess", Beschreibung: `Löschwasserbehälter<br>Pumpen<br>Hebeanlagen<br>Wärmetauscher`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[3][0][475] = { AufgabenbereichID: "bemess", Beschreibung: `Löschwasserbehälter<br>Pumpen<br>Hebeanlagen<br>Wärmetauscher`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[3][0][420] = { AufgabenbereichID: "bemess", Beschreibung: `Kessel<br>Wämetauscher<br>Pumpen<br>Behälter<br>überschlägige<br>Heizflächenauslegung`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[3][0][430] = { AufgabenbereichID: "bemess", Beschreibung: `RLT-Geräte<br>Wärmetauscher<br>Luftdurchlässe`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[3][0][434] = { AufgabenbereichID: "bemess", Beschreibung: `Kältemaschine<br>Rückkühlung<br>Wärmetauscher<br>Pumpen<br>Behälter`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[3][0][440] = { AufgabenbereichID: "bemess", Beschreibung: `Trafo, NEA<br>Zentralbatterie<br>NSHV, Zähler- und Unterverteilungen<br>Kompensationsanlagen<br>Blitzschutz, Erdung`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[3][0][450] = { AufgabenbereichID: "bemess", Beschreibung: `Zentrale Einrichtungen<br>Antenne, BMZ, ELA, Lichtruf, Datenverteiler, Antennenanlage`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[3][0][460] = { AufgabenbereichID: "bemess", Beschreibung: `Förderhöhe<br>Geschwindigkeit<br>Tragfähigkeit<br>Haltestellen<br>Antriebsart, Steuerung<br>Anzeigen`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[3][0][480] = { AufgabenbereichID: "bemess", Beschreibung: "", Bezeichnung: "", id: this.Const.NONE };
+
       this.Aufgabenbereicheliste.push({
         id:                   'bemess',
         Bezeichnung:          "Bemessungen",
         Beschreibung:         '',
         Leistungsphasen:      [   2, 3, 4, 5, 6, 7, 8],
-        Nummer:               [0, 3, 1, 1, 1, 1, 1, 1],
+        Nummer:               [0, 3, 3, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Bemessungenteilaufgaben
       });
 
@@ -529,27 +700,36 @@ export class DatabasePlanungsmatrixService {
       Schematateilaufgabenliste[7] = [];
       Schematateilaufgabenliste[8] = [];
 
-      Text = `Erläuterungsbericht`;
-
       Schematateilaufgabenliste[2][0]      = [];
-      Schematateilaufgabenliste[2][0][0]   = { AufgabenbereichID: "schema", Beschreibung: "",   Bezeichnung: "Anlagen",   id: "erbe_anlagen" };
-      Schematateilaufgabenliste[2][0][410] = { AufgabenbereichID: "schema", Beschreibung: "TWK, TWW VErsorgung, SW, RW Entsorgung", Bezeichnung: "", id: "erbe_anlagen" };
-      Schematateilaufgabenliste[2][0][475] = { AufgabenbereichID: "schema", Beschreibung: "TWK, TWW VErsorgung, SW, RW Entsorgung", Bezeichnung: "", id: "erbe_anlagen" };
-      Schematateilaufgabenliste[2][0][420] = { AufgabenbereichID: "schema", Beschreibung: "Wärmeversorgung",                        Bezeichnung: "", id: "erbe_anlagen" };
-      Schematateilaufgabenliste[2][0][430] = { AufgabenbereichID: "schema", Beschreibung: "charakteristische Anlagen",              Bezeichnung: "", id: "erbe_anlagen" };
-      Schematateilaufgabenliste[2][0][434] = { AufgabenbereichID: "schema", Beschreibung: "Kälteversorgung",                        Bezeichnung: "", id: "erbe_anlagen" };
-      Schematateilaufgabenliste[2][0][440] = { AufgabenbereichID: "schema", Beschreibung: "Stromversorgung",                        Bezeichnung: "", id: "erbe_anlagen" };
-      Schematateilaufgabenliste[2][0][450] = { AufgabenbereichID: "schema", Beschreibung: "BMA, SiBe, TK, etc. ",                   Bezeichnung: "", id: "erbe_anlagen" };
-      Schematateilaufgabenliste[2][0][460] = { AufgabenbereichID: "schema", Beschreibung: "Förderhöhe, Haltestellen, Antriebsart",  Bezeichnung: "", id: "erbe_anlagen" };
-      Schematateilaufgabenliste[2][0][480] = { AufgabenbereichID: "schema", Beschreibung: "Übersichtsschema",                       Bezeichnung: "", id: "erbe_anlagen" };
+      Schematateilaufgabenliste[2][0][0]   = { AufgabenbereichID: "schema", Beschreibung: "",   Bezeichnung: "Anlagen",   id: "schema_anlagen" };
+      Schematateilaufgabenliste[2][0][410] = { AufgabenbereichID: "schema", Beschreibung: "TWK, TWW VErsorgung, SW, RW Entsorgung", Bezeichnung: "", id: "schema_anlagen" };
+      Schematateilaufgabenliste[2][0][475] = { AufgabenbereichID: "schema", Beschreibung: "TWK, TWW VErsorgung, SW, RW Entsorgung", Bezeichnung: "", id: "schema_anlagen" };
+      Schematateilaufgabenliste[2][0][420] = { AufgabenbereichID: "schema", Beschreibung: "Wärmeversorgung",                        Bezeichnung: "", id: "schema_anlagen" };
+      Schematateilaufgabenliste[2][0][430] = { AufgabenbereichID: "schema", Beschreibung: "charakteristische Anlagen",              Bezeichnung: "", id: "schema_anlagen" };
+      Schematateilaufgabenliste[2][0][434] = { AufgabenbereichID: "schema", Beschreibung: "Kälteversorgung",                        Bezeichnung: "", id: "schema_anlagen" };
+      Schematateilaufgabenliste[2][0][440] = { AufgabenbereichID: "schema", Beschreibung: "Stromversorgung",                        Bezeichnung: "", id: "schema_anlagen" };
+      Schematateilaufgabenliste[2][0][450] = { AufgabenbereichID: "schema", Beschreibung: "BMA, SiBe, TK, etc. ",                   Bezeichnung: "", id: "schema_anlagen" };
+      Schematateilaufgabenliste[2][0][460] = { AufgabenbereichID: "schema", Beschreibung: "Förderhöhe, Haltestellen, Antriebsart",  Bezeichnung: "", id: "schema_anlagen" };
+      Schematateilaufgabenliste[2][0][480] = { AufgabenbereichID: "schema", Beschreibung: "Übersichtsschema",                       Bezeichnung: "", id: "schema_anlagen" };
 
+      Schematateilaufgabenliste[3][0]      = [];
+      Schematateilaufgabenliste[3][0][0]   = { AufgabenbereichID: "schema", Beschreibung: "", Bezeichnung: "Funktionsschema<br>Stangschema",   id: "schema_funktion" };
+      Schematateilaufgabenliste[3][0][410] = { AufgabenbereichID: "schema", Beschreibung: "Versorgung TWK<br>Versorgung TWW<br>Entsorgung SW<br>Entsorgung RW<br>Funktions- und Strangschema", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[3][0][475] = { AufgabenbereichID: "schema", Beschreibung: "Versorgung TWK<br>Versorgung TWW<br>Entsorgung SW<br>Entsorgung RW<br>Funktions- und Strangschema", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[3][0][420] = { AufgabenbereichID: "schema", Beschreibung: "Wärmeversorgung<br>Wasseraufbereitung<br>Wärmeverteilung<br>Wärmeverbrauchseinrichtungen<br>kein Strangschema<br>Regelventile", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[3][0][430] = { AufgabenbereichID: "schema", Beschreibung: "für jede Anlage mit Funktion<br>Gerät und Prinzip der<br>Luftverteilung<br>alle Komponenten für einen<br>sicheren Betrieb aufzeigen", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[3][0][434] = { AufgabenbereichID: "schema", Beschreibung: "Kälteversorgung<br>Wasseraufbereitung<br>Kälteverteilung<br>kein Strangschema", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[3][0][440] = { AufgabenbereichID: "schema", Beschreibung: "Mittelspannung<br>Niederspannung<br>Netzersatzanlage<br>Energiereverteilung<br>bis Unterverteilung<br>Sicherheitsbeleucht.", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[3][0][450] = { AufgabenbereichID: "schema", Beschreibung: "für alle Anlagen, z.B.<br>ELA-Anlage,<br>BM-Anlagen,<br>TK-Anlagen,<br>Such- und Signalanlagen<br>EM-Anlagen etc.", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[3][0][460] = { AufgabenbereichID: "schema", Beschreibung: "Übersichtschema für Förderhöhe<br>Bericht<br>Haltestellen<br>Antriebsart", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[3][0][480] = { AufgabenbereichID: "schema", Beschreibung: "Regelschema<br>GA-Schema<br>Datenpunktlisten", Bezeichnung: "", id: "schema_funktion" };
 
       this.Aufgabenbereicheliste.push({
         id:                   'schema',
         Bezeichnung:          "Schemata",
         Beschreibung:         '',
         Leistungsphasen:      [   2, 3, 4, 5, 6, 7, 8],
-        Nummer:               [0, 4, 1, 1, 1, 1, 1, 1],
+        Nummer:               [0, 4, 4, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Schematateilaufgabenliste
       });
 
@@ -568,7 +748,7 @@ export class DatabasePlanungsmatrixService {
         Bezeichnung:          "Pläne",
         Beschreibung:         '',
         Leistungsphasen:      [   2, 3, 4, 5, 6, 7, 8],
-        Nummer:               [0, 5, 1, 1, 1, 1, 1, 1],
+        Nummer:               [0, 5, 5, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Plaeneteilaufgabenliste
       });
 
@@ -602,8 +782,28 @@ export class DatabasePlanungsmatrixService {
         Bezeichnung:          "Koordination",
         Beschreibung:         '',
         Leistungsphasen:      [   2, 3, 4, 5, 6, 7, 8],
-        Nummer:               [0, 6, 1, 1, 1, 1, 1, 1],
+        Nummer:               [0, 6, 6, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Koordinationteilaufgabenliste
+      });
+
+
+      Bauangabenteilaufgabenliste    = [];
+      Bauangabenteilaufgabenliste[1] = [];
+      Bauangabenteilaufgabenliste[2] = [];
+      Bauangabenteilaufgabenliste[3] = [];
+      Bauangabenteilaufgabenliste[4] = [];
+      Bauangabenteilaufgabenliste[5] = [];
+      Bauangabenteilaufgabenliste[6] = [];
+      Bauangabenteilaufgabenliste[7] = [];
+      Bauangabenteilaufgabenliste[8] = [];
+
+      this.Aufgabenbereicheliste.push({
+        id:                     'bauangaben',
+        Bezeichnung:          "Bauangaben",
+        Beschreibung:         '',
+        Leistungsphasen:      [      3 ],
+        Nummer:               [0, 0, 7, 0, 0, 0, 0, 0],
+        Teilaufgabenbereiche: Bauangabenteilaufgabenliste
       });
 
       Erlaeuterungteilaufgabenliste    = [];
@@ -630,12 +830,14 @@ export class DatabasePlanungsmatrixService {
       Erlaeuterungteilaufgabenliste[2][0][460] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
       Erlaeuterungteilaufgabenliste[2][0][480] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
 
+
+
       this.Aufgabenbereicheliste.push({
         id: 'erbe',
         Bezeichnung: "Erläuterung",
         Beschreibung: '',
         Leistungsphasen: [   2, 3, 4, 5, 6, 7, 8],
-        Nummer: [0, 7, 1, 1, 1, 1, 1, 1],
+        Nummer:          [0, 7, 8, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Erlaeuterungteilaufgabenliste
       });
 
@@ -669,7 +871,7 @@ export class DatabasePlanungsmatrixService {
         Bezeichnung:          "Kosten",
         Beschreibung:         '',
         Leistungsphasen:      [   2, 3, 4, 5, 6, 7, 8],
-        Nummer:               [0, 8, 1, 1, 1, 1, 1, 1],
+        Nummer:               [0, 8, 9, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Kostenteilaufgabenliste
       });
 
@@ -720,7 +922,20 @@ export class DatabasePlanungsmatrixService {
       this.Schematatextliste[2][460] = Text;
       this.Schematatextliste[2][480] = Text;
 
-      this.Schematatextliste[3] = [];
+      Text = `Funktionsschemata zur Darstellung der Funktionen der geplanten Anlagen falls erforderlich.\nAlle für das Brandschutzkonzept
+      notwendigen Zeichnungen.`;
+
+      this.Schematatextliste[3]   = [];
+      this.Schematatextliste[3][410] = Text;
+      this.Schematatextliste[3][475] = Text;
+      this.Schematatextliste[3][420] = Text;
+      this.Schematatextliste[3][430] = Text;
+      this.Schematatextliste[3][434] = Text;
+      this.Schematatextliste[3][440] = Text;
+      this.Schematatextliste[3][450] = Text;
+      this.Schematatextliste[3][460] = Text;
+      this.Schematatextliste[3][480] = Text;
+
       this.Schematatextliste[4] = [];
       this.Schematatextliste[5] = [];
       this.Schematatextliste[6] = [];

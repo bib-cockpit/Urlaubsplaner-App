@@ -1276,6 +1276,8 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
         // Projektfavoriten Daten
 
+        debugger;
+
         if(this.DBProjekte.CurrentProjekt !== null && this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
 
 

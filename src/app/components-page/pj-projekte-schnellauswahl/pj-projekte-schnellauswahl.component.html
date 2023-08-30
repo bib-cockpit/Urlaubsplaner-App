@@ -3,7 +3,11 @@
   <div  class="keeperdivclass" [style.background]="Displayservice.ShowOpacity(Displayservice.Dialognamen.AufgabeProjektauswahl) ? 'rgba(0, 0, 0, 0.5)' : 'none'" (click)="ContentClicked($event)">
     <div class="contentdivclass"
          [style.width.px]="Dialogbreite"
-         [style.height.px]="Dialoghoehe" [style.top.px]="DialogPosY" (click)="ContentClicked($event)">
+          [style.top.px]="PositionY" [style.bottom.px]="PositionY" (click)="ContentClicked($event)">
+      <!--
+      [style.height.px]="Dialoghoehe"
+      -->
+
       <ion-header>
         <page-header-center>
           <table class="paddingsmalltable">

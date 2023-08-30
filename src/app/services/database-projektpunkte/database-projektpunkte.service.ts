@@ -399,6 +399,7 @@ export class DatabaseProjektpunkteService {
         ProjektleiterID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : null,
         ProtokollID:     null,
         LOPListeID:      null,
+        UrsprungID:      null,
         PlanungsmatrixID: null,
         AufgabenbereichID: null,
         AufgabenteilbereichID: null,
@@ -490,6 +491,7 @@ export class DatabaseProjektpunkteService {
         ProjektleiterID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : null,
         ProtokollID:     null,
         LOPListeID:      null,
+        UrsprungID:      null,
         PlanungsmatrixID: Projekt !== null ? Projekt.Projektkey : null,
         AufgabenbereichID:     teilaufgabe.AufgabenbereichID,
         AufgabenteilbereichID: teilaufgabe.id,
@@ -581,6 +583,7 @@ export class DatabaseProjektpunkteService {
         Projektkey:      this.DBProjekt.CurrentProjekt !== null ? this.DBProjekt.CurrentProjekt.Projektkey : null,
         ProjektleiterID: this.Pool.Mitarbeiterdaten    !== null ? this.Pool.Mitarbeiterdaten._id : null,
         ProtokollID:     null,
+        UrsprungID:      null,
         LOPListeID:      null,
         PlanungsmatrixID: null,
         AufgabenbereichID: null,
@@ -680,6 +683,7 @@ export class DatabaseProjektpunkteService {
         ProjektleiterID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : null,
         ProtokollID:     Protokoll !== null ? Protokoll._id : null,
         LOPListeID:      null,
+        UrsprungID:      null,
         PlanungsmatrixID: null,
         AufgabenbereichID: null,
         AufgabenteilbereichID: null,
@@ -1027,6 +1031,7 @@ export class DatabaseProjektpunkteService {
         ProjektID:       lopliste !== null ? lopliste.ProjektID : null,
         ProjektleiterID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : null,
         ProtokollID:     null,
+        UrsprungID:      null,
         LOPListeID:      lopliste !== null ? lopliste._id : null,
         PlanungsmatrixID: null,
         AufgabenbereichID: null,
@@ -1392,8 +1397,7 @@ export class DatabaseProjektpunkteService {
 
     try {
 
-      let MeintagGoOn: boolean = false;
-      let GoOn: boolean = true;
+      let GoOn: boolean;
       let Stichtag: Moment;
       let Settings: Mitarbeitersettingsstruktur = (this.Pool.Mitarbeitersettings === null || lodash.isUndefined(this.Pool.Mitarbeitersettings) === true) ? this.Pool.GetNewMitarbeitersettings() : this.Pool.Mitarbeitersettings;
 
@@ -1408,7 +1412,7 @@ export class DatabaseProjektpunkteService {
       // let NaechsteWoche: number       = this.Heute.isoWeek();
       //  let Faellig: boolean = this.CheckProjektpunktFaellig(Projektpunkt) !== this.Const.Faelligkeitsstatus.Nicht_faellig ? true : false;
 
-      MeintagGoOn = true;
+      GoOn = true;
 
       if(this.CheckIsMeintag(Projektpunkt) === false) {
 
@@ -1418,11 +1422,13 @@ export class DatabaseProjektpunkteService {
 
         // in Meintagliste
 
-        if(ShowMeintag === true) MeintagGoOn = true;
-        else                     MeintagGoOn = false;
+        if(ShowMeintag === true) GoOn = true;
+        else                     GoOn = false;
       }
 
-      if(MeintagGoOn === true) {
+      if(Projektpunkt.PlanungsmatrixID !== null) GoOn = false;
+
+      if(GoOn === true) {
 
           switch (Projektpunkt.Status) {
 

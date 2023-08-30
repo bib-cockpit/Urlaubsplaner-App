@@ -17,6 +17,7 @@ export type Projektpunktestruktur = {
   Projektkey:             string;
   NotizenID:              string;
   FestlegungskategorieID: string;
+  UrsprungID:             string;
   Listenposition:      number;
   Nummer:              string;
   Aufgabe:             string;

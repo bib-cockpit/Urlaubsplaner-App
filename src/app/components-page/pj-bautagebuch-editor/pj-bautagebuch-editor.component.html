@@ -8,7 +8,7 @@
         <page-header>
           <table class="paddingsmalltable">
             <tr>
-              <td><ion-icon [name]="Iconname" color="burnicklgruen"></ion-icon></td>
+              <td><ion-icon [name]="Iconname" color="weiss"></ion-icon></td>
               <td [style.color]="'white'">{{Titel}}</td>
             </tr>
           </table>
@@ -215,12 +215,12 @@
             <tr>
               <td>
                 <div class="rootbuttonclass" (click)="CancelButtonClicked()">
-                  <ion-icon style="font-size: 28px" color="burnicklgruen" name="close-outline"></ion-icon>
+                  <ion-icon style="font-size: 28px" color="weiss" name="close-outline"></ion-icon>
                 </div>
               <td style="width: 100%"></td>
               <td>
                 <div class="rootbuttonclass" (click)="Valid === true ? OkButtonClicked() : null">
-                  <ion-icon style="font-size: 28px" [color]="Valid === true ? 'burnicklgruen' : 'burnicklbraun'" name="save-outline"></ion-icon>
+                  <ion-icon style="font-size: 28px" [color]="Valid === true ? 'weiss' : 'grau'" name="save-outline"></ion-icon>
                 </div>
               </td>
             </tr>

@@ -1,3 +1,13 @@
+.projecticonclass {
+
+  height: 34px;
+  width: 34px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+}
+
 .keeperdiv {
 
   width:      100%;
@@ -7,10 +17,20 @@
   flex-direction: column;
 }
 
+.rootbuttonclass {
+
+  cursor: pointer;
+  min-width: 32px;
+  min-height: 32px;
+  display: flex;
+  justify-content: flex-end; // horizontal
+  align-items: center; // vertikal
+}
+
 .listeheaderdiv {
 
   width: 100%;
-  height: 44px;
+  height: 116px;
   background: white;
   z-index: 10;
 }
@@ -27,7 +47,6 @@
 
 .aufgabeclass {
 
-  color: #0A63C9;
   font-weight: bold;
   text-decoration: none;
   cursor: pointer;
@@ -43,7 +62,7 @@
 
 .aufgabeunusedclass {
 
-  color: #0A63C9;
+  color: red;
   font-weight: bold;
   text-decoration: line-through;
   cursor: pointer;
@@ -58,9 +77,10 @@
 .hoverdivclass {
   background: white;
   width:      100%;
+  height:     100%;
   color:      black;
   padding:    2px;
-  display: flex;
+  display:    flex;
   justify-content: center; // horizontal
   align-items: center; // vertikal
 }
@@ -71,6 +91,7 @@
   cursor:     pointer;
   padding:    2px;
   width:      100%;
+  height:     100%;
 }
 
 .projektbuttoniconclass {

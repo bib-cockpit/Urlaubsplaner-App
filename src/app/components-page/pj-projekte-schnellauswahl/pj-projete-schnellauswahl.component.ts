@@ -39,7 +39,6 @@ export class PjProjeteSchnellauswahlComponent implements OnInit, OnDestroy, Afte
   public Projektliste: Projektestruktur[];
   public Datenliste: Projektestruktur[];
   public DataSubscription: Subscription;
-  public DialogPosY: number;
 
   @Output() CancelClickedEvent    = new EventEmitter<any>();
   @Output() OkClickedEvent        = new EventEmitter<any>();
@@ -47,6 +46,8 @@ export class PjProjeteSchnellauswahlComponent implements OnInit, OnDestroy, Afte
 
 
   @Input() Titel: string;
+  @Input() ShowAllProjekte: boolean;
+  @Input() ShowMusterprojekt: boolean;
   @Input() Iconname: string;
   @Input() Dialogbreite: number;
   @Input() Dialoghoehe: number;
@@ -60,22 +61,22 @@ export class PjProjeteSchnellauswahlComponent implements OnInit, OnDestroy, Afte
               public Const: ConstProvider,
               public Basics: BasicsProvider,
               public  Pool: DatabasePoolService,
-              private DBMitarbeiter: DatabaseMitarbeiterService,
-              private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public DBStandort: DatabaseStandorteService,
               public DBProjekte: DatabaseProjekteService) {
     try {
 
-      this.Titel             = this.Const.NONE;
-      this.Iconname          = 'location-outline';
-      this.Dialogbreite      = 700;
-      this.Dialoghoehe       = 300;
-      this.PositionY         = 100;
-      this.ZIndex            = 2000;
-      this.Projektliste      = [];
-      this.Datenliste        = [];
-      this.DataSubscription  = null;
-      this.CurrentIndex      = -1;
+      this.Titel              = this.Const.NONE;
+      this.Iconname           = 'location-outline';
+      this.Dialogbreite       = 700;
+      this.Dialoghoehe        = 300;
+      this.PositionY          = 100;
+      this.ZIndex             = 2000;
+      this.Projektliste       = [];
+      this.Datenliste         = [];
+      this.DataSubscription   = null;
+      this.CurrentIndex       = -1;
+      this.ShowAllProjekte    = false;
+      this.ShowMusterprojekt  = true;
 
     } catch (error) {
 
@@ -109,8 +110,7 @@ export class PjProjeteSchnellauswahlComponent implements OnInit, OnDestroy, Afte
       this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
 
 
-      this.DialogPosY   = 100;
-      this.Dialoghoehe  = this.Basics.Contenthoehe - this.DialogPosY - 100 - 100;
+      this.Dialoghoehe  = this.Basics.Contenthoehe - this.PositionY - 100 - 100;
 
       this.Displayservice.AddDialog(this.Displayservice.Dialognamen.AufgabeProjektauswahl, this.ZIndex);
 
@@ -179,16 +179,32 @@ export class PjProjeteSchnellauswahlComponent implements OnInit, OnDestroy, Afte
 
       if (this.Pool.Mitarbeiterdaten !== null) {
 
-        for (let ProjektID of this.Pool.Mitarbeiterdaten.Favoritenliste[this.DBProjekte.CurrentFavoritenlisteindex].Projekteliste) {
+        if(this.ShowAllProjekte === false) {
 
-          Projekt = lodash.find(this.DBProjekte.Gesamtprojektliste, {_id: this.Pool.Mitarbeiterdaten.Favoritenliste[this.DBProjekte.CurrentFavoritenlisteindex].Projekteliste[Projektindex]});
+          // Nur Favoriten anzeigen
 
-          if (!lodash.isUndefined(Projekt)) this.Datenliste.push(Projekt);
+          for (let ProjektID of this.Pool.Mitarbeiterdaten.Favoritenliste[this.DBProjekte.CurrentFavoritenlisteindex].Projekteliste) {
 
-          Projektindex++;
+            Projekt = lodash.find(this.DBProjekte.Gesamtprojektliste, {_id: this.Pool.Mitarbeiterdaten.Favoritenliste[this.DBProjekte.CurrentFavoritenlisteindex].Projekteliste[Projektindex]});
+
+            if (!lodash.isUndefined(Projekt)) this.Datenliste.push(Projekt);
+
+            Projektindex++;
+          }
+        }
+        else {
+
+          this.Datenliste = lodash.cloneDeep(this.DBProjekte.Gesamtprojektliste);
         }
       }
 
+      if(this.ShowMusterprojekt === false) {
+
+        this.Datenliste = lodash.filter(this.Datenliste, (projekt: Projektestruktur) => {
+
+          return projekt.Projektkey !== 'Musterprojekt';
+        });
+      }
 
     } catch (error) {
 
