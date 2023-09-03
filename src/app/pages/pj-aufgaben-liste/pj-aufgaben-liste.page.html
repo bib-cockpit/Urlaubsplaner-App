@@ -50,8 +50,42 @@
       </div>
 
     </ng-container>
-
     <div *ngIf="Meilensteineprojektpunkteliste.length === 0" class="keineintragclass">
+      Keine Aufgaben vorhanden
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Alle">
+    <ng-container  *ngFor="let Datenliste of this.AlleProjektpunkteliste; let projektindex = index">
+
+      <div style="padding: 4px;">
+        <pj-projektpunkteliste [Datenliste]="Datenliste"
+                               [CheckFilterEnabled]="false"
+                               [ShowProjektnamen]="true"
+                               [ShowMeintag]="true"
+                               [Projekt]="AlleProjektliste[projektindex]"
+                               (FortschrittClicked)="FortschrittClickedHandler($event, projektindex, Datenursprungsvarianten.Alle)"
+                               (ZustaendigExternZuweisenClicked)="ListeZustaendigExternHandler($event, projektindex, Datenursprungsvarianten.Alle)"
+                               (ZustaendigInternZuweisenClicked)="ListeZustaendigInternHandler($event, projektindex, Datenursprungsvarianten.Alle)"
+                               (StatusClicked)="StatusClickedHandler($event, projektindex, Datenursprungsvarianten.Alle)"
+                               (EndedatumClicked)="EndedatumClickedHandler($event, projektindex, Datenursprungsvarianten.Alle)"
+                               (MeintagClicked)="PrepareDaten()"
+                               (MeilensteinClicked)="PrepareDaten()"
+                               (ProtokollmarkeClicked)="ProtokollmarkeClickedHandler()"
+                               (LOPListerMarkeClicked)="LOPListerMarkeClickedHandler()"
+                               (EmailMarkeClicked)="EmailMarkeClickedHandler($event)"
+                               (AufgabeClicked)="AufgabeClickedHandler($event, projektindex, Datenursprungsvarianten.Alle)"
+                               (TerminFiltermodusClicked)="TerminFiltermodusClickedHandler($event)"
+                               (AddProjektpunktClicked)="AddAufgabeClickedHandler(projektindex, Datenursprungsvarianten.Alle)"
+                               (MeinewocheZuweisenClicked)="MeinewocheZuweisenClickedHandler($event, projektindex, Datenursprungsvarianten.Alle)"
+                               (MeinewocheBearbeitenClicked)="MeineWocheBearbeitenClickedHandler($event, projektindex, Datenursprungsvarianten.Alle)">
+        </pj-projektpunkteliste>
+
+      </div>
+
+    </ng-container>
+
+    <div *ngIf="AlleProjektpunkteliste.length === 0" class="keineintragclass">
       Keine Aufgaben vorhanden
     </div>
   </ng-container>

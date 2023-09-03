@@ -491,6 +491,8 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
       let Detail: Projektpunktanmerkungstruktur;
       let Anmerkung: Projektpunktanmerkungstruktur;
 
+      debugger;
+
       this.Database.LiveEditorOpen = true;
 
       if(this.Database.CurrentProjektpunkt !== null) {

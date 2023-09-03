@@ -227,7 +227,7 @@ const _Pages = {
   PjFestlegungkategorieeditorPage: 'PjFestlegungkategorieeditorPage',
 
 
-  PjNotizenlistePage: 'PjNotizenlistePage',
+  PjNotizenListePage: 'PjNotizenListePage',
 
   PjAufgabenlistePage: 'PjAufgabenlistePage',
 

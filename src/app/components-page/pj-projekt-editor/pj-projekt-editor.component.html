@@ -3,7 +3,7 @@
   <div  class="keeperdivclass" [style.background]="Displayservice.ShowOpacity(Displayservice.Dialognamen.Projekteditor) ? 'rgba(0, 0, 0, 0.5)' : 'none'" (click)="ContentClicked($event)">
     <div class="contentdivclass"
          [style.width.px]="Dialogbreite"
-         [style.height.px]="Dialoghoehe" [style.top.px]="PositionY" (click)="ContentClicked($event)">
+         [style.bottom.px]="PositionY" [style.top.px]="PositionY" (click)="ContentClicked($event)">
       <ion-header>
         <page-header-center>
           <table class="paddingsmalltable">

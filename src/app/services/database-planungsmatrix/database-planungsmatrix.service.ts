@@ -265,8 +265,8 @@ Ausführungsplanung bei unveränderten Planungsgrundlagen vermieden werden.\nAl
       this.Plaenetextliste[2][434] = Text;
       this.Plaenetextliste[2][440] = Text;
       this.Plaenetextliste[2][450] = Text;
-      this.Plaenetextliste[2][460] = Text;
-      this.Plaenetextliste[2][480] = Text;
+      this.Plaenetextliste[2][460] = 'Schacht und Kabinenabmessungen';
+      this.Plaenetextliste[2][480] = '';
 
       Text = `Darstellung aller Ver- und Entsorgungsnetze mit den wesentlichen Funktionsgruppen und Funktionselementen`;
 
@@ -375,7 +375,7 @@ Ausführungsplanung bei unveränderten Planungsgrundlagen vermieden werden.\nAl
       this.Bauangabentextliste[3][440] = Text;
       this.Bauangabentextliste[3][450] = Text;
       this.Bauangabentextliste[3][460] = Text;
-      this.Bauangabentextliste[3][480] = '';
+      this.Bauangabentextliste[3][480] = Text;
 
       this.Bauangabentextliste[4] = [];
       this.Bauangabentextliste[5] = [];
@@ -554,7 +554,7 @@ Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.
       this.Aufgabenbereicheliste.push({
         id:              'ziel',
         Bezeichnung:     "Zielvorgaben",
-        Beschreibung:    '',
+        Information:     ['', '', '', '', '', '', '', ''],
         Leistungsphasen: [1, 2, 3, 4, 5, 6, 7, 8],
         Nummer:          [1, 1, 1, 1, 1, 1, 1, 1],
         Teilaufgabenbereiche: Zielvorgabenteilaufgaben
@@ -613,7 +613,7 @@ Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.
         {
           id:                   'berech',
           Bezeichnung:          "Berechnungen",
-          Beschreibung:         '',
+          Information:     ['', '', '', '', '', '', '', ''],
           Leistungsphasen:      [1, 2, 3, 4, 5, 6, 7, 8],
           Nummer:               [2, 2, 2, 0, 2, 0, 0, 0],
           Teilaufgabenbereiche: Berechnungenteilaufgaben
@@ -684,7 +684,7 @@ Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.
       this.Aufgabenbereicheliste.push({
         id:                   'bemess',
         Bezeichnung:          "Bemessungen",
-        Beschreibung:         '',
+        Information:          ['', '', '', '', '', '', '', ''],
         Leistungsphasen:      [   2, 3, 4, 5, 6, 7, 8],
         Nummer:               [0, 3, 3, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Bemessungenteilaufgaben
@@ -727,7 +727,7 @@ Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.
       this.Aufgabenbereicheliste.push({
         id:                   'schema',
         Bezeichnung:          "Schemata",
-        Beschreibung:         '',
+        Information:          ['', '', '', '', '', '', '', ''],
         Leistungsphasen:      [   2, 3, 4, 5, 6, 7, 8],
         Nummer:               [0, 4, 4, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Schematateilaufgabenliste
@@ -743,10 +743,80 @@ Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.
       Plaeneteilaufgabenliste[7] = [];
       Plaeneteilaufgabenliste[8] = [];
 
+
+      Plaeneteilaufgabenliste[2][0]      = [];
+      Plaeneteilaufgabenliste[2][0][0]   = { AufgabenbereichID: "plaene", Beschreibung: "", Bezeichnung: "Allgemein", id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[2][0][410] = { AufgabenbereichID: "plaene", Beschreibung: "Trassen<br>Möblierung", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[2][0][475] = { AufgabenbereichID: "plaene", Beschreibung: "Trassen<br>Möblierung", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[2][0][420] = { AufgabenbereichID: "plaene", Beschreibung: "Trassen<br>Möblierung<br>Heizflächen", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[2][0][430] = { AufgabenbereichID: "plaene", Beschreibung: "Möblierung/Schnitte<br>Luftdurchlässe", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[2][0][434] = { AufgabenbereichID: "plaene", Beschreibung: "Trassen<br>Möblierung<br>Kühldecken", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[2][0][440] = { AufgabenbereichID: "plaene", Beschreibung: "Trassen<br>Möblierung<brSystemdarstellung<br>für UV/Leuchten<br>(nicht vollflächig)", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[2][0][450] = { AufgabenbereichID: "plaene", Beschreibung: "Trassen<br>Möblierung", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[2][0][460] = { AufgabenbereichID: "plaene", Beschreibung: "Möblierung", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[2][0][480] = { AufgabenbereichID: "plaene", Beschreibung: "", Bezeichnung: "",          id: this.Const.NONE };
+
+      Plaeneteilaufgabenliste[3][0]      = [];
+      Plaeneteilaufgabenliste[3][0][0]   = { AufgabenbereichID: "plaene", Beschreibung: "", Bezeichnung: "Allgemein", id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[3][0][410] = { AufgabenbereichID: "plaene", Beschreibung: "Darstellung mit Haupt-<br>Dimensionen", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[3][0][475] = { AufgabenbereichID: "plaene", Beschreibung: "Trassen<br>Möblierung", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[3][0][420] = { AufgabenbereichID: "plaene", Beschreibung: "Darstellung mit Haupt-<br>Dimensionen<br>Heizflächen", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[3][0][430] = { AufgabenbereichID: "plaene", Beschreibung: "Darstellung mit Haupt-<br>Dimensionen<br>BSK, VSR, DK<br>Luftdurchlässe", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[3][0][434] = { AufgabenbereichID: "plaene", Beschreibung: "Darstellung mit Haupt-<br>Dimensionen<br>Kühlflächen", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[3][0][440] = { AufgabenbereichID: "plaene", Beschreibung: "Darstellung mit Haupt-<br>Dimensionen<br>der Kabelbahnen<br>Unterverteilungen<br>Brüstungskanäl<br>Unterflurtrassen", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[3][0][450] = { AufgabenbereichID: "plaene", Beschreibung: "Darstellung mit Haupt-<br>Dimensionen<br>der Kabelbahnen<br>sichtbare Einbauteile<br>Lautsprecher<br>Brandmelder", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[3][0][460] = { AufgabenbereichID: "plaene", Beschreibung: "Schachtzeichnung<br>Kabinenabmessungen<br>Schachttüren<br>Zargenausbildung<br>Kabinenabwicklung<br>Tableauzeichnung", Bezeichnung: "",          id: "plaene_allgemein" };
+      Plaeneteilaufgabenliste[3][0][480] = { AufgabenbereichID: "plaene", Beschreibung: "Darstellung mit<br>Dimensionen der\n<br>Kabelbahnen", Bezeichnung: "",          id: "plaene_allgemein" };
+
+      Plaeneteilaufgabenliste[3][1]      = [];
+      Plaeneteilaufgabenliste[3][1][0]   = { AufgabenbereichID: "plaene", Beschreibung: "",           Bezeichnung: "Zentralen", id: "plaene_zentralen" };
+      Plaeneteilaufgabenliste[3][1][410] = { AufgabenbereichID: "plaene", Beschreibung: "Möblierung", Bezeichnung: "",          id: "plaene_zentralen" };
+      Plaeneteilaufgabenliste[3][1][475] = { AufgabenbereichID: "plaene", Beschreibung: "Möblierung", Bezeichnung: "",          id: "plaene_zentralen" };
+      Plaeneteilaufgabenliste[3][1][420] = { AufgabenbereichID: "plaene", Beschreibung: "Möblierung", Bezeichnung: "",          id: "plaene_zentralen" };
+      Plaeneteilaufgabenliste[3][1][430] = { AufgabenbereichID: "plaene", Beschreibung: "Möblierung", Bezeichnung: "",          id: "plaene_zentralen" };
+      Plaeneteilaufgabenliste[3][1][434] = { AufgabenbereichID: "plaene", Beschreibung: "Möblierung", Bezeichnung: "",          id: "plaene_zentralen" };
+      Plaeneteilaufgabenliste[3][1][440] = { AufgabenbereichID: "plaene", Beschreibung: "Möblierung", Bezeichnung: "",          id: "plaene_zentralen" };
+      Plaeneteilaufgabenliste[3][1][450] = { AufgabenbereichID: "plaene", Beschreibung: "Möblierung", Bezeichnung: "",          id: "plaene_zentralen" };
+      Plaeneteilaufgabenliste[3][1][460] = { AufgabenbereichID: "plaene", Beschreibung: "Möblierung", Bezeichnung: "",          id: "plaene_zentralen" };
+      Plaeneteilaufgabenliste[3][1][480] = { AufgabenbereichID: "plaene", Beschreibung: "Möblierung", Bezeichnung: "",          id: "plaene_zentralen" };
+
+      Text = `Für Installationsschwerpunkte sind Schnitte zu liefern. Ein Installationsschwerpunkt liegt vor,
+wenn mehrere Gewerke kreuzen, übereinander liegen oder gemeinsam ausfädeln.
+Die Schnitte haben alle Gewerke zu berücksichtigen. Der Planer soll mit ihnen prüfen und zeigen,
+dass der angenommene Installationsraum ausreichend ist und benötigt wird.`;
+
+      Plaeneteilaufgabenliste[3][2]      = [];
+      Plaeneteilaufgabenliste[3][2][0]   = { AufgabenbereichID: "plaene", Beschreibung: "",   Bezeichnung: "Schnitte",  id: "plaene_schnitte" };
+      Plaeneteilaufgabenliste[3][2][410] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schnitte" };
+      Plaeneteilaufgabenliste[3][2][475] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schnitte" };
+      Plaeneteilaufgabenliste[3][2][420] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schnitte" };
+      Plaeneteilaufgabenliste[3][2][430] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schnitte" };
+      Plaeneteilaufgabenliste[3][2][434] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schnitte" };
+      Plaeneteilaufgabenliste[3][2][440] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schnitte" };
+      Plaeneteilaufgabenliste[3][2][450] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schnitte" };
+      Plaeneteilaufgabenliste[3][2][460] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schnitte" };
+      Plaeneteilaufgabenliste[3][2][480] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schnitte" };
+
+      Text = `Belegung der Schächte an der Stelle der jeweils größten Installationsdichte,
+inklusive Hinweis auf die Art des Brandschutzes`;
+
+      Plaeneteilaufgabenliste[3][3]      = [];
+      Plaeneteilaufgabenliste[3][3][0]   = { AufgabenbereichID: "plaene", Beschreibung: "",   Bezeichnung: "Schächte",  id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[3][3][410] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[3][3][475] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[3][3][420] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[3][3][430] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[3][3][434] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[3][3][440] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[3][3][450] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[3][3][460] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[3][3][480] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+
+
       this.Aufgabenbereicheliste.push({
         id:                   'plaene',
         Bezeichnung:          "Pläne",
-        Beschreibung:         '',
+        Information:          ['', 'Maßstab 1:200', 'Maßstab 1:100', '', '', '', '', ''],
         Leistungsphasen:      [   2, 3, 4, 5, 6, 7, 8],
         Nummer:               [0, 5, 5, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Plaeneteilaufgabenliste
@@ -776,11 +846,25 @@ Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.
       Koordinationteilaufgabenliste[2][0][460] = { AufgabenbereichID: "koord", Beschreibung: Text, Bezeichnung: "",          id: "koord_allgemein" };
       Koordinationteilaufgabenliste[2][0][480] = { AufgabenbereichID: "koord", Beschreibung: Text, Bezeichnung: "",          id: "koord_allgemein" };
 
+      Text = `Schnittstellen`;
+
+      Koordinationteilaufgabenliste[3][0]      = [];
+      Koordinationteilaufgabenliste[3][0][0]   = { AufgabenbereichID: "koord", Beschreibung: "",   Bezeichnung: "Allgemein", id: "koord_allgemein" };
+      Koordinationteilaufgabenliste[3][0][410] = { AufgabenbereichID: "koord", Beschreibung: Text, Bezeichnung: "",          id: "koord_allgemein" };
+      Koordinationteilaufgabenliste[3][0][475] = { AufgabenbereichID: "koord", Beschreibung: Text, Bezeichnung: "",          id: "koord_allgemein" };
+      Koordinationteilaufgabenliste[3][0][420] = { AufgabenbereichID: "koord", Beschreibung: Text, Bezeichnung: "",          id: "koord_allgemein" };
+      Koordinationteilaufgabenliste[3][0][430] = { AufgabenbereichID: "koord", Beschreibung: Text, Bezeichnung: "",          id: "koord_allgemein" };
+      Koordinationteilaufgabenliste[3][0][434] = { AufgabenbereichID: "koord", Beschreibung: Text, Bezeichnung: "",          id: "koord_allgemein" };
+      Koordinationteilaufgabenliste[3][0][440] = { AufgabenbereichID: "koord", Beschreibung: Text, Bezeichnung: "",          id: "koord_allgemein" };
+      Koordinationteilaufgabenliste[3][0][450] = { AufgabenbereichID: "koord", Beschreibung: Text, Bezeichnung: "",          id: "koord_allgemein" };
+      Koordinationteilaufgabenliste[3][0][460] = { AufgabenbereichID: "koord", Beschreibung: Text, Bezeichnung: "",          id: "koord_allgemein" };
+      Koordinationteilaufgabenliste[3][0][480] = { AufgabenbereichID: "koord", Beschreibung: Text, Bezeichnung: "",          id: "koord_allgemein" };
+
 
       this.Aufgabenbereicheliste.push({
         id:                     'koord',
         Bezeichnung:          "Koordination",
-        Beschreibung:         '',
+        Information:          ['', '', '', '', '', '', '', ''],
         Leistungsphasen:      [   2, 3, 4, 5, 6, 7, 8],
         Nummer:               [0, 6, 6, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Koordinationteilaufgabenliste
@@ -797,10 +881,25 @@ Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.
       Bauangabenteilaufgabenliste[7] = [];
       Bauangabenteilaufgabenliste[8] = [];
 
+      Text = `In diesem Stadium der Planung brauchen diese Informationen nicht durch S+D-Pläne
+gemacht werden. Die Angaben müssen jedoch eindeutig sein.`;
+
+      Bauangabenteilaufgabenliste[3][0]      = [];
+      Bauangabenteilaufgabenliste[3][0][0]   = { AufgabenbereichID: "bauangaben", Beschreibung: "",   Bezeichnung: "Allgemein", id: "bauangaben_allgemein" };
+      Bauangabenteilaufgabenliste[3][0][410] = { AufgabenbereichID: "bauangaben", Beschreibung: Text, Bezeichnung: "",          id: "bauangaben_allgemein" };
+      Bauangabenteilaufgabenliste[3][0][475] = { AufgabenbereichID: "bauangaben", Beschreibung: Text, Bezeichnung: "",          id: "bauangaben_allgemein" };
+      Bauangabenteilaufgabenliste[3][0][420] = { AufgabenbereichID: "bauangaben", Beschreibung: Text, Bezeichnung: "",          id: "bauangaben_allgemein" };
+      Bauangabenteilaufgabenliste[3][0][430] = { AufgabenbereichID: "bauangaben", Beschreibung: Text, Bezeichnung: "",          id: "bauangaben_allgemein" };
+      Bauangabenteilaufgabenliste[3][0][434] = { AufgabenbereichID: "bauangaben", Beschreibung: Text, Bezeichnung: "",          id: "bauangaben_allgemein" };
+      Bauangabenteilaufgabenliste[3][0][440] = { AufgabenbereichID: "bauangaben", Beschreibung: Text, Bezeichnung: "",          id: "bauangaben_allgemein" };
+      Bauangabenteilaufgabenliste[3][0][450] = { AufgabenbereichID: "bauangaben", Beschreibung: Text, Bezeichnung: "",          id: "bauangaben_allgemein" };
+      Bauangabenteilaufgabenliste[3][0][460] = { AufgabenbereichID: "bauangaben", Beschreibung: Text, Bezeichnung: "",          id: "bauangaben_allgemein" };
+      Bauangabenteilaufgabenliste[3][0][480] = { AufgabenbereichID: "bauangaben", Beschreibung: Text, Bezeichnung: "",          id: "bauangaben_allgemein" };
+
       this.Aufgabenbereicheliste.push({
         id:                     'bauangaben',
         Bezeichnung:          "Bauangaben",
-        Beschreibung:         '',
+        Information:          ['', '', '', '', '', '', '', ''],
         Leistungsphasen:      [      3 ],
         Nummer:               [0, 0, 7, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Bauangabenteilaufgabenliste
@@ -830,12 +929,26 @@ Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.
       Erlaeuterungteilaufgabenliste[2][0][460] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
       Erlaeuterungteilaufgabenliste[2][0][480] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
 
+      Text = `Erläuterungsbericht`;
+
+      Erlaeuterungteilaufgabenliste[3][0]      = [];
+      Erlaeuterungteilaufgabenliste[3][0][0]   = { AufgabenbereichID: "erbe", Beschreibung: "",   Bezeichnung: "Allgemein", id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[3][0][410] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[3][0][475] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[3][0][420] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[3][0][430] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[3][0][434] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[3][0][440] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[3][0][450] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[3][0][460] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[3][0][480] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+
 
 
       this.Aufgabenbereicheliste.push({
         id: 'erbe',
         Bezeichnung: "Erläuterung",
-        Beschreibung: '',
+        Information:     ['', '', '', '', '', '', '', ''],
         Leistungsphasen: [   2, 3, 4, 5, 6, 7, 8],
         Nummer:          [0, 7, 8, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Erlaeuterungteilaufgabenliste
@@ -865,11 +978,25 @@ Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.
       Kostenteilaufgabenliste[2][0][460] = { AufgabenbereichID: "kosten", Beschreibung: Text, Bezeichnung: "",          id: "kosten_allgemein" };
       Kostenteilaufgabenliste[2][0][480] = { AufgabenbereichID: "kosten", Beschreibung: Text, Bezeichnung: "",          id: "kosten_allgemein" };
 
+      Text = `Kostenberechnung`;
+
+      Kostenteilaufgabenliste[3][0]      = [];
+      Kostenteilaufgabenliste[3][0][0]   = { AufgabenbereichID: "kosten", Beschreibung: "",   Bezeichnung: "Allgemein", id: "kosten_allgemein" };
+      Kostenteilaufgabenliste[3][0][410] = { AufgabenbereichID: "kosten", Beschreibung: Text, Bezeichnung: "",          id: "kosten_allgemein" };
+      Kostenteilaufgabenliste[3][0][475] = { AufgabenbereichID: "kosten", Beschreibung: Text, Bezeichnung: "",          id: "kosten_allgemein" };
+      Kostenteilaufgabenliste[3][0][420] = { AufgabenbereichID: "kosten", Beschreibung: Text, Bezeichnung: "",          id: "kosten_allgemein" };
+      Kostenteilaufgabenliste[3][0][430] = { AufgabenbereichID: "kosten", Beschreibung: Text, Bezeichnung: "",          id: "kosten_allgemein" };
+      Kostenteilaufgabenliste[3][0][434] = { AufgabenbereichID: "kosten", Beschreibung: Text, Bezeichnung: "",          id: "kosten_allgemein" };
+      Kostenteilaufgabenliste[3][0][440] = { AufgabenbereichID: "kosten", Beschreibung: Text, Bezeichnung: "",          id: "kosten_allgemein" };
+      Kostenteilaufgabenliste[3][0][450] = { AufgabenbereichID: "kosten", Beschreibung: Text, Bezeichnung: "",          id: "kosten_allgemein" };
+      Kostenteilaufgabenliste[3][0][460] = { AufgabenbereichID: "kosten", Beschreibung: Text, Bezeichnung: "",          id: "kosten_allgemein" };
+      Kostenteilaufgabenliste[3][0][480] = { AufgabenbereichID: "kosten", Beschreibung: Text, Bezeichnung: "",          id: "kosten_allgemein" };
+
 
       this.Aufgabenbereicheliste.push({
         id:                   'kosten',
         Bezeichnung:          "Kosten",
-        Beschreibung:         '',
+        Information:          ['', '', '', '', '', '', '', ''],
         Leistungsphasen:      [   2, 3, 4, 5, 6, 7, 8],
         Nummer:               [0, 8, 9, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Kostenteilaufgabenliste

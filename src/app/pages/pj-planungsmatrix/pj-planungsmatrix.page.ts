@@ -21,6 +21,9 @@ import {DatabaseProjektpunkteService} from "../../services/database-projektpunkt
 import {Subscription} from "rxjs";
 import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
+import {
+  DatabaseMitarbeitersettingsService
+} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 
 @Component({
   selector: 'pj-planungsmatrix-page',
@@ -45,10 +48,12 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
   public Auswahltitel: string;
   public ShowAuswahl: boolean;
   public Matrixpunkteanzahl: number;
+  public SchnellauswahlOrigin: string;
 
   private KostengruppenSubscription: Subscription;
   private FavoritenProjektSubcription: Subscription;
   ShowProjektschnellauswahl: boolean;
+  private Auswahldialogorigin: string;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -59,7 +64,9 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
               public DBProjekte: DatabaseProjekteService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public GraphService: Graphservice,
+              public Menuservice: MenueService,
               public LoadingAnimation: LoadingAnimationService,
+              private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public AuthService: DatabaseAuthenticationService) {
     try
     {
@@ -74,6 +81,8 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
       this.Auswahltitel          = 'Leistungsphase';
       this.Auswahlliste          = [];
       this.Matrixpunkteanzahl    = 0;
+      this.SchnellauswahlOrigin  = this.Const.NONE;
+      this.Auswahldialogorigin   = this.Const.NONE;
 
       this.ShowProjektschnellauswahl = false;
 
@@ -106,6 +115,8 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
 
       this.FavoritenProjektSubcription = this.DBProjekte.CurrentFavoritenProjektChanged.subscribe(() => {
 
+        debugger;
+
         this.PrepareDaten();
       });
 
@@ -124,10 +135,35 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
 
     try {
 
-      this.CopyPlanungsmatrix(projekt);
+      debugger;
 
-      this.ShowProjektschnellauswahl = false;
+      switch(this.SchnellauswahlOrigin) {
 
+        case 'Copy':
+
+            this.CopyPlanungsmatrix(projekt);
+
+            this.ShowProjektschnellauswahl = false;
+
+          break;
+
+        case 'Projektauswahl':
+
+          this.DBProjekte.CurrentProjekt      = projekt;
+          this.DBProjekte.CurrentProjektindex = lodash.findIndex(this.DBProjekte.Projektliste, {_id: projekt._id});
+
+          this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
+          this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
+
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
+
+            this.ShowProjektschnellauswahl = false;
+
+            this.PrepareDaten();
+          });
+
+          break;
+      }
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'ProjektSchnellauswahlProjektClickedEventHandler', this.Debug.Typen.Page);
@@ -252,6 +288,11 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
                          punkt.Leistungsphase        === this.Leistungsphase.toString();
                 });
 
+                if(Punkteliste.length > 0) {
+
+
+                }
+
                 this.Matrixpunkteanzahl += Punkteliste.length;
 
                 this.Displayliste[Bereich.id][Kostengruppe.Kostengruppennummer][Teilaufgabe[Kostengruppe.Kostengruppennummer].id] = Punkteliste;
@@ -260,6 +301,9 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
           }
         }
       }
+
+      debugger;
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'PrepareDaten', this.Debug.Typen.Page);
@@ -349,7 +393,8 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
 
     try {
 
-      // this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_Leistungsphase;
+      this.Auswahldialogorigin = 'Leistungsphase';
+
 
       this.Auswahltitel  = 'Leistungsphase festlegen';
       this.Auswahlliste  = [];
@@ -371,27 +416,55 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
     }
   }
 
-  AuswahlOkButtonClicked(data: string) {
+  AuswahlOkButtonClicked(data: any) {
 
     try {
 
       let Phase: string;
 
-      Phase               = data.split('H')[1];
-      this.Leistungsphase = parseInt(Phase);
+      switch (this.Auswahldialogorigin) {
 
-      this.DBProjekte.CurrentProjekt.Leistungsphase = data;
+        case 'Leistungsphase':
 
-      this.DBProjekte.UpdateProjekt(this.DBProjekte.CurrentProjekt).then(() => {
+          Phase               = data.split('H')[1];
+          this.Leistungsphase = parseInt(Phase);
 
-        this.PrepareDaten();
-      });
+          this.DBProjekte.CurrentProjekt.Leistungsphase = data;
+
+          this.DBProjekte.UpdateProjekt(this.DBProjekte.CurrentProjekt).then(() => {
+
+            this.PrepareDaten();
+          });
+
+          break;
+
+        case 'Fortschritt':
+
+          this.DBProjektpunkte.CurrentProjektpunkt.Fortschritt = data;
+
+          break;
+      }
 
       this.ShowAuswahl = false;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  ShowProjektfilesHandler() {
+
+    try {
+
+      this.Menuservice.FilelisteAufrufer    = this.Menuservice.FilelisteAufrufervarianten.Aufgabenliste;
+      this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Fileliste;
+
+      this.Menuservice.SetCurrentPage();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'ShowProjektfilesHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -433,6 +506,9 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
           Senkepunkt.Projektkey       = Zielprojekt.Projektkey;
           Senkepunkt.ProjektID        = Zielprojekt._id;
           Senkepunkt.PlanungsmatrixID = Zielprojekt.Projektkey;
+          Senkepunkt.Status           = this.Const.Projektpunktstatustypen.Offen.Name;
+          Senkepunkt.Matrixanwendung  = true;
+          Senkepunkt.Fortschritt      = 0;
           Senkepunkt.Verfasser =
             {
               Name:    this.Pool.Mitarbeiterdaten.Name,
@@ -468,6 +544,7 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
 
     try {
 
+      this.SchnellauswahlOrigin      = 'Copy';
       this.ShowProjektschnellauswahl = true;
 
     } catch (error) {
@@ -551,6 +628,49 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'GetLeistungsphasenTitel', this.Debug.Typen.Page);
+    }
+  }
+
+  ShowProjektauswahlEventHandler($event: any) {
+
+    try {
+
+      this.ShowProjektschnellauswahl = true;
+      this.SchnellauswahlOrigin      = 'Projektauswahl';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'ShowProjektauswahlEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  FortschrittClickedEventHandler() {
+
+    try {
+
+      this.Auswahldialogorigin = 'Fortschritt';
+
+      this.Auswahltitel  = 'Fortschritt festlegen';
+      this.Auswahlliste  = [];
+      this.Auswahlliste.push({ Index:  0, FirstColumn:   '0 %', SecoundColumn: '', Data: 0 });
+      this.Auswahlliste.push({ Index:  1, FirstColumn:  '10 %', SecoundColumn: '', Data: 10 });
+      this.Auswahlliste.push({ Index:  2, FirstColumn:  '20 %', SecoundColumn: '', Data: 20 });
+      this.Auswahlliste.push({ Index:  3, FirstColumn:  '30 %', SecoundColumn: '', Data: 30 });
+      this.Auswahlliste.push({ Index:  4, FirstColumn:  '40 %', SecoundColumn: '', Data: 40 });
+      this.Auswahlliste.push({ Index:  5, FirstColumn:  '50 %', SecoundColumn: '', Data: 50 });
+      this.Auswahlliste.push({ Index:  6, FirstColumn:  '60 %', SecoundColumn: '', Data: 60 });
+      this.Auswahlliste.push({ Index:  7, FirstColumn:  '70 %', SecoundColumn: '', Data: 70 });
+      this.Auswahlliste.push({ Index:  8, FirstColumn:  '80 %', SecoundColumn: '', Data: 80 });
+      this.Auswahlliste.push({ Index:  9, FirstColumn:  '90 %', SecoundColumn: '', Data: 90 });
+      this.Auswahlliste.push({ Index: 10, FirstColumn: '100 %', SecoundColumn: '', Data: 100 });
+
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.DBProjektpunkte.CurrentProjektpunkt.Fortschritt });
+      this.ShowAuswahl  = true;
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'FortschrittClickedEventHandler', this.Debug.Typen.Page);
     }
   }
 }

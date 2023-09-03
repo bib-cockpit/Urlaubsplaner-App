@@ -8,6 +8,7 @@ import {ToolsProvider} from "../../services/tools/tools";
 import * as Joi from "joi";
 import {ObjectSchema} from "joi";
 import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
+import {BasicsProvider} from "../../services/basics/basics";
 
 @Component({
   selector: 'pj-planungsmatrixeintrag-editor',
@@ -25,6 +26,7 @@ export class PjPlanungsmatrixeintragEditorComponent implements OnInit, OnDestroy
   @Output() CancelClickedEvent         = new EventEmitter<any>();
   @Output() OkClickedEvent             = new EventEmitter<any>();
   @Output() DeleteClickedEvent         = new EventEmitter<any>();
+  @Output() FortschrittClickedEvent    = new EventEmitter<any>();
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -37,6 +39,7 @@ export class PjPlanungsmatrixeintragEditorComponent implements OnInit, OnDestroy
               public Displayservice: DisplayService,
               public Const: ConstProvider,
               private Tools: ToolsProvider,
+              public Basics: BasicsProvider,
               public DB: DatabaseProjektpunkteService) {
     try {
 
@@ -231,11 +234,13 @@ export class PjPlanungsmatrixeintragEditorComponent implements OnInit, OnDestroy
 
       if(event.status === true) {
 
-        this.DB.CurrentProjektpunkt.Status = this.Const.Projektpunktstatustypen.Geschlossen.Name;
+        this.DB.CurrentProjektpunkt.Status      = this.Const.Projektpunktstatustypen.Geschlossen.Name;
+        this.DB.CurrentProjektpunkt.Fortschritt = 100;
       }
       else {
 
-        this.DB.CurrentProjektpunkt.Status = this.Const.Projektpunktstatustypen.Offen.Name;
+        this.DB.CurrentProjektpunkt.Status      = this.Const.Projektpunktstatustypen.Offen.Name;
+        this.DB.CurrentProjektpunkt.Fortschritt = 0;
       }
 
     } catch (error) {
@@ -252,7 +257,7 @@ export class PjPlanungsmatrixeintragEditorComponent implements OnInit, OnDestroy
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Planungsmatrixeintrag Editor', 'CanDeleteCheckedChanged', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Planungsmatrixeintrag Editor', 'CanDeleteCheckedChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -261,10 +266,11 @@ export class PjPlanungsmatrixeintragEditorComponent implements OnInit, OnDestroy
     try {
 
       this.DB.CurrentProjektpunkt.Matrixanwendung = event.status;
+      this.DB.CurrentProjektpunkt.Fortschritt     = 0;
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Planungsmatrixeintrag Editor', 'AnwendungCheckedChanged', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Planungsmatrixeintrag Editor', 'AnwendungCheckedChanged', this.Debug.Typen.Component);
     }
   }
 }

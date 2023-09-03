@@ -199,6 +199,7 @@
                     </td>
                   </tr>
                 </table>
+
               </td>
               <td>
 
@@ -210,6 +211,23 @@
                           <tr>
                             <td><ion-icon name="apps-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Planungsmatrix)"></ion-icon></td>
                             <td [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Planungsmatrix)">Planungsmatrix</td>
+                          </tr>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td>
+
+                <table>
+                  <tr>
+                    <td>
+                      <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Notizen)">
+                        <table class="paddingsmalltable">
+                          <tr>
+                            <td><ion-icon name="book-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Notizen)"></ion-icon></td>
+                            <td [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Notizen)">Notizen</td>
                           </tr>
                         </table>
                       </div>
@@ -229,6 +247,17 @@
                                     [color]="GetProjektBackButtoncolor()" size="small">
                           <ion-icon name="arrow-back-circle" style="font-size: 22px"></ion-icon>
                         </ion-button>
+                      </td>
+                      <td *ngIf="Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste">
+                        <div (click)="AlleProjekteClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Alle ? '#000000' : 'white'"  class="buttonclass">
+                          <table>
+                            <tr>
+                              <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Alle ? 'black' : 'white'">
+                                Alle
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
                       </td>
                       <td>
                         <div (click)="ProjektClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt ? '#000000' : 'white'"  class="buttonclass">
@@ -561,7 +590,7 @@
 
     <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Projekte &&
                          Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste &&
-                         Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt &&
+                         (Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt || Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Alle)  &&
                          DBProjekte.CurrentProjekt        !== null">
       <tr>
         <td colspan="2" style="padding-left: 8px; padding-right: 8px">

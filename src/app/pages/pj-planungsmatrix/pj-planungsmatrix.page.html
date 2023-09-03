@@ -1,6 +1,9 @@
 <ion-header>
   <page-header #PageHeader>
-    <page-header-menu (PlanungsmatrixLeistungsphaseClicked)="PlanungsmatrixLeistungsphaseHandler()">
+    <page-header-menu
+      (PlanungsmatrixLeistungsphaseClicked)="PlanungsmatrixLeistungsphaseHandler()"
+      (ShowProjektfilesEvent)="ShowProjektfilesHandler()"
+      (ShowProjektauswahlEvent)="ShowProjektauswahlEventHandler($event)">
     </page-header-menu>
   </page-header>
 </ion-header>
@@ -57,7 +60,7 @@
               <ng-container *ngFor="let Bereich of Aufgabenbereicheliste">
                 <tr *ngIf="Bereich.Leistungsphasen.indexOf(Leistungsphase) !== -1">
                   <td [style.width.px]="Zahlenzellebreite">{{Bereich.Nummer[Leistungsphase - 1]}}</td>
-                  <td [style.width.px]="Bezeichnungbreite">{{Bereich.Bezeichnung}}</td>
+                  <td [style.width.px]="Bezeichnungbreite">{{Bereich.Bezeichnung}}<br>{{Bereich.Information[Leistungsphase - 1]}}</td>
                   <ng-container [ngSwitch]="Bereich.id">
 
                     <ng-container *ngSwitchCase="'ziel'">
@@ -171,19 +174,28 @@
                               </div>
                             </td>
                           </tr>
-                          <tr *ngFor="let Punkt of Displayliste[Bereich.id][Kostengruppe.Kostengruppennummer][Teilaufgabe[Kostengruppe.Kostengruppennummer].id]">
+                          <tr>
                             <td>
                               <table>
-                                <tr *ngIf="CheckPrintPunkt(Punkt)">
-                                  <td><checkbox-clon (CheckChanged)="TeilaufgabenpunktCheckedChanged($event, Punkt)" [Checked]="Punkt.Status === Const.Projektpunktstatustypen.Geschlossen.Name"></checkbox-clon></td>
-                                  <td *ngIf="Punkt.Matrixanwendung" class="aufgabeclass"
-                                      [style.color]="Punkt.Status === Const.Projektpunktstatustypen.Geschlossen.Name ? 'green' : '#0A63C9'" (click)="EintragClicked(Punkt)">
-                                    {{Punkt.Aufgabe}}
-                                  </td>
-                                  <td *ngIf="!Punkt.Matrixanwendung && DBProjekte.CurrentProjekt.DisplayUngenutzte" class="aufgabeunusedclass" (click)="EintragClicked(Punkt)">
-                                    {{Punkt.Aufgabe}}
-                                  </td>
-                                </tr>
+                                <ng-container *ngFor="let Punkt of Displayliste[Bereich.id][Kostengruppe.Kostengruppennummer][Teilaufgabe[Kostengruppe.Kostengruppennummer].id]">
+                                  <tr *ngIf="CheckPrintPunkt(Punkt)">
+                                    <td><checkbox-clon (CheckChanged)="TeilaufgabenpunktCheckedChanged($event, Punkt)" [Checked]="Punkt.Status === Const.Projektpunktstatustypen.Geschlossen.Name"></checkbox-clon></td>
+                                    <td *ngIf="Punkt.Matrixanwendung" class="aufgabeclass"
+                                        [style.color]="Punkt.Status === Const.Projektpunktstatustypen.Geschlossen.Name ? 'green' : '#0A63C9'" (click)="EintragClicked(Punkt)">
+                                      {{Punkt.Aufgabe}}
+                                    </td>
+                                    <td *ngIf="!Punkt.Matrixanwendung && DBProjekte.CurrentProjekt.DisplayUngenutzte" class="aufgabeunusedclass" (click)="EintragClicked(Punkt)">
+                                      {{Punkt.Aufgabe}}
+                                    </td>
+                                    <td>
+                                      <div *ngIf="Punkt.Fortschritt > 0" class="progresskeeperclass">
+                                        <div class="progressinnerclass" [style.width.px]="Punkt.Fortschritt * 1.2"></div>
+                                        <div class="progressinnertextclass">{{Punkt.Fortschritt}}%</div>
+                                      </div>
+                                    </td>
+
+                                  </tr>
+                                </ng-container>
                               </table>
                             </td>
                           </tr>
@@ -245,14 +257,15 @@
                                  [Iconname]="'create'"
                                  [Dialogbreite]="600"
                                  [Dialoghoehe]="400"
-                                 [PositionY]="100"
+                                 [PositionY]="100" (FortschrittClickedEvent)="FortschrittClickedEventHandler()"
                                  [Titel]="GetEditortitel()" (CancelClickedEvent)="ShowEditor = false" (OkClickedEvent)="ShowEditor = false">
 </pj-planungsmatrixeintrag-editor>
 
+
 <pj-projekte-schnellauswahl *ngIf="ShowProjektschnellauswahl"
                             [ZIndex]="5000"
-                            [Dialogbreite]="800" [ShowAllProjekte]="false" [ShowMusterprojekt]="false"
-                            [PositionY]="100" [Titel]="'Projekt wechsel'" [Iconname]="'star-outline'"
+                            [Dialogbreite]="800"
+                            [PositionY]="200" [Titel]="'Projektauswahl'" [Iconname]="'star-outline'"
                             (ProjektClickedEvent)="ProjektSchnellauswahlProjektClickedEventHandler($event)"
                             (CancelClickedEvent)="ShowProjektschnellauswahl = false"
                             (OkClickedEvent)="ShowProjektschnellauswahl = false">

@@ -50,6 +50,7 @@
   font-weight: bold;
   text-decoration: none;
   cursor: pointer;
+  min-width: 300px;
 }
 
 .aufgabeclass:hover {
@@ -66,6 +67,42 @@
   font-weight: bold;
   text-decoration: line-through;
   cursor: pointer;
+}
+
+.progresskeeperclass {
+
+  width: 120px;
+  height: 24px;
+  position: relative;
+  border: 1px solid gray;
+  border-radius: 4px;
+  background: gray;
+}
+.progressinnerclass {
+
+  z-index: 1;
+  position: absolute;
+  border-radius: 4px;
+  background: green;
+  top: 1px;
+  bottom: 1px;
+  left: 1px;
+  width: 90px;
+  font-size: 90%;
+}
+
+.progressinnertextclass {
+
+  z-index: 2;
+  color: white;
+  font-weight: bold;
+  position: absolute;
+  top: 0px;
+  width: 120px;
+  height: 24px;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
 }
 
 

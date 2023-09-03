@@ -50,7 +50,8 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     MeinTag:          'MeinTag',
     MeineWoche:       'MeineWoche',
     Meilensteine:     'Meilenstein',
-    Favoritenprojekt: 'Favoritenprojekt'
+    Favoritenprojekt: 'Favoritenprojekt',
+    Alle:             'Alle'
   };
 
   public Projektschnellauswahlursprungvarianten = {
@@ -82,11 +83,14 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   public FavoritenProjektpunkteliste: Projektpunktestruktur[];
   public Meintagprojektpunkteliste: Projektpunktestruktur[][];
   public Meilensteineprojektpunkteliste: Projektpunktestruktur[][];
+  public AlleProjektpunkteliste: Projektpunktestruktur[][];
   public DatenLoadedSubscription: Subscription;
   public ProjektpunktSubscription: Subscription;
   public MeinTagProjektliste: Projektestruktur[];
   public MeilensteineProjektliste: Projektestruktur[];
+  public AlleProjektliste: Projektestruktur[];
   public MeinTagProjektindex: number;
+  public AlleProjektindex: number;
   public MeilensteineProjektindex: number;
   public ShowDateStatusPicker: boolean;
   public ShowDateKkPicker: boolean;
@@ -173,10 +177,12 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.FavoritenProjektpunkteliste    = [];
       this.Meintagprojektpunkteliste      = [];
       this.Meilensteineprojektpunkteliste = [];
+      this.AlleProjektpunkteliste         = [];
       this.StrukturDialogbreite     = 1260;
       this.StrukturDialoghoehe      = 800;
       this.MeinTagProjektliste      = [];
       this.MeilensteineProjektliste = [];
+      this.AlleProjektliste         = [];
       this.Auswahlhoehe             = 200;
       this.ShowDateStatusPicker     = false;
       this.Datenursprung            = null;
@@ -660,6 +666,13 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
           break;
 
+        case this.Datenursprungsvarianten.Alle:
+
+          this.AlleProjektindex          = index;
+          this.DBProjekte.CurrentProjekt = this.AlleProjektliste[index];
+
+          break;
+
         case this.Datenursprungsvarianten.MeinTag:
 
           this.MeinTagProjektindex       = index;
@@ -726,14 +739,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
 
       this.SetProjektindexAndUrsprung(projektindex, ursprung);
-
-      /*
-      if(ursprung === this.Datenursprungsvarianten.MeinTag) {
-
-        Projektpunkt.Meintag       = true;
-        Projektpunkt.Meintagstatus = 'ON';
-      }
-       */
 
       this.ShowProjektpunktEditor              = true;
       this.DBProjektpunkte.CurrentProjektpunkt = Projektpunkt;
@@ -936,6 +941,31 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
       switch (this.Datenursprung) {
 
+        case this.Datenursprungsvarianten.Alle:
+
+          Index = lodash.findIndex(this.AlleProjektpunkteliste[this.AlleProjektindex], {_id: this.DBProjektpunkte.CurrentProjektpunkt._id});
+
+          if(Index !== -1) {
+
+            this.Debug.ShowMessage('Aufgabenliste: "' + this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe + '" updated.', 'Aufgaben Liste', 'UpdateDaten', this.Debug.Typen.Page);
+
+            this.AlleProjektpunkteliste[this.AlleProjektindex][Index] = this.DBProjektpunkte.CurrentProjektpunkt;
+          }
+
+          if(this.DBProjektpunkte.CurrentProjektpunkt.Deleted === true) {
+
+            this.AlleProjektpunkteliste[this.AlleProjektindex] = lodash.filter(this.AlleProjektpunkteliste[this.AlleProjektindex], (currentpunkt: Projektpunktestruktur) => {
+
+              return currentpunkt.Deleted === false;
+            });
+          }
+
+          Anzahl = this.DBProjektpunkte.CountProjektpunkte(this.Meilensteineprojektpunkteliste[this.MeilensteineProjektindex], true);
+
+          this.DBProjekte.SetProjektpunkteanzahl(Anzahl, this.MeilensteineProjektliste[this.MeilensteineProjektindex].Projektkey);
+
+          break;
+
         case this.Datenursprungsvarianten.Meilensteine:
 
           Index = lodash.findIndex(this.Meilensteineprojektpunkteliste[this.MeilensteineProjektindex], {_id: this.DBProjektpunkte.CurrentProjektpunkt._id});
@@ -945,17 +975,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
             this.Debug.ShowMessage('Aufgabenliste: "' + this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe + '" updated.', 'Aufgaben Liste', 'UpdateDaten', this.Debug.Typen.Page);
 
             this.Meilensteineprojektpunkteliste[this.MeilensteineProjektindex][Index] = this.DBProjektpunkte.CurrentProjektpunkt;
-          }
-          else {
-
-            /*
-            if(this.DBProjektpunkte.CurrentProjektpunkt.Meintag === true) {
-
-              this.Meilensteineprojektpunkteliste[this.MeilensteineProjektindex].push(this.DBProjektpunkte.CurrentProjektpunkt);
-
-              console.log('Aufgabenliste: "' + this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe + '" hinzugefügt.');
-            }
-             */
           }
 
           if(this.DBProjektpunkte.CurrentProjektpunkt.Deleted === true) {
@@ -982,18 +1001,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
 
             this.Meintagprojektpunkteliste[this.MeinTagProjektindex][Index] = this.DBProjektpunkte.CurrentProjektpunkt;
-          }
-          else {
-
-            /*
-            if(this.DBProjektpunkte.CurrentProjektpunkt.Meintag === true) {
-
-              this.Meintagprojektpunkteliste[this.MeinTagProjektindex].push(this.DBProjektpunkte.CurrentProjektpunkt);
-
-              console.log('Aufgabenliste: "' + this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe + '" hinzugefügt.');
-            }
-
-             */
           }
 
           if(this.DBProjektpunkte.CurrentProjektpunkt.Deleted === true) {
@@ -1138,13 +1145,36 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
       this.MeilensteineProjektliste       = [];
       this.Meilensteineprojektpunkteliste = [];
-
-      // Meilensteine Projektdaten bestimmen
-
-      Index = 0;
+      this.AlleProjektliste               = [];
+      this.AlleProjektpunkteliste         = [];
 
       if(this.Pool.Mitarbeiterdaten !== null) {
 
+        // Alle Projekte Daten bestimmen
+
+        Index = 0;
+
+        for(let Projekt of this.DBProjekte.Projektliste) {
+
+          Projektpunkteliste = lodash.filter(this.Pool.Projektpunkteliste[Projekt.Projektkey], (projektpunkt: Projektpunktestruktur) => {
+
+              return this.DBProjektpunkte.CheckFilter(projektpunkt, false);
+          });
+
+          if(Projektpunkteliste.length > 0) {
+
+            this.SortPunkteliste(Projektpunkteliste);
+
+            this.AlleProjektliste.push(Projekt);
+            this.AlleProjektpunkteliste[Index] = Projektpunkteliste;
+
+            Index++;
+          }
+        }
+
+        // Meilensteine Projektdaten bestimmen
+
+        Index = 0;
 
         for(let Projekt of this.DBProjekte.Projektliste) {
 
@@ -1276,8 +1306,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
         // Projektfavoriten Daten
 
-        debugger;
-
         if(this.DBProjekte.CurrentProjekt !== null && this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
 
 
@@ -1373,7 +1401,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
         if(!lodash.isUndefined(this.Kalenderliste[i])) {
 
           Liste = this.Kalenderliste[i];
-
 
           for(let Termin of Liste) {
 

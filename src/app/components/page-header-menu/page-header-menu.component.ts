@@ -1073,4 +1073,16 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
       this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ShowUngenutzteChanged', this.Debug.Typen.Component);
     }
   }
+
+  AlleProjekteClicked() {
+
+    try {
+
+      this.Menuservice.Aufgabenlisteansicht = this.Menuservice.Aufgabenlisteansichten.Alle;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'AlleProjekteClicked', this.Debug.Typen.Component);
+    }
+  }
 }

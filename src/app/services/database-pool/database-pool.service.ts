@@ -21,6 +21,7 @@ import {environment} from "../../../environments/environment";
 import {Bautagebuchstruktur} from "../../dataclasses/bautagebuchstruktur";
 import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 import {Outlookkategoriesstruktur} from "../../dataclasses/outlookkategoriesstruktur";
+import {Notizenkapitelstruktur} from "../../dataclasses/notizenkapitelstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,7 @@ export class DatabasePoolService {
   public Protokollliste:          Protokollstruktur[][];
   public Bautagebuchliste:        Bautagebuchstruktur[][];
   public LOPListe:                LOPListestruktur[][];
+  public Notizenkapitelliste:     Notizenkapitelstruktur[][];
   public Mitarbeitersettingsliste: Mitarbeitersettingsstruktur[];
   public CockpitserverURL:        string;
   public Mitarbeiterdaten: Mitarbeiterstruktur;
@@ -74,6 +76,7 @@ export class DatabasePoolService {
   public LOPListeChanged: EventEmitter<any> = new EventEmitter<any>();
   public MitarbeiterAuswahlChanged: EventEmitter<any> = new EventEmitter<any>();
   public BeteiligteAuswahlChanged: EventEmitter<any> = new EventEmitter<any>();
+  public NotizenkapitellisteChanged: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private Debug: DebugProvider,
               private Const: ConstProvider,
@@ -97,6 +100,7 @@ export class DatabasePoolService {
       this.Changlogliste            = [];
       this.Bautagebuchliste         = [];
       this.LOPListe                 = [];
+      this.Notizenkapitelliste      = [];
       this.Outlookkatekorien        = [];
       this.CockpitserverURL         = environment.production === true ? 'https://bae-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
       this.Emailcontent             = this.Emailcontentvarinaten.NONE;
@@ -285,6 +289,66 @@ export class DatabasePoolService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadLOPListe', this.Debug.Typen.Service);
+    }
+  }
+
+  public ReadNotizenkapitelliste(projekt: Projektestruktur): Promise<any> {
+
+    try {
+
+      let Params: HttpParams;
+      let Headers: HttpHeaders;
+      let NotizenkapitelObservable: Observable<any>;
+
+      this.Notizenkapitelliste[projekt.Projektkey] = [];
+
+      return new Promise((resolve, reject) => {
+
+        Params  = new HttpParams({ fromObject: { projektkey: projekt.Projektkey }} );
+        Headers = new HttpHeaders({
+
+          'content-type': 'application/json',
+        });
+
+        NotizenkapitelObservable = this.Http.get(this.CockpitserverURL + '/notizenkapitel', { headers: Headers, params: Params } );
+
+        NotizenkapitelObservable.subscribe({
+
+          next: (data) => {
+
+            // debugger
+
+            this.Notizenkapitelliste[projekt.Projektkey] = <Notizenkapitelstruktur[]>data;
+
+          },
+          complete: () => {
+
+            this.Notizenkapitelliste[projekt.Projektkey].sort((a: Notizenkapitelstruktur, b: Notizenkapitelstruktur) => {
+
+              if (a.Titel < b.Titel) return -1;
+              if (a.Titel > b.Titel) return 1;
+              return 0;
+            });
+
+             // debugger;
+
+            this.Debug.ShowMessage('Read LOP Liste von ' + projekt.Projektkurzname + ' fertig.', 'Database Pool', 'NotizenkapitelroutsClass', this.Debug.Typen.Service);
+
+
+
+            resolve(true);
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'NotizenkapitelroutsClass', this.Debug.Typen.Service);
     }
   }
 
@@ -692,7 +756,7 @@ export class DatabasePoolService {
 
     try {
 
-      let Steps: number         = 4;
+      let Steps: number         = 5;
       this.ShowProgress         = true;
       this.MaxProgressValue     = projektliste.length * Steps;
       this.CurrentProgressValue = 0;
@@ -730,6 +794,12 @@ export class DatabasePoolService {
           await this.ReadLOPListe(Projekt);
 
           this.CurrentProgressValue++;
+
+          this.ProgressMessage = 'Notizenkapitel Liste ' + Projekt.Projektkurzname;
+
+          await this.ReadNotizenkapitelliste(Projekt);
+
+          this.CurrentProgressValue++;
         }
       } catch (error) {
 
@@ -742,6 +812,8 @@ export class DatabasePoolService {
       this.ProtokolllisteChanged.emit();
       this.BautagebuchlisteChanged.emit();
       this.LOPListeChanged.emit();
+      this.NotizenkapitellisteChanged.emit();
+
 
       this.CurrentProgressValue = this.MaxProgressValue;
       this.ShowProgress = false;

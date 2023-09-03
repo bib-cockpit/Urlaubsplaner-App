@@ -5,7 +5,8 @@ export type Aufgabenbereichestruktur = {
   id:               string;
   Leistungsphasen:  number[];
   Bezeichnung:      string;
-  Beschreibung:     string;
+  Information:      string[];
+
   Nummer:           number[];
   Teilaufgabenbereiche: Teilaufgabeestruktur[][][];
 };

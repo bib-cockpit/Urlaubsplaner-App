@@ -1,0 +1,126 @@
+
+<div [style.z-index]="ZIndex" style="position: absolute; top: 0px; left: 0px; background: none; width: 100%; height: 100%">
+  <div  class="keeperdivclass" [style.background]="Displayservice.ShowOpacity(Displayservice.Dialognamen.Notizenkapiteleditor) ? 'rgba(0, 0, 0, 0.5)' : 'none'" (click)="ContentClicked($event)">
+    <div class="contentdivclass" [style.bottom.px]="PositionY" [style.width.px]="Dialogbreite" [style.top.px]="PositionY" (click)="ContentClicked($event)">
+      <ion-header>
+        <page-header>
+          <table class="paddingsmalltable">
+            <tr>
+              <td><ion-icon [name]="Iconname" color="weiss"></ion-icon></td>
+              <td [style.color]="'white'">{{Titel}}</td>
+            </tr>
+          </table>
+        </page-header>
+      </ion-header>
+
+      <ion-content>
+
+        <div class="contentinnerclass">
+
+          <ion-grid *ngIf="DB.CurrentNotizenkapitel">
+            <ion-row>
+              <ion-col>
+                <ion-text color="baeblau"><b>Kapitel</b></ion-text>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <input-clone Titel="Titel" [(Value)]="DB.CurrentNotizenkapitel.Titel" [Required]="true"  [MaxLength]="300" (TextChanged)="TextChanged($event)"></input-clone>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-text color="baeblau"><b>Abschnitte</b></ion-text>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngFor="let Abschnitt of DB.CurrentNotizenkapitel.Abschnittliste; let i = index">
+              <ion-col size="11">
+                <input-clone [Titel]="(i + 1).toString() + '. Abschnitt'" [(Value)]="DB.CurrentNotizenkapitel.Abschnittliste[i].Titel" [Required]="false" [MaxLength]="300" (TextChanged)="AbschnittTextChanged($event, i)"></input-clone>
+              </ion-col>
+              <ion-col size="1">
+                <div class="rootbuttonsmallclass" (click)="DeleteAbschnitt(Abschnitt.KapitelabschnittID)" *ngIf="DB.CurrentNotizenkapitel.Abschnittliste.length > 1">
+                  <ion-icon name="trash" color="weiss"></ion-icon>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-button size="small" color="burnicklbraun"
+                            (click)="AddAbschnittClicked()">
+                  <ion-icon name="add-circle-outline" color="weiss" slot="start"></ion-icon>
+                  <ion-text color="weiss">Neuer Abschnitt</ion-text>
+                </ion-button>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <br>
+                <br>
+                <bR>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="DB.CurrentNotizenkapitel._id !== null">
+              <ion-col>
+                <table>
+                  <tr>
+                    <td><checkbox-clon [Checked]="CanDelete" (CheckChanged)="CanDeleteCheckedChanged($event)"></checkbox-clon></td>
+                    <td style="width: 6px"></td>
+                    <td>
+                      <ion-button size="small" color="rot" [disabled]="!CanDelete" (click)="DeleteButtonClicked()">
+                        <ion-icon name="trash-outline" style="font-size: 20px"></ion-icon>
+                        <ion-text>Kapitel löschen</ion-text>
+                      </ion-button>
+                    </td>
+                  </tr>
+                </table>
+              </ion-col>
+            </ion-row>
+
+  </ion-grid>
+
+        </div>
+      </ion-content>
+
+      <ion-footer>
+        <page-footer>
+
+          <table class="paddingsmalltable" width="100%">
+            <tr>
+              <td>
+                <div class="rootbuttonclass" (click)="CancelButtonClicked()">
+                  <ion-icon style="font-size: 28px" color="weiss" name="close-outline"></ion-icon>
+                </div>
+              <td style="width: 100%"></td>
+              <!--
+              <td *ngIf="DB.CurrentStandort._id !== null">
+                <table width="180px">
+                  <tr>
+                    <td>
+                      <checkbox-clon (CheckChanged)="CanDeleteCheckedChanged($event)" [Checked]="CanDelete"></checkbox-clon>
+                    </td>
+                    <td style="font-size: 90%; color: white;">löschen aktivieren</td>
+                    <td>
+                      <div class="rootbuttonclass" (click)="DeleteButtonClicked()">
+                        <ion-icon style="font-size: 28px" [color]="CanDelete === true ? 'rot' : 'burnicklbraun'" name="trash"></ion-icon>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              -->
+
+              <td>
+                <div class="rootbuttonclass" (click)="Valid === true ? OkButtonClicked() : null">
+                  <ion-icon style="font-size: 28px" [color]="Valid === true ? 'weiss' : 'grau'" name="save-outline"></ion-icon>
+                </div>
+              </td>
+            </tr>
+          </table>
+
+        </page-footer>
+
+      </ion-footer>
+
+    </div>
+  </div>
+</div>

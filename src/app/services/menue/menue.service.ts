@@ -31,6 +31,7 @@ export class MenueService {
     Festlegungen:  'Festlegungen',
     Planungsmatrix: 'Planungsmatrix',
     Fileliste:     'Fileliste',
+    Notizen:       'Notizen'
   };
 
   public Aufgabenlisteansicht: string;
@@ -39,7 +40,8 @@ export class MenueService {
     Mein_Tag:     'Mein Tag',
     Meine_Woche:  'Meine Woche',
     Meilensteine: 'Meilensteine',
-    Projekt:      'Projekt'
+    Projekt:      'Projekt',
+    Alle:         'Alle'
   };
 
   public FirmaMenuebereich: string;
@@ -105,9 +107,21 @@ export class MenueService {
 
           switch (this.ProjekteMenuebereich) {
 
+            case this.ProjekteMenuebereiche.Notizen:
+
+              this.Tools.SetRootPage(this.Const.Pages.PjNotizenListePage);
+
+              break;
+
             case this.ProjekteMenuebereiche.Aufgabenliste:
 
               switch (this.Aufgabenlisteansicht) {
+
+                case this.Aufgabenlisteansichten.Alle:
+
+                    this.Tools.SetRootPage(this.Const.Pages.PjAufgabenlistePage);
+
+                  break;
 
                 case this.Aufgabenlisteansichten.Mein_Tag:
 
