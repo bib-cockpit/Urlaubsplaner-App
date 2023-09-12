@@ -202,7 +202,7 @@ export class PjNotizenkapitelEditorComponent implements OnInit, OnDestroy, After
       }
       else {
 
-        this.DB.UpdateNotizenkapitel(this.DB.CurrentNotizenkapitel).then(() => {
+        this.DB.UpdateNotizenkapitel(this.DB.CurrentNotizenkapitel, true).then(() => {
 
 
           this.OkClickedEvent.emit();

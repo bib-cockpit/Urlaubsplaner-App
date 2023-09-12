@@ -1,3 +1,10 @@
+.imgclass {
+
+  max-width: 100%;
+  max-height: 100%;
+  cursor: pointer;
+}
+
 .filebrowserdiv {
 
   position: relative;
@@ -24,6 +31,7 @@
 
   background: none;
   overflow: auto;
+  padding: 4px;
 }
 
 a {

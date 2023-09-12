@@ -380,6 +380,12 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
       switch (Statusname) {
 
+        case 'Bilder':
+
+          this.Pool.Mitarbeitersettings.AufgabenShowBilder = status;
+
+          break;
+
         case this.Const.Projektpunktstatustypen.Offen.Name:
 
           this.Pool.Mitarbeitersettings.AufgabenShowOffen = status;

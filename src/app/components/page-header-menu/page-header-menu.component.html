@@ -620,6 +620,8 @@
                   <td><div class="statusvaianteclass" style="background: #616A6B;">In Bearbeitung</div></td><td style="width: 6px"></td>
                   <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowRuecklauf"   (CheckChanged)="StatusFilterChanged($event, Const.Projektpunktstatustypen.Ruecklauf.Name)"></checkbox-clon></td>
                   <td><div class="statusvaianteclass" style="background: #0020C2;">Rücklauf ausstehend</div></td><td style="width: 6px"></td>
+                  <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowBilder"   (CheckChanged)="StatusFilterChanged($event, 'Bilder')"></checkbox-clon></td>
+                  <td><div class="statusvaianteclass" style="background: none;">Bilder anzeigen</div></td><td style="width: 6px"></td>
                   <!--
                   <td><checkbox-clon  [Checked]="Pool.Mitarbeitersettings.AufgabenShowMeilensteinOnly" (CheckChanged)="StatusFilterChanged($event, 'Meilenstein')"></checkbox-clon></td>
                   <td><div class="statusvaianteclass" style="background: purple;">Nur Meilensteine anzeigen</div></td><td style="width: 6px"></td>

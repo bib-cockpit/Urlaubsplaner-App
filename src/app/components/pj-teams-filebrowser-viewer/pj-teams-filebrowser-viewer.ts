@@ -80,7 +80,7 @@ export class PjTeamsFilebrowserComponent implements OnInit, OnChanges {
 
     try {
 
-      this.GraphService.GetTeamsSubdirictoryfilelist(this.TeamsID, File, true);
+      // this.GraphService.GetTeamsSubdirictoryfilelist(this.TeamsID, File, true);
 
     } catch (error) {
 
@@ -92,7 +92,7 @@ export class PjTeamsFilebrowserComponent implements OnInit, OnChanges {
 
     try {
 
-      this.GraphService.GetTeamsRootfilelist(this.TeamsID, true);
+      // this.GraphService.GetTeamsRootfilelist(this.TeamsID, true);
 
     } catch (error) {
 
@@ -104,7 +104,7 @@ export class PjTeamsFilebrowserComponent implements OnInit, OnChanges {
 
     try {
 
-      await this.GraphService.GetTeamsSubdirictoryfilelist(this.TeamsID, file, true);
+      // await this.GraphService.GetTeamsSubdirictoryfilelist(this.TeamsID, file, true);
       this.GraphService.RemoveTeamsSubdirectory(file);
 
     } catch (error) {
@@ -145,7 +145,7 @@ export class PjTeamsFilebrowserComponent implements OnInit, OnChanges {
         TeamsID = TeamsIDValue.currentValue;
       }
 
-      if(typeof TeamsID !== 'undefined' && TeamsID !== null && TeamsID !== '') this.GraphService.GetTeamsRootfilelist(this.TeamsID, true);
+      // if(typeof TeamsID !== 'undefined' && TeamsID !== null && TeamsID !== '') this.GraphService.GetTeamsRootfilelist(this.TeamsID, true);
 
     } catch (error) {
 

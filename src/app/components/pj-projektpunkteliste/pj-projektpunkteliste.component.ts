@@ -1,4 +1,14 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChange,
+  SimpleChanges
+} from '@angular/core';
 import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
 import {BasicsProvider} from "../../services/basics/basics";
 import {DebugProvider} from "../../services/debug/debug";
@@ -17,62 +27,67 @@ import {DatabaseProjekteService} from "../../services/database-projekte/database
 import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
 import {Mitarbeitersettingsstruktur} from "../../dataclasses/mitarbeitersettingsstruktur";
 import {Projektpunktanmerkungstruktur} from "../../dataclasses/projektpunktanmerkungstruktur";
-import {DatabaseMitarbeitersettingsService} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {
+  DatabaseMitarbeitersettingsService
+} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {Meintagstruktur} from "../../dataclasses/meintagstruktur";
 import {Meinewochestruktur} from "../../dataclasses/meinewochestruktur";
 import {DatabaseProtokolleService} from "../../services/database-protokolle/database-protokolle.service";
 import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 import {DatabaseLoplisteService} from "../../services/database-lopliste/database-lopliste.service";
+import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import {Graphservice} from "../../services/graph/graph";
 
 @Component({
   selector: 'pj-projektpunkteliste',
   templateUrl: './pj-projektpunkteliste.component.html',
   styleUrls: ['./pj-projektpunkteliste.component.scss'],
 })
-export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
+export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChanges {
 
-  @Output() StatusClicked               = new EventEmitter<Projektpunktestruktur>();
-  @Output() ProtokollmarkeClicked       = new EventEmitter<any>();
-  @Output() LOPListerMarkeClicked       = new EventEmitter<any>();
-  @Output() EmailMarkeClicked           = new EventEmitter<Projektpunktestruktur>();
-  @Output() AufgabeClicked              = new EventEmitter<Projektpunktestruktur>();
-  @Output() StartdatumChanged           = new EventEmitter<Projektpunktestruktur>();
-  @Output() DetaildatumChanged          = new EventEmitter<Projektpunktestruktur>();
-  @Output() EndedatumChanged            = new EventEmitter<Projektpunktestruktur>();
-  @Output() EndedatumClicked            = new EventEmitter<Projektpunktestruktur>();
-  @Output() FortschrittClicked          = new EventEmitter<Projektpunktestruktur>();
-  @Output() MeintagClicked              = new EventEmitter<Projektpunktestruktur>();
-  @Output() MeilensteinClicked          = new EventEmitter<Projektpunktestruktur>();
-  @Output() NotizenMarkeClicked         = new EventEmitter<Projektpunktestruktur>();
-  @Output() MeinewocheZuweisenClicked   = new EventEmitter<Projektpunktestruktur>();
+  @Output() StatusClicked = new EventEmitter<Projektpunktestruktur>();
+  @Output() ProtokollmarkeClicked = new EventEmitter<any>();
+  @Output() LOPListerMarkeClicked = new EventEmitter<any>();
+  @Output() EmailMarkeClicked = new EventEmitter<Projektpunktestruktur>();
+  @Output() AufgabeClicked = new EventEmitter<Projektpunktestruktur>();
+  @Output() StartdatumChanged = new EventEmitter<Projektpunktestruktur>();
+  @Output() DetaildatumChanged = new EventEmitter<Projektpunktestruktur>();
+  @Output() EndedatumChanged = new EventEmitter<Projektpunktestruktur>();
+  @Output() EndedatumClicked = new EventEmitter<Projektpunktestruktur>();
+  @Output() FortschrittClicked = new EventEmitter<Projektpunktestruktur>();
+  @Output() MeintagClicked = new EventEmitter<Projektpunktestruktur>();
+  @Output() MeilensteinClicked = new EventEmitter<Projektpunktestruktur>();
+  @Output() NotizenMarkeClicked = new EventEmitter<Projektpunktestruktur>();
+  @Output() MeinewocheZuweisenClicked = new EventEmitter<Projektpunktestruktur>();
   @Output() MeinewocheBearbeitenClicked = new EventEmitter<Projektpunktestruktur>();
 
   @Output() ZustaendigExternZuweisenClicked = new EventEmitter<Projektpunktestruktur>();
   @Output() ZustaendigInternZuweisenClicked = new EventEmitter<Projektpunktestruktur>();
 
-  @Output() AddProjektpunktClicked   = new EventEmitter<number>();
-  @Output() InsertProjektpunkt       = new EventEmitter<{ Projektindex: number; Listenposition: number }>();
-  @Output() ProjektpunktDown         = new EventEmitter<{ Projektindex: number; Listenposition: number }>();
-  @Output() ProjektpunktUp           = new EventEmitter<{ Projektindex: number; Listenposition: number }>();
-  @Output() EditBemerkung            = new EventEmitter<{ Projektpunkt: Projektpunktestruktur; Detail: Projektpunktanmerkungstruktur }>();
+  @Output() AddProjektpunktClicked = new EventEmitter<number>();
+  @Output() InsertProjektpunkt = new EventEmitter<{ Projektindex: number; Listenposition: number }>();
+  @Output() ProjektpunktDown = new EventEmitter<{ Projektindex: number; Listenposition: number }>();
+  @Output() ProjektpunktUp = new EventEmitter<{ Projektindex: number; Listenposition: number }>();
+  @Output() EditBemerkung = new EventEmitter<{ Projektpunkt: Projektpunktestruktur; Detail: Projektpunktanmerkungstruktur }>();
   @Output() TerminFiltermodusClicked = new EventEmitter<string>();
 
   @Output() DeleteDetailClicked = new EventEmitter<
     {
       Projektpunkt: Projektpunktestruktur;
-      Detail:       Projektpunktanmerkungstruktur;
+      Detail: Projektpunktanmerkungstruktur;
     }>();
 
   @Output() CancelDetailClicked = new EventEmitter<
     {
       Projektpunkt: Projektpunktestruktur;
-      Detail:       Projektpunktanmerkungstruktur;
+      Detail: Projektpunktanmerkungstruktur;
     }>();
 
   @Output() SaveDetailClicked = new EventEmitter<
     {
       Projektpunkt: Projektpunktestruktur;
-      Detail:       Projektpunktanmerkungstruktur;
+      Detail: Projektpunktanmerkungstruktur;
     }>();
 
   // public Heute: Moment;
@@ -80,23 +95,27 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
   @Input() Datenliste: Projektpunktestruktur[];
   @Input() Projektindex: number;
   @Input() Projekt: Projektestruktur;
-  @Input() ShowMeintag : boolean;
-  @Input() Datepickerprefix : string;
-  @Input() ShowProjektnamen : boolean;
-  @Input() CheckFilterEnabled : boolean;
+  @Input() ShowMeintag: boolean;
+  @Input() Datepickerprefix: string;
+  @Input() ShowProjektnamen: boolean;
+  @Input() CheckFilterEnabled: boolean;
   @Input() ShowListentitel: boolean;
+  @Input() ShowBilder: boolean;
 
   public Settings: Mitarbeitersettingsstruktur;
   private SettingsSubscription: Subscription;
-  private MessageSubscription: Subscription;
+  public Thumbnailliste: Thumbnailstruktur[][][];
+  public Zeilenanzahl: number;
+  public Thumbbreite: number;
+  public Spaltenanzahl: number;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
-              // private NavParams: Navparameter,
-              public  Pool: DatabasePoolService,
-              public  Database: DatabaseProjektpunkteService,
-              public  ProjekteDB: DatabaseProjekteService,
+              public GraphService: Graphservice,
+              public Pool: DatabasePoolService,
+              public Database: DatabaseProjektpunkteService,
+              public ProjekteDB: DatabaseProjekteService,
               private ProtokolleDB: DatabaseProtokolleService,
               private LOPListeDB: DatabaseLoplisteService,
               private MitarbeiterDB: DatabaseMitarbeiterService,
@@ -106,19 +125,39 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
 
     try {
 
-      this.Datenliste         = [];
-      this.Projektindex       = null;
-      this.Projekt            = null;
-      this.ShowMeintag        = false;
-      this.Settings           = null;
-      this.Datepickerprefix   = '';
-      this.ShowProjektnamen   = false;
+      this.Datenliste = [];
+      this.Projektindex = null;
+      this.Projekt = null;
+      this.ShowMeintag = false;
+      this.Settings = null;
+      this.Datepickerprefix = '';
+      this.ShowProjektnamen = false;
       this.CheckFilterEnabled = true;
-      this.ShowListentitel    = true;
+      this.ShowListentitel = true;
+      this.ShowBilder = true;
+      this.Thumbnailliste = [];
+
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'constructor', this.Debug.Typen.Component);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+
+    try {
+
+      let DatenlisteValue: SimpleChange = changes.Datenliste;
+
+
+      if(typeof DatenlisteValue !== 'undefined' && DatenlisteValue !== null && DatenlisteValue.currentValue !== null && DatenlisteValue.currentValue.length > 0 ) {
+
+        this.PrepareDaten();
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'function', this.Debug.Typen.Component);
     }
   }
 
@@ -249,6 +288,90 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
     }
   }
 
+  private async PrepareDaten() {
+
+    try {
+
+      // Bilder
+
+      debugger;
+
+      let Thumb, Merker: Thumbnailstruktur;
+      let Anzahl: number;
+      let Index: number;
+      let Punktindex: number;
+      let Liste: Thumbnailstruktur[] = [];
+      let Imageliste: Teamsfilesstruktur[] = [];
+      let File: Teamsfilesstruktur;
+      let GoOn: boolean = false;
+
+      this.Thumbnailliste = [];
+      this.Thumbbreite    = 100;
+      this.Spaltenanzahl  = 4;
+      Punktindex          = 0;
+
+      if(this.Pool.Mitarbeitersettings !== null) GoOn = this.Pool.Mitarbeitersettings.AufgabenShowBilder;
+
+      if(GoOn) {
+
+        for(let Punkt of this.Datenliste) {
+
+          for(let id of Punkt.BilderIDListe) {
+
+            File    = this.GraphService.GetEmptyTeamsfile();
+            File.id = id;
+
+            Imageliste.push(File);
+          }
+
+          Liste = [];
+
+          for(File of Imageliste) {
+
+            Thumb  = await this.GraphService.GetSiteThumbnail(File);
+            Merker = lodash.find(Liste, {id: File.id});
+
+            if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+          }
+
+          debugger;
+
+          Anzahl                          = Liste.length;
+          this.Zeilenanzahl               = Math.ceil(Anzahl / this.Spaltenanzahl);
+          this.Thumbnailliste[Punktindex] = [];
+          Index                           = 0;
+
+          for(let Zeilenindex = 0; Zeilenindex < this.Zeilenanzahl; Zeilenindex++) {
+
+            this.Thumbnailliste[Punktindex][Zeilenindex] = [];
+
+            for(let Spaltenindex = 0; Spaltenindex < this.Spaltenanzahl; Spaltenindex++) {
+
+              if(!lodash.isUndefined(Liste[Index])) {
+
+                this.Thumbnailliste[Punktindex][Zeilenindex][Spaltenindex] = Liste[Index];
+              }
+              else {
+
+                this.Thumbnailliste[Punktindex][Zeilenindex][Spaltenindex] = null;
+              }
+
+              Index++;
+            }
+          }
+
+          Punktindex++;
+        }
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
+    }
+
+
+  }
+
   ngOnInit() {
 
     try {
@@ -263,31 +386,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
         this.Settings = this.Pool.Mitarbeitersettings;
       }
 
-      /*
-
-      switch (this.Basics.Mitarbeiterdaten.Settings.Listenmodus) {
-
-        case this.Service.Listenmodusvarianten.Einfach:
-
-          this.Listesettings = this.Basics.Mitarbeiterdaten.Settings.Einfachlistefeldersettings;
-
-          break;
-
-        case this.Service.Listenmodusvarianten.Zweifach:
-
-          this.Listesettings = this.Basics.Mitarbeiterdaten.Settings.Zweifachlistefeldersettings;
-
-          break;
-
-        case this.Service.Listenmodusvarianten.Dreifach:
-
-          this.Listesettings = this.Basics.Mitarbeiterdaten.Settings.Dreifachlistefeldersettings;
-
-          break;
-      }
-
-       */
-
+      this.PrepareDaten();
 
     } catch (error) {
 
@@ -1046,4 +1145,13 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy {
     }
   }
 
+  ThumbnailClicked(event: MouseEvent, Thumb: Thumbnailstruktur) {
+
+    try {
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'ThumbnailClicked', this.Debug.Typen.Page);
+    }
+  }
 }

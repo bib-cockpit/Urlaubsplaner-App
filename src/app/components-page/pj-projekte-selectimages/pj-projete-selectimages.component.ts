@@ -1,10 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter, Input, OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import {DebugProvider} from "../../services/debug/debug";
 import {DisplayService} from "../../services/diplay/display.service";
 import {ConstProvider} from "../../services/const/const";
@@ -15,17 +9,19 @@ import {DatabaseProjekteService} from "../../services/database-projekte/database
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 
 @Component({
-  selector: 'pj-projekte-selectfilefolder',
-  templateUrl: './pj-projekte-selectfilefolder.component.html',
-  styleUrls: ['./pj-projete-selectfilefolder.component.scss'],
+  selector: 'pj-projekte-selectimages',
+  templateUrl: './pj-projekte-selectimages.component.html',
+  styleUrls: ['./pj-projete-selectimages.component.scss'],
 })
 
-export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, AfterViewInit {
+export class PjProjeteSelectimagesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public Valid: boolean;
 
   @Output() CancelClickedEvent    = new EventEmitter<any>();
   @Output() OkClickedEvent        = new EventEmitter<Teamsfilesstruktur>();
+  @Output() SelectedImagesChanged = new EventEmitter<string[]>();
+
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -33,11 +29,8 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
   @Input() Dialoghoehe: number;
   @Input() PositionY: number;
   @Input() ZIndex: number;
-  @Input() ShowFiles: boolean;
-  @Input() SelectedDirectoryID: string;
 
   public CurrentIndex: number;
-  private Directory: Teamsfilesstruktur;
 
   constructor(public Debug: DebugProvider,
               public Displayservice: DisplayService,
@@ -54,13 +47,10 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
       this.PositionY           = 100;
       this.ZIndex              = 2000;
       this.CurrentIndex        = -1;
-      this.ShowFiles           = true;
-      this.SelectedDirectoryID = this.Const.NONE;
-      this.Directory           = null;
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'File VErzeichnis Auswahl', 'constructor', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bilderauswahl', 'constructor', this.Debug.Typen.Component);
     }
   }
 
@@ -68,12 +58,12 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
 
       try {
 
-        this.Displayservice.RemoveDialog(this.Displayservice.Dialognamen.Verzeichnisauswahl);
+        this.Displayservice.RemoveDialog(this.Displayservice.Dialognamen.Bilderauswahl);
 
 
       } catch (error) {
 
-        this.Debug.ShowErrorMessage(error.message, 'File VErzeichnis Auswahl', 'OnDestroy', this.Debug.Typen.Component);
+        this.Debug.ShowErrorMessage(error.message, 'Bilderauswahl', 'OnDestroy', this.Debug.Typen.Component);
       }
 
     }
@@ -83,7 +73,7 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
     try {
 
 
-      this.Displayservice.AddDialog(this.Displayservice.Dialognamen.Verzeichnisauswahl, this.ZIndex);
+      this.Displayservice.AddDialog(this.Displayservice.Dialognamen.Bilderauswahl, this.ZIndex);
 
 
 
@@ -93,7 +83,7 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'File VErzeichnis Auswahl', 'OnInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bilderauswahl', 'OnInit', this.Debug.Typen.Component);
     }
   }
 
@@ -105,7 +95,7 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'File VErzeichnis Auswahl', 'AfterViewInit', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bilderauswahl', 'AfterViewInit', this.Debug.Typen.Component);
     }
   }
 
@@ -118,7 +108,7 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'File VErzeichnis Auswahl', 'CancelButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bilderauswahl', 'CancelButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -131,7 +121,7 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'File VErzeichnis Auswahl', 'ContentClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Bilderauswahl', 'ContentClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -152,27 +142,11 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
 
     try {
 
-      this.OkClickedEvent.emit(this.Directory);
+      this.OkClickedEvent.emit();
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'File Verzeichnis Auswahl', 'OkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'File Verzeichnis Auswahl', 'OkButtonClicked', this.Debug.Typen.Component);
     }
-  }
-
-  DirectorySelectedHandler(dir: Teamsfilesstruktur) {
-
-    try {
-
-      if(dir !== null) this.SelectedDirectoryID = dir.id;
-      else             this.SelectedDirectoryID = this.Const.NONE;
-
-      this.Directory = dir;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'File Verzeichnis Auswahl', 'DirectorySelectedHandler', this.Debug.Typen.Page);
-    }
-
   }
 }

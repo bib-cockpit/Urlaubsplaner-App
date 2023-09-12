@@ -44,7 +44,8 @@ export class DatabaseProjekteService {
   public CurrentFavoritenChanged = new EventEmitter<any>();
   public CurrentFavoritenProjektChanged = new EventEmitter<any>();
   public GesamtprojektelisteChanged: EventEmitter<any> = new EventEmitter<any>();
-  public TeamsPathesChanged: EventEmitter<Teamsfilesstruktur> = new EventEmitter<Teamsfilesstruktur>();
+  // public TeamsPathesChanged: EventEmitter<Teamsfilesstruktur> = new EventEmitter<Teamsfilesstruktur>();
+  public SitesPathesChanged: EventEmitter<Teamsfilesstruktur> = new EventEmitter<Teamsfilesstruktur>();
 
   public  FavoritenZeilenanzahl: number;
   public FavoritenSpaltenanzahl: number;
@@ -132,8 +133,10 @@ export class DatabaseProjekteService {
 
       return {
         _id: null,
-        BaustellenLOPFolderID: "",
-        BautagebuchFolderID: "",
+        BaustellenLOPFolderID: this.Const.NONE,
+        BautagebuchFolderID:   this.Const.NONE,
+        ProtokolleFolderID:    this.Const.NONE,
+        ProjektFolderID:       this.Const.NONE,
         Bauteilliste: [],
         Beteiligtenliste: [],
         Deleted: false,
@@ -148,7 +151,6 @@ export class DatabaseProjekteService {
         ProjektleiterID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : this.Const.NONE,
         Projektname: "Musterprojekt",
         Projektnummer: "000000",
-        ProtokolleFolderID: "",
         StandortID: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten.StandortID : this.Const.NONE,
         Status: "Bearbeitung",
         StellvertreterID: this.Const.NONE,
@@ -249,6 +251,7 @@ export class DatabaseProjekteService {
               if(lodash.isUndefined(Projekt.OutlookkategorieID))  Projekt.OutlookkategorieID  = this.Const.NONE;
               if(lodash.isUndefined(Projekt.ProjektIsReal))       Projekt.ProjektIsReal = true;
 
+              if(lodash.isUndefined(Projekt.ProjektFolderID))       Projekt.ProjektFolderID       = this.Const.NONE;
               if(lodash.isUndefined(Projekt.BaustellenLOPFolderID)) Projekt.BaustellenLOPFolderID = this.Const.NONE;
               if(lodash.isUndefined(Projekt.ProtokolleFolderID))    Projekt.ProtokolleFolderID    = this.Const.NONE;
               if(lodash.isUndefined(Projekt.BautagebuchFolderID))   Projekt.BautagebuchFolderID   = this.Const.NONE;
@@ -574,6 +577,7 @@ export class DatabaseProjekteService {
         TeamsDescription: this.Const.NONE,
         TeamsName:        this.Const.NONE,
 
+        ProjektFolderID:       this.Const.NONE,
         BaustellenLOPFolderID: this.Const.NONE,
         ProtokolleFolderID:    this.Const.NONE,
         BautagebuchFolderID:   this.Const.NONE,

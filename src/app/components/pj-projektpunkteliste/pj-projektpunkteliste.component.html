@@ -105,11 +105,42 @@
         <table  class="nobordertable" style="width: 100%">
           <tr>
             <td style="height: inherit">
-              <div class="aufgabedivclass"
-                   (click)="AufgabeClickedHandler(Projektpunkt)"
-                   [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
-                   [innerHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe : 'html'">
-              </div>
+              <table style="width: 100%">
+                <tr>
+                  <td>
+                    <div class="aufgabedivclass"
+
+                         (click)="AufgabeClickedHandler(Projektpunkt)"
+                         [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
+                         [innerHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe : 'html'">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+
+                    <table>
+                      <tr *ngFor="let Zeilenliste of Thumbnailliste[i]">
+                        <ng-container *ngFor="let Thumb of Zeilenliste">
+                          <td style="cursor: pointer;">
+                            <ng-container *ngIf="Thumb !== null">
+                              <table>
+                                <tr>
+                                  <td style="padding: 2px" (click)="ThumbnailClicked($event, Thumb)">
+                                    <img *ngIf="Thumb !== null" [src]="Thumb.mediumurl" [style.width.px]="Thumbbreite"/>
+                                  </td>
+                                </tr>
+                              </table>
+                            </ng-container>
+
+                          </td>
+                        </ng-container>
+                      </tr>
+                    </table>
+
+                  </td>
+                </tr>
+              </table>
             </td>
             <td style="height: inherit; width: 30px">
               <table>

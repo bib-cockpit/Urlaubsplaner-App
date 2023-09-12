@@ -1,9 +1,9 @@
 
 <div [style.z-index]="ZIndex" style="position: absolute; top: 0px; left: 0px; background: none; width: 100%; height: 100%">
-  <div  class="keeperdivclass" [style.background]="Displayservice.ShowOpacity(Displayservice.Dialognamen.Verzeichnisauswahl) ? 'rgba(0, 0, 0, 0.5)' : 'none'" (click)="ContentClicked($event)">
+  <div  class="keeperdivclass" [style.background]="Displayservice.ShowOpacity(Displayservice.Dialognamen.Bilderauswahl) ? 'rgba(0, 0, 0, 0.5)' : 'none'" (click)="ContentClicked($event)">
     <div class="contentdivclass"
          [style.width.px]="Dialogbreite"
-         [style.height.px]="Dialoghoehe" [style.top.px]="PositionY" (click)="ContentClicked($event)">
+         [style.bottom.px]="PositionY" [style.top.px]="PositionY" (click)="ContentClicked($event)">
       <ion-header>
         <page-header-center>
           <table class="paddingsmalltable">
@@ -18,13 +18,12 @@
       <ion-content>
 
         <div  class="contentinnerclass">
-          <pj-sites-filebrowser *ngIf="DBProjekte.CurrentProjekt !== null"
+          <pj-sites-filebrowser-viewer *ngIf="DBProjekte.CurrentProjekt !== null"
+            [SelectImages]="true"
+            [Spaltenanzahl]="4"
             [Browserbreite]="Dialogbreite"
-            [Browserhoehe]="Dialoghoehe - 80"
-            [ShowFiles]="ShowFiles"
-            [SelectedDirectoryID]="SelectedDirectoryID"
-            [ShowSelect]="true" (DirectorySelected)="DirectorySelectedHandler($event)">
-          </pj-sites-filebrowser>
+            [Browserhoehe]="Dialoghoehe - 80" (SelectedImagesChanged)="SelectedImagesChanged.emit($event)">
+          </pj-sites-filebrowser-viewer>
 
         </div>
       </ion-content>

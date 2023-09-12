@@ -35,6 +35,9 @@ import {Protokollstruktur} from "../../dataclasses/protokollstruktur";
 import {ObjectSchema} from "joi";
 import {HttpErrorResponse} from "@angular/common/http";
 import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
+import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import {Graphservice} from "../../services/graph/graph";
 // import tinymce from "../../../assets/tinymce/tinymce";
 
 @Component({
@@ -100,6 +103,10 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
   public LinesanzahlTeilnehmer: number;
   private MitarbeiterSubscription: Subscription;
   private BeteiligteSubscription: Subscription;
+  public Thumbnailliste: Thumbnailstruktur[][][];
+  public Zeilenanzahl: number;
+  public Thumbbreite: number;
+  public Spaltenanzahl: number;
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -117,6 +124,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public KostenService: KostengruppenService,
               public Displayservice: DisplayService,
+              public GraphService: Graphservice,
               private LoadingAnimation: LoadingAnimationService,
               private Pool: DatabasePoolService) {
     try {
@@ -150,6 +158,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       this.Dialoghoehe = 300;
       this.PositionY = 100;
       this.ZIndex = 2000;
+      this.Thumbnailliste = [];
     }
     catch (error) {
 
@@ -375,12 +384,20 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
    */
 
-  private PrepareData() {
+  private async PrepareData() {
 
     try {
 
       let Projektpunkt: Projektpunktestruktur;
       let Nummer: number = 1;
+      let Thumb, Merker: Thumbnailstruktur;
+      let Anzahl: number;
+      let Index: number;
+      let Punktindex: number;
+      let Liste: Thumbnailstruktur[] = [];
+      let Imageliste: Teamsfilesstruktur[] = [];
+      let File: Teamsfilesstruktur;
+
 
       if(this.DB.CurrentProtokoll !== null) {
 
@@ -419,6 +436,64 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       }
 
       this.DBProjektpunkte.CurrentProjektpunkteliste = lodash.cloneDeep(this.Punkteliste);
+
+      // Bilder
+
+      this.Thumbnailliste = [];
+      this.Thumbbreite    = 140;
+      this.Spaltenanzahl  = 4;
+      Punktindex          = 0;
+
+      for(let Punkt of this.DBProjektpunkte.CurrentProjektpunkteliste) {
+
+        for(let id of Punkt.BilderIDListe) {
+
+          File    = this.GraphService.GetEmptyTeamsfile();
+          File.id = id;
+
+          Imageliste.push(File);
+        }
+
+        Liste = [];
+
+        for(File of Imageliste) {
+
+          Thumb  = await this.GraphService.GetSiteThumbnail(File);
+          Merker = lodash.find(Liste, {id: File.id});
+
+          if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+        }
+
+        debugger;
+
+        Anzahl                          = Liste.length;
+        this.Zeilenanzahl               = Math.ceil(Anzahl / this.Spaltenanzahl);
+        this.Thumbnailliste[Punktindex] = [];
+        Index                           = 0;
+
+        for(let Zeilenindex = 0; Zeilenindex < this.Zeilenanzahl; Zeilenindex++) {
+
+          this.Thumbnailliste[Punktindex][Zeilenindex] = [];
+
+          for(let Spaltenindex = 0; Spaltenindex < this.Spaltenanzahl; Spaltenindex++) {
+
+            if(!lodash.isUndefined(Liste[Index])) {
+
+              this.Thumbnailliste[Punktindex][Zeilenindex][Spaltenindex] = Liste[Index];
+            }
+            else {
+
+              this.Thumbnailliste[Punktindex][Zeilenindex][Spaltenindex] = null;
+            }
+
+            Index++;
+          }
+        }
+
+        Punktindex++;
+      }
+
+      debugger;
     }
     catch (error) {
 
@@ -1566,6 +1641,19 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetThemenlisteTextcolor', this.Debug.Typen.Component);
+    }
+  }
+
+  ThumbnailClicked(event: MouseEvent, Thumb: Thumbnailstruktur) {
+
+    try {
+
+      event.preventDefault();
+      event.stopPropagation();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ThumbnailClicked', this.Debug.Typen.Component);
     }
   }
 }

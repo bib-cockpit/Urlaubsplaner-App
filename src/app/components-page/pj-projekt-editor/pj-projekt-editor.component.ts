@@ -57,6 +57,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
   @Output() SelectBautagebuchfolderEvent       = new EventEmitter<any>();
   @Output() SelectBaustelleLOPListefolderEvent = new EventEmitter<any>();
   @Output() SelectProtokollfolderEvent         = new EventEmitter<any>();
+  @Output() SelectProjektfolderEvent           = new EventEmitter<any>();
   @Output() LeistungsphaseClickedEvent         = new EventEmitter<any>();
   @Output() EditMitarbeiterEvent               = new EventEmitter<any>();
 
@@ -86,6 +87,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
   public Mitarbeiterliste: Mitarbeiterstruktur[];
   public OtherUserinfo: Graphuserstruktur;
   public Protokollfolder: string;
+  public Projektfolder: string;
   public Bautagebuchfolder: string;
   public BaustelleLOPListefolder:string;
   public Listentrennerhoehe: number;
@@ -122,6 +124,8 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       this.PathesSubscription  = null;
       this.Protokollfolder     = '/';
       this.Bautagebuchfolder   = '/';
+      this.Projektfolder       = '/';
+
       this.BaustelleLOPListefolder = '/';
 
       this.BeteiligtenSubscription = null;
@@ -158,11 +162,10 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     try {
 
-      this.PathesSubscription = this.DB.TeamsPathesChanged.subscribe((dir: Teamsfilesstruktur) => {
+      this.PathesSubscription = this.DB.SitesPathesChanged.subscribe((dir: Teamsfilesstruktur) => {
 
-        this.CheckTeamsPathes();
+        this.CheckSitesPathes();
       });
-
 
       this.BeteiligtenSubscription = this.DBBeteiligte.BeteiligtenlisteChanged.subscribe(() => {
 
@@ -208,17 +211,34 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
     }
   }
 
-  private async CheckTeamsPathes() {
+  private async CheckSitesPathes() {
 
     try {
 
       let FileinfoA: Teamsfilesstruktur = null;
-      let FileinfoB: Teamsfilesstruktur = null;
-      let FileinfoC: Teamsfilesstruktur = null;
-      let RootFileinfo: Teamsfilesstruktur;
+      let Result: boolean;
+      let File: Teamsfilesstruktur;
+
+      if(this.DB.CurrentProjekt.ProjektFolderID !== this.Const.NONE) {
 
 
-      // Seicherpfade prüfen
+        FileinfoA = await this.GraphService.GetSiteSubDirectory(this.DB.CurrentProjekt.ProjektFolderID);
+
+        if(FileinfoA !== null) {
+
+          debugger;
+
+          this.Protokollfolder = 'Projekte/' + FileinfoA.name;
+        }
+        else {
+
+          this.Projektfolder = 'Verzeichnis ist nicht vorhanden';
+        }
+      }
+      else {
+
+        this.Projektfolder = 'nicht festgelegt';
+      }
 
       /*
 
@@ -231,9 +251,6 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       }
       else {
 
-        FileinfoA = await this.GraphService.GetTeamsSubDirectory(this.DB.CurrentProjekt.TeamsID, this.DB.CurrentProjekt.ProtokolleFolderID);
-
-        this.Protokollfolder = 'Dokumente/' + FileinfoA.parentReference.path.split('root:')[1] + '/' + FileinfoA.name;
       }
 
       if(this.DB.CurrentProjekt.BautagebuchFolderID === this.Const.NONE || this.DB.CurrentProjekt.BautagebuchFolderID.startsWith('ROOT:')) {
@@ -265,7 +282,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'CheckTeamsPathes', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'CheckSitesPathes', this.Debug.Typen.Page);
     }
   }
 
@@ -276,7 +293,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       let Liste: Mitarbeiterstruktur[] = [];
       let Mitarbeiter: Mitarbeiterstruktur;
 
-      await this.CheckTeamsPathes();
+      await this.CheckSitesPathes();
 
       this.Listentrennerhoehe = this.Dialoghoehe;
 
@@ -309,8 +326,6 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
         return 0;
       });
-
-      debugger;
 
     } catch (error) {
 
@@ -830,6 +845,18 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'SelectProtokollfolderClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  SelectProjektfolderClicked() {
+
+    try {
+
+      this.SelectProjektfolderEvent.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'SelectProjektfolderClicked', this.Debug.Typen.Component);
     }
   }
 

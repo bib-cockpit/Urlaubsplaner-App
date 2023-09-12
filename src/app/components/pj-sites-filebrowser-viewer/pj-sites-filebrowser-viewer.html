@@ -9,7 +9,7 @@
             <tr>
               <td>
                 <div (click)="RootFolderClicked()" class="folderdiv">
-                  Dokumente
+                  Projekte
                 </div>
               </td>
               <ng-container *ngFor="let Directory of GraphService.TeamsSubdirectorylist; let i = index">
@@ -37,7 +37,7 @@
                 <td><ion-icon (click)="FolderClicked(File)" color="grau" name="folder" style="cursor: pointer"></ion-icon></td>
                 <td><a (click)="FolderClicked(File)">{{File.name}}</a></td>
               </ng-container>
-              <ng-container *ngIf="File.isfolder === false">
+              <ng-container *ngIf="File.isfolder === false && (SelectImages === true && CheckFile(File) === true) || SelectImages === false">
                 <td>
                   <ion-icon (click)="FileClicked(File)" [style.cursor]="CheckFile(File) === true ? 'pointer' : 'default'" color="teal" name="document"></ion-icon>
                 </td>
@@ -56,7 +56,36 @@
       </td>
       <td>
         <div class="viewerdiv" [style.height.px]="Contenthoehe" [style.width.px]="Viewerbreite">
-          <pdf-viewer [src]="GraphService.CurrentPDFDownload !== null ? GraphService.CurrentPDFDownload.url : null"
+
+          <img *ngIf="ShowImage === true" class="imgclass" [src]="ImageSRC" (click)="ZoomImageClicked($event)"/>
+
+          <table class="paddingtable" *ngIf="GraphService.CurrentPDFDownload === null && ShowImage === false">
+            <tr *ngFor="let Zeilenliste of Thumbnailliste">
+              <ng-container *ngFor="let Thumb of Zeilenliste">
+                <td (click)="ThumbnailClicked(Thumb)" style="cursor: pointer;">
+                  <ng-container *ngIf="Thumb !== null">
+                    <table>
+                      <tr>
+                        <td>
+                          <img [src]="Thumb.largeurl" [style.width.px]="Thumbbreite"/>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="font-size: 90%">{{Thumb.filename}}</td>
+                      </tr>
+                      <tr *ngIf="SelectImages === true">
+                        <td>
+                          <checkbox-clon [Checked]="CheckImagesIsSelected(Thumb)" (CheckChanged)="ImageCheckedChanged($event, Thumb)"></checkbox-clon>
+                        </td>
+                      </tr>
+                    </table>
+                  </ng-container>
+                </td>
+              </ng-container>
+            </tr>
+          </table>
+
+          <pdf-viewer *ngIf="SelectImages === false" [src]="GraphService.CurrentPDFDownload !== null ? GraphService.CurrentPDFDownload.url : null"
                       [show-all]="true"
                       [show-borders]="false"
                       [render-text]="true"
@@ -64,6 +93,7 @@
                       [zoom]="Zoomfaktor"
                       [style.width.px]="Viewerbreite" [style.height.px]="Browserhoehe" (page-rendered)="PDFPageRenderedFinishedHandler()">
           </pdf-viewer>
+
         </div>
       </td>
     </tr>

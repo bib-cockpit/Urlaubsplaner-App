@@ -242,6 +242,27 @@
                                            [Enabled]="false" Titel="Teams ID"></input-clone>
                             </ion-col>
                           </ion-row>
+                          -->
+                          <ion-row>
+                            <ion-col [size]="12">
+                              <table style="width: 100%">
+                                <tr>
+                                  <td style="width: auto">
+                                    <input-clone [Value]="Protokollfolder"
+                                                 [Enabled]="false" Titel="Projektordner" [DisabledColor]="DB.CurrentProjekt.ProtokolleFolderID !== Const.NONE ? '#354547' : 'orange'">
+                                    </input-clone>
+                                  </td>
+                                  <td style="width: 4px"></td>
+                                  <td style="width: 46px">
+                                    <ion-button (click)="SelectProjektfolderClicked()" size="small" color="burnicklbraun">
+                                      <ion-icon name="folder"></ion-icon>
+                                    </ion-button>
+                                  </td>
+                                </tr>
+                              </table>
+                            </ion-col>
+                          </ion-row>
+                          <!--
                           <ion-row>
                             <ion-col [size]="12">
                               <table style="width: 100%">
@@ -301,6 +322,7 @@
                           </ion-row>
 
                           -->
+
 
                           <ion-row>
                             <ion-col [size]="12">

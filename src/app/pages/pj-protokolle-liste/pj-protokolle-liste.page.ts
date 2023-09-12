@@ -24,6 +24,7 @@ import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {ToolsProvider} from "../../services/tools/tools";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 
 @Component({
   selector:    'pj-protokolle-liste-page',
@@ -66,6 +67,9 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
   public ProjektSubscription: Subscription;
   public ShowProjektschnellauswahl: boolean;
   public Auswahlhoehe: number;
+  public ShowBildauswahl: boolean;
+  private ImageIDListe: string[];
+  private BreiteMerker: number;
 
 
   constructor(public Displayservice: DisplayService,
@@ -97,8 +101,8 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       this.ShowKostengruppenauswahl = false;
       this.ShowRaumauswahl          = false;
       this.ShowZeitspannefilter     = false;
-      this.Dialoghoehe              = 400;
-      this.Dialogbreite             = 850;
+      this.Dialoghoehe              = 800;
+      this.Dialogbreite             = 1400;
       this.KostenDialogbreite       = 1200;
       this.KostenDialoghoehe        = 500;
       this.DialogPosY               = 60;
@@ -115,6 +119,8 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       this.EmailDialoghoehe         = 600;
       this.ShowEmailSenden          = false;
       this.ShowProjektschnellauswahl = false;
+      this.ShowBildauswahl           = false;
+      this.ImageIDListe              = [];
 
     } catch (error) {
 
@@ -172,7 +178,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
       this.DialogPosY   = 60;
       this.Dialoghoehe  = this.Basics.Contenthoehe - this.DialogPosY - 80 - 80;
-      this.Dialogbreite = 850;
+      this.Dialogbreite = 1400;
 
       this.StrukturDialoghoehe = this.Dialoghoehe;
 
@@ -927,6 +933,63 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'CcEmpfaengerBurnicklClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  BilderAuswahlOKClicked(event: Teamsfilesstruktur) {
+
+    try {
+
+      if(this.DBProjektpunkte.CurrentProjektpunkt !== null) {
+
+        this.DBProjektpunkte.CurrentProjektpunkt.BilderIDListe = this.ImageIDListe;
+        this.Pool.ProjektpunktChanged.emit();
+      }
+
+      this.ShowBildauswahl = false;
+      this.Dialogbreite    = 950;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'BilderAuswahlOKClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  SelectedImagesChangedHandler(idliste: string[]) {
+
+    try {
+
+      this.ImageIDListe = idliste;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'SelectedImagesChangedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  AddBildEventHandler() {
+
+    try {
+
+      this.Dialogbreite    = 1400;
+      this.ShowBildauswahl = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'AddBildEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  BilderAuswahlCancelClicked(event: any) {
+
+    try {
+
+      this.Dialogbreite    = 950;
+      this.ShowBildauswahl = false;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'BilderAuswahlCancelClicked', this.Debug.Typen.Page);
     }
   }
 }

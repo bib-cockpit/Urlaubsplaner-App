@@ -39,6 +39,8 @@ import {DatabaseOutlookemailService} from "../../services/database-email/databas
 import {Outlookemailstruktur} from "../../dataclasses/outlookemailstruktur";
 import {Outlookemailattachmentstruktur} from "../../dataclasses/outlookemailattachmentstruktur";
 import {Graphservice} from "../../services/graph/graph";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 
 @Component({
   selector: 'pj-projektpunkt-editor',
@@ -57,6 +59,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
   @Output() KostengruppeClicked     = new EventEmitter<any>();
   @Output() GebaeudeteilClicked     = new EventEmitter<any>();
   @Output() LeistungsphaseClickedEvent  = new EventEmitter();
+  @Output() AddBildEvent                = new EventEmitter();
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -76,8 +79,13 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
   public Auswahltitel: string;
   public StatusSubscription: Subscription;
   public KostenSubscription: Subscription;
+  public PunktSubscription: Subscription;
   public Kostengruppenpunkteliste: Projektpunktestruktur[];
   public  HTMLBody: string;
+  public Thumbnailliste: Thumbnailstruktur[][];
+  public Zeilenanzahl: number;
+  public Thumbbreite: number;
+  public Spaltenanzahl: number;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -111,7 +119,11 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       this.StatusSubscription = null;
       this.Kostengruppenpunkteliste = [];
       this.KostenSubscription = null;
+      this.PunktSubscription = null;
       this.HTMLBody = null;
+      this.Thumbnailliste = [];
+      this.Thumbbreite = 100;
+      this.Spaltenanzahl = 4;
 
       this.StatusbuttonEnabled = this.DB.CurrentProjektpunkt.Status !== this.Const.Projektpunktstatustypen.Festlegung.Name;
 
@@ -152,6 +164,9 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       this.KostenSubscription.unsubscribe();
       this.KostenSubscription = null;
 
+      this.PunktSubscription.unsubscribe();
+      this.PunktSubscription = null;
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'OnDestroy', this.Debug.Typen.Component);
@@ -167,6 +182,11 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       this.KostenSubscription = this.Pool.ProjektpunktKostengruppeChanged.subscribe(() => {
 
         this.Kostengruppenpunkteliste = [];
+      });
+
+      this.PunktSubscription = this.Pool.ProjektpunktChanged.subscribe(() => {
+
+        this.PrepareData();
       });
 
       this.StatusSubscription = this.Pool.ProjektpunktStatusChanged.subscribe(() => {
@@ -234,6 +254,66 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       let ImageID: string;
       let Mimetype: string;
       let Data:string;
+      let Thumb, Merker: Thumbnailstruktur;
+      let Anzahl: number;
+      let Index: number;
+      let Liste: Thumbnailstruktur[] = [];
+      let Imageliste: Teamsfilesstruktur[] = [];
+      let File: Teamsfilesstruktur;
+
+      // Bilder
+
+      if(this.DB.CurrentProjektpunkt !== null) {
+
+        for(let id of this.DB.CurrentProjektpunkt.BilderIDListe) {
+
+          File    = this.Graph.GetEmptyTeamsfile();
+          File.id = id;
+
+          Imageliste.push(File);
+        }
+
+        for(File of Imageliste) {
+
+          Thumb  = await this.Graph.GetSiteThumbnail(File);
+
+          debugger;
+
+          Merker = lodash.find(Liste, {id: File.id});
+
+          if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+        }
+
+        Anzahl              = Liste.length;
+        this.Zeilenanzahl   = Math.ceil(Anzahl / this.Spaltenanzahl);
+        Index               = 0;
+        this.Thumbnailliste = [];
+
+        for(let Zeilenindex = 0; Zeilenindex < this.Zeilenanzahl; Zeilenindex++) {
+
+          this.Thumbnailliste[Zeilenindex] = [];
+
+          for(let Spaltenindex = 0; Spaltenindex < this.Spaltenanzahl; Spaltenindex++) {
+
+            if(!lodash.isUndefined(Liste[Index])) {
+
+              this.Thumbnailliste[Zeilenindex][Spaltenindex] = Liste[Index];
+            }
+            else {
+
+              this.Thumbnailliste[Zeilenindex][Spaltenindex] = null;
+            }
+
+            Index++;
+          }
+        }
+
+        this.Thumbbreite = (this.Dialogbreite - 8 * (this.Spaltenanzahl + 0)) / this.Spaltenanzahl;
+
+      }
+
+
+      // Email
 
       this.DBEmail.CurrentEmail = null;
 
@@ -944,5 +1024,18 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetMailUhrzeit', this.Debug.Typen.Component);
     }
   }
+
+  AddBildClicked() {
+
+    try {
+
+      this.AddBildEvent.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'AddBildClicked', this.Debug.Typen.Component);
+    }
+  }
+
 }
 

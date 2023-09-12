@@ -270,6 +270,44 @@
 
               </ion-col>
             </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-text color="burnicklgruen"><b>{{DB.CurrentProjektpunkt.BilderIDListe.length > 1 ? 'Bilder' : 'Bild'}}</b></ion-text>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <table>
+                  <tr *ngFor="let Zeilenliste of Thumbnailliste">
+                    <ng-container *ngFor="let Thumb of Zeilenliste">
+                      <td style="cursor: pointer;">
+                        <ng-container *ngIf="Thumb !== null">
+                          <table>
+                            <tr>
+                              <td style="padding: 2px">
+                                <img *ngIf="Thumb !== null" [src]="Thumb.largeurl" [style.width.px]="Thumbbreite"/>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="font-size: 90%">{{Thumb.filename}}</td>
+                            </tr>
+                          </table>
+                        </ng-container>
+
+                      </td>
+                    </ng-container>
+                  </tr>
+                  <tr>
+                    <td colspan="30">
+                      <ion-button size="small" color="burnicklgruen" (click)="AddBildClicked()">
+                        <ion-icon name="add-circle-outline" slot="icon-only"></ion-icon>
+                      </ion-button>
+                    </td>
+                  </tr>
+                </table>
+              </ion-col>
+            </ion-row>
+
             <ng-container *ngIf="DB.CurrentProjektpunkt.EmailID !== null && DBEmail.CurrentEmail !== null">
               <ion-row>
                 <ion-col>

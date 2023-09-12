@@ -57,6 +57,7 @@ export type Projektpunktestruktur = {
   OpenFestlegung:      boolean;
   Fachbereich:         string;
   Leistungsphase:      string;
+  BilderIDListe:       string[];
 
   Verfasser: Verfasserstruktur;
 

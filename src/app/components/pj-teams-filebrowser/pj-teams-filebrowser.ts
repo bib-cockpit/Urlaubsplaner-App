@@ -62,7 +62,7 @@ export class PjTeamsFilebrowserComponent implements OnInit {
 
       this.Contenthoehe = this.Browserhoehe - this.Headerhoehe;
 
-      this.GraphService.GetTeamsRootfilelist(this.TeamsID, this.ShowFiles);
+      // this.GraphService.GetTeamsRootfilelist(this.TeamsID, this.ShowFiles);
     }
     catch (error) {
 
@@ -74,7 +74,7 @@ export class PjTeamsFilebrowserComponent implements OnInit {
 
     try {
 
-      this.GraphService.GetTeamsSubdirictoryfilelist(this.TeamsID, File, this.ShowFiles);
+      // this.GraphService.GetTeamsSubdirictoryfilelist(this.TeamsID, File, this.ShowFiles);
 
       this.SelectedDirectory   = null;
       this.SelectedDirectoryID = this.Const.NONE;
@@ -91,7 +91,7 @@ export class PjTeamsFilebrowserComponent implements OnInit {
 
     try {
 
-      this.GraphService.GetTeamsRootfilelist(this.TeamsID, this.ShowFiles);
+      // this.GraphService.GetTeamsRootfilelist(this.TeamsID, this.ShowFiles);
 
       this.SelectedDirectory   = null;
       this.SelectedDirectoryID = this.Const.NONE;
@@ -110,7 +110,7 @@ export class PjTeamsFilebrowserComponent implements OnInit {
 
       if(index < this.GraphService.TeamsSubdirectorylist.length - 1) {
 
-        await this.GraphService.GetTeamsSubdirictoryfilelist(this.TeamsID, file, this.ShowFiles);
+        // await this.GraphService.GetTeamsSubdirictoryfilelist(this.TeamsID, file, this.ShowFiles);
         this.GraphService.RemoveTeamsSubdirectory(file);
 
         this.SelectedDirectory   = null;

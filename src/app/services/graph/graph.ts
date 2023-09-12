@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import {EventEmitter, Inject, Injectable} from '@angular/core';
 import {DebugProvider} from "../debug/debug";
 import {MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService} from "@azure/msal-angular";
 import {ConstProvider} from "../const/const";
@@ -31,11 +31,15 @@ import {DatabaseOutlookemailService} from "../database-email/database-outlookema
 import {Outlookkalenderstruktur} from "../../dataclasses/outlookkalenderstruktur";
 import {Outlookpresetcolorsstruktur} from "../../dataclasses/outlookpresetcolorsstruktur";
 import {Outlookkategoriesstruktur} from "../../dataclasses/outlookkategoriesstruktur";
+import {Notizenkapitelstruktur} from "../../dataclasses/notizenkapitelstruktur";
+import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 
 @Injectable({
   providedIn: 'root'
 })
 export class Graphservice {
+
+  public ImageZoomOut: EventEmitter<any> = new EventEmitter<any>();
 
   public Graphuser: Graphuserstruktur;
   public Teamsliste: Teamsstruktur[];
@@ -49,6 +53,7 @@ export class Graphservice {
   public KalenderKW: number;
   public Outlookpresetcolors:Outlookpresetcolorsstruktur[];
   private BAESiteID: string;
+
 
   constructor(
               @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
@@ -992,6 +997,8 @@ export class Graphservice {
     }
   }
 
+  /*
+
   public async GetTeamsRootfilelist(teamsid: string, showfiles: boolean) {
 
     try {
@@ -1025,6 +1032,7 @@ export class Graphservice {
               this.TeamsRootfilelist.push(Eintrag);
             }
 
+
             if(showfiles === false) this.TeamsRootfilelist = lodash.filter(this.TeamsRootfilelist, {isfolder : true});
 
             this.TeamsCurrentfilelist = this.TeamsRootfilelist;
@@ -1050,16 +1058,19 @@ export class Graphservice {
     }
   }
 
+   */
+
   public async GetSiteRootfilelist(showfiles: boolean) {
 
     try {
 
       let token = await this.AuthService.RequestToken('user.read');
       let Eintrag: Teamsfilesstruktur;
-
-
+      let Dateiliste: Teamsfilesstruktur[] = [];
+      let Verzeichnisliste: Teamsfilesstruktur[] = [];
 
       this.TeamsRootfilelist     = [];
+      this.TeamsCurrentfilelist  = [];
       this.TeamsSubdirectorylist = [];
 
       const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
@@ -1072,20 +1083,54 @@ export class Graphservice {
 
         if(token !== null) {
 
-
-          // "/groups/' + teamsid + '/drive/items/' + folderid + ':/test.txt:/content
-
           graphClient.api('/sites/' + this.BAESiteID + '/drive/items/root/children').get().then((result: any) => {
+
+
+            this.TeamsRootfilelist     = [];
+            this.TeamsCurrentfilelist  = [];
+            this.TeamsSubdirectorylist = [];
 
             for(Eintrag of result.value) {
 
-              if(!lodash.isUndefined(Eintrag.folder)) Eintrag.isfolder = true;
-              else Eintrag.isfolder = false;
+              if(lodash.isUndefined(Eintrag.file)) {
 
-              this.TeamsRootfilelist.push(Eintrag);
+                Eintrag.isfolder = true;
+
+                Verzeichnisliste.push(Eintrag);
+              }
+              else {
+
+                Eintrag.isfolder = false;
+
+                Dateiliste.push(Eintrag);
+              }
             }
 
-            if(showfiles === false) this.TeamsRootfilelist = lodash.filter(this.TeamsRootfilelist, {isfolder : true});
+            Verzeichnisliste.sort((a: Teamsfilesstruktur, b: Teamsfilesstruktur) => {
+
+              if (a.name < b.name) return -1;
+              if (a.name > b.name) return  1;
+
+              return 0;
+            });
+
+            Dateiliste.sort((a: Teamsfilesstruktur, b: Teamsfilesstruktur) => {
+
+              if (a.name < b.name) return -1;
+              if (a.name > b.name) return  1;
+
+              return 0;
+            });
+
+            if(showfiles === false) {
+
+              this.TeamsRootfilelist = Verzeichnisliste;
+            }
+            else {
+
+              this.TeamsRootfilelist = Verzeichnisliste;
+              this.TeamsRootfilelist = this.TeamsRootfilelist.concat(Dateiliste);
+            }
 
             this.TeamsCurrentfilelist = this.TeamsRootfilelist;
 
@@ -1110,6 +1155,81 @@ export class Graphservice {
     }
   }
 
+
+  public async GetSiteThumbnail(file: Teamsfilesstruktur) : Promise<Thumbnailstruktur> {
+
+    try {
+
+      let token = await this.AuthService.RequestToken('user.read');
+      let Thumb: Thumbnailstruktur;
+
+      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
+
+          done(null, token);
+        }
+      });
+
+      return new Promise((resolve, reject) => {
+
+        if(token !== null) {
+
+          graphClient.api('/sites/' + this.BAESiteID + '/drive/items/' + file.id + '/thumbnails').get().then((result: any) => {
+
+            if(!lodash.isUndefined(result.value)) {
+
+              if(!lodash.isUndefined(result.value[0])) {
+
+                Thumb = {
+
+                  id:        file.id,
+                  weburl:    file.webUrl,
+                  filename:  file.name,
+                  mediumurl: result.value[0].medium.url,
+                  largeurl:  result.value[0].large.url,
+                  smallurl:  result.value[0].small.url,
+                  height: {
+
+                    small:  result.value[0].small.height,
+                    medium: result.value[0].medium.height,
+                    large:  result.value[0].medium.large,
+                  },
+                  width: {
+
+                    small:  result.value[0].small.width,
+                    medium: result.value[0].medium.width,
+                    large:  result.value[0].large.width,
+                  }
+                };
+
+                resolve(Thumb);
+
+              } else {
+
+                resolve(null);
+              }
+            }
+            else {
+
+              resolve(null);
+            }
+
+          }).catch((error: GraphError) => {
+
+            resolve(null);
+          });
+        }
+        else {
+
+          reject(false);
+        }
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Graph', 'GetSiteThumbnail', this.Debug.Typen.Service);
+    }
+  }
+
   public RemoveTeamsSubdirectory(file: Teamsfilesstruktur) {
 
     try {
@@ -1128,7 +1248,6 @@ export class Graphservice {
       this.Debug.ShowErrorMessage(error, 'file', 'RemoveTeamsSubdirectory', this.Debug.Typen.Service);
     }
   }
-
 
   public RemoveSiteSubdirectory(file: Teamsfilesstruktur) {
 
@@ -1150,6 +1269,7 @@ export class Graphservice {
   }
 
 
+  /*
 
   public async GetTeamsSubdirictoryfilelist(teamsid: string, file: Teamsfilesstruktur, showfiles: boolean) {
 
@@ -1206,14 +1326,64 @@ export class Graphservice {
     }
   }
 
-  public async GetSiteSubdirictoryfilelist(file: Teamsfilesstruktur, showfiles: boolean) {
+   */
+
+  public GetEmptyTeamsfile() {
+
+    try {
+
+      return  {
+        cTag: "",
+        createdBy:
+          {
+            user:
+              {
+                displayName: "",
+                email: "",
+                id: ""
+              }
+            },
+        createdDateTime: "",
+        eTag: "",
+        fileSystemInfo:
+          {
+            createdDateTime: "",
+            lastModifiedDateTime: ""
+          },
+        id: "",
+        lastModifiedBy: {},
+        lastModifiedDateTime: "",
+        name: "",
+        parentReference:
+          {
+            driveId: "",
+            driveType: "",
+            id: "",
+            path: ""
+          },
+        shared: {scope: ""},
+        size: 0,
+        webUrl: ""
+      };
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Graph', 'GetEmptyTeamsfile', this.Debug.Typen.Service);
+    }
+  }
+
+  public async GetSiteSubdirictoryfilelist(file: Teamsfilesstruktur, showfiles: boolean): Promise<any> {
 
     try {
 
       let token = await this.AuthService.RequestToken('user.read');
       let Eintrag: Teamsfilesstruktur;
+      let Dateiliste: Teamsfilesstruktur[] = [];
+      let Verzeichnisliste: Teamsfilesstruktur[] = [];
 
-      this.TeamsRootfilelist = [];
+      this.TeamsRootfilelist     = [];
+      this.TeamsCurrentfilelist  = [];
+      this.TeamsSubdirectorylist = [];
 
       const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
 
@@ -1225,18 +1395,54 @@ export class Graphservice {
 
         if(token !== null) {
 
-
           graphClient.api('/sites/' + this.BAESiteID + '/drive/items/' + file.id + '/children').get().then((result: any) => {
+
 
             for(Eintrag of result.value) {
 
-              if(!lodash.isUndefined(Eintrag.folder)) Eintrag.isfolder = true;
-              else Eintrag.isfolder = false;
+              if(lodash.isUndefined(Eintrag.file)) {
 
-              this.TeamsRootfilelist.push(Eintrag);
+                Eintrag.isfolder = true;
+
+                Verzeichnisliste.push(Eintrag);
+              }
+              else {
+
+                Eintrag.isfolder = false;
+
+                Dateiliste.push(Eintrag);
+              }
+
+              // this.TeamsRootfilelist.push(Eintrag);
             }
 
-            if(showfiles === false) this.TeamsRootfilelist = lodash.filter(this.TeamsRootfilelist, {isfolder : true});
+            Verzeichnisliste.sort((a: Teamsfilesstruktur, b: Teamsfilesstruktur) => {
+
+              if (a.name < b.name) return -1;
+              if (a.name > b.name) return  1;
+
+              return 0;
+            });
+
+            Dateiliste.sort((a: Teamsfilesstruktur, b: Teamsfilesstruktur) => {
+
+              if (a.name < b.name) return -1;
+              if (a.name > b.name) return  1;
+
+              return 0;
+            });
+
+            if(showfiles === false) {
+
+              this.TeamsRootfilelist = Verzeichnisliste;
+              // this.TeamsRootfilelist = lodash.filter(this.TeamsRootfilelist, {isfolder : true});
+            }
+            else {
+
+              this.TeamsRootfilelist = Verzeichnisliste;
+              this.TeamsRootfilelist = this.TeamsRootfilelist.concat(Dateiliste);
+
+            }
 
             this.TeamsCurrentfilelist = this.TeamsRootfilelist;
 
@@ -1245,6 +1451,8 @@ export class Graphservice {
             resolve(true);
 
           }).catch((error: GraphError) => {
+
+            debugger;
 
             reject(error);
           });
@@ -1645,6 +1853,47 @@ export class Graphservice {
     }
   }
 
+  public async GetSiteSubDirectory(dirid: string): Promise<Teamsfilesstruktur> {
+
+    try {
+
+      let token = await this.AuthService.RequestToken('user.read');
+
+      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
+
+          done(null, token);
+        }
+      });
+
+      return new Promise((resolve, reject) => {
+
+        if(token !== null) {
+
+          graphClient.api('/sites/' + this.BAESiteID + '/drive/items/' + dirid).get().then((result: Teamsfilesstruktur) => {
+
+            resolve(result);
+
+          }).catch((error: GraphError) => {
+
+            debugger;
+
+            resolve(null);
+          });
+        }
+        else {
+
+          reject(null);
+        }
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Graph', 'GetSiteSubDirectory', this.Debug.Typen.Service);
+    }
+  }
+
+  /*
+
   public async GetTeamsRootDirectory(teamsid: string): Promise<Teamsfilesstruktur> {
 
     try {
@@ -1656,6 +1905,8 @@ export class Graphservice {
           done(null, token);
         }
       });
+
+      debugger;
 
       return new Promise((resolve, reject) => {
 
@@ -1683,6 +1934,8 @@ export class Graphservice {
       this.Debug.ShowErrorMessage(error, 'Graph', 'GetTeamsRootDirectory', this.Debug.Typen.Service);
     }
   }
+
+   */
 
   public async GetAllUsers(): Promise<Graphuserstruktur[]> {
 

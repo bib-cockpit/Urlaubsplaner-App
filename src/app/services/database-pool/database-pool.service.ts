@@ -162,6 +162,7 @@ export class DatabasePoolService {
               if(lodash.isUndefined(Projektpunkt.AufgabenbereichID))      Projektpunkt.AufgabenbereichID      = null;
               if(lodash.isUndefined(Projektpunkt.AufgabenteilbereichID))  Projektpunkt.AufgabenteilbereichID  = null;
               if(lodash.isUndefined(Projektpunkt.Matrixanwendung))        Projektpunkt.Matrixanwendung        = false;
+              if(lodash.isUndefined(Projektpunkt.BilderIDListe))          Projektpunkt.BilderIDListe          = [];
 
               Projektpunkt.Anmerkungenliste.forEach((Anmerkung: Projektpunktanmerkungstruktur) => {
 
@@ -300,6 +301,8 @@ export class DatabasePoolService {
       let Headers: HttpHeaders;
       let NotizenkapitelObservable: Observable<any>;
 
+      // debugger;
+
       this.Notizenkapitelliste[projekt.Projektkey] = [];
 
       return new Promise((resolve, reject) => {
@@ -332,7 +335,7 @@ export class DatabasePoolService {
 
              // debugger;
 
-            this.Debug.ShowMessage('Read LOP Liste von ' + projekt.Projektkurzname + ' fertig.', 'Database Pool', 'NotizenkapitelroutsClass', this.Debug.Typen.Service);
+            this.Debug.ShowMessage('Read LOP Liste von ' + projekt.Projektkurzname + ' fertig.', 'Database Pool', 'NotizenkReadNotizenkapitellisteapitelroutsClass', this.Debug.Typen.Service);
 
 
 
@@ -348,7 +351,7 @@ export class DatabasePoolService {
       });
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'NotizenkapitelroutsClass', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadNotizenkapitelliste', this.Debug.Typen.Service);
     }
   }
 
@@ -856,6 +859,7 @@ export class DatabasePoolService {
         AufgabenShowGeschlossen: false,
         AufgabenShowOffen:       true,
         AufgabenShowRuecklauf:   true,
+        AufgabenShowBilder:      true,
         AufgabenShowMeilensteinOnly: false,
         Deleted:                 false,
         HeadermenueMaxFavoriten: 6,
@@ -945,6 +949,7 @@ export class DatabasePoolService {
           if(lodash.isUndefined(Settings.AufgabenShowMeilensteine)) Settings.AufgabenShowMeilensteine = true;
           if(lodash.isUndefined(Settings.AufgabenShowAusfuehrung))  Settings.AufgabenShowAusfuehrung  = true;
           if(lodash.isUndefined(Settings.AufgabenShowPlanung))      Settings.AufgabenShowPlanung      = true;
+          if(lodash.isUndefined(Settings.AufgabenShowBilder))       Settings.AufgabenShowBilder       = true;
 
           if(lodash.isUndefined(Settings.AufgabenTerminfiltervariante))  Settings.AufgabenTerminfiltervariante  = null;
           if(lodash.isUndefined(Settings.AufgabenTerminfilterStartwert)) Settings.AufgabenTerminfilterStartwert = null;

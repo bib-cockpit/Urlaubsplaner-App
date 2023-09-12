@@ -75,8 +75,7 @@ export class DatabaseNotizenService {
     }
   }
 
-
-  public UpdateNotizenkapitel(notizenkapitel: Notizenkapitelstruktur) {
+  public UpdateNotizenkapitel(notizenkapitel: Notizenkapitelstruktur, sendchangenotification: boolean) {
 
     try {
 
@@ -106,8 +105,8 @@ export class DatabaseNotizenService {
 
               this.CurrentNotizenkapitel = Merker;
 
-              this.UpdateNotizenkapitel(this.CurrentNotizenkapitel);
-              this.Pool.NotizenkapitellisteChanged.emit();
+              this.UpdateNotizenkapitelliste(this.CurrentNotizenkapitel);
+              if(sendchangenotification === true) this.Pool.NotizenkapitellisteChanged.emit();
             }
             else {
 
@@ -228,7 +227,7 @@ export class DatabaseNotizenService {
 
       notizenkapitel.Deleted = true;
 
-      return this.UpdateNotizenkapitel(notizenkapitel);
+      return this.UpdateNotizenkapitel(notizenkapitel, true);
 
     } catch (error) {
 

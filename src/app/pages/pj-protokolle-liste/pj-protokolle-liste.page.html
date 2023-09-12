@@ -129,6 +129,7 @@
                         (ZustaendigInternClicked)="ZustaendigInternHandler()"
                         (ZustaendigExternClicked)="ZustaendigExternHandler()"
                         (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
+                        (AddBildEvent)="AddBildEventHandler()"
                         (TerminButtonClicked)="ShowDateKkPicker = true"
                         (CancelClickedEvent)="ShowProjektpunktEditor = false"
                         (OkClickedEvent)="ShowProjektpunktEditor = false"></pj-projektpunkt-editor>
@@ -206,5 +207,16 @@
                 [Dialogbreite]="200" [Dialoghoehe]="280" [PositionY]="200"
                 [Titel]="Auswahltitel" [Iconname]="GetDialogTitelicon()"
                 (OkClickedEvent)="AuswahlOkButtonClicked($event)"
-                (CancelClickedEvent)="ShowAuswahl = false"></auswahl-dialog>
+                (CancelClickedEvent)="ShowAuswahl = false">
+</auswahl-dialog>
+
+<pj-projekte-selectimages *ngIf="ShowBildauswahl"
+                              [ZIndex]="20000"
+                              [Titel]="'Bilder auswählen'"
+                              [Dialogbreite]="Dialogbreite"
+                              [Dialoghoehe]="Dialoghoehe"
+                              [PositionY]="100"
+                              (SelectedImagesChanged)="SelectedImagesChangedHandler($event)"
+                              (OkClickedEvent)="BilderAuswahlOKClicked($event)" (CancelClickedEvent)="BilderAuswahlCancelClicked($event)">
+</pj-projekte-selectimages>
 

@@ -451,6 +451,7 @@ export class DatabaseProjektpunkteService {
         Oberkostengruppe:   null,
         Hauptkostengruppe:  null,
         Unterkostengruppe:  null,
+        BilderIDListe:      [],
 
         Verfasser: {
 
@@ -543,6 +544,7 @@ export class DatabaseProjektpunkteService {
         Oberkostengruppe:   Kostengruppe,
         Hauptkostengruppe:  null,
         Unterkostengruppe:  null,
+        BilderIDListe: [],
 
         Verfasser: {
 
@@ -636,6 +638,7 @@ export class DatabaseProjektpunkteService {
         Oberkostengruppe:   null,
         Hauptkostengruppe:  null,
         Unterkostengruppe:  null,
+        BilderIDListe:      [],
 
         Verfasser: {
 
@@ -735,6 +738,7 @@ export class DatabaseProjektpunkteService {
         Oberkostengruppe:   null,
         Hauptkostengruppe:  null,
         Unterkostengruppe:  null,
+        BilderIDListe: [],
 
         Verfasser: {
 
@@ -1084,6 +1088,7 @@ export class DatabaseProjektpunkteService {
         Oberkostengruppe:   null,
         Hauptkostengruppe:  null,
         Unterkostengruppe:  null,
+        BilderIDListe: [],
 
         Verfasser: {
 

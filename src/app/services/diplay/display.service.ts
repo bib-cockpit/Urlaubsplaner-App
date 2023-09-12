@@ -36,6 +36,7 @@ export class DisplayService {
     ProjektpunktStatusDatePicker: 'ProjektpunktStatusDatePicker',
     ProjektpunktDateKwPicker: 'ProjektpunktDateKwPicker',
     Verzeichnisauswahl: 'Verzeichnisauswahl',
+    Bilderauswahl: 'Bilderauswahl',
     Outlookkontakteauswahl: 'Outlookkontakteauswahl',
     ProjektSendeEmail: 'ProjektSendeEmail',
     Bautagebucheditor: 'Bautagebucheditor',

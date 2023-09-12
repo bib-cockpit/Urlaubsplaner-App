@@ -29,6 +29,7 @@ import {BrowserCacheLocation, InteractionType, IPublicClientApplication, LogLeve
 import {LocalstorageService} from "./services/localstorage/localstorage";
 import {environment} from "../environments/environment";
 import { EditorModule } from '@tinymce/tinymce-angular';
+
 const appurl: string                   = environment.production === false ? 'http://localhost:4200' : 'https://nice-glacier-0c9ec7703.3.azurestaticapps.net';
 
 // !! Server URL auch in Pool service anpassen

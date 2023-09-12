@@ -109,6 +109,8 @@ export class PjFilebrowserPage implements OnInit, OnDestroy {
 
     try {
 
+      debugger;
+
       switch (this.Menuservice.FilelisteAufrufer) {
 
         case this.Menuservice.FilelisteAufrufervarianten.Aufgabenliste:
@@ -138,6 +140,12 @@ export class PjFilebrowserPage implements OnInit, OnDestroy {
         case this.Menuservice.FilelisteAufrufervarianten.Festlegungen:
 
           this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Festlegungen;
+
+          break;
+
+        case this.Menuservice.FilelisteAufrufervarianten.ImageZoom:
+
+          this.GraphService.ImageZoomOut.emit();
 
           break;
       }

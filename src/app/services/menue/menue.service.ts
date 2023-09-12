@@ -62,6 +62,7 @@ export class MenueService {
     LOPListe:      'LOP Liste',
     Bautagebuch:   'Bautagebuch',
     Festlegungen:  'Festlegungen',
+    ImageZoom:     'ImageZoom'
   };
 
   constructor(private Debug: DebugProvider,

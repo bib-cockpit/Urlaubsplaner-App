@@ -2,6 +2,7 @@
 
 export type Mitarbeitersettingsstruktur = {
 
+
   _id:                   string;
   MitarbeiterID:         string;
   FavoritenID:           string;
@@ -20,6 +21,7 @@ export type Mitarbeitersettingsstruktur = {
   AufgabenShowGeschlossen:  boolean;
   AufgabenShowBearbeitung:  boolean;
   AufgabenShowRuecklauf:    boolean;
+  AufgabenShowBilder:       boolean;
   AufgabenShowMeilensteinOnly: boolean;
 
   AufgabenShowPlanung: boolean;

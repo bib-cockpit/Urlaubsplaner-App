@@ -412,6 +412,13 @@
 
   </div>
 
+
+
+  <div class="imagecontainer">
+    <angular-image-viewer [config]="Imageconfig"></angular-image-viewer>
+  </div>
+
+
 </ion-content>
 <ion-footer>
   <page-footer #PageFooter>
@@ -573,5 +580,8 @@
                               (LOPListepunktClicked)="LOPListepunktClickedHandler($event)"
                               (AddLOPListepunktClicked)="AddLOPListepunktClickedHandler()">
 </pj-baustelle-lopliste-editor>
+
+
+
 
 

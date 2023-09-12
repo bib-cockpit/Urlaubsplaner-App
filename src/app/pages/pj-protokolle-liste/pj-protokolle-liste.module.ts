@@ -21,6 +21,16 @@ import {PjEmailSendModule} from "../../components-page/pj-email-send/pj-email-se
 import {
     PjProjekteSchnellauswahlModule
 } from "../../components-page/pj-projekte-schnellauswahl/pj-projekte-schnellauswahl.module";
+import {
+    PjSitesFilebrowserViewerModule
+} from "../../components/pj-sites-filebrowser-viewer/pj-sites-filebrowser-viewer.module";
+import {PjSitesFilebrowserModule} from "../../components/pj-sites-filebrowser/pj-sites-filebrowser.module";
+import {
+  PjProjekteSelectfilefolderModule
+} from "../../components-page/pj-projekte-selectfilefolder/pj-projekte-selectfilefolder.module";
+import {
+  PjProjekteSelectimagesModule
+} from "../../components-page/pj-projekte-selectimages/pj-projekte-selectimages.module";
 
 
 const routes: Routes = [
@@ -31,27 +41,31 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        IonicModule,
-        PageHeaderModule,
-        RouterModule.forChild(routes),
-        PageHeaderMenuModule,
-        PageFooterModule,
-        AuswahlDialogModule,
-        FiMitarbeiterAuswahlModule,
-        PjBeteiligtenAuswahlModule,
-        PjProtokollEditorModule,
-        PjProjektpunktEditorModule,
-        PjKostengruppenAuswahlModule,
-        PjGebaeudeRaumauswahlModule,
-        PjProtokollListefilterModule,
-        PjProjektpunktDateKwPickerModule,
-        PjEmailSendModule,
-        PjProjekteSchnellauswahlModule,
+  imports: [
+    CommonModule,
+    IonicModule,
+    PageHeaderModule,
+    RouterModule.forChild(routes),
+    PageHeaderMenuModule,
+    PageFooterModule,
+    AuswahlDialogModule,
+    FiMitarbeiterAuswahlModule,
+    PjBeteiligtenAuswahlModule,
+    PjProtokollEditorModule,
+    PjProjektpunktEditorModule,
+    PjKostengruppenAuswahlModule,
+    PjGebaeudeRaumauswahlModule,
+    PjProtokollListefilterModule,
+    PjProjektpunktDateKwPickerModule,
+    PjEmailSendModule,
+    PjProjekteSchnellauswahlModule,
+    PjSitesFilebrowserViewerModule,
+    PjSitesFilebrowserModule,
+    PjProjekteSelectfilefolderModule,
+    PjProjekteSelectimagesModule,
 
 
-    ],
+  ],
   declarations: [PjProtokolleListePage],
   exports: [
     PjProtokolleListePage

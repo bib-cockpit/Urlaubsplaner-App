@@ -26,6 +26,9 @@ import {
 import {
     PjBaustelleLoplisteEditorModule
 } from "../../components-page/pj-baustelle-lopliste-editor/pj-baustelle-lopliste-editor.module";
+import {AngularImageViewerModule} from "@hreimer/angular-image-viewer";
+
+
 
 const routes: Routes = [
   {
@@ -35,33 +38,34 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        IonicModule,
-        PageHeaderModule,
-        RouterModule.forChild(routes),
-        PageHeaderMenuModule,
-        PageFooterModule,
-        AuswahlDialogModule,
-        FiMitarbeiterAuswahlModule,
-        PjBeteiligtenAuswahlModule,
-        PjProtokollEditorModule,
-        PjProjektpunktEditorModule,
-        PjKostengruppenAuswahlModule,
-        PjGebaeudeRaumauswahlModule,
-        PjProtokollListefilterModule,
-        PjProjektpunktelisteModule,
-        PjProjektpunktStatusdatePickerModule,
-        PjAufgabenListefilterModule,
-        PjFavoritenAuswahlModule,
-        PjMeinewocheEditorModule,
-        PjProjektpunktStatusdatePickerModule,
-        PjProjektpunktDateKwPickerModule,
-        PjProjekteSchnellauswahlModule,
-        PjBaustelleLoplisteEditorModule,
+  imports: [
+    CommonModule,
+    IonicModule,
+    PageHeaderModule,
+    RouterModule.forChild(routes),
+    PageHeaderMenuModule,
+    PageFooterModule,
+    AuswahlDialogModule,
+    FiMitarbeiterAuswahlModule,
+    PjBeteiligtenAuswahlModule,
+    PjProtokollEditorModule,
+    PjProjektpunktEditorModule,
+    PjKostengruppenAuswahlModule,
+    PjGebaeudeRaumauswahlModule,
+    PjProtokollListefilterModule,
+    PjProjektpunktelisteModule,
+    PjProjektpunktStatusdatePickerModule,
+    PjAufgabenListefilterModule,
+    PjFavoritenAuswahlModule,
+    PjMeinewocheEditorModule,
+    PjProjektpunktStatusdatePickerModule,
+    PjProjektpunktDateKwPickerModule,
+    PjProjekteSchnellauswahlModule,
+    PjBaustelleLoplisteEditorModule,
+    AngularImageViewerModule,
 
 
-    ],
+  ],
   declarations: [PjAufgabenListePage],
   exports: [
     PjAufgabenListePage

@@ -145,7 +145,7 @@
                 <div style="width: 100%; display: flex; justify-content: center; align-items: flex-start; overflow: auto" [style.height.px]="Listehoehe">
 
                   <table  style="width: 100%">
-                    <tr *ngFor="let Projektpunkt of Punkteliste;">
+                    <tr *ngFor="let Projektpunkt of Punkteliste; let Punkteindex = index">
                       <td>
                         <div (click)="ProtokollpunktClicked.emit(Projektpunkt)" style="width: 100%; display: flex; justify-content: center; align-items: flex-start;">
 
@@ -181,6 +181,30 @@
 
 
                                       </div>
+
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+
+                                      <table>
+                                        <tr *ngFor="let Zeilenliste of Thumbnailliste[Punkteindex]">
+                                          <ng-container *ngFor="let Thumb of Zeilenliste">
+                                            <td style="cursor: pointer;">
+                                              <ng-container *ngIf="Thumb !== null">
+                                                <table>
+                                                  <tr>
+                                                    <td style="padding: 2px" (click)="ThumbnailClicked($event, Thumb)">
+                                                      <img *ngIf="Thumb !== null" [src]="Thumb.mediumurl" [style.width.px]="Thumbbreite"/>
+                                                    </td>
+                                                  </tr>
+                                                </table>
+                                              </ng-container>
+
+                                            </td>
+                                          </ng-container>
+                                        </tr>
+                                      </table>
 
                                     </td>
                                   </tr>

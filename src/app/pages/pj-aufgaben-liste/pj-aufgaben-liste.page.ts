@@ -131,6 +131,9 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   public Timelinelabelhoehe: number;
   public Timelinelabelpossitionen: number[];
   public Timelinelabeltexte: string[];
+  public ImageIndex: number;
+  public Imageliste: string[];
+  public Imageconfig: any;
 
 
   constructor(public Displayservice: DisplayService,
@@ -211,6 +214,8 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.FavoritenProjektSubcription = null;
       this.Kalenderliste = [];
       this.MeinTagindex  = 0;
+      this.ImageIndex    = 0;
+      this.Imageliste    = ['test.jpeg'];
       this.Tageliste = [
         { Tag: 'Montag',     Datum: '' },
         { Tag: 'Dienstag',   Datum: '' },
@@ -220,6 +225,17 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
         { Tag: 'Samstag',    Datum: '' },
         { Tag: 'Sonntag',    Datum: '' },
        ];
+      this.Imageconfig = {
+        customBtns: [
+          {
+            name: 'link',
+            icon: {
+              classes: 'fas fa-paperclip',
+              text: 'link'
+            }
+          }
+        ]
+      };
 
     } catch (error) {
 

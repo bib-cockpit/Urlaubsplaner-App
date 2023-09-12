@@ -130,10 +130,14 @@ export class PjNotizenListePage implements OnInit, OnDestroy {
 
       this.FavoritenProjektSubcription = this.DBProjekte.CurrentFavoritenProjektChanged.subscribe(() => {
 
+        debugger;
+
         this.PrepareDaten();
       });
 
       this.NotizenkapitelProjektSubcription = this.Pool.NotizenkapitellisteChanged.subscribe(() => {
+
+        debugger;
 
         this.PrepareDaten();
       });
@@ -159,7 +163,7 @@ export class PjNotizenListePage implements OnInit, OnDestroy {
 
           this.TextSaved = true;
 
-          this.DB.UpdateNotizenkapitel(this.DB.CurrentNotizenkapitel);
+          this.DB.UpdateNotizenkapitel(this.DB.CurrentNotizenkapitel, false);
 
         }, 3000);
       }

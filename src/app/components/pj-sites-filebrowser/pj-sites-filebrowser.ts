@@ -20,6 +20,8 @@ export class PjSitesFilebrowserComponent implements OnInit {
   @Input()  ShowFiles: boolean;
   @Input()  ShowSelect: boolean;
   @Input()  SelectedDirectoryID: string;
+  @Input()  InitialDirectoryID: string;
+
 
   @Output() DirectorySelected   = new EventEmitter<Teamsfilesstruktur>();
   @Output() PDFDownloadFinished = new EventEmitter<Teamsfilesstruktur>();
@@ -45,6 +47,7 @@ export class PjSitesFilebrowserComponent implements OnInit {
       this.ShowSelect          = false;
       this.SelectedDirectoryID = this.Const.NONE;
       this.SelectedDirectory   = null;
+      this.InitialDirectoryID  = null;
 
     }
     catch (error) {
@@ -58,9 +61,21 @@ export class PjSitesFilebrowserComponent implements OnInit {
 
     try {
 
+      let File: Teamsfilesstruktur;
+
       this.Contenthoehe = this.Browserhoehe - this.Headerhoehe;
 
-      this.GraphService.GetSiteRootfilelist(this.ShowFiles);
+      if(this.InitialDirectoryID === null) {
+
+        this.GraphService.GetSiteRootfilelist(this.ShowFiles);
+      }
+      else {
+
+        File = this.GraphService.GetEmptyTeamsfile();
+        File.id = this.InitialDirectoryID;
+
+        this.GraphService.GetSiteSubdirictoryfilelist(File, true);
+      }
     }
     catch (error) {
 

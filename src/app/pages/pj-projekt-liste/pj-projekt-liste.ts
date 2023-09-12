@@ -87,7 +87,8 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     Protokolle:        'Protokolle',
     Bautagebuch:       'Bautagebuch',
-    BaustelleLOPListe: 'BaustelleLOPListe'
+    BaustelleLOPListe: 'BaustelleLOPListe',
+    Projekt:           'Projekt'
   };
   public Multiselect: boolean;
 
@@ -285,8 +286,6 @@ export class PjProjektListePage implements OnInit, OnDestroy {
       let Suchtext: string;
 
       this.Lastletter = '';
-
-      debugger;
 
       /*
 
@@ -1221,12 +1220,18 @@ export class PjProjektListePage implements OnInit, OnDestroy {
             this.DB.CurrentProjekt.BaustellenLOPFolderID = dir.id;
 
             break;
+
+          case this.FolderauswahlVarianten.Projekt:
+
+            this.DB.CurrentProjekt.ProjektFolderID = dir.id;
+
+            break;
         }
       }
 
       this.ShowFolderAuswahl = false;
 
-      this.DB.TeamsPathesChanged.emit(dir);
+      this.DB.SitesPathesChanged.emit(dir);
 
     } catch (error) {
 
@@ -1263,6 +1268,20 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'OutlookkontakteOkButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  SelectProjektfolderHandler() {
+
+    try {
+
+      this.FolderauswahlUrsprung = this.FolderauswahlVarianten.Projekt;
+      this.Folderauswahltitel    = 'Verzeichnis für Projekt auswählen';
+      this.ShowFolderAuswahl     = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'SelectProjektfolderHandler', this.Debug.Typen.Page);
     }
   }
 }
