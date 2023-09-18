@@ -26,7 +26,7 @@ import {
 import {
     PjBaustelleLoplisteEditorModule
 } from "../../components-page/pj-baustelle-lopliste-editor/pj-baustelle-lopliste-editor.module";
-import {AngularImageViewerModule} from "@hreimer/angular-image-viewer";
+// import {AngularImageViewerModule} from "@hreimer/angular-image-viewer";
 
 
 
@@ -62,7 +62,7 @@ const routes: Routes = [
     PjProjektpunktDateKwPickerModule,
     PjProjekteSchnellauswahlModule,
     PjBaustelleLoplisteEditorModule,
-    AngularImageViewerModule,
+    // AngularImageViewerModule,
 
 
   ],

@@ -35,7 +35,6 @@ export class PjSitesFilebrowserComponent implements OnInit {
               public Basics: BasicsProvider,
               public GraphService: Graphservice,
               public Pool: DatabasePoolService,
-              public Tool: ToolsProvider,
               public Const: ConstProvider) {
 
     try {
@@ -57,25 +56,45 @@ export class PjSitesFilebrowserComponent implements OnInit {
     }
   }
 
+  private async PrepareData() {
+
+    try {
+
+        let File: Teamsfilesstruktur;
+
+        this.Contenthoehe = this.Browserhoehe - this.Headerhoehe;
+
+        if(this.InitialDirectoryID === null || this.InitialDirectoryID === this.Const.NONE) {
+
+          this.GraphService.GetSiteRootfilelist(this.ShowFiles);
+        }
+        else {
+
+          File    = this.GraphService.GetEmptyTeamsfile();
+          File.id = this.InitialDirectoryID;
+
+          if(File.name === '') {
+
+            File = await this.GraphService.GetSiteSubDirectory(File.id);
+          }
+
+          await this.GraphService.GetSiteSubdirictoryfilelist(File, true);
+
+          let test = this.GraphService.TeamsSubdirectorylist;
+        }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Sites Filebrowser', 'PrepareData', this.Debug.Typen.Component);
+    }
+  }
+
   ngOnInit() {
 
     try {
 
-      let File: Teamsfilesstruktur;
+      this.PrepareData();
 
-      this.Contenthoehe = this.Browserhoehe - this.Headerhoehe;
-
-      if(this.InitialDirectoryID === null) {
-
-        this.GraphService.GetSiteRootfilelist(this.ShowFiles);
-      }
-      else {
-
-        File = this.GraphService.GetEmptyTeamsfile();
-        File.id = this.InitialDirectoryID;
-
-        this.GraphService.GetSiteSubdirictoryfilelist(File, true);
-      }
     }
     catch (error) {
 

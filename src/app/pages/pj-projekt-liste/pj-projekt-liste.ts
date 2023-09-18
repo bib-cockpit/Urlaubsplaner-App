@@ -1199,6 +1199,8 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
     try {
 
+      debugger;
+
       if(dir !== null) {
 
         switch (this.FolderauswahlUrsprung) {

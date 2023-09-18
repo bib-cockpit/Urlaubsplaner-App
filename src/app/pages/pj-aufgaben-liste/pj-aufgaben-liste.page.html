@@ -1,9 +1,6 @@
-<!--
-<div style="position: absolute; z-index: 1000000; width: 100px; height: 100px; left: 0px; top: 212px; background: red"></div>
--->
-
 <ion-header>
   <page-header #PageHeader>
+
     <page-header-menu
       [Filterorigin]="Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Zeitfilter" [Timelineindex]="Timelineindex"
       (ShowProjektauswahlEvent)="ShowProjektauswahlEventHandler()"
@@ -16,7 +13,11 @@
 <ion-content>
 
   <!--
-  {{Heute.format('DD.MM.YYYY')}} / {{Heute.format('dddd')}}
+  {{Heute.format('DD.MM.YYYY')}} / {{Heute.format('dddd')}}<br>
+  {{Menuservice.Aufgabenlisteansicht}}<br>
+  {{Menuservice.ProjekteMenuebereich}}<br>
+  {{Menuservice.Aufgabenlisteansicht}}<br>
+  {{DBProjekte.CurrentProjekt.Projektkey}}
   -->
 
   <!-- Meilensteine Projektpunkte  -->
@@ -42,6 +43,7 @@
                                (EmailMarkeClicked)="EmailMarkeClickedHandler($event)"
                                (AufgabeClicked)="AufgabeClickedHandler($event, projektindex, Datenursprungsvarianten.Meilensteine)"
                                (TerminFiltermodusClicked)="TerminFiltermodusClickedHandler($event)"
+                               (ThumbnailClickedEvent)="ThumbnailClickedEventHandler($event)"
                                (AddProjektpunktClicked)="AddAufgabeClickedHandler(projektindex, Datenursprungsvarianten.Meilensteine)"
                                (MeinewocheZuweisenClicked)="MeinewocheZuweisenClickedHandler($event, projektindex, Datenursprungsvarianten.Meilensteine)"
                                (MeinewocheBearbeitenClicked)="MeineWocheBearbeitenClickedHandler($event, projektindex, Datenursprungsvarianten.Meilensteine)">
@@ -76,6 +78,7 @@
                                (EmailMarkeClicked)="EmailMarkeClickedHandler($event)"
                                (AufgabeClicked)="AufgabeClickedHandler($event, projektindex, Datenursprungsvarianten.Alle)"
                                (TerminFiltermodusClicked)="TerminFiltermodusClickedHandler($event)"
+                               (ThumbnailClickedEvent)="ThumbnailClickedEventHandler($event)"
                                (AddProjektpunktClicked)="AddAufgabeClickedHandler(projektindex, Datenursprungsvarianten.Alle)"
                                (MeinewocheZuweisenClicked)="MeinewocheZuweisenClickedHandler($event, projektindex, Datenursprungsvarianten.Alle)"
                                (MeinewocheBearbeitenClicked)="MeineWocheBearbeitenClickedHandler($event, projektindex, Datenursprungsvarianten.Alle)">
@@ -113,6 +116,7 @@
                                (EmailMarkeClicked)="EmailMarkeClickedHandler($event)"
                                (AufgabeClicked)="AufgabeClickedHandler($event, projektindex, Datenursprungsvarianten.MeinTag)"
                                (TerminFiltermodusClicked)="TerminFiltermodusClickedHandler($event)"
+                               (ThumbnailClickedEvent)="ThumbnailClickedEventHandler($event)"
                                (AddProjektpunktClicked)="AddAufgabeClickedHandler(projektindex, Datenursprungsvarianten.MeinTag)"
                                (MeinewocheZuweisenClicked)="MeinewocheZuweisenClickedHandler($event, projektindex, Datenursprungsvarianten.MeinTag)"
                                (MeinewocheBearbeitenClicked)="MeineWocheBearbeitenClickedHandler($event, projektindex, Datenursprungsvarianten.MeinTag)">
@@ -375,6 +379,7 @@
                            (EmailMarkeClicked)="EmailMarkeClickedHandler($event)"
                            (AufgabeClicked)="AufgabeClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
                            (TerminFiltermodusClicked)="TerminFiltermodusClickedHandler($event)"
+                           (ThumbnailClickedEvent)="ThumbnailClickedEventHandler($event)"
                            (AddProjektpunktClicked)="AddAufgabeClickedHandler(null, Datenursprungsvarianten.Favoritenprojekt)"
                            (MeinewocheZuweisenClicked)="MeinewocheZuweisenClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
                            (MeinewocheBearbeitenClicked)="MeineWocheBearbeitenClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)">
@@ -414,11 +419,6 @@
 
 
 
-  <div class="imagecontainer">
-    <angular-image-viewer [config]="Imageconfig"></angular-image-viewer>
-  </div>
-
-
 </ion-content>
 <ion-footer>
   <page-footer #PageFooter>
@@ -437,6 +437,8 @@
         </td>
       </tr>
     </table>
+
+    <ion-button (click)="Test()">Test</ion-button>
 
     <div class="rootbuttonclass" (click)="SchnellaufgabeButtonClicked()">
       <table border="0">
@@ -502,26 +504,26 @@
                         (OkClickedEvent)="BeteiligteauswahlOkButtonClicked($event)"></pj-beteiligten-auswahl>
 
 <projektpunkt-statusdate-picker *ngIf="ShowDateStatusPicker" [Dialogbreite]="600"
-                                   [Dialoghoehe]="Dialoghoehe - 200"
-                                   [PositionY]="DialogPosY + 100"
-                                   [ZIndex]="4000"
-                                   [Iconname]="'calendar-outline'"
-                                   [Titel]="'Termin und Status festlegen'"
-                                   [ShowProtokollpunkte]="false"
-                                   [Datum]="Datum"
-                                   [Status]="DBProjektpunkte.CurrentProjektpunkt.Status"
-                                   (OkClickedEvent)="ShowDateStatusPicker = false"
-                                   (CancelClickedEvent)="ShowDateStatusPicker = false">
+                                [Dialoghoehe]="Dialoghoehe - 200"
+                                [PositionY]="DialogPosY + 100"
+                                [ZIndex]="4000"
+                                [Iconname]="'calendar-outline'"
+                                [Titel]="'Termin und Status festlegen'"
+                                [ShowProtokollpunkte]="false"
+                                [Datum]="Datum"
+                                [Status]="DBProjektpunkte.CurrentProjektpunkt.Status"
+                                (OkClickedEvent)="ShowDateStatusPicker = false"
+                                (CancelClickedEvent)="ShowDateStatusPicker = false">
 </projektpunkt-statusdate-picker>
 
 <projektpunkt-date-kw-picker *ngIf="ShowDateKkPicker" [Dialogbreite]="380"
-                                   [Dialoghoehe]="460"
-                                   [PositionY]="DialogPosY + 200"
-                                   [ZIndex]="5000"
-                                   [Iconname]="'calendar-outline'"
-                                   [Titel]="'Termin oder KW festlegen'"
-                                   (OkClickedEvent)="ShowDateKkPicker = false"
-                                   (CancelClickedEvent)="ShowDateKkPicker = false">
+                             [Dialoghoehe]="460"
+                             [PositionY]="DialogPosY + 200"
+                             [ZIndex]="5000"
+                             [Iconname]="'calendar-outline'"
+                             [Titel]="'Termin oder KW festlegen'"
+                             (OkClickedEvent)="ShowDateKkPicker = false"
+                             (CancelClickedEvent)="ShowDateKkPicker = false">
 </projektpunkt-date-kw-picker>
 
 <pj-favoriten-auswahl *ngIf="ShowFavoritenauswahl"
@@ -580,6 +582,12 @@
                               (LOPListepunktClicked)="LOPListepunktClickedHandler($event)"
                               (AddLOPListepunktClicked)="AddLOPListepunktClickedHandler()">
 </pj-baustelle-lopliste-editor>
+
+
+
+
+
+
 
 
 

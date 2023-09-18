@@ -25,6 +25,9 @@ import {
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {ToolsProvider} from "../../services/tools/tools";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
+import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
+import ImageViewer from "awesome-image-viewer";
 
 @Component({
   selector:    'pj-protokolle-liste-page',
@@ -68,9 +71,8 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
   public ShowProjektschnellauswahl: boolean;
   public Auswahlhoehe: number;
   public ShowBildauswahl: boolean;
-  private ImageIDListe: string[];
-  private BreiteMerker: number;
-
+  private Imageliste: Projektpunktimagestruktur[];
+  private Imageviewer: ImageViewer;
 
   constructor(public Displayservice: DisplayService,
               public Basics: BasicsProvider,
@@ -120,7 +122,8 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       this.ShowEmailSenden          = false;
       this.ShowProjektschnellauswahl = false;
       this.ShowBildauswahl           = false;
-      this.ImageIDListe              = [];
+      this.Imageliste                = [];
+      this.Imageviewer               = null;
 
     } catch (error) {
 
@@ -163,6 +166,8 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
       this.ProtokollSubscription.unsubscribe();
       this.ProjektSubscription.unsubscribe();
+
+      this.Imageviewer = null;
 
     } catch (error) {
 
@@ -942,7 +947,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
       if(this.DBProjektpunkte.CurrentProjektpunkt !== null) {
 
-        this.DBProjektpunkte.CurrentProjektpunkt.BilderIDListe = this.ImageIDListe;
+        this.DBProjektpunkte.CurrentProjektpunkt.Bilderliste = this.Imageliste;
         this.Pool.ProjektpunktChanged.emit();
       }
 
@@ -955,11 +960,56 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
     }
   }
 
-  SelectedImagesChangedHandler(idliste: string[]) {
+  ThumbnailClickedEventHandler(event: { Index: number; Thumbliste: Thumbnailstruktur[] }) {
 
     try {
 
-      this.ImageIDListe = idliste;
+      let Imagedaten: any[] = [];
+
+      for (let Thumb of event.Thumbliste) {
+
+        if(Thumb !== null) {
+
+          Imagedaten.push(
+            {
+              mainUrl:      Thumb.weburl,
+              thumbnailUrl: Thumb.smallurl,
+              description:  ''
+            });
+        }
+      }
+
+      this.Imageviewer = new ImageViewer({
+        images: Imagedaten,
+        currentSelected: event.Index
+      });
+
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'ThumbnailClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  SelectedImagesChangedHandler(thumbliste: Thumbnailstruktur[]) {
+
+    try {
+
+      this.Imageliste = [];
+
+      for(let Thumb of thumbliste) {
+
+        this.Imageliste.push({
+            FileID: Thumb.id,
+            WebUrl: Thumb.weburl
+          }
+        );
+      }
+
+      debugger;
+
+      // this.ImageIDListe = idliste;
 
     } catch (error) {
 

@@ -34,6 +34,8 @@ import {Meintagstruktur} from "../../dataclasses/meintagstruktur";
 import {Outlookkategoriesstruktur} from "../../dataclasses/outlookkategoriesstruktur";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
+import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
+import ImageViewer from 'awesome-image-viewer';
 
 @Component({
   selector:    'pj-aufgaben-liste-page',
@@ -133,8 +135,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   public Timelinelabeltexte: string[];
   public ImageIndex: number;
   public Imageliste: string[];
-  public Imageconfig: any;
-
+  private Imageviewer: ImageViewer;
 
   constructor(public Displayservice: DisplayService,
               public Basics: BasicsProvider,
@@ -215,7 +216,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.Kalenderliste = [];
       this.MeinTagindex  = 0;
       this.ImageIndex    = 0;
-      this.Imageliste    = ['test.jpeg'];
+      this.Imageliste    = [];
       this.Tageliste = [
         { Tag: 'Montag',     Datum: '' },
         { Tag: 'Dienstag',   Datum: '' },
@@ -225,17 +226,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
         { Tag: 'Samstag',    Datum: '' },
         { Tag: 'Sonntag',    Datum: '' },
        ];
-      this.Imageconfig = {
-        customBtns: [
-          {
-            name: 'link',
-            icon: {
-              classes: 'fas fa-paperclip',
-              text: 'link'
-            }
-          }
-        ]
-      };
+      this.Imageviewer = null;
 
     } catch (error) {
 
@@ -385,6 +376,8 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.ProtokollSubscription.unsubscribe();
       this.ProjektpunktelisteSubscription.unsubscribe();
       this.FavoritenProjektSubcription.unsubscribe();
+
+      this.Imageviewer = null;
 
     } catch (error) {
 
@@ -687,6 +680,8 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
           this.AlleProjektindex          = index;
           this.DBProjekte.CurrentProjekt = this.AlleProjektliste[index];
 
+          debugger;
+
           break;
 
         case this.Datenursprungsvarianten.MeinTag:
@@ -751,13 +746,11 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     try {
 
       let Anzahl: number = this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey].length + 1;
-      let Projektpunkt: Projektpunktestruktur = this.DBProjektpunkte.GetNewProjektpunkt(this.DBProjekte.CurrentProjekt, Anzahl);
-
 
       this.SetProjektindexAndUrsprung(projektindex, ursprung);
 
       this.ShowProjektpunktEditor              = true;
-      this.DBProjektpunkte.CurrentProjektpunkt = Projektpunkt;
+      this.DBProjektpunkte.CurrentProjektpunkt = this.DBProjektpunkte.GetNewProjektpunkt(this.DBProjekte.CurrentProjekt, Anzahl);
 
     } catch (error) {
 
@@ -2113,7 +2106,47 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error, 'Aufgabe Liste', 'GetProjektpunktPosY', this.Debug.Typen.Page);
     }
+  }
 
+  ThumbnailClickedEventHandler(event: { Index: number; Thumbliste: Thumbnailstruktur[] }) {
+
+    try {
+
+      let Imagedaten: any[] = [];
+
+      for (let Thumb of event.Thumbliste) {
+
+        if(Thumb !== null) {
+
+          Imagedaten.push(
+            {
+              mainUrl:      Thumb.weburl,
+              thumbnailUrl: Thumb.smallurl,
+              description:  ''
+            });
+        }
+      }
+
+      this.Imageviewer = new ImageViewer({
+        images: Imagedaten,
+        currentSelected: event.Index
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgabe Liste', 'ThumbnailClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  Test() {
+
+    try {
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
+    }
   }
 }
 

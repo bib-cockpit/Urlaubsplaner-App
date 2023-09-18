@@ -129,7 +129,7 @@ export class DatabaseBautagebuchService {
         Nachricht: "",
         CcEmpfaengerExternIDListe: [],
         CcEmpfaengerInternIDListe: [],
-        EmpfaengerExternIDListe: [],
+        EmpfaengerExternIDListe: this.Pool.Mitarbeiterdaten !== null ? [this.Pool.Mitarbeiterdaten._id] : [],
         EmpfaengerInternIDListe: [],
         Filename: "",
         FileID: "",
@@ -373,7 +373,7 @@ export class DatabaseBautagebuchService {
   }
 
 
-  public async SendBautagebuchFromTeams(bautagebuch: Bautagebuchstruktur, teamsid: string): Promise<any> {
+  public async SendBautagebuchFromSile(bautagebuch: Bautagebuchstruktur): Promise<any> {
 
     try {
 
@@ -385,9 +385,9 @@ export class DatabaseBautagebuchService {
 
         Betreff:     string;
         Nachricht:   string;
-        TeamsID:     string;
         FileID:      string;
         Filename:    string;
+        DirectoryID: string;
         UserID:      string;
         Token:       string;
         Empfaengerliste:   any[];
@@ -412,7 +412,7 @@ export class DatabaseBautagebuchService {
 
         Betreff:     bautagebuch.Betreff,
         Nachricht:   bautagebuch.Nachricht,
-        TeamsID:     teamsid,
+        DirectoryID: this.DBProjekt.CurrentProjekt.BautagebuchFolderID,
         UserID:      this.GraphService.Graphuser.id,
         FileID:      bautagebuch.FileID,
         Filename:    bautagebuch.Filename,
@@ -452,10 +452,8 @@ export class DatabaseBautagebuchService {
     }
   }
 
-  public SaveBautagebuchInTeams(
+  public SaveBautagebuchInSite(
 
-    teamsid: string,
-    directoryid: string,
     filename: string,
     projekt: Projektestruktur,
     bautagebuch: Bautagebuchstruktur,
@@ -478,7 +476,6 @@ export class DatabaseBautagebuchService {
       }[];
       let Daten: {
 
-        TeamsID:     string;
         DirectoryID: string;
         Filename:    string;
         Projekt:     Projektestruktur;
@@ -488,8 +485,7 @@ export class DatabaseBautagebuchService {
         ShowMailinformations: boolean;
       } = {
 
-        TeamsID:     teamsid,
-        DirectoryID: directoryid,
+        DirectoryID: this.DBProjekt.CurrentProjekt.BautagebuchFolderID,
         Projekt:     projekt,
         Bautagebuch: lodash.cloneDeep(bautagebuch),
         Filename:    filename,
@@ -596,7 +592,7 @@ export class DatabaseBautagebuchService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Database Bautagebuch', 'SaveBautagebuchInTeams', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Bautagebuch', 'SaveBautagebuchInSite', this.Debug.Typen.Service);
     }
   }
 }

@@ -254,7 +254,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       let ImageID: string;
       let Mimetype: string;
       let Data:string;
-      let Thumb, Merker: Thumbnailstruktur;
+      let Thumb: Thumbnailstruktur, Merker: Thumbnailstruktur;
       let Anzahl: number;
       let Index: number;
       let Liste: Thumbnailstruktur[] = [];
@@ -265,21 +265,20 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
       if(this.DB.CurrentProjektpunkt !== null) {
 
-        for(let id of this.DB.CurrentProjektpunkt.BilderIDListe) {
+        for(let Bild of this.DB.CurrentProjektpunkt.Bilderliste) {
 
-          File    = this.Graph.GetEmptyTeamsfile();
-          File.id = id;
+          File        = this.Graph.GetEmptyTeamsfile();
+          File.id     = Bild.FileID;
+          File.webUrl = Bild.WebUrl;
 
           Imageliste.push(File);
         }
 
         for(File of Imageliste) {
 
-          Thumb  = await this.Graph.GetSiteThumbnail(File);
-
-          debugger;
-
-          Merker = lodash.find(Liste, {id: File.id});
+          Thumb        = await this.Graph.GetSiteThumbnail(File);
+          Thumb.weburl = File.webUrl;
+          Merker       = lodash.find(Liste, {id: File.id});
 
           if(lodash.isUndefined(Merker)) Liste.push(Thumb);
         }

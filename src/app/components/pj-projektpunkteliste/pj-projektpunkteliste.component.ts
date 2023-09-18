@@ -71,6 +71,10 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
   @Output() ProjektpunktUp = new EventEmitter<{ Projektindex: number; Listenposition: number }>();
   @Output() EditBemerkung = new EventEmitter<{ Projektpunkt: Projektpunktestruktur; Detail: Projektpunktanmerkungstruktur }>();
   @Output() TerminFiltermodusClicked = new EventEmitter<string>();
+  @Output() ThumbnailClickedEvent = new EventEmitter<{
+    Index: number;
+    Thumbliste: Thumbnailstruktur[];
+  }>();
 
   @Output() DeleteDetailClicked = new EventEmitter<
     {
@@ -150,7 +154,6 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
 
       let DatenlisteValue: SimpleChange = changes.Datenliste;
 
-
       if(typeof DatenlisteValue !== 'undefined' && DatenlisteValue !== null && DatenlisteValue.currentValue !== null && DatenlisteValue.currentValue.length > 0 ) {
 
         this.PrepareDaten();
@@ -167,10 +170,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
 
       window.setTimeout(() => {
 
-        // Projektpunkt.Meintag = event.status;
-
       }, 300);
-
 
     } catch (error) {
 
@@ -178,16 +178,12 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
     }
   }
 
-
   MeintagDivClicked(event: any, Projektpunkt: Projektpunktestruktur) {
 
     try {
 
       let Meintag: Meintagstruktur;
       let Meintagliste: Meintagstruktur[] = this.Pool.Mitarbeiterdaten.Meintagliste;
-
-      debugger;
-
 
       Meintag = lodash.find(Meintagliste, (meintageintrag: Meintagstruktur) => {
 
@@ -213,8 +209,6 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
       window.setTimeout(() => {
 
         this.Pool.Mitarbeiterdaten.Meintagliste = lodash.filter(this.Pool.Mitarbeiterdaten.Meintagliste, {Checkedstatus: 'ON'});
-
-        debugger;
 
         this.MitarbeiterDB.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
 
@@ -294,9 +288,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
 
       // Bilder
 
-      debugger;
-
-      let Thumb, Merker: Thumbnailstruktur;
+      let Thumb: Thumbnailstruktur, Merker: Thumbnailstruktur;
       let Anzahl: number;
       let Index: number;
       let Punktindex: number;
@@ -316,10 +308,13 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
 
         for(let Punkt of this.Datenliste) {
 
-          for(let id of Punkt.BilderIDListe) {
+          Imageliste = [];
 
-            File    = this.GraphService.GetEmptyTeamsfile();
-            File.id = id;
+          for(let Bild of Punkt.Bilderliste) {
+
+            File        = this.GraphService.GetEmptyTeamsfile();
+            File.id     = Bild.FileID;
+            File.webUrl = Bild.WebUrl;
 
             Imageliste.push(File);
           }
@@ -328,13 +323,12 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
 
           for(File of Imageliste) {
 
-            Thumb  = await this.GraphService.GetSiteThumbnail(File);
-            Merker = lodash.find(Liste, {id: File.id});
+            Thumb        = await this.GraphService.GetSiteThumbnail(File);
+            Thumb.weburl = File.webUrl;
+            Merker       = lodash.find(Liste, {id: File.id});
 
             if(lodash.isUndefined(Merker)) Liste.push(Thumb);
           }
-
-          debugger;
 
           Anzahl                          = Liste.length;
           this.Zeilenanzahl               = Math.ceil(Anzahl / this.Spaltenanzahl);
@@ -366,7 +360,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'PrepareDaten', this.Debug.Typen.Component);
     }
 
 
@@ -409,8 +403,6 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
   AufgabeClickedHandler(Projektpunkt: Projektpunktestruktur) {
 
     try {
-
-      debugger;
 
       this.AufgabeClicked.emit(Projektpunkt);
 
@@ -589,8 +581,6 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
 
       let Detail: Projektpunktanmerkungstruktur;
       let Anmerkung: Projektpunktanmerkungstruktur;
-
-      debugger;
 
       this.Database.LiveEditorOpen = true;
 
@@ -1145,9 +1135,35 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
     }
   }
 
-  ThumbnailClicked(event: MouseEvent, Thumb: Thumbnailstruktur) {
+  ThumbnailClicked(event: MouseEvent, Currentthumb: Thumbnailstruktur, i: number) {
 
     try {
+
+      let Thumbliste: Thumbnailstruktur[] = [];
+      let Index: number = 0;
+      let Currentindex: number;
+
+      for (let Zeile of this.Thumbnailliste[i]) {
+
+        for(let Thumb of Zeile) {
+
+          if(Thumb !== null)
+          {
+            Thumbliste.push(Thumb);
+
+            if(Currentthumb.id === Thumb.id) Currentindex = Index;
+
+            Index++;
+          }
+
+        }
+      }
+
+      this.ThumbnailClickedEvent.emit({
+
+        Index:      Currentindex,
+        Thumbliste: Thumbliste
+      });
 
     } catch (error) {
 

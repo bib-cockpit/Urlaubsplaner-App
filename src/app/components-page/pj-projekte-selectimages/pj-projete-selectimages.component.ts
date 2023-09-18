@@ -7,6 +7,7 @@ import {DatabasePoolService} from "../../services/database-pool/database-pool.se
 import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
 import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 
 @Component({
   selector: 'pj-projekte-selectimages',
@@ -20,7 +21,7 @@ export class PjProjeteSelectimagesComponent implements OnInit, OnDestroy, AfterV
 
   @Output() CancelClickedEvent    = new EventEmitter<any>();
   @Output() OkClickedEvent        = new EventEmitter<Teamsfilesstruktur>();
-  @Output() SelectedImagesChanged = new EventEmitter<string[]>();
+  @Output() SelectedImagesChanged = new EventEmitter<Thumbnailstruktur[]>();
 
 
   @Input() Titel: string;

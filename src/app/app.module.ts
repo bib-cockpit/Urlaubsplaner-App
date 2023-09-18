@@ -49,6 +49,19 @@ const clientserverregistration: string = '8289bad1-d444-4958-9033-832603d0e244';
 // projekte    Projektname
 // mitarbeiter Name
 
+/*
+
+ Speichern der aktuellen Aufgabe bei der Ansicht alle ist falsch. Current Projekt muss geändert werden.
+
+Benutzer ist nicht angemeldet -> Meldung suchen. Im BAE muss ich mich jeden Tag neu anmedlen bzw. LOGIN wird nicht gezeigt.
+
+Bautagebuch Editor ist zu groß. Automatische Höhe anwenden.
+
+Terminauswahl Kalenderfarben anpassen.
+
+
+ */
+
 
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;

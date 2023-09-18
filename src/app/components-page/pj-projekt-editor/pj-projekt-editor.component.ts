@@ -216,19 +216,18 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
     try {
 
       let FileinfoA: Teamsfilesstruktur = null;
-      let Result: boolean;
-      let File: Teamsfilesstruktur;
+      let FileinfoB: Teamsfilesstruktur = null;
+      let FileinfoC: Teamsfilesstruktur = null;
+      let FileinfoD: Teamsfilesstruktur = null;
+      let Root: string;
 
       if(this.DB.CurrentProjekt.ProjektFolderID !== this.Const.NONE) {
-
 
         FileinfoA = await this.GraphService.GetSiteSubDirectory(this.DB.CurrentProjekt.ProjektFolderID);
 
         if(FileinfoA !== null) {
 
-          debugger;
-
-          this.Protokollfolder = 'Projekte/' + FileinfoA.name;
+          this.Projektfolder = 'Projekte/' + FileinfoA.name;
         }
         else {
 
@@ -240,43 +239,69 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
         this.Projektfolder = 'nicht festgelegt';
       }
 
-      /*
+      if(this.DB.CurrentProjekt.BautagebuchFolderID !== this.Const.NONE) {
 
-      RootFileinfo = await this.GraphService.GetTeamsRootDirectory(this.DB.CurrentProjekt.TeamsID);
+        FileinfoB = await this.GraphService.GetSiteSubDirectory(this.DB.CurrentProjekt.BautagebuchFolderID);
 
-      if(this.DB.CurrentProjekt.ProtokolleFolderID === this.Const.NONE || this.DB.CurrentProjekt.ProtokolleFolderID.startsWith('ROOT:')) {
 
-        this.DB.CurrentProjekt.ProtokolleFolderID = 'ROOT:' + RootFileinfo.id;
-        this.Protokollfolder                      = 'Dokumente/';
+        if(FileinfoB !== null) {
+
+          Root      = FileinfoB.parentReference.path;
+          Root      = Root.replace('/drive/root:/', '');
+
+          this.Bautagebuchfolder = 'Projekte/' + Root + '/' + FileinfoB.name;
+        }
+        else {
+
+          this.Bautagebuchfolder = 'Verzeichnis ist nicht vorhanden';
+        }
       }
       else {
 
+        this.Bautagebuchfolder = 'nicht festgelegt';
       }
 
-      if(this.DB.CurrentProjekt.BautagebuchFolderID === this.Const.NONE || this.DB.CurrentProjekt.BautagebuchFolderID.startsWith('ROOT:')) {
+      if(this.DB.CurrentProjekt.ProtokolleFolderID !== this.Const.NONE) {
 
-        this.DB.CurrentProjekt.BautagebuchFolderID = 'ROOT:' + RootFileinfo.id;
-        this.Bautagebuchfolder                     = 'Dokumente/';
+        FileinfoC = await this.GraphService.GetSiteSubDirectory(this.DB.CurrentProjekt.ProtokolleFolderID);
+
+        if(FileinfoC !== null) {
+
+          Root      = FileinfoC.parentReference.path;
+          Root      = Root.replace('/drive/root:/', '');
+
+          this.Protokollfolder = 'Projekte/' + Root + '/' + FileinfoC.name;
+        }
+        else {
+
+          this.Protokollfolder = 'Verzeichnis ist nicht vorhanden';
+        }
       }
       else {
-        FileinfoB = await this.GraphService.GetTeamsSubDirectory(this.DB.CurrentProjekt.TeamsID, this.DB.CurrentProjekt.BautagebuchFolderID);
 
-        this.Bautagebuchfolder = 'Dokumente/' + FileinfoB.parentReference.path.split('root:')[1] + '/' + FileinfoB.name;
+        this.Protokollfolder = 'nicht festgelegt';
       }
 
-      if(this.DB.CurrentProjekt.BaustellenLOPFolderID === this.Const.NONE || this.DB.CurrentProjekt.BaustellenLOPFolderID.startsWith('ROOT:')) {
+      if(this.DB.CurrentProjekt.BaustellenLOPFolderID !== this.Const.NONE) {
 
-        this.DB.CurrentProjekt.BaustellenLOPFolderID = 'ROOT:' + RootFileinfo.id;
-        this.BaustelleLOPListefolder                 = 'Dokumente/';
+        FileinfoD = await this.GraphService.GetSiteSubDirectory(this.DB.CurrentProjekt.BaustellenLOPFolderID);
+
+        if(FileinfoD !== null) {
+
+          Root      = FileinfoD.parentReference.path;
+          Root      = Root.replace('/drive/root:/', '');
+
+          this.BaustelleLOPListefolder = 'Projekte/' + Root + '/' + FileinfoD.name;
+        }
+        else {
+
+          this.BaustelleLOPListefolder = 'Verzeichnis ist nicht vorhanden';
+        }
       }
       else {
 
-        FileinfoC = await this.GraphService.GetTeamsSubDirectory(this.DB.CurrentProjekt.TeamsID, this.DB.CurrentProjekt.BaustellenLOPFolderID);
-
-        this.BaustelleLOPListefolder = 'Dokumente/' + FileinfoC.parentReference.path.split('root:')[1] + '/' + FileinfoC.name;
+        this.BaustelleLOPListefolder = 'nicht festgelegt';
       }
-
-       */
 
       this.ValidateInput();
 

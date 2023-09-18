@@ -229,7 +229,11 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
       this.LinesanzahlEmpfaenger   = Math.max(AnzahlExtern, AnzahlBurnickl);
       this.LinesanzahlCcEmpfaenger = Math.max(AnzahlCcExtern, AnzahlCcBunrnickl);
 
+      debugger;
+
       await this.ValidateFilename();
+
+
       this.Validate();
     }
     catch (error) {
@@ -253,7 +257,6 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
   async OkButtonClicked() {
 
     let TeamsID : string    = this.DBProjekte.CurrentProjekt.TeamsID;
-    let DirectoryID: string;
     let Filename: string;
     let NextProtokoll: Protokollstruktur;
     let NextBautagebuch: Bautagebuchstruktur;
@@ -273,13 +276,12 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
         case this.Pool.Emailcontentvarinaten.Protokoll:
 
           Protokoll     = this.DBProtokolle.CurrentProtokoll;
-          DirectoryID   = this.DBProjekte.CurrentProjekt.ProtokolleFolderID;
           Filename      = Protokoll.Filename;
-          NextProtokoll = await this.DBProtokolle.SaveProtokollInTeams(TeamsID, DirectoryID, Filename, Projekt, Protokoll, Standort, Mitarbeiter, true);
+          NextProtokoll = await this.DBProtokolle.SaveProtokollInSites(Filename, Projekt, Protokoll, Standort, Mitarbeiter, true);
 
           this.SaveFileFinished = true;
 
-          await this.DBProtokolle.SendProtokollFromTeams(NextProtokoll, TeamsID);
+          await this.DBProtokolle.SendProtokollFromSite(NextProtokoll);
 
           this.SendMailFinished = true;
 
@@ -299,15 +301,14 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
         case this.Pool.Emailcontentvarinaten.Bautagebuch:
 
           Bautagebuch     = this.DBTagebuch.CurrentTagebuch;
-          DirectoryID     = this.DBProjekte.CurrentProjekt.BautagebuchFolderID;
           Filename        = Bautagebuch.Filename;
-          NextBautagebuch = await this.DBTagebuch.SaveBautagebuchInTeams(TeamsID, DirectoryID, Filename, Projekt, Bautagebuch, Standort, Mitarbeiter, true);
+          NextBautagebuch = await this.DBTagebuch.SaveBautagebuchInSite(Filename, Projekt, Bautagebuch, Standort, Mitarbeiter, true);
 
           debugger;
 
           this.SaveFileFinished = true;
 
-          await this.DBTagebuch.SendBautagebuchFromTeams(NextBautagebuch, TeamsID);
+          await this.DBTagebuch.SendBautagebuchFromSile(NextBautagebuch);
 
           this.SendMailFinished = true;
 
@@ -326,9 +327,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
         case this.Pool.Emailcontentvarinaten.Festlegungen:
 
-          DirectoryID = this.DBProjekte.CurrentProjekt.ProtokolleFolderID;
-
-          Result = await this.DBProjektpunkte.SaveFestlegungenInTeams(TeamsID, DirectoryID, Projekt, Standort, Mitarbeiter, true);
+          // Result = await this.DBProjektpunkte.SaveFestlegungenInTeams(TeamsID, DirectoryID, Projekt, Standort, Mitarbeiter, true);
 
           this.SaveFileFinished = true;
 
@@ -575,17 +574,22 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           this.FilenameIsValid = true;
 
-          this.GraphService.TeamsCheckFileExists(TeamsID, DirectoryID, Filename).then((result: boolean) => {
+          this.GraphService.SiteCheckFileExists(DirectoryID, Filename).then((result: boolean) => {
 
             this.FileExists = result;
+
+            if(this.FileExists === null) {
+
+              this.Tools.ShowHinweisDialog('Verzeichnis wurde nicht gefunden bzw. wurde noch nicht festgelegt.');
+            }
 
             resolve(true);
 
           }).catch((error) => {
 
-            debugger;
+            this.FileExists = null;
 
-            reject(error);
+            resolve(true);
           });
         }
         else {
@@ -630,6 +634,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
              this.DBTagebuch.CurrentTagebuch.EmpfaengerExternIDListe.length > 0) {
 
             this.ContentIsValid = true;
+
           }
           else {
 
@@ -653,6 +658,9 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           break;
       }
+
+      if(this.FileExists === null) this.ContentIsValid = false;
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Send Mail', 'Validate', this.Debug.Typen.Component);

@@ -35,6 +35,7 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
   @Input() ZIndex: number;
   @Input() ShowFiles: boolean;
   @Input() SelectedDirectoryID: string;
+  @Input() InitialDirectoryID: string;
 
   public CurrentIndex: number;
   private Directory: Teamsfilesstruktur;
@@ -57,6 +58,7 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
       this.ShowFiles           = true;
       this.SelectedDirectoryID = this.Const.NONE;
       this.Directory           = null;
+      this.InitialDirectoryID  = null;
 
     } catch (error) {
 

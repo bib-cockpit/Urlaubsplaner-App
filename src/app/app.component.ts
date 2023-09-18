@@ -291,7 +291,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         if(this.Pool.Mitarbeiterdaten.Favoritenliste.length === 0) {
 
-          this.Tools.SetRootPage(this.Const.Pages.HomePage);
+          this.Tools.SetRootPage(this.Const.Pages.HomePage).then(() => {
+
+            this.Pool.LoadingAllDataFinished.emit();
+          });
         }
         else {
 
@@ -301,11 +304,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           if(environment.production) {
 
             Page = this.Const.Pages.HomePage;
-
           }
           else {
 
-            Page = this.Const.Pages.PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
+            Page = this.Const.Pages.PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
 
             this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
             await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);                 // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
@@ -313,10 +315,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
             this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Aufgabenliste; // .Aufgabenliste;
           }
 
-          this.Tools.SetRootPage(Page);
+          this.Tools.SetRootPage(Page).then(() => {
+
+            this.Pool.LoadingAllDataFinished.emit();
+          });
         }
 
-        this.Pool.LoadingAllDataFinished.emit();
       }
       else {
 

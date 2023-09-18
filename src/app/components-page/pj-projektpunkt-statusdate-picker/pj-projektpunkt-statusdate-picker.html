@@ -9,7 +9,7 @@
         <page-header-center>
           <table class="paddingsmalltable">
             <tr>
-              <td><ion-icon [name]="Iconname" color="burnicklgruen"></ion-icon></td>
+              <td><ion-icon [name]="Iconname" color="weiss"></ion-icon></td>
               <td [style.color]="'white'">{{Titel}}</td>
             </tr>
           </table>
@@ -119,12 +119,12 @@
                   </tr>
                   <tr *ngIf="Terminvariante === Terminvarianten.Stichtag">
                     <td>
-                      <ion-datetime color="burnicklgruen" style="--background: #7b6a58; color: white; border: 1px solid gray;" first-day-of-week="1" size="fixed"  presentation="date"  [value]="Datum.format('YYYY-MM-DD')" (ionChange)="StichtagChangedEvent($event)"></ion-datetime>
+                      <ion-datetime color="burnicklgruen" style="--background: #307ac1; color: white; border: 1px solid gray;" first-day-of-week="1" size="fixed"  presentation="date"  [value]="Datum.format('YYYY-MM-DD')" (ionChange)="StichtagChangedEvent($event)"></ion-datetime>
                     </td>
                   </tr>
                   <tr *ngIf="Terminvariante === Terminvarianten.Kalenderwoche">
                     <td>
-                      <div style="background: #7b6a58; color: white; padding: 4px; width: 350px">
+                      <div style="background: #307ac1; color: white; padding: 4px; width: 350px">
 
                         <table class="paddingtable" width="100%">
                           <tr>
@@ -261,13 +261,13 @@
             <tr>
               <td>
                 <div class="rootbuttonclass" (click)="CancelButtonClicked()">
-                  <ion-icon style="font-size: 28px" color="burnicklgruen" name="close-outline"></ion-icon>
+                  <ion-icon style="font-size: 28px" color="weiss" name="close-outline"></ion-icon>
                 </div>
               <td style="width: 100%"></td>
               <td>
 
                 <div class="rootbuttonclass" (click)="OkButtonClicked()">
-                  <ion-icon style="font-size: 28px" color="burnicklgruen" name="save-outline"></ion-icon>
+                  <ion-icon style="font-size: 28px" color="weiss" name="save-outline"></ion-icon>
                 </div>
               </td>
             </tr>

@@ -119,6 +119,7 @@
                      (TeamteilnehmerClicked)="TeamteilnehmerClickedHandler()"
                      (BeteiligteteilnehmerClicked)="BeteiligteteilnehmerClickedHandler()"
                      (ProtokollpunktClicked)="ProtokollpunktClickedHandler($event)"
+                     (ThumbnailClickedEvent)="ThumbnailClickedEventHandler($event)"
                      (AddProtokollpunktClicked)="AddProtokollpunktClickedHandler()"></pj-protokoll-editor>
 
 <pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="100"
@@ -217,6 +218,7 @@
                               [Dialoghoehe]="Dialoghoehe"
                               [PositionY]="100"
                               (SelectedImagesChanged)="SelectedImagesChangedHandler($event)"
-                              (OkClickedEvent)="BilderAuswahlOKClicked($event)" (CancelClickedEvent)="BilderAuswahlCancelClicked($event)">
+                              (OkClickedEvent)="BilderAuswahlOKClicked($event)"
+                              (CancelClickedEvent)="BilderAuswahlCancelClicked($event)">
 </pj-projekte-selectimages>
 

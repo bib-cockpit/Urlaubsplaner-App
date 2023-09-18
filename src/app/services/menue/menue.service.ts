@@ -75,7 +75,7 @@ export class MenueService {
 
       this.MainMenuebereich     = this.MainMenuebereiche.Projekte;
       this.FirmaMenuebereich    = this.FirmaMenuebereiche.Projekte;
-      this.ProjekteMenuebereich = this.ProjekteMenuebereiche.Planungsmatrix; // Aufgabenliste;
+      this.ProjekteMenuebereich = this.ProjekteMenuebereiche.Aufgabenliste;
       this.Aufgabenlisteansicht = this.Aufgabenlisteansichten.Projekt;
       this.FilelisteAufrufer    = this.FilelisteAufrufervarianten.Aufgabenliste;
 

@@ -1383,7 +1383,6 @@ export class Graphservice {
 
       this.TeamsRootfilelist     = [];
       this.TeamsCurrentfilelist  = [];
-      this.TeamsSubdirectorylist = [];
 
       const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
 
@@ -1808,6 +1807,58 @@ export class Graphservice {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Graph', 'TeamsCheckFileExists', this.Debug.Typen.Service);
+    }
+  }
+
+  public async SiteCheckFileExists(directoryid: string, filename: string): Promise<boolean> {
+
+    try {
+
+      let token = await this.AuthService.RequestToken('user.read');
+      let FileExists: boolean = false;
+      let Fileeintrag: Teamsfilesstruktur;
+
+      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
+
+          done(null, token);
+        }
+      });
+
+      directoryid = directoryid.replace('ROOT:', '');
+
+      return new Promise((resolve, reject) => {
+
+        if(token !== null) {
+
+            graphClient.api('/sites/' + this.BAESiteID + '/drive/items/' + directoryid + '/children').get().then((result: any) => { // Fileliste abrufen
+
+            for(Fileeintrag of result.value) {
+
+              if(lodash.isUndefined(Fileeintrag.folder)) { // Prüfen das Eintrag keine Directory
+
+                if(Fileeintrag.name === filename) { // Filenamen prüfen auf Übereinstimmung
+
+                  FileExists = true;
+                }
+              }
+            }
+
+            resolve(FileExists);
+
+          }).catch((error: GraphError) => {
+
+            resolve(null);
+          });
+        }
+        else {
+
+          reject(false);
+        }
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Graph', 'SiteCheckFileExists', this.Debug.Typen.Service);
     }
   }
 

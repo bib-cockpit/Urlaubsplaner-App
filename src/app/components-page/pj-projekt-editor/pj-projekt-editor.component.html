@@ -202,8 +202,8 @@
                             </ion-col>
                           </ion-row>
                           <ion-row>
-                            <ion-col>
-                              <div style="height: 40px"></div>
+                            <ion-col [size]="Tools.GetButtonvalueSize()">
+                              <ion-text color="burnicklgruen"><b>Ablagestruktur</b></ion-text>
                             </ion-col>
                           </ion-row>
 
@@ -248,8 +248,9 @@
                               <table style="width: 100%">
                                 <tr>
                                   <td style="width: auto">
-                                    <input-clone [Value]="Protokollfolder"
-                                                 [Enabled]="false" Titel="Projektordner" [DisabledColor]="DB.CurrentProjekt.ProtokolleFolderID !== Const.NONE ? '#354547' : 'orange'">
+                                    <input-clone (click)="SelectProjektfolderClicked()"
+                                                 [Value]="Projektfolder"
+                                                 [Enabled]="false" Titel="Projektordner" [DisabledColor]="DB.CurrentProjekt.ProjektFolderID !== Const.NONE ? '#354547' : 'orange'">
                                     </input-clone>
                                   </td>
                                   <td style="width: 4px"></td>
@@ -262,32 +263,12 @@
                               </table>
                             </ion-col>
                           </ion-row>
-                          <!--
-                          <ion-row>
+                          <ion-row *ngIf="DB.CurrentProjekt.ProjektFolderID !== Const.NONE">
                             <ion-col [size]="12">
                               <table style="width: 100%">
                                 <tr>
                                   <td style="width: auto">
-                                    <input-clone [Value]="Protokollfolder"
-                                                 [Enabled]="false" Titel="Speicherort Protokolle" [DisabledColor]="DB.CurrentProjekt.ProtokolleFolderID !== Const.NONE ? '#354547' : 'orange'">
-                                    </input-clone>
-                                  </td>
-                                  <td style="width: 4px"></td>
-                                  <td style="width: 46px">
-                                    <ion-button (click)="SelectProtokollfolderClicked()" size="small" color="burnicklbraun">
-                                      <ion-icon name="folder"></ion-icon>
-                                    </ion-button>
-                                  </td>
-                                </tr>
-                              </table>
-                            </ion-col>
-                          </ion-row>
-                          <ion-row>
-                            <ion-col [size]="12">
-                              <table style="width: 100%">
-                                <tr>
-                                  <td style="width: auto">
-                                    <input-clone [Value]="Bautagebuchfolder"
+                                    <input-clone (click)="SelectBautagebuchfolderClicked()" [Value]="Bautagebuchfolder"
                                                  [Enabled]="false" Titel="Speicherort Bautagebücher" [DisabledColor]="DB.CurrentProjekt.BautagebuchFolderID !== Const.NONE ? '#354547' : 'orange'">
                                     </input-clone>
                                   </td>
@@ -301,12 +282,31 @@
                               </table>
                             </ion-col>
                           </ion-row>
-                          <ion-row>
+                          <ion-row *ngIf="DB.CurrentProjekt.ProjektFolderID !== Const.NONE">
                             <ion-col [size]="12">
                               <table style="width: 100%">
                                 <tr>
                                   <td style="width: auto">
-                                    <input-clone [Value]="BaustelleLOPListefolder"
+                                    <input-clone (click)="SelectProtokollfolderClicked()" [Value]="Protokollfolder"
+                                                 [Enabled]="false" Titel="Speicherort Protokolle" [DisabledColor]="DB.CurrentProjekt.ProtokolleFolderID !== Const.NONE ? '#354547' : 'orange'">
+                                    </input-clone>
+                                  </td>
+                                  <td style="width: 4px"></td>
+                                  <td style="width: 46px">
+                                    <ion-button (click)="SelectProtokollfolderClicked()" size="small" color="burnicklbraun">
+                                      <ion-icon name="folder"></ion-icon>
+                                    </ion-button>
+                                  </td>
+                                </tr>
+                              </table>
+                            </ion-col>
+                          </ion-row>
+                          <ion-row *ngIf="DB.CurrentProjekt.ProjektFolderID !== Const.NONE">
+                            <ion-col [size]="12">
+                              <table style="width: 100%">
+                                <tr>
+                                  <td style="width: auto">
+                                    <input-clone (click)="SelectBaustelleLOPListefolderClicked()" [Value]="BaustelleLOPListefolder"
                                                  [Enabled]="false" Titel="Speicherort LOP-Liste Baustelle" [DisabledColor]="DB.CurrentProjekt.BaustellenLOPFolderID !== Const.NONE ? '#354547' : 'orange'">
                                     </input-clone>
                                   </td>
@@ -320,9 +320,6 @@
                               </table>
                             </ion-col>
                           </ion-row>
-
-                          -->
-
 
                           <ion-row>
                             <ion-col [size]="12">

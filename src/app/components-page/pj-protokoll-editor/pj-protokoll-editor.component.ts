@@ -55,6 +55,10 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
   @Output() AddProtokollpunktClicked    = new EventEmitter();
   @Output() ProtokollpunktClicked       = new EventEmitter();
   @Output() ValidChanged                = new EventEmitter<boolean>();
+  @Output() ThumbnailClickedEvent       = new EventEmitter<{
+    Index: number;
+    Thumbliste: Thumbnailstruktur[];
+  }>();
 
   public Bereiche = {
 
@@ -390,7 +394,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
       let Projektpunkt: Projektpunktestruktur;
       let Nummer: number = 1;
-      let Thumb, Merker: Thumbnailstruktur;
+      let Thumb: Thumbnailstruktur, Merker: Thumbnailstruktur;
       let Anzahl: number;
       let Index: number;
       let Punktindex: number;
@@ -446,10 +450,11 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
       for(let Punkt of this.DBProjektpunkte.CurrentProjektpunkteliste) {
 
-        for(let id of Punkt.BilderIDListe) {
+        for(let Bild of Punkt.Bilderliste) {
 
-          File    = this.GraphService.GetEmptyTeamsfile();
-          File.id = id;
+          File        = this.GraphService.GetEmptyTeamsfile();
+          File.id     = Bild.FileID;
+          File.webUrl = Bild.WebUrl;
 
           Imageliste.push(File);
         }
@@ -458,8 +463,9 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
         for(File of Imageliste) {
 
-          Thumb  = await this.GraphService.GetSiteThumbnail(File);
-          Merker = lodash.find(Liste, {id: File.id});
+          Thumb        = await this.GraphService.GetSiteThumbnail(File);
+          Thumb.weburl = File.webUrl;
+          Merker       = lodash.find(Liste, {id: File.id});
 
           if(lodash.isUndefined(Merker)) Liste.push(Thumb);
         }
@@ -1644,12 +1650,19 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
   }
 
-  ThumbnailClicked(event: MouseEvent, Thumb: Thumbnailstruktur) {
+  ThumbnailClicked(event: MouseEvent, Thumbliste: Thumbnailstruktur[], Index: number) {
 
     try {
 
       event.preventDefault();
       event.stopPropagation();
+
+      this.ThumbnailClickedEvent.emit({
+        Index:      Index,
+        Thumbliste: Thumbliste
+      });
+
+
 
     } catch (error) {
 

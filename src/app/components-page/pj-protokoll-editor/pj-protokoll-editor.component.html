@@ -194,7 +194,7 @@
                                               <ng-container *ngIf="Thumb !== null">
                                                 <table>
                                                   <tr>
-                                                    <td style="padding: 2px" (click)="ThumbnailClicked($event, Thumb)">
+                                                    <td style="padding: 2px" (click)="ThumbnailClicked($event, Zeilenliste, Punkteindex)">
                                                       <img *ngIf="Thumb !== null" [src]="Thumb.mediumurl" [style.width.px]="Thumbbreite"/>
                                                     </td>
                                                   </tr>

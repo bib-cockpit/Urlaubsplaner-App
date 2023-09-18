@@ -884,6 +884,9 @@ export class DatabaseProjekteService {
                 this.CurrentFavoritprojektindex = null;
                 this.CurrentProjekt             = null;
               }
+              else {
+
+              }
           }
         }
       }

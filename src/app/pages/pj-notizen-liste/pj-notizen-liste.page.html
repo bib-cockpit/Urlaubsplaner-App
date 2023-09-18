@@ -50,7 +50,8 @@
     </div>
     <div class="kapitelabschnittdivclass" *ngIf="DB.CurrentNotizenkapitel !== null">
       <div class="abschnittbuttondiv" *ngFor="let Abschnitt of DB.CurrentNotizenkapitel.Abschnittliste" (click)="NotizenkapitelabschnittClicked($event, Abschnitt)">
-        <span [style.color]="DB.CurrentNotizenkapitelabschnitt.KapitelabschnittID === Abschnitt.KapitelabschnittID ? 'black' : 'white'">
+        <span
+          [style.color]="DB.CurrentNotizenkapitelabschnitt !== null ? DB.CurrentNotizenkapitelabschnitt.KapitelabschnittID === Abschnitt.KapitelabschnittID ? 'black' : 'white' : 'white'">
           {{Abschnitt.Titel}}
         </span>
       </div>

@@ -420,7 +420,7 @@ export class DatabaseProtokolleService {
     }
   }
 
-  public async SendProtokollFromTeams(protokoll: Protokollstruktur, teamsid: string): Promise<any> {
+  public async SendProtokollFromSite(protokoll: Protokollstruktur): Promise<any> {
 
     try {
 
@@ -432,7 +432,7 @@ export class DatabaseProtokolleService {
 
         Betreff:     string;
         Nachricht:   string;
-        TeamsID:     string;
+        DirectoryID: string;
         FileID:      string;
         Filename:    string;
         UserID:      string;
@@ -459,7 +459,7 @@ export class DatabaseProtokolleService {
 
         Betreff:     protokoll.Betreff,
         Nachricht:   protokoll.Nachricht,
-        TeamsID:     teamsid,
+        DirectoryID: this.DBProjekt.CurrentProjekt.ProtokolleFolderID,
         UserID:      this.GraphService.Graphuser.id,
         FileID:      protokoll.FileID,
         Filename:    protokoll.Filename,
@@ -499,10 +499,8 @@ export class DatabaseProtokolleService {
     }
   }
 
-  public SaveProtokollInTeams(
+  public SaveProtokollInSites(
 
-    teamsid: string,
-    directoryid: string,
     filename: string,
     projekt: Projektestruktur,
     protokoll: Protokollstruktur,
@@ -531,7 +529,6 @@ export class DatabaseProtokolleService {
       }[];
       let Daten: {
 
-        TeamsID:     string;
         DirectoryID: string;
         Filename:    string;
         Projekt:     Projektestruktur;
@@ -541,8 +538,7 @@ export class DatabaseProtokolleService {
         ShowMailinformations: boolean;
       } = {
 
-        TeamsID:     teamsid,
-        DirectoryID: directoryid,
+        DirectoryID: this.DBProjekt.CurrentProjekt.ProtokolleFolderID,
         Projekt:     projekt,
         Protokoll:   lodash.cloneDeep(protokoll),
         Filename:    filename,
@@ -716,7 +712,7 @@ export class DatabaseProtokolleService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'SaveProtokollInTeams', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'SaveProtokollInSites', this.Debug.Typen.Service);
     }
   }
 

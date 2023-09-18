@@ -1,5 +1,6 @@
 import {Verfasserstruktur} from "./verfasserstruktur";
 import {Projektpunktanmerkungstruktur} from "./projektpunktanmerkungstruktur";
+import {Projektpunktimagestruktur} from "./projektpunktimagestruktur";
 
 export type Projektpunktestruktur = {
 
@@ -57,7 +58,7 @@ export type Projektpunktestruktur = {
   OpenFestlegung:      boolean;
   Fachbereich:         string;
   Leistungsphase:      string;
-  BilderIDListe:       string[];
+  Bilderliste:         Projektpunktimagestruktur[];
 
   Verfasser: Verfasserstruktur;
 

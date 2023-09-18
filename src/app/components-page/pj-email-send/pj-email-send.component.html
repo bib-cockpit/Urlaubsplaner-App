@@ -9,7 +9,7 @@
           <table class="paddingsmalltable">
             <tr>
               <td style="width: 4px"></td>
-              <td><ion-icon [name]="Iconname" color="burnicklgruen"></ion-icon></td>
+              <td><ion-icon [name]="Iconname" color="weiss"></ion-icon></td>
               <td [style.color]="'white'">{{Titel}}</td>
             </tr>
           </table>
@@ -38,7 +38,7 @@
               <ion-col size="6">
                 <input-clone [MinHeight]="44" [Lines]="LinesanzahlEmpfaenger"
                              [Clickable]="true"
-                             [Enabled]="false" Titel="Teilnehmer Burnickl"
+                             [Enabled]="false" Titel="Teilnehmer BAE"
                              [Value]="GetBrunicklteilnehmerliste(false)"
                              (click)="EmpfaengerBurnicklClicked.emit()">
                 </input-clone>
@@ -61,7 +61,7 @@
               <ion-col size="6">
                 <input-clone [MinHeight]="44" [Lines]="LinesanzahlCcEmpfaenger"
                              [Clickable]="true"
-                             [Enabled]="false" Titel="Teilnehmer Burnickl"
+                             [Enabled]="false" Titel="Teilnehmer BAE"
                              [Value]="GetBrunicklteilnehmerliste(true)"
                              (click)="CcEmpfaengerBurnicklClicked.emit()">
                 </input-clone>
@@ -144,7 +144,7 @@
             <tr>
               <td>
                 <div *ngIf="!SendInProgress" class="rootbuttonclass" (click)="CancelButtonClicked()">
-                  <ion-icon style="font-size: 28px" color="burnicklgruen" name="close-outline"></ion-icon>
+                  <ion-icon style="font-size: 28px" color="weiss" name="close-outline"></ion-icon>
                 </div>
               <td style="width: 100%"></td>
               <td>
@@ -152,9 +152,9 @@
                 <div *ngIf="!SendInProgress" class="rootbuttonclass" (click)="ContentIsValid === true ? OkButtonClicked() : null">
                   <table>
                     <tr>
-                      <td [style.color]="ContentIsValid === true ? '#c7d304' : '#7b6a58'" style=" white-space: nowrap;">Email senden</td>
+                      <td [style.color]="ContentIsValid === true ? 'white' : '#444444'" style=" white-space: nowrap;">Email senden</td>
                       <td>
-                        <ion-icon style="font-size: 24px" [color]="ContentIsValid === true ? 'burnicklgruen' : 'burnicklbraun'" name="send-outline"></ion-icon>
+                        <ion-icon style="font-size: 24px" [color]="ContentIsValid === true ? 'weiss' : 'grau'" name="send-outline"></ion-icon>
                       </td>
                     </tr>
                   </table>

@@ -474,7 +474,11 @@ export class CommonHomePage implements OnInit, OnDestroy {
     try {
 
 
-      this.GraphService.TestSites();
+let Test = this.Pool.Mitarbeiterdaten;
+
+debugger;
+//  this.GraphService.TestSites();
+
 
 
 

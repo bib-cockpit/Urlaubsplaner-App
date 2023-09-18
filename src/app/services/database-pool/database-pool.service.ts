@@ -162,7 +162,7 @@ export class DatabasePoolService {
               if(lodash.isUndefined(Projektpunkt.AufgabenbereichID))      Projektpunkt.AufgabenbereichID      = null;
               if(lodash.isUndefined(Projektpunkt.AufgabenteilbereichID))  Projektpunkt.AufgabenteilbereichID  = null;
               if(lodash.isUndefined(Projektpunkt.Matrixanwendung))        Projektpunkt.Matrixanwendung        = false;
-              if(lodash.isUndefined(Projektpunkt.BilderIDListe))          Projektpunkt.BilderIDListe          = [];
+              if(lodash.isUndefined(Projektpunkt.Bilderliste))            Projektpunkt.Bilderliste            = [];
 
               Projektpunkt.Anmerkungenliste.forEach((Anmerkung: Projektpunktanmerkungstruktur) => {
 

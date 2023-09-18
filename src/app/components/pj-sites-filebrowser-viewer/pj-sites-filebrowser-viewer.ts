@@ -22,6 +22,7 @@ import {isTabSwitch} from "@ionic/angular/directives/navigation/stack-utils";
 import {MenueService} from "../../services/menue/menue.service";
 import {Subscription} from "rxjs";
 import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
+import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
 
 @Component({
   selector: 'pj-sites-filebrowser-viewer',
@@ -37,16 +38,17 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
   @Input()  Zoomfaktor: number;
   @Input()  Spaltenanzahl: number;
   @Input()  SelectImages: boolean;
-  @Input()  CheckedTumbsIDListe: string[];
+  @Input()  Projektpunktimageliste: Projektpunktimagestruktur[];
   @Output() PDFDownloadFinished = new EventEmitter<Teamsfilesstruktur>();
   @Output() PDFDownloadStarted  = new EventEmitter<Teamsfilesstruktur>();
   @Output() PDFRenderedFinished = new EventEmitter<any>();
-  @Output() SelectedImagesChanged = new EventEmitter<string[]>();
+  @Output() SelectedImagesChanged = new EventEmitter<Thumbnailstruktur[]>();
 
   public Headerhoehe: number;
   public Contenthoehe: number;
   public Viewerbreite: number;
   public Thumbnailliste: Thumbnailstruktur[][];
+  public CheckedThumnailliste: Thumbnailstruktur[];
   public Zeilenanzahl: number;
   public Thumbbreite: number;
   public ShowImage: boolean;
@@ -80,7 +82,8 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
       this.ImageHeight      = 0;
       this.ZoomSubscription = null;
       this.SelectImages     = true;
-      this.CheckedTumbsIDListe = [];
+      this.Projektpunktimageliste = [];
+      this.CheckedThumnailliste   = [];
 
     }
     catch (error) {
@@ -121,9 +124,25 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
 
         if(this.DBProjektpunkte.CurrentProjektpunkt !== null) {
 
-          this.CheckedTumbsIDListe = this.DBProjektpunkte.CurrentProjektpunkt.BilderIDListe;
+          this.CheckedThumnailliste = [];
+
+          for(let Eintrag of this.DBProjektpunkte.CurrentProjektpunkt.Bilderliste) {
+
+            this.CheckedThumnailliste.push({
+              filename: "",
+              height: {large: 0, medium: 0, small: 0},
+              id: Eintrag.FileID,
+              largeurl: "",
+              mediumurl: "",
+              smallurl: "",
+              weburl: Eintrag.WebUrl,
+              width: {large: 0, medium: 0, small: 0}
+            });
+          }
         }
       }
+
+      this.PrepareDaten();
     }
     catch (error) {
 
@@ -263,7 +282,7 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
 
     try {
 
-      let Thumb, Merker: Thumbnailstruktur;
+      let Thumb: Thumbnailstruktur, Merker: Thumbnailstruktur;
       let Anzahl: number;
       let Index: number;
       let Liste: Thumbnailstruktur[] = [];
@@ -282,8 +301,9 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
 
       for(let File of Imageliste) {
 
-        Thumb  = await this.GraphService.GetSiteThumbnail(File);
-        Merker = lodash.find(Liste, {id: File.id});
+        Thumb        = await this.GraphService.GetSiteThumbnail(File);
+        Thumb.weburl = File.webUrl;
+        Merker       = lodash.find(Liste, {id: File.id});
 
         if(lodash.isUndefined(Merker)) Liste.push(Thumb);
       }
@@ -398,21 +418,29 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
 
     try {
 
+      let Test: Thumbnailstruktur;
+
       if(this.SelectImages === true) {
 
-        if(this.CheckedTumbsIDListe.indexOf(Thumb.id) === -1) {
+        Test = lodash.find(this.CheckedThumnailliste, (thumba: Thumbnailstruktur) => {
 
-          this.CheckedTumbsIDListe.push(Thumb.id);
+          return thumba.id === Thumb.id;
+
+        });
+
+        if(lodash.isUndefined(Test)) {
+
+          this.CheckedThumnailliste.push(Thumb);
         }
         else {
 
-          this.CheckedTumbsIDListe = lodash.filter(this.CheckedTumbsIDListe, (id: string) => {
+          this.CheckedThumnailliste = lodash.filter(this.CheckedThumnailliste, (thumbb: Thumbnailstruktur) => {
 
-            return id !== Thumb.id;
+            return thumbb.id !== Thumb.id;
           });
         }
 
-        this.SelectedImagesChanged.emit(this.CheckedTumbsIDListe);
+        this.SelectedImagesChanged.emit(this.CheckedThumnailliste);
       }
       else {
 
@@ -447,7 +475,13 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
 
     try {
 
-      return lodash.indexOf(this.CheckedTumbsIDListe, Thumb.id) !== -1;
+      let Test = lodash.find(this.CheckedThumnailliste, (thumb: Thumbnailstruktur) => {
+
+        return Thumb.id === thumb.id;
+
+      });
+
+      return !lodash.isUndefined(Test);
 
     } catch (error) {
 
@@ -461,17 +495,17 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
 
       if(event.status === true) {
 
-        this.CheckedTumbsIDListe.push(Thumb.id);
+        this.CheckedThumnailliste.push(Thumb);
       }
       else {
 
-        this.CheckedTumbsIDListe = lodash.filter(this.CheckedTumbsIDListe, (id: string) => {
+        this.CheckedThumnailliste = lodash.filter(this.CheckedThumnailliste, (thumb: Thumbnailstruktur) => {
 
-          return id !== Thumb.id;
+          return thumb.id !== Thumb.id;
         });
       }
 
-      this.SelectedImagesChanged.emit(this.CheckedTumbsIDListe);
+      this.SelectedImagesChanged.emit(this.CheckedThumnailliste);
 
     } catch (error) {
 

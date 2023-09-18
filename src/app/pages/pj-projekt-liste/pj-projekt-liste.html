@@ -187,6 +187,7 @@
 <pj-projekte-selectfilefolder *ngIf="ShowFolderAuswahl"
   [ZIndex]="2000"
   [Titel]="Folderauswahltitel"
+  [InitialDirectoryID]="DB.CurrentProjekt !== null ? DB.CurrentProjekt.ProjektFolderID : null"
   [Dialogbreite]="700"
   [Dialoghoehe]="800"
   [PositionY]="100"
