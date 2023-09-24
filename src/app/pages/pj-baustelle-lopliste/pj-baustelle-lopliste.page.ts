@@ -271,6 +271,8 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
               Punkt = lodash.find(this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey], {_id: PunktID});
 
+              // Projektpunkt prüfen ob dieser abgezeigt wird
+
               if(!lodash.isUndefined(Punkt)) {
 
                 Gewerk = lodash.find(this.Pool.CurrentLOPGewerkeliste, {Key: Punkt.Fachbereich});

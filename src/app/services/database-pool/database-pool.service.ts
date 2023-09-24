@@ -178,6 +178,8 @@ export class DatabasePoolService {
                 Anmerkung.LiveEditor = false;
               });
 
+              // Gerwerke bestimmen
+
               Gewerk = this.Fachbereich.GetFachbereichbyKey(Projektpunkt.Fachbereich);
 
               if(!lodash.isUndefined(Gewerk)) {

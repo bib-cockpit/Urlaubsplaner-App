@@ -38,6 +38,7 @@ export class Fachbereiche {
   private _Architektin: Fachbereichestruktur = { Bezeichnung: 'Architekt/in', Kuerzel: 'AR', Key: 'AR'};
   private _Kauffrau: Fachbereichestruktur = { Bezeichnung: 'Kauffrau/mann', Kuerzel: 'KF', Key: 'KF'};
   private _HR: Fachbereichestruktur = { Bezeichnung: 'Human Resources', Kuerzel: 'HR', Key: 'HR'};
+  private _Test: Fachbereichestruktur = { Bezeichnung: 'Test', Kuerzel: 'TEST', Key: 'TEST'};
 
   public get Elektrotechnik(): Fachbereichestruktur { return this._Elektrotechnik; }
   public get Unbekannt():      Fachbereichestruktur { return this._Unbekannt; }

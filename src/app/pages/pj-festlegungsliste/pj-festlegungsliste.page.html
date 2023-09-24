@@ -1,6 +1,7 @@
 <ion-header>
   <page-header #PageHeader>
-    <page-header-menu [SendFestlegungenEnabled]="DB.Displayliste.length > 0" (ShowProjektfilesEvent)="ShowProjektfilesHandler()"
+    <page-header-menu [SendFestlegungenEnabled]="DB.Displayliste.length > 0"
+                      (ShowProjektfilesEvent)="ShowProjektfilesHandler()"
                       (SucheChanged)="SucheChangedHandler($event)"
                       (LeistungsphaseFilterClicked)="LeistungsphaseClickedHandler('Filter')"
                       (KostengruppeFilterClicked)="KostengruppeFilterClickedHandler()"
