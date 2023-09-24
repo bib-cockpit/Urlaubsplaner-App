@@ -19,7 +19,7 @@
                                   [color]="BackMouseOver ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.Weiss">
                         </ion-icon>
                       </td>
-                      <td [style.color]="BackMouseOver ? '#c7d304' : 'white'">Zurück</td>
+                      <td [style.color]="BackMouseOver ? 'black' : 'white'">Zurück</td>
                     </tr>
                   </table>
                 </div>
@@ -27,7 +27,7 @@
               <td style="width: 10px"></td>
               <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
               <td style="width: 10px"></td>
-              <td style="font-size: 140%; color: white">{{GraphService.CurrentPDFDownload !== null ? GraphService.CurrentPDFDownload.name : ''}}</td>
+              <td style="font-size: 100%; color: white">{{GraphService.CurrentPDFDownload !== null ? GraphService.CurrentPDFDownload.name : ''}}</td>
             </tr>
           </table>
         </td>
@@ -41,7 +41,7 @@
 
   <pdf-viewer *ngIf="GraphService.CurrentPDFDownload !== null" [src]="GraphService.CurrentPDFDownload.url"
               [render-text]="true"
-              [original-size]="false"
+              [original-size]="true"
               style="width: 100%; height: 100%"
   ></pdf-viewer>
 

@@ -36,6 +36,7 @@
   border-left:  1px solid #000000;
   border-right:  1px solid #000000;
 }
+
 .listeheaderclass td {
 
   padding: 4px;
@@ -95,4 +96,10 @@
   font-weight: bold;
   font-size: 120%;
   padding-left: 8px; padding-right: 8px;
+}
+
+.mailclass {
+
+  background: none;
+  cursor: pointer;
 }

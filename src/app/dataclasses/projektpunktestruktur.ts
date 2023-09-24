@@ -77,6 +77,7 @@ export type Projektpunktestruktur = {
   __v?: any;
   Minuten?: number;
   Kostengruppenname?: string;
+  Bauteilname?: string;
 
   Filtered?: boolean;
   Text_A?: string;

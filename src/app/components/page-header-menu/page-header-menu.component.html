@@ -420,6 +420,17 @@
                                   [Wert_A]="Pool.Mitarbeitersettings.LOPListeGeschlossenZeitfilter.toString() + ' Tage'"></button-value>
 
                 </td>
+                <td style="width: 100px"></td>
+                <td><checkbox-clon [Checked]="DBLOPliste.ShowLOPListeInfoeintraege" (CheckChanged)="ShowLOPListeInfoeintraegeChangedHandler($event)"></checkbox-clon></td>
+                <td>Info Einträge anzeigen</td>
+                <td style="width: 100px"></td>
+
+                <ng-container *ngFor="let Gewerk of Pool.CurrentLOPGewerkeliste">
+                  <ng-container *ngIf="Gewerk.Anzahl > 0">
+                    <td><checkbox-clon [Checked]="Gewerk.Visible" (CheckChanged)="ShowLOPListeGewerkChangedHandler($event, Gewerk)"></checkbox-clon></td>
+                    <td>{{Gewerk.Bezeichnung}} [{{Gewerk.Anzahl}}]</td>
+                  </ng-container>
+                </ng-container>
               </tr>
             </table>
           </td>

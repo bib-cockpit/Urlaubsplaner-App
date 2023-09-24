@@ -75,6 +75,8 @@ export class DatabaseAuthenticationService {
 
     try {
 
+      this.Debug.AddDebugMessage('Unset Active User');
+
       this.ActiveUser  = null;
       this.AccessToken = null;
       this.ShowLogin   = true;

@@ -19,6 +19,7 @@ import {DatabaseProjektbeteiligteService} from "../database-projektbeteiligte/da
 import {BasicsProvider} from "../basics/basics";
 import {KostengruppenService} from "../kostengruppen/kostengruppen.service";
 import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
+import {Protokollstruktur} from "../../dataclasses/protokollstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +47,8 @@ export class DatabaseLoplisteService {
   };
 
   public CurrentLOPListe: LOPListestruktur;
-  public LetzteProkollnummer: string;
+  public CurrentPunkteliste: Projektpunktestruktur[][];
+  public CurrentInfoliste: Projektpunktestruktur[];
   public Searchmodus: string;
   public Zeitfiltervariante: string;
   public Monatsfilter: Moment;
@@ -56,14 +58,17 @@ export class DatabaseLoplisteService {
   public MaxDatum: Moment;
   public Leistungsphasenfilter: string;
   private ServerLOPListeUrl: string;
-  private ServerSaveLOPListeToTeamsUrl: string;
-  private ServerSendLOPListeToTeamsUrl: string;
+  private ServerSendLOPListeToSitesUrl: string;
   public LOPListeEditorViewModus: string;
+  public ServerSaveLOPListeToSitesUrl: string;
   public LOPListeEditorViewModusvarianten = {
 
     Allgemein: 'Allgemein',
     Eintraege: 'Eintraege'
   };
+
+  public ShowLOPListeInfoeintraege: boolean;
+
 
   constructor(private Debug: DebugProvider,
               private DBProjekt: DatabaseProjekteService,
@@ -77,6 +82,7 @@ export class DatabaseLoplisteService {
               private Pool: DatabasePoolService) {
     try {
 
+
       this.Zeitfiltervariante      = this.Const.NONE;
       this.Leistungsphasenfilter   = this.Const.NONE;
       this.CurrentLOPListe         = null;
@@ -89,12 +95,198 @@ export class DatabaseLoplisteService {
       this.LOPListeEditorViewModus = this.LOPListeEditorViewModusvarianten.Allgemein;
 
       this.ServerLOPListeUrl            = this.Pool.CockpitserverURL + '/lopliste';
-      this.ServerSaveLOPListeToTeamsUrl = this.Pool.CockpitserverURL + '/savelopliste';
-      this.ServerSendLOPListeToTeamsUrl = this.Pool.CockpitserverURL + '/sendlopliste';
+      this.ServerSaveLOPListeToSitesUrl = this.Pool.CockpitserverURL + '/savelopliste';
+      this.ServerSendLOPListeToSitesUrl = this.Pool.CockpitserverURL + '/sendlopliste';
+
+      this.ShowLOPListeInfoeintraege = true;
+      this.CurrentPunkteliste        = [];
+      this.CurrentInfoliste          = [];
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database LOPListe', 'cosntructor', this.Debug.Typen.Service);
+    }
+  }
+
+  public SaveLOPListeInSites(
+
+    filename: string,
+    projekt: Projektestruktur,
+    lopliste: LOPListestruktur,
+    standort: Standortestruktur, mitarbeiter: Mitarbeiterstruktur, showmailinformations: boolean): Promise<LOPListestruktur> {
+
+    try {
+
+      let Observer: Observable<any>;
+      let Teamsfile: Teamsfilesstruktur;
+      let Punkteliste: Projektpunktestruktur[] = lopliste.Projektpunkteliste;
+      let Projektpunkt: Projektpunktestruktur;
+      let Punkteindex: number;
+      let ExternZustaendigListe: string[][] = [];
+      let InternZustaendigListe: string[][] = [];
+      let Kostengruppenliste: string[];
+      let Beteiligter: Projektbeteiligtestruktur;
+      let Mitarbeiter: Mitarbeiterstruktur;
+      let Name: string;
+      let CcEmpfaengerliste: {
+        Name:  string;
+        Email: string;
+      }[];
+      let Empfaengerliste: {
+        Name:  string;
+        Email: string;
+      }[];
+      let Daten: {
+
+        DirectoryID: string;
+        Filename:    string;
+        Projekt:     Projektestruktur;
+        LOPListe:    LOPListestruktur;
+        Standort:    Standortestruktur;
+        Mitarbeiter: Mitarbeiterstruktur;
+        ShowMailinformations: boolean;
+      } = {
+
+        DirectoryID: this.DBProjekt.CurrentProjekt.BaustellenLOPFolderID,
+        Projekt:     projekt,
+        LOPListe:    lodash.cloneDeep(lopliste),
+        Filename:    filename,
+        Standort:    standort,
+        Mitarbeiter: mitarbeiter,
+        ShowMailinformations: showmailinformations
+      };
+
+      // Zuständige Personen eintragen
+
+      ExternZustaendigListe = [];
+      InternZustaendigListe = [];
+      Kostengruppenliste    = [];
+      Punkteindex           = 0;
+
+      for(Projektpunkt of Punkteliste) {
+
+        ExternZustaendigListe[Punkteindex] = [];
+        InternZustaendigListe[Punkteindex] = [];
+
+        for(let ExternID of Projektpunkt.ZustaendigeExternIDListe) {
+
+          ExternZustaendigListe[Punkteindex].push(this.GetZustaendigExternName(ExternID));
+        }
+
+        for(let InternID of Projektpunkt.ZustaendigeInternIDListe) {
+
+          InternZustaendigListe[Punkteindex].push(this.GetZustaendigInternName(InternID));
+        }
+
+        Punkteindex++;
+      }
+
+      debugger;
+
+      Daten.LOPListe.ExternZustaendigListe = ExternZustaendigListe;
+      Daten.LOPListe.InternZustaendigListe = InternZustaendigListe;
+
+      // Teilnehmer bestimmen
+
+      Daten.LOPListe.ExterneTeilnehmerliste = this.GetExterneTeilnehmerliste(true);
+      Daten.LOPListe.InterneTeilnehmerliste = this.GetInterneTeilnehmerliste(true);
+
+      // Empfaenger bestimmen
+
+      Empfaengerliste   = [];
+      CcEmpfaengerliste = [];
+
+      for(let ExternEmpfaengerID of Daten.LOPListe.EmpfaengerExternIDListe) {
+
+        Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: ExternEmpfaengerID});
+
+        if(!lodash.isUndefined(Beteiligter)) {
+
+          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+
+          Empfaengerliste.push({
+
+            Name: Name,
+            Email: Beteiligter.Email
+          });
+        }
+      }
+
+      for(let InternEmpfaengerID of Daten.LOPListe.EmpfaengerInternIDListe) {
+
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: InternEmpfaengerID});
+
+        if(!lodash.isUndefined(Mitarbeiter)) Empfaengerliste.push({
+
+          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
+          Email: Mitarbeiter.Email
+        });
+      }
+
+      for(let CcExternEmpfaengerID of Daten.LOPListe.CcEmpfaengerExternIDListe) {
+
+        Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: CcExternEmpfaengerID});
+
+        if(!lodash.isUndefined(Beteiligter)) {
+
+          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+
+          CcEmpfaengerliste.push({
+
+            Name: Name,
+            Email: Beteiligter.Email
+          });
+        }
+      }
+
+      for(let CcInternEmpfaengerID of Daten.LOPListe.CcEmpfaengerInternIDListe) {
+
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: CcInternEmpfaengerID});
+
+        if(!lodash.isUndefined(Mitarbeiter)) CcEmpfaengerliste.push({
+
+          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
+          Email: Mitarbeiter.Email
+        });
+      }
+
+      Daten.LOPListe.Empfaengerliste   = Empfaengerliste;
+      Daten.LOPListe.CcEmpfaengerliste = CcEmpfaengerliste;
+
+      // LOP Liste versenden
+
+      return new Promise((resolve, reject) => {
+
+        // PUT für update -> Datei neu erstellen oder überschreiben
+
+        Observer = this.http.put(this.ServerSaveLOPListeToSitesUrl, Daten);
+
+        Observer.subscribe({
+
+          next: (ne) => {
+
+            Teamsfile = ne;
+          },
+          complete: () => {
+
+            Daten.LOPListe.FileID              = Teamsfile.id;
+            Daten.LOPListe.GesendetZeitstempel = Teamsfile.GesendetZeitstempel;
+            Daten.LOPListe.GesendetZeitstring  = Teamsfile.GesendetZeitstring;
+
+            resolve(Daten.LOPListe);
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'SaveProtokollInSites', this.Debug.Typen.Service);
     }
   }
 
@@ -214,9 +406,38 @@ export class DatabaseLoplisteService {
 
     try {
 
-      return new Promise((resolve, reject) => {
+      let Observer: Observable<any>;
 
-        resolve(true);
+      this.CurrentLOPListe.Deleted = true;
+
+      return new Promise<any>((resove, reject) => {
+
+        // PUT für update
+
+        Observer = this.http.put(this.ServerLOPListeUrl, this.CurrentLOPListe);
+
+        Observer.subscribe({
+
+          next: (ne) => {
+
+
+          },
+          complete: () => {
+
+            this.UpdateLOPListeliste(this.CurrentLOPListe);
+
+            this.Pool.LOPListeChanged.emit();
+
+            resove(true);
+
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
       });
 
     } catch (error) {
@@ -368,7 +589,7 @@ export class DatabaseLoplisteService {
     }
   }
 
-  private UpdateLOPListe(protokoll: LOPListestruktur): Promise<any> {
+  private UpdateLOPListe(lopliste: LOPListestruktur): Promise<any> {
 
     try {
 
@@ -378,13 +599,13 @@ export class DatabaseLoplisteService {
 
       return new Promise((resolve, reject) => {
 
-        Params.set('id', protokoll._id);
+        Params.set('id', lopliste._id);
 
         // PUT für update
 
-        delete protokoll.__v;
+        delete lopliste.__v;
 
-        Observer = this.http.put(this.ServerLOPListeUrl, protokoll);
+        Observer = this.http.put(this.ServerLOPListeUrl, lopliste);
 
         Observer.subscribe({
 
@@ -476,7 +697,7 @@ export class DatabaseLoplisteService {
 
         // PUT für update
 
-        Observer = this.http.put(this.ServerSendLOPListeToTeamsUrl, Daten);
+        Observer = this.http.put(this.ServerSendLOPListeToSitesUrl, Daten);
 
         Observer.subscribe({
 
@@ -502,6 +723,87 @@ export class DatabaseLoplisteService {
       this.Debug.ShowErrorMessage(error.message, 'Database LOP Liste', 'SaveLOPListeInTeams', this.Debug.Typen.Service);
     }
   }
+
+
+
+  public async SendLOPListeFromSite(protokoll: LOPListestruktur): Promise<any> {
+
+    try {
+
+      let token = await this.AuthService.RequestToken('Mail.Send');
+
+      let Observer: Observable<any>;
+      let Merker: Teamsfilesstruktur;
+      let Daten: {
+
+        Betreff:     string;
+        Nachricht:   string;
+        FileID:      string;
+        Filename:    string;
+        UserID:      string;
+        Token:       string;
+        Empfaengerliste:   any[];
+        CcEmpfaengerliste: any[];
+      };
+
+      if(this.Basics.DebugNoExternalEmail) {
+
+        protokoll.Empfaengerliste   = lodash.filter(protokoll.Empfaengerliste,   { Email : 'p.hornburger@gmail.com' });
+        protokoll.CcEmpfaengerliste = lodash.filter(protokoll.CcEmpfaengerliste, { Email : 'p.hornburger@gmail.com' });
+
+        if(protokoll.Empfaengerliste.length === 0) {
+
+          protokoll.Empfaengerliste.push({
+            Email: 'p.hornburger@gmail.com',
+            Name:  'Peter Hornburger'
+          });
+        }
+      }
+
+      Daten = {
+
+        Betreff:     protokoll.Betreff,
+        Nachricht:   protokoll.Nachricht,
+        UserID:      this.GraphService.Graphuser.id,
+        FileID:      protokoll.FileID,
+        Filename:    protokoll.Filename,
+        Token:       token,
+        Empfaengerliste:   protokoll.Empfaengerliste,
+        CcEmpfaengerliste: protokoll.CcEmpfaengerliste
+      };
+
+      return new Promise((resolve, reject) => {
+
+        // PUT für update
+
+        Observer = this.http.put(this.ServerSendLOPListeToSitesUrl, Daten);
+
+        Observer.subscribe({
+
+          next: (ne) => {
+
+            Merker = ne;
+
+          },
+          complete: () => {
+
+            resolve(true);
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database LOP Liste', 'SaveLOPListeInTeams', this.Debug.Typen.Service);
+    }
+  }
+
+
 
   public SaveLOPListeInTeams(
 
@@ -695,7 +997,7 @@ export class DatabaseLoplisteService {
 
         // PUT für update -> Datei neu erstellen oder überschreiben
 
-        Observer = this.http.put(this.ServerSaveLOPListeToTeamsUrl, Daten);
+        Observer = this.http.put('', Daten);
 
         Observer.subscribe({
 
@@ -852,6 +1154,7 @@ export class DatabaseLoplisteService {
 
         return protokoll.Deleted === false;
       });
+
 
     } catch (error) {
 

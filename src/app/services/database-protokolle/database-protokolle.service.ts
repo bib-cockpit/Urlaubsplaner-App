@@ -709,7 +709,6 @@ export class DatabaseProtokolleService {
         });
       });
 
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'SaveProtokollInSites', this.Debug.Typen.Service);

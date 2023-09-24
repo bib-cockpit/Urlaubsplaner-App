@@ -33,6 +33,12 @@ import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subscription} from "rxjs";
 import {DatabaseLoplisteService} from "../../services/database-lopliste/database-lopliste.service";
+import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
+import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
+import {Outlookemailstruktur} from "../../dataclasses/outlookemailstruktur";
+import {Outlookemailattachmentstruktur} from "../../dataclasses/outlookemailattachmentstruktur";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import {Graphservice} from "../../services/graph/graph";
 
 @Component({
   selector: 'pj-baustelle-lopliste-eintrageditor',
@@ -52,6 +58,7 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
   @Output() KostengruppeClicked     = new EventEmitter<any>();
   @Output() GebaeudeteilClicked     = new EventEmitter<any>();
   @Output() PrioritaetClicked       = new EventEmitter<any>();
+  @Output() AddBildEvent            = new EventEmitter();
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -71,6 +78,12 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
   public StatusSubscription: Subscription;
   public KostenSubscription: Subscription;
   public Kostengruppenpunkteliste: Projektpunktestruktur[];
+  public Thumbnailliste: Thumbnailstruktur[][];
+  public Zeilenanzahl: number;
+  public Thumbbreite: number;
+  public Spaltenanzahl: number;
+  private ProjektpunktSubscription: Subscription;
+
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -83,6 +96,7 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
               public DBLOPListe: DatabaseLoplisteService,
               public Displayservice: DisplayService,
               public Pool: DatabasePoolService,
+              public Graph: Graphservice,
               public DBGebaeude: DatabaseGebaeudestrukturService,
               public Const: ConstProvider) {
     try {
@@ -99,6 +113,10 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
       this.StatusSubscription = null;
       this.Kostengruppenpunkteliste = [];
       this.KostenSubscription = null;
+      this.Thumbnailliste = [];
+      this.Thumbbreite = 100;
+      this.Spaltenanzahl = 4;
+      this.ProjektpunktSubscription = null;
 
       this.StatusbuttonEnabled = this.DB.CurrentProjektpunkt.Status !== this.Const.Projektpunktstatustypen.Festlegung.Name;
 
@@ -121,6 +139,7 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
         ],
       };
 
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'LOP Liste Eintrageditor', 'constructor', this.Debug.Typen.Component);
@@ -139,6 +158,9 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
       this.KostenSubscription.unsubscribe();
       this.KostenSubscription = null;
 
+      this.ProjektpunktSubscription.unsubscribe();
+      this.ProjektpunktSubscription = null;
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'LOP Liste Eintrageditor', 'OnDestroy', this.Debug.Typen.Component);
@@ -154,6 +176,11 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
       this.KostenSubscription = this.Pool.ProjektpunktKostengruppeChanged.subscribe(() => {
 
         this.Kostengruppenpunkteliste = [];
+      });
+
+      this.ProjektpunktSubscription = this.Pool.ProjektpunktChanged.subscribe(() => {
+
+        this.PrepareData();
       });
 
       this.StatusSubscription = this.Pool.ProjektpunktStatusChanged.subscribe(() => {
@@ -212,9 +239,66 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
     }
   }
 
-  private PrepareData() {
+  private async PrepareData() {
 
     try {
+
+      let Thumb: Thumbnailstruktur, Merker: Thumbnailstruktur;
+      let Anzahl: number;
+      let Index: number;
+      let Liste: Thumbnailstruktur[] = [];
+      let Imageliste: Teamsfilesstruktur[] = [];
+      let File: Teamsfilesstruktur;
+
+      // Bilder
+
+      if(this.DB.CurrentProjektpunkt !== null) {
+
+        for(let Bild of this.DB.CurrentProjektpunkt.Bilderliste) {
+
+          File        = this.Graph.GetEmptyTeamsfile();
+          File.id     = Bild.FileID;
+          File.webUrl = Bild.WebUrl;
+
+          Imageliste.push(File);
+        }
+
+        for(File of Imageliste) {
+
+          Thumb        = await this.Graph.GetSiteThumbnail(File);
+          Thumb.weburl = File.webUrl;
+          Merker       = lodash.find(Liste, {id: File.id});
+
+          if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+        }
+
+        Anzahl              = Liste.length;
+        this.Zeilenanzahl   = Math.ceil(Anzahl / this.Spaltenanzahl);
+        Index               = 0;
+        this.Thumbnailliste = [];
+
+        for(let Zeilenindex = 0; Zeilenindex < this.Zeilenanzahl; Zeilenindex++) {
+
+          this.Thumbnailliste[Zeilenindex] = [];
+
+          for(let Spaltenindex = 0; Spaltenindex < this.Spaltenanzahl; Spaltenindex++) {
+
+            if(!lodash.isUndefined(Liste[Index])) {
+
+              this.Thumbnailliste[Zeilenindex][Spaltenindex] = Liste[Index];
+            }
+            else {
+
+              this.Thumbnailliste[Zeilenindex][Spaltenindex] = null;
+            }
+
+            Index++;
+          }
+        }
+
+        this.Thumbbreite = (this.Dialogbreite - 8 * (this.Spaltenanzahl + 0)) / this.Spaltenanzahl;
+
+      }
 
     } catch (error) {
 
@@ -337,7 +421,7 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
     }
   }
 
-  OkButtonClicked() {
+  async OkButtonClicked() {
 
     try {
 
@@ -345,15 +429,17 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
 
       this.DB.SetStatus(this.DB.CurrentProjektpunkt, this.DB.CurrentProjektpunkt.Status);
 
-      debugger;
-
       if(this.DB.CurrentProjektpunkt._id === null) {
 
-        this.DB.AddProjektpunkt(this.DB.CurrentProjektpunkt).then(() => {
+         await this.DB.AddProjektpunkt(this.DB.CurrentProjektpunkt);
 
-          this.ResetEditor();
+         this.DBProjekt.CurrentProjekt.LastLOPEintragnummer = this.DBProjekt.CurrentProjekt.LastLOPEintragnummer + 1;
 
-          if(this.DB.CurrentProjektpunkt.LOPListeID !== null && this.DB.CurrentProjektpunkt !== null) {
+         await this.DBProjekt.UpdateProjekt(this.DBProjekt.CurrentProjekt);
+
+         this.ResetEditor();
+
+         if(this.DB.CurrentProjektpunkt.LOPListeID !== null && this.DB.CurrentProjektpunkt !== null) {
 
             Index = lodash.indexOf(this.DBLOPListe.CurrentLOPListe.ProjektpunkteIDListe, this.DB.CurrentProjektpunkt._id);
 
@@ -361,30 +447,24 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
 
               this.DBLOPListe.CurrentLOPListe.ProjektpunkteIDListe.push(this.DB.CurrentProjektpunkt._id);
 
-              this.DBLOPListe.SaveLOPListe().then(() => {
+              await this.DBLOPListe.SaveLOPListe();
 
-                this.OkClickedEvent.emit();
-              });
+              this.OkClickedEvent.emit();
             }
             else {
 
               this.Pool.LOPListeprojektpunktChanged.emit();
-
               this.OkClickedEvent.emit();
             }
-          }
-          else {
+         }
+         else {
 
             this.OkClickedEvent.emit();
-          }
-        }).catch((errora) => {
-
-          this.Debug.ShowErrorMessage(errora, 'LOP Liste Eintrageditor', 'OkButtonClicked / AddProjektpunkt', this.Debug.Typen.Component);
-        });
+         }
       }
       else {
 
-        this.DB.UpdateProjektpunkt(this.DB.CurrentProjektpunkt).then(() => {
+         await this.DB.UpdateProjektpunkt(this.DB.CurrentProjektpunkt);
 
           this.ResetEditor();
 
@@ -396,10 +476,10 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
 
               this.DBLOPListe.CurrentLOPListe.ProjektpunkteIDListe.push(this.DB.CurrentProjektpunkt._id);
 
-              this.DBLOPListe.SaveLOPListe().then(() => {
+              await this.DBLOPListe.SaveLOPListe();
 
-                this.OkClickedEvent.emit();
-              });
+              this.OkClickedEvent.emit();
+
             }
             else {
 
@@ -410,11 +490,6 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
           }
 
           this.OkClickedEvent.emit();
-
-        }).catch((errorb) => {
-
-          this.Debug.ShowErrorMessage(errorb, 'LOP Liste Eintrageditor', 'OkButtonClicked / UpdateProjektpunkt', this.Debug.Typen.Component);
-        });
       }
 
     } catch (error) {
@@ -443,6 +518,7 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
       this.DB.CurrentProjektpunkt.Aufgabe = event.detail.value;
 
       this.ValidateInput();
+
 
     } catch (error) {
 
@@ -664,8 +740,6 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
   TerminGeschlossenChanged(datum: moment.Moment) {
 
     try {
-
-      debugger;
 
       this.DB.CurrentProjektpunkt.Geschlossenzeitstempel = datum.valueOf();
       this.DB.CurrentProjektpunkt.Geschlossenzeitstring  = datum.format('DD.MM.YYYY');

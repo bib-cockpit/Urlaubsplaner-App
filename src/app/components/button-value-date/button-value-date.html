@@ -40,7 +40,8 @@
       monthShortNames="Jan., Feb., Mrz., Apr., Mai, Jun., Jul., Aug., Sep., Okt., Nov., Dez." first-day-of-week="1"
       [value]="Datum.format('YYYY-MM-DD')" (ionChange)="DateChangedHandler($event)"
       -->
-        <ion-datetime #DatePicker
+        <ion-datetime #DatePicker style="background: #307ac1; color: white;"
+
                       locale="de-DE"
                       showDefaultButtons="true"
                       doneText="Fertig"

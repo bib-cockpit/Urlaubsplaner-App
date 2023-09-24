@@ -120,6 +120,23 @@ export class DatabaseProjektpunkteService {
     }
   }
 
+  public GetLOPStatuscolor(Projektpunkt: Projektpunktestruktur): string {
+
+    try {
+
+      if(Projektpunkt !== null) {
+
+        return this.GetProjektpunktstusByName(Projektpunkt.Status).LOPColor;
+      }
+      else return 'red';
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'GetLOPStatuscolor', this.Debug.Typen.Service);
+    }
+  }
+
   public GetProjektpunktstusByName(name: string): Projektpunktstatustypenstruktur {
 
     try {
@@ -814,9 +831,6 @@ export class DatabaseProjektpunkteService {
       this.DBFestlegungen.Empfaengerliste   = [];
       this.DBFestlegungen.CcEmpfaengerliste = [];
 
-      debugger;
-
-
       for(let ExternEmpfaengerID of this.DBFestlegungen.EmpfaengerExternIDListe) {
 
         Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: ExternEmpfaengerID});
@@ -1017,16 +1031,9 @@ export class DatabaseProjektpunkteService {
 
       if(this.DBProjekt.CurrentProjekt !== null) {
 
-        Liste = lodash.filter(this.Pool.Projektpunkteliste[this.DBProjekt.CurrentProjekt.Projektkey], (eintag: Projektpunktestruktur) => {
-
-            return eintag.LOPListeID !== null;
-
-        });
-
-        Nummer = Liste.length + 1;
-
+        Nummer = this.DBProjekt.CurrentProjekt.LastLOPEintragnummer + 1;
       }
-      else Nummer = 1;
+      else Nummer = null;
 
       let Punkt: Projektpunktestruktur = {
 
@@ -1743,7 +1750,14 @@ export class DatabaseProjektpunkteService {
 
       if(punkt !== null && punkt.Prioritaet !== null) {
 
-        return this.GetProjektpunktPrioritaetByName(punkt.Prioritaet).Color;
+        if(punkt.Status === '"Protokollpunkt"') {
+
+          return 'none';
+        }
+        else {
+
+          return this.GetProjektpunktPrioritaetByName(punkt.Prioritaet).Color;
+        }
       }
       else return 'green';
 

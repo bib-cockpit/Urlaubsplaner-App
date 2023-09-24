@@ -72,6 +72,11 @@ export class AuswahlDialogService {
     Protokollliste_Emaileditor_Intern_Empfaenger:           'Protokollliste_Emaileditor_Intern_Empfaenger',
     Protokollliste_Emaileditor_Intern_CcEmpfaenger:         'Protokollliste_Emaileditor_Intern_CcEmpfaenger',
 
+    LOPliste_Emaileditor_Extern_Empfaenger:           'LOPliste_Emaileditor_Extern_Empfaenger',
+    LOPliste_Emaileditor_Extern_CcEmpfaenger:         'LOPliste_Emaileditor_Extern_CcEmpfaenger',
+    LOPliste_Emaileditor_Intern_Empfaenger:           'LOPliste_Emaileditor_Intern_Empfaenger',
+    LOPliste_Emaileditor_Intern_CcEmpfaenger:         'LOPliste_Emaileditor_Intern_CcEmpfaenger',
+
 
     Protokollliste_Editor_Standortfilter:              'Protokollliste_Editor_Standortfilter',
     Protokollliste_Projektpunkteditor_Status:          'Protokollliste_Projektpunkteditor_Status',

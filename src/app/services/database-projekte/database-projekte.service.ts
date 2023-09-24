@@ -144,6 +144,7 @@ export class DatabaseProjekteService {
         MitarbeiterIDListe: [],
         Ort: "",
         OutlookkategorieID: "",
+        LastLOPEintragnummer: 0,
         PLZ: "",
         ProjektIsReal: false,
         Projektkey: "Musterprojekt",
@@ -268,6 +269,7 @@ export class DatabaseProjekteService {
               if(lodash.isUndefined(Projekt.DisplayKG480))          Projekt.DisplayKG480          = true;
               if(lodash.isUndefined(Projekt.DisplayBeschreibungen)) Projekt.DisplayBeschreibungen = true;
               if(lodash.isUndefined(Projekt.DisplayUngenutzte))     Projekt.DisplayUngenutzte     = false;
+              if(lodash.isUndefined(Projekt.LastLOPEintragnummer))  Projekt.LastLOPEintragnummer  = 0;
 
               for(let Beteiligter of Projekt.Beteiligtenliste) {
 
@@ -572,6 +574,7 @@ export class DatabaseProjekteService {
         Bauteilliste: [],
         ProjektIsReal: true,
         Leistungsphase: 'unbekannt',
+        LastLOPEintragnummer: 0,
 
         TeamsID:          this.Const.NONE,
         TeamsDescription: this.Const.NONE,
@@ -1123,8 +1126,6 @@ export class DatabaseProjekteService {
           Projektnummer = team.displayName.substring(0, 10);
         }
       }
-
-      debugger;
 
       return Projektnummer;
 

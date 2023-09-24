@@ -37,6 +37,7 @@ export type LOPListestruktur = {
   Text_C?: string;
   __v?: any;
   Projektpunkteliste?: Projektpunktestruktur[];
+  Infopunkteliste?: Projektpunktestruktur[];
   ExternZustaendigListe?: string[][];
   InternZustaendigListe?: string[][];
   ExterneTeilnehmerliste?: string[];

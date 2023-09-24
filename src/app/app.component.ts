@@ -307,12 +307,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           }
           else {
 
-            Page = this.Const.Pages.PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
+            Page = this.Const.Pages.PjBaustelleLoplistePage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
 
             this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
             await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);                 // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
 
-            this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Aufgabenliste; // .Aufgabenliste;
+            this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.LOPListe; // .Aufgabenliste;
           }
 
           this.Tools.SetRootPage(Page).then(() => {
@@ -325,6 +325,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
       else {
 
         // Benutzer ist nicht angemeldet -> der Login wird angezeigt
+
+        this.Tools.SetRootPage(this.Const.Pages.HomePage).then(() => {
+
+
+        });
 
         this.Debug.ShowMessage('Benutzer ist nicht angemeldet', 'App Component', 'StartApp', this.Debug.Typen.Component);
 

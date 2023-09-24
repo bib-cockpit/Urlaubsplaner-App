@@ -2,8 +2,7 @@
 <div [style.z-index]="ZIndex" style="position: absolute; top: 0px; left: 0px; background: none;  width: 100%; height: 100%">
   <div  class="keeperdivclass" [style.background]="Displayservice.ShowOpacity(Displayservice.Dialognamen.ProjektSendeEmail) ? 'rgba(0, 0, 0, 0.5)' : 'none'" (click)="ContentClicked($event)">
     <div class="contentdivclass"
-         [style.width.px]="Dialogbreite"
-         [style.height.px]="Dialoghoehe" [style.top.px]="PositionY" (click)="ContentClicked($event)">
+         [style.width.px]="Dialogbreite" [style.top.px]="PositionY" [style.bottom.px]="PositionY" (click)="ContentClicked($event)">
       <ion-header>
         <page-header>
           <table class="paddingsmalltable">

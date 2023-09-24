@@ -26,6 +26,11 @@ import moment, {Moment} from "moment";
 import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
 import {DatabaseGebaeudestrukturService} from "../../services/database-gebaeudestruktur/database-gebaeudestruktur";
 import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import {Fachbereiche, Fachbereichestruktur} from "../../dataclasses/fachbereicheclass";
+import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
+import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
+import ImageViewer from "awesome-image-viewer";
 
 @Component({
   selector: 'pj-baustelle-lopliste',
@@ -43,7 +48,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
   public Auswahlhoehe: number;
   public Headerhoehe: number;
   public Listenhoehe: number;
-  public LOPListe: LOPListestruktur[];
+  public LOPListen: LOPListestruktur[];
   public ProjektSubscription: Subscription;
   private LOPListeSubscription: Subscription;
   public DialogPosY: number;
@@ -62,15 +67,27 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
   public ShowRaumauswahl: boolean;
   public CurrentLOPListeID: string;
   public CurrentPunktID: string;
-  public Punkteliste: Projektpunktestruktur[][];
   public Projektschnellauswahlursprungvarianten = {
 
-    LOPListe: 'LOPListe'
+    LOPListen: 'LOPListen'
   };
   public ShowLOPListeEditor: boolean;
   public ShowEintragEditor: boolean;
   public ShowDateKkPicker: boolean;
   private LOPListepunkteSubscription: Subscription;
+  public EmailDialogbreite: number;
+  public EmailDialoghoehe: number;
+  public ShowEmailSenden: boolean;
+  public Auswahldialogbreite: number;
+  public Auswahldialoghoehe: number;
+  private LOPGewerkelisteSubscription: Subscription;
+  public ShowBildauswahl: boolean;
+  private Imageliste: Projektpunktimagestruktur[];
+  public Thumbnailliste: Thumbnailstruktur[][][];
+  public Zeilenanzahlliste: number[][][];
+  public Thumbbreite: number;
+  public Spaltenanzahl: number;
+  private Imageviewer: ImageViewer;
 
   constructor(public Menuservice: MenueService,
               public Basics: BasicsProvider,
@@ -93,17 +110,19 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.Auswahlliste              = [{ Index: 0, FirstColumn: '', SecoundColumn: '', Data: null}];
       this.Auswahlindex              = 0;
       this.Auswahltitel              = '';
+      this.Auswahldialogbreite       = 300;
+      this.Auswahldialoghoehe        = 300;
       this.ShowAuswahl               = false;
       this.ShowProjektschnellauswahl = false;
       this.Auswahlhoehe              = 200;
       this.Listenhoehe               = 0;
       this.Headerhoehe               = 0;
-      this.LOPListe                  = [];
+      this.LOPListen                  = [];
       this.ProjektSubscription       = null;
       this.LOPListeSubscription      = null;
       this.ShowLOPListeEditor        = false;
       this.Dialoghoehe              = 400;
-      this.Dialogbreite             = 950;
+      this.Dialogbreite             = 1300;
       this.DialogPosY               = 60;
       this.ShowMitarbeiterauswahl   = false;
       this.ShowBeteiligteauswahl    = false;
@@ -113,10 +132,21 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.StrukturDialogbreite     = 1260;
       this.StrukturDialoghoehe      = 800;
       this.ShowRaumauswahl          = false;
-      this.Punkteliste              = [];
+      /// this.DB.CurrentPunkteliste              = [];
       this.LOPListepunkteSubscription = null;
       this.CurrentLOPListeID        = null;
       this.CurrentPunktID           = null;
+      this.EmailDialogbreite        = 800;
+      this.EmailDialoghoehe         = 600;
+      this.ShowEmailSenden          = false;
+      this.LOPGewerkelisteSubscription = null;
+      this.ShowBildauswahl = false;
+      this.Imageliste        = [];
+      this.Thumbnailliste    = [];
+      this.Zeilenanzahlliste = [];
+      this.Thumbbreite     = 100;
+      this.Spaltenanzahl   = 6;
+      this.Imageviewer     = null;
 
     } catch (error) {
 
@@ -131,10 +161,14 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.LOPListeSubscription.unsubscribe();
       this.ProjektSubscription.unsubscribe();
       this.LOPListepunkteSubscription.unsubscribe();
+      this.LOPGewerkelisteSubscription.unsubscribe();
 
-      this.LOPListeSubscription       = null;
-      this.ProjektSubscription        = null;
-      this.LOPListepunkteSubscription = null;
+      this.LOPListeSubscription        = null;
+      this.ProjektSubscription         = null;
+      this.LOPListepunkteSubscription  = null;
+      this.LOPGewerkelisteSubscription = null;
+
+      this.Imageviewer = null;
 
     } catch (error) {
 
@@ -158,6 +192,11 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
         this.PrepareData();
       });
 
+      this.LOPGewerkelisteSubscription = this.Pool.CurrentLOPGewerkelisteChanged.subscribe(() => {
+
+        this.PrepareData();
+      });
+
       this.LOPListepunkteSubscription = this.Pool.ProjektpunktelisteChanged.subscribe(() => {
 
         this.PrepareData();
@@ -174,81 +213,185 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
     }
   }
 
-  private PrepareData() {
+  private async PrepareData() {
 
     try {
 
       let Punkt: Projektpunktestruktur;
+      let Punkteindex: number;
       let Stichtag: Moment;
       let Datum: Moment;
       let Heute: Moment = moment();
+      let Gewerk: Fachbereichestruktur;
+      let Thumb: Thumbnailstruktur, Merker: Thumbnailstruktur;
+      let Anzahl: number;
+      let Index: number;
+      let Liste: Thumbnailstruktur[] = [];
+      let Imageliste: Teamsfilesstruktur[] = [];
+      let File: Teamsfilesstruktur;
 
       Stichtag = Heute.clone().subtract(this.Pool.Mitarbeitersettings.LOPListeGeschlossenZeitfilter, 'days');
+
+      this.Thumbnailliste    = [];
+      this.Zeilenanzahlliste = [];
 
       if(this.DBProjekte.CurrentProjekt !== null) {
 
         if(!lodash.isUndefined(this.Pool.LOPListe[this.DBProjekte.CurrentProjekt.Projektkey])) {
 
-          this.LOPListe = lodash.cloneDeep(this.Pool.LOPListe[this.DBProjekte.CurrentProjekt.Projektkey]);
+          this.LOPListen = lodash.cloneDeep(this.Pool.LOPListe[this.DBProjekte.CurrentProjekt.Projektkey]);
 
-          this.LOPListe.sort( (a: LOPListestruktur, b: LOPListestruktur) => {
+          this.LOPListen.sort( (a: LOPListestruktur, b: LOPListestruktur) => {
 
             if (a.Zeitstempel > b.Zeitstempel) return -1;
             if (a.Zeitstempel < b.Zeitstempel) return 1;
             return 0;
           });
 
-          this.LOPListe = lodash.filter(this.LOPListe, (Eintrag: LOPListestruktur) => {
+          this.LOPListen = lodash.filter(this.LOPListen, (Eintrag: LOPListestruktur) => {
 
             return Eintrag.Deleted === false ;
           });
 
-          for(let LOPListe of this.LOPListe) {
+          // Gewerke feststellen
 
-            this.Punkteliste[LOPListe._id] = [];
+          for(Gewerk of this.Pool.CurrentLOPGewerkeliste) {
 
-            for(let PunktID of LOPListe.ProjektpunkteIDListe) {
+            Gewerk.Anzahl = 0;
+          }
+
+          this.DB.CurrentPunkteliste = [];
+          this.DB.CurrentInfoliste   = [];
+
+          for(let LOPListen of this.LOPListen) {
+
+            this.DB.CurrentPunkteliste[LOPListen._id] = [];
+
+            for(let PunktID of LOPListen.ProjektpunkteIDListe) {
 
               Punkt = lodash.find(this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey], {_id: PunktID});
 
               if(!lodash.isUndefined(Punkt)) {
 
-                if(Punkt.Status !== this.Const.Projektpunktstatustypen.Geschlossen.Name) {
+                Gewerk = lodash.find(this.Pool.CurrentLOPGewerkeliste, {Key: Punkt.Fachbereich});
 
-                  this.Punkteliste[LOPListe._id].push(Punkt);
+                if(!lodash.isUndefined(Gewerk))Gewerk.Anzahl++;
+
+                if(Punkt.Status !== this.Const.Projektpunktstatustypen.Protokollpunkt.Name) {
+
+                  if (Punkt.Status !== this.Const.Projektpunktstatustypen.Geschlossen.Name) {
+
+                    if(Gewerk.Visible === true) this.DB.CurrentPunkteliste[LOPListen._id].push(Punkt);
+
+                  } else {
+
+                    Datum = moment(Punkt.Geschlossenzeitstempel).locale('de');
+
+                    if (Gewerk.Visible === true && Datum.isAfter(Stichtag, 'day')) this.DB.CurrentPunkteliste[LOPListen._id].push(Punkt);
+                  }
                 }
                 else {
 
-                  Datum = moment(Punkt.Geschlossenzeitstempel).locale('de');
+                  if(this.DB.ShowLOPListeInfoeintraege === true) this.DB.CurrentInfoliste.push(Punkt);
 
-                  if(Datum.isAfter(Stichtag, 'day')) this.Punkteliste[LOPListe._id].push(Punkt);
                 }
               }
             }
 
-            this.Punkteliste[LOPListe._id] = this.Punkteliste[LOPListe._id].sort( (a: Projektpunktestruktur, b: Projektpunktestruktur) => {
+            this.DB.CurrentPunkteliste[LOPListen._id] = this.DB.CurrentPunkteliste[LOPListen._id].sort( (a: Projektpunktestruktur, b: Projektpunktestruktur) => {
 
               if (parseInt(a.Nummer) > parseInt(b.Nummer)) return -1;
               if (parseInt(a.Nummer) < parseInt(b.Nummer)) return  1;
 
               return 0;
             });
+
+            // Bilder
+
+            this.Thumbnailliste[LOPListen._id]    = [];
+            this.Zeilenanzahlliste[LOPListen._id] = [];
+            Punkteindex = 0;
+
+            for(Punkt of this.DB.CurrentPunkteliste[LOPListen._id]) {
+
+              Imageliste = [];
+              Liste      = [];
+
+              for(let Bild of Punkt.Bilderliste) {
+
+                File        = this.GraphService.GetEmptyTeamsfile();
+                File.id     = Bild.FileID;
+                File.webUrl = Bild.WebUrl;
+
+                Imageliste.push(File);
+              }
+
+              for(File of Imageliste) {
+
+                Thumb        = await this.GraphService.GetSiteThumbnail(File);
+                Thumb.weburl = File.webUrl;
+                Merker       = lodash.find(Liste, {id: File.id});
+
+                if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+              }
+
+              Anzahl              = Liste.length;
+              this.Zeilenanzahlliste[LOPListen._id][Punkteindex] = Math.ceil(Anzahl / this.Spaltenanzahl);
+              Index               = 0;
+              this.Thumbnailliste[LOPListen._id][Punkteindex] = [];
+
+              for(let Zeilenindex = 0; Zeilenindex < this.Zeilenanzahlliste[LOPListen._id][Punkteindex]; Zeilenindex++) {
+
+                this.Thumbnailliste[LOPListen._id][Punkteindex][Zeilenindex] = [];
+
+                for(let Spaltenindex = 0; Spaltenindex < this.Spaltenanzahl; Spaltenindex++) {
+
+                  if(!lodash.isUndefined(Liste[Index])) {
+
+                    this.Thumbnailliste[LOPListen._id][Punkteindex][Zeilenindex][Spaltenindex] = Liste[Index];
+                  }
+                  else {
+
+                    this.Thumbnailliste[LOPListen._id][Punkteindex][Zeilenindex][Spaltenindex] = null;
+                  }
+
+                  Index++;
+                }
+              }
+
+              Punkteindex++;
+            }
+
+
           }
         }
         else {
 
-          this.LOPListe = [];
+          this.LOPListen = [];
         }
 
       }
       else {
 
-        this.LOPListe = [];
+        this.LOPListen = [];
       }
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'LOP Liste', 'PrepareData', this.Debug.Typen.Page);
+    }
+  }
+
+  AddBildEventHandler() {
+
+    try {
+
+      this.Dialogbreite    = 1400;
+      this.ShowBildauswahl = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'AddBildEventHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -278,7 +421,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
     try {
 
-      this.Projektschnellauswahlursprung = this.Projektschnellauswahlursprungvarianten.LOPListe;
+      this.Projektschnellauswahlursprung = this.Projektschnellauswahlursprungvarianten.LOPListen;
       this.ShowProjektschnellauswahl     = true;
       this.Projektschenllauswahltitel    = 'Projekt wechseln';
 
@@ -295,9 +438,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
       switch (this.Projektschnellauswahlursprung) {
 
-        case this.Projektschnellauswahlursprungvarianten.LOPListe:
-
-          debugger;
+        case this.Projektschnellauswahlursprungvarianten.LOPListen:
 
           this.DBProjekte.CurrentProjekt      = projekt;
           this.DBProjekte.CurrentProjektindex = lodash.findIndex(this.DBProjekte.Projektliste, {_id: projekt._id});
@@ -343,7 +484,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.DB.CurrentLOPListe         = this.DB.GetEmptyLOPListe();
       this.DB.LOPListeEditorViewModus = this.DB.LOPListeEditorViewModusvarianten.Allgemein;
       this.ShowLOPListeEditor         = true;
-      this.Dialogbreite               = 1200;
+      this.Dialogbreite               = 1300;
       this.Dialoghoehe                = this.Basics.InnerContenthoehe - this.DialogPosY * 2;
 
     } catch (error) {
@@ -356,8 +497,9 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
     try {
 
-      this.ShowEintragEditor                   = true;
       this.DBProjektpunkte.CurrentProjektpunkt = lodash.cloneDeep(this.DBProjektpunkte.GetNewLOPListepunkt(this.DB.CurrentLOPListe));
+
+      this.ShowEintragEditor = true;
 
     } catch (error) {
 
@@ -415,10 +557,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
     try {
 
-      debugger;
-
       switch (this.Auswahldialogorigin) {
-
 
         case this.Auswahlservice.Auswahloriginvarianten.LOPListe_LOPListeeditor_InternTeilnehmer:
 
@@ -483,8 +622,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
   BeteiligteauswahlOkButtonClicked(idliste: string[]) {
 
     try {
-
-      debugger;
 
       switch (this.Auswahldialogorigin) {
 
@@ -649,13 +786,138 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
     }
   }
 
-  SendMailButtonClicked($event: MouseEvent, Eintrag: LOPListestruktur) {
+  SendMailButtonClicked(event: MouseEvent, LOPListe: LOPListestruktur) {
 
     try {
+
+      let Betreff, Nachricht, Filename;
+      let Punkteliste: Projektpunktestruktur[];
+      let Liste: Projektpunktestruktur[];
+
+      event.stopPropagation();
+      event.preventDefault();
+
+      this.Pool.Emailcontent   = this.Pool.Emailcontentvarinaten.LOPListe;
+      this.EmailDialogbreite   = 1100;
+      this.EmailDialoghoehe    = this.Basics.InnerContenthoehe - 200;
+      this.DB.CurrentLOPListe  = lodash.cloneDeep(LOPListe);
+
+      Filename = moment(this.DB.CurrentLOPListe.Zeitstempel).format('YYMMDD_') + this.Tools.GenerateFilename(this.DB.CurrentLOPListe.Titel, 'pdf');
+
+      Betreff    = this.DB.CurrentLOPListe.Titel + ' vom ' + moment(this.DB.CurrentLOPListe.Zeitstempel).format('DD.MM.YYYY');
+
+      Nachricht  = 'Sehr geehrte Damen und Herren,\n\n';
+      Nachricht += 'anbei übersende ich Ihnen das "' + this.DB.CurrentLOPListe.Titel + '" vom ' + moment(this.DB.CurrentLOPListe.Zeitstempel).format('DD.MM.YYYY') + '\n';
+      Nachricht += 'mit der Protokollnummer ' + this.DB.CurrentLOPListe.LOPListenummer + '.\n\n';
+
+      Punkteliste   = [];
+
+      for(let LOP of this.LOPListen) {
+
+        Liste = this.DB.CurrentPunkteliste[LOP._id];
+
+        for(let Eintrag of Liste) {
+
+          if(!lodash.isUndefined(this.DBProjekte.CurrentProjekt)) {
+
+            Eintrag.Bauteilname = this.DBGebaeude.GetGebaeudeteilname(this.DBProjekte.CurrentProjekt, Eintrag);
+          }
+          else {
+
+            Eintrag.Bauteilname = 'Gesamtes Gebäude';
+          }
+
+          Punkteliste.push(Eintrag);
+        }
+      }
+
+      this.DB.CurrentLOPListe.Infopunkteliste    = this.DB.CurrentInfoliste;
+      this.DB.CurrentLOPListe.Projektpunkteliste = Punkteliste;
+
+      this.DB.CurrentLOPListe.EmpfaengerExternIDListe   = this.DB.CurrentLOPListe.BeteiligExternIDListe;
+      this.DB.CurrentLOPListe.CcEmpfaengerInternIDListe = this.DB.CurrentLOPListe.BeteiligtInternIDListe;
+      this.DB.CurrentLOPListe.Betreff                   = Betreff;
+      this.DB.CurrentLOPListe.Nachricht                 = Nachricht;
+      this.DB.CurrentLOPListe.Filename                  = Filename;
+
+      this.ShowEmailSenden = true;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'LOP Liste', 'SendMailButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  EmpfaengerBurnicklClickedHandler() {
+
+    try {
+
+      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.LOPListe_Emaileditor_Intern_Empfaenger;
+      this.AuswahlIDliste        = this.DB.CurrentLOPListe.EmpfaengerInternIDListe;
+      this.ShowMitarbeiterauswahl = true;
+      this.Dialoghoehe            = this.Basics.InnerContenthoehe - 200;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'EmpfaengerExternClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  EmpfaengerExternClickedHandler() {
+
+    try {
+
+
+      this.Auswahldialogorigin   = this.Auswahlservice.Auswahloriginvarianten.LOPListe_Emaileditor_Extern_Empfaenger;
+      this.AuswahlIDliste        = this.DB.CurrentLOPListe.EmpfaengerExternIDListe;
+      this.ShowBeteiligteauswahl = true;
+      this.Dialoghoehe           = this.Basics.InnerContenthoehe - 200;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'EmpfaengerExternClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  CcEmpfaengerExternClickedHandler() {
+
+    try {
+
+      this.Auswahldialogorigin   = this.Auswahlservice.Auswahloriginvarianten.LOPListe_Emaileditor_Extern_CcEmpfaenger;
+      this.AuswahlIDliste        = this.DB.CurrentLOPListe.CcEmpfaengerExternIDListe;
+      this.ShowBeteiligteauswahl = true;
+      this.Dialoghoehe           = this.Basics.InnerContenthoehe - 200;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'EmpfaengerExternClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  CcEmpfaengerBurnicklClickedHandler() {
+
+    try {
+
+      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.LOPListe_Emaileditor_Intern_CcEmpfaenger;
+      this.AuswahlIDliste         = this.DB.CurrentLOPListe.CcEmpfaengerInternIDListe;
+      this.ShowMitarbeiterauswahl = true;
+      this.Dialoghoehe            = this.Basics.InnerContenthoehe - 200;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'CcEmpfaengerBurnicklClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  EmailSendenOkButtonClicked(event: any) {
+
+    try {
+
+      this.ShowEmailSenden = false;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'EmailSendenOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -676,20 +938,21 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
   EintragEditorFachbereichClickedHandler() {
 
+
     this.Auswahltitel = 'Stataus festlegen';
     this.Auswahlliste = [];
     this.Auswahlhoehe = 200;
 
     this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.LOPListe_Eintrageditor_Fachbereich;
 
-    this.Auswahlliste.push({Index: 0, FirstColumn: this.Const.Fachbereiche.unbekannt, SecoundColumn: '',      Data: this.Const.Fachbereiche.unbekannt});
-    this.Auswahlliste.push({Index: 1, FirstColumn: this.Const.Fachbereiche.Elektrotechnik, SecoundColumn: '', Data: this.Const.Fachbereiche.Elektrotechnik});
-    this.Auswahlliste.push({Index: 2, FirstColumn: this.Const.Fachbereiche.HLS, SecoundColumn: '',            Data: this.Const.Fachbereiche.HLS});
-    this.Auswahlliste.push({Index: 3, FirstColumn: this.Const.Fachbereiche.Heizung, SecoundColumn: '',        Data: this.Const.Fachbereiche.Heizung});
-    this.Auswahlliste.push({Index: 4, FirstColumn: this.Const.Fachbereiche.Lueftung, SecoundColumn: '',       Data: this.Const.Fachbereiche.Lueftung});
-    this.Auswahlliste.push({Index: 5, FirstColumn: this.Const.Fachbereiche.Sanitaer, SecoundColumn: '',       Data: this.Const.Fachbereiche.Sanitaer});
-    this.Auswahlliste.push({Index: 6, FirstColumn: this.Const.Fachbereiche.Klimatisierung, SecoundColumn: '', Data: this.Const.Fachbereiche.Klimatisierung});
-    this.Auswahlliste.push({Index: 7, FirstColumn: this.Const.Fachbereiche.MSR, SecoundColumn: '',            Data: this.Const.Fachbereiche.MSR});
+    this.Auswahlliste.push({Index: 0, FirstColumn: this.Pool.Fachbereich.Unbekannt.Bezeichnung,      SecoundColumn: this.Pool.Fachbereich.Unbekannt.Kuerzel,      Data: this.Pool.Fachbereich.Unbekannt.Key});
+    this.Auswahlliste.push({Index: 1, FirstColumn: this.Pool.Fachbereich.Elektrotechnik.Bezeichnung, SecoundColumn: this.Pool.Fachbereich.Elektrotechnik.Kuerzel, Data: this.Pool.Fachbereich.Elektrotechnik.Key});
+    this.Auswahlliste.push({Index: 2, FirstColumn: this.Pool.Fachbereich.HLS.Bezeichnung,            SecoundColumn: this.Pool.Fachbereich.HLS.Kuerzel,            Data: this.Pool.Fachbereich.HLS.Key});
+    this.Auswahlliste.push({Index: 3, FirstColumn: this.Pool.Fachbereich.H.Bezeichnung,              SecoundColumn: this.Pool.Fachbereich.H.Kuerzel,              Data: this.Pool.Fachbereich.H.Key});
+    this.Auswahlliste.push({Index: 4, FirstColumn: this.Pool.Fachbereich.L.Bezeichnung,              SecoundColumn: this.Pool.Fachbereich.L.Kuerzel,              Data: this.Pool.Fachbereich.L.Key});
+    this.Auswahlliste.push({Index: 5, FirstColumn: this.Pool.Fachbereich.S.Bezeichnung,              SecoundColumn: this.Pool.Fachbereich.S.Kuerzel,              Data: this.Pool.Fachbereich.S.Key});
+    this.Auswahlliste.push({Index: 6, FirstColumn: this.Pool.Fachbereich.K.Bezeichnung,              SecoundColumn: this.Pool.Fachbereich.K.Kuerzel,              Data: this.Pool.Fachbereich.K.Key});
+    this.Auswahlliste.push({Index: 7, FirstColumn: this.Pool.Fachbereich.MSR.Bezeichnung,            SecoundColumn: this.Pool.Fachbereich.MSR.Kuerzel,            Data: this.Pool.Fachbereich.MSR.Key});
 
     this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.DBProjektpunkte.CurrentProjektpunkt.Fachbereich});
     this.ShowAuswahl  = true;
@@ -830,9 +1093,18 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
     }
   }
 
-  LOPListepunktClickedHandler(punkt: Projektpunktestruktur) {
+  LOPListepunktClickedHandler(punkt: Projektpunktestruktur, lopliste: LOPListestruktur) {
 
     try {
+
+      if(lopliste !== null) {
+
+        this.DB.CurrentLOPListe = lodash.cloneDeep(lopliste);
+      }
+      else {
+
+        this.DB.CurrentLOPListe = lodash.find(this.LOPListen, {_id: punkt.LOPListeID});
+      }
 
       this.DBProjektpunkte.CurrentProjektpunkt = lodash.cloneDeep(punkt);
       this.ShowEintragEditor                   = true;
@@ -880,7 +1152,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.DB.CurrentLOPListe         = lodash.cloneDeep(lopliste);
       this.DB.LOPListeEditorViewModus = this.DB.LOPListeEditorViewModusvarianten.Allgemein;
       this.ShowLOPListeEditor         = true;
-      this.Dialogbreite               = 1200;
+      this.Dialogbreite               = 1300;
       this.Dialoghoehe                = this.Basics.InnerContenthoehe - this.DialogPosY * 2;
 
     } catch (error) {
@@ -889,11 +1161,11 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
     }
   }
 
-  EintragZeileEnterEvent(LOPListe: LOPListestruktur, Punkt: Projektpunktestruktur) {
+  EintragZeileEnterEvent(LOPListen: LOPListestruktur, Punkt: Projektpunktestruktur) {
 
     try {
 
-      this.CurrentLOPListeID = LOPListe._id;
+      this.CurrentLOPListeID = LOPListen._id;
       this.CurrentPunktID    = Punkt._id;
 
     } catch (error) {
@@ -912,6 +1184,129 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'LOP Liste', 'EintragZeileEnterEvent', this.Debug.Typen.Page);
+    }
+  }
+
+  ShowLOPListeInfoeintraegeChangedHandler(event: any) {
+
+    try {
+
+      this.PrepareData();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'ShowLOPListeInfoeintraegeChangedHandler', this.Debug.Typen.Page);
+    }
+
+  }
+
+  async ShowPdfButtonClicked($event: MouseEvent, LOP: LOPListestruktur) {
+
+    try {
+
+      let File: Teamsfilesstruktur;
+
+      File      = this.GraphService.GetEmptyTeamsfile();
+      File.id   = LOP.FileID;
+      File.name = LOP.Filename;
+
+      await this.GraphService.DownloadPDFSiteFile(File);
+
+      this.Tools.PushPage(this.Const.Pages.PDFViewerPage);
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'ShowPdfButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  SelectedImagesChangedHandler(thumbliste: Thumbnailstruktur[]) {
+
+    try {
+
+      this.Imageliste = [];
+
+      for(let Thumb of thumbliste) {
+
+        this.Imageliste.push({
+            FileID: Thumb.id,
+            WebUrl: Thumb.weburl
+          }
+        );
+      }
+
+
+      // this.ImageIDListe = idliste;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'SelectedImagesChangedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  BilderAuswahlOKClicked(event: Teamsfilesstruktur) {
+
+    try {
+
+      if(this.DBProjektpunkte.CurrentProjektpunkt !== null) {
+
+        this.DBProjektpunkte.CurrentProjektpunkt.Bilderliste = this.Imageliste;
+        this.Pool.ProjektpunktChanged.emit();
+      }
+
+      this.ShowBildauswahl = false;
+      this.Dialogbreite    = 950;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'BilderAuswahlOKClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  BilderAuswahlCancelClicked(event: any) {
+
+    try {
+
+      this.Dialogbreite    = 950;
+      this.ShowBildauswahl = false;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'BilderAuswahlCancelClicked', this.Debug.Typen.Page);
+    }
+  }
+
+
+  ThumbnailClicked(event: MouseEvent, Thumbliste: Thumbnailstruktur[], Index: number) {
+
+    try {
+
+      let Imagedaten: any[] = [];
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      for (let Thumb of Thumbliste) {
+
+        if(Thumb !== null) {
+
+          Imagedaten.push(
+            {
+              mainUrl:      Thumb.weburl,
+              thumbnailUrl: Thumb.smallurl,
+              description:  ''
+            });
+        }
+      }
+
+      this.Imageviewer = new ImageViewer({
+        images: Imagedaten,
+        currentSelected: Index
+      });
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'ThumbnailClicked', this.Debug.Typen.Page);
     }
   }
 }

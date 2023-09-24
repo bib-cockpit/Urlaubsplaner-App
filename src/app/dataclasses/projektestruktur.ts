@@ -35,6 +35,7 @@ export type Projektestruktur = {
   ProtokolleFolderID:    string;
   BautagebuchFolderID:   string;
   BaustellenLOPFolderID: string;
+  LastLOPEintragnummer:  number;
 
   DisplayKG410: boolean;
   DisplayKG475: boolean;

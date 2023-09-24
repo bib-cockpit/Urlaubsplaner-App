@@ -562,38 +562,6 @@ const _Editormodusvarianten = {
   Filter:     'Filter'
 };
 
-const _Fachbereiche = {
-
-  unbekannt: 'unbekannt',
-  Elektrotechnik: 'Elektrotechnik',
-  HLS: 'HLS',
-  Heizung: 'Heizung',
-  Lueftung: 'Lüftung',
-  Sanitaer: 'Sanitär',
-  Klimatisierung: 'Klimatisierung',
-  MSR: 'MSR',
-  Geschaeftsfuehrung: 'Geschäftsfuehrung',
-  Assistenz:          'Assistenz',
-  Prokurist:          'Prokurist',
-  Planer: 'Planer',
-  Teamleitung: 'Teamleitung',
-  Projektleitung: 'Projektleitung',
-  Studentin: 'Student/in',
-  Auszubildende: 'Auszubildende/r',
-  Objektueberwachung: 'Objektüberwachung',
-  Buchhaltung: 'Buchhaltung',
-  Marketing: 'Marketing',
-  Praktikantin: 'Praktikant/in',
-  IT: 'IT',
-  Controlling: 'Controlling',
-  Techniker: 'Techniker/in',
-  Facilitymanager: 'Facilitymanager',
-  Niederlassungsleitung: 'Niederlassungsleitung',
-  Architektin: 'Architekt/in',
-  Kauffrau: 'Kauffrau',
-  HR: 'HR',
-};
-
 
 
 const _Eventvarianten = {
@@ -799,7 +767,8 @@ const _Projektpunktstatustypen: any = {
     Statusnummer: 0,
     Name:         'Offen',
     Displayname:  'Offen',
-    Color:        '#008080'
+    Color:        '#008080',
+    LOPColor:     'red'
   },
 
   Protokollpunkt: {
@@ -807,7 +776,8 @@ const _Projektpunktstatustypen: any = {
     Statusnummer: 0,
     Name:         'Protokollpunkt',
     Displayname:  'Info',
-    Color:        '#34495E'
+    Color:        '#34495E',
+    LOPColor:     '#307ac1'
   },
 
   Geschlossen: {
@@ -815,7 +785,8 @@ const _Projektpunktstatustypen: any = {
     Statusnummer:  1,
     Name:         'Geschlossen',
     Displayname:  'Geschlossen',
-    Color:        '#008000'
+    Color:        '#008000',
+    LOPColor:     '#008000'
   },
 
   Bearbeitung: {
@@ -823,7 +794,8 @@ const _Projektpunktstatustypen: any = {
     Statusnummer:  2,
     Name:         'Bearbeitung',
     Displayname:  'Bearbeitung',
-    Color:        '#616A6B'
+    Color:        '#616A6B',
+    LOPColor:     '#616A6B'
   },
 
   Ruecklauf: {
@@ -831,7 +803,8 @@ const _Projektpunktstatustypen: any = {
     Statusnummer:  3,
     Name:         'Ruecklauf',
     Displayname:  'Rücklauf',
-    Color:        '#0020C2'
+    Color:        '#0020C2',
+    LOPColor:     '#0020C2'
   },
 
   Festlegung: {
@@ -930,7 +903,7 @@ export class ConstProvider {
   public readonly Beteiligteneintragtypen       = _Beteiligteneintragtypen;
   public readonly Anredevariante                = _Anredevariante;
   public readonly Zeitansatzeinheitvarianten    = _Zeitansatzeinheitvarianten;
-  public readonly Fachbereiche                  = _Fachbereiche;
+
   public readonly Faelligkeitsterminfiltervarianten = _Faelligkeitsterminfiltervarianten;
   public readonly AufgabenSortiermodusvarianten     = _AufgabenSortiermodusvarianten;
   public readonly Projektpunktprioritaetstypen      = _Projektpunktprioritaetstypen;

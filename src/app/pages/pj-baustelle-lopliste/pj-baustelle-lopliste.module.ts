@@ -26,6 +26,10 @@ import {
     PjGebaeudeRaumauswahlModule
 } from "../../components-page/pj-gebaeude-raumauswahl/pj-gebaeude-raumauswahl.module";
 import {SafePipeModule} from "../../pipes/safe.pipe.module";
+import {PjEmailSendModule} from "../../components-page/pj-email-send/pj-email-send.module";
+import {
+    PjProjekteSelectimagesModule
+} from "../../components-page/pj-projekte-selectimages/pj-projekte-selectimages.module";
 
 const routes: Routes = [
   {
@@ -52,6 +56,8 @@ const routes: Routes = [
         PjProjektpunktDateKwPickerModule,
         PjGebaeudeRaumauswahlModule,
         SafePipeModule,
+        PjEmailSendModule,
+        PjProjekteSelectimagesModule,
     ],
   declarations: [PjBaustelleLoplistePage]
 })

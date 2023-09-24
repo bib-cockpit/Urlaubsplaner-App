@@ -4,4 +4,5 @@ export type Projektpunktstatustypenstruktur = {
   Name:         string;
   Displayname:  string;
   Color:        string;
+  LOPColor:     string;
 };

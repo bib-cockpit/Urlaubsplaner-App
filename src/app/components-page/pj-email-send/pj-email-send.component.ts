@@ -32,6 +32,9 @@ import {Subscription} from "rxjs";
 import {Bautagebuchstruktur} from "../../dataclasses/bautagebuchstruktur";
 import {DatabaseFestlegungenService} from "../../services/database-festlegungen/database-festlegungen.service";
 import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
+import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
+import {DatabaseLoplisteService} from "../../services/database-lopliste/database-lopliste.service";
+import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
 
 @Component({
   selector: 'pj-email-send',
@@ -45,7 +48,6 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() Titel: string;
   @Input() Iconname: string;
   @Input() Dialogbreite: number;
-  @Input() Dialoghoehe: number;
   @Input() PositionY: number;
   @Input() ZIndex: number;
 
@@ -55,7 +57,6 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() CcEmpfaengerBurnicklClicked = new EventEmitter<any>();
   @Output() EmpfaengerExternClicked     = new EventEmitter<any>();
   @Output() CcEmpfaengerExternClicked   = new EventEmitter<any>();
-
 
   public Inputtimer: any;
   public LinesanzahlEmpfaenger: number;
@@ -79,6 +80,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
               public Const: ConstProvider,
               public Displayservice: DisplayService,
               public DBTagebuch: DatabaseBautagebuchService,
+              public DBLOPListe: DatabaseLoplisteService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public GraphService: Graphservice,
               private Pool: DatabasePoolService) {
@@ -88,7 +90,6 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
       this.Titel                       = this.Const.NONE;
       this.Iconname                    = 'help-circle-outline';
       this.Dialogbreite                = 400;
-      this.Dialoghoehe                 = 300;
       this.PositionY                   = 100;
       this.ZIndex                      = 3000;
       this.LinesanzahlEmpfaenger       = 1;
@@ -205,6 +206,16 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           break;
 
+        case this.Pool.Emailcontentvarinaten.LOPListe:
+
+          AnzahlExtern   = this.DBLOPListe.CurrentLOPListe.EmpfaengerExternIDListe.length;
+          AnzahlBurnickl = this.DBLOPListe.CurrentLOPListe.EmpfaengerInternIDListe.length;
+
+          AnzahlCcExtern    = this.DBLOPListe.CurrentLOPListe.CcEmpfaengerExternIDListe.length;
+          AnzahlCcBunrnickl = this.DBLOPListe.CurrentLOPListe.CcEmpfaengerInternIDListe.length;
+
+          break;
+
         case this.Pool.Emailcontentvarinaten.Bautagebuch:
 
           AnzahlExtern   = this.DBTagebuch.CurrentTagebuch.EmpfaengerExternIDListe.length;
@@ -228,8 +239,6 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.LinesanzahlEmpfaenger   = Math.max(AnzahlExtern, AnzahlBurnickl);
       this.LinesanzahlCcEmpfaenger = Math.max(AnzahlCcExtern, AnzahlCcBunrnickl);
-
-      debugger;
 
       await this.ValidateFilename();
 
@@ -258,6 +267,8 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
     let TeamsID : string    = this.DBProjekte.CurrentProjekt.TeamsID;
     let Filename: string;
+    let LOPListe: LOPListestruktur;
+    let NextLOPListe: LOPListestruktur;
     let NextProtokoll: Protokollstruktur;
     let NextBautagebuch: Bautagebuchstruktur;
     let Projekt: Projektestruktur        = this.DBProjekte.CurrentProjekt;
@@ -272,6 +283,33 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
 
       switch (this.Pool.Emailcontent) {
+
+        case this.Pool.Emailcontentvarinaten.LOPListe:
+
+          LOPListe      = this.DBLOPListe.CurrentLOPListe;
+          Filename      = LOPListe.Filename;
+          NextLOPListe  = await this.DBLOPListe.SaveLOPListeInSites(Filename, Projekt, LOPListe, Standort, Mitarbeiter, true);
+
+          this.SaveFileFinished = true;
+
+          await this.DBLOPListe.SendLOPListeFromSite(NextLOPListe);
+
+          this.SendMailFinished = true;
+
+          this.DBLOPListe.CurrentLOPListe.GesendetZeitstempel = NextLOPListe.GesendetZeitstempel;
+          this.DBLOPListe.CurrentLOPListe.GesendetZeitstring  = NextLOPListe.GesendetZeitstring;
+          this.DBLOPListe.CurrentLOPListe.Filename            = NextLOPListe.Filename;
+          this.DBLOPListe.CurrentLOPListe.FileID              = NextLOPListe.FileID;
+
+          await this.DBLOPListe.SaveLOPListe();
+
+          lodash.delay(() => {
+
+            this.OkClickedEvent.emit();
+
+          }, 600);
+
+          break;
 
         case this.Pool.Emailcontentvarinaten.Protokoll:
 
@@ -303,8 +341,6 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
           Bautagebuch     = this.DBTagebuch.CurrentTagebuch;
           Filename        = Bautagebuch.Filename;
           NextBautagebuch = await this.DBTagebuch.SaveBautagebuchInSite(Filename, Projekt, Bautagebuch, Standort, Mitarbeiter, true);
-
-          debugger;
 
           this.SaveFileFinished = true;
 
@@ -384,6 +420,12 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           break;
 
+        case this.Pool.Emailcontentvarinaten.LOPListe:
+
+          idliste = cc === false ? this.DBLOPListe.CurrentLOPListe.EmpfaengerExternIDListe : this.DBLOPListe.CurrentLOPListe.CcEmpfaengerExternIDListe;
+
+          break;
+
         case this.Pool.Emailcontentvarinaten.Bautagebuch:
 
           idliste = cc === false ? this.DBTagebuch.CurrentTagebuch.EmpfaengerExternIDListe : this.DBTagebuch.CurrentTagebuch.CcEmpfaengerExternIDListe;
@@ -436,6 +478,12 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
         case this.Pool.Emailcontentvarinaten.Protokoll:
 
           idliste = cc === false ? this.DBProtokolle.CurrentProtokoll.EmpfaengerInternIDListe : this.DBProtokolle.CurrentProtokoll.CcEmpfaengerInternIDListe;
+
+          break;
+
+        case this.Pool.Emailcontentvarinaten.LOPListe:
+
+          idliste = cc === false ? this.DBLOPListe.CurrentLOPListe.EmpfaengerInternIDListe : this.DBLOPListe.CurrentLOPListe.CcEmpfaengerInternIDListe;
 
           break;
 
@@ -553,6 +601,13 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           break;
 
+        case this.Pool.Emailcontentvarinaten.LOPListe:
+
+          Filename    = this.DBLOPListe.CurrentLOPListe.Filename;
+          DirectoryID = this.DBProjekte.CurrentProjekt.BaustellenLOPFolderID;
+
+          break;
+
         case this.Pool.Emailcontentvarinaten.Bautagebuch:
 
           Filename    = this.DBTagebuch.CurrentTagebuch.Filename;
@@ -617,6 +672,21 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
           if(this.DBProtokolle.CurrentProtokoll.Betreff   !== '' &&
              this.DBProtokolle.CurrentProtokoll.Nachricht !== '' &&
              this.DBProtokolle.CurrentProtokoll.EmpfaengerExternIDListe.length > 0) {
+
+            this.ContentIsValid = true;
+          }
+          else {
+
+            this.ContentIsValid = false;
+          }
+
+          break;
+
+        case this.Pool.Emailcontentvarinaten.LOPListe:
+
+          if(this.DBLOPListe.CurrentLOPListe.Betreff   !== '' &&
+             this.DBLOPListe.CurrentLOPListe.Nachricht !== '' &&
+             this.DBLOPListe.CurrentLOPListe.EmpfaengerExternIDListe.length > 0) {
 
             this.ContentIsValid = true;
           }
@@ -759,6 +829,12 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
       switch (this.Pool.Emailcontent) {
 
+        case this.Pool.Emailcontentvarinaten.LOPListe:
+
+          return this.DBLOPListe.CurrentLOPListe !== null;
+
+          break;
+
         case this.Pool.Emailcontentvarinaten.Protokoll:
 
           return this.DBProtokolle.CurrentProtokoll !== null;
@@ -798,6 +874,12 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           break;
 
+        case this.Pool.Emailcontentvarinaten.LOPListe:
+
+          return this.DBLOPListe.CurrentLOPListe.Betreff;
+
+          break;
+
         case this.Pool.Emailcontentvarinaten.Bautagebuch:
 
           return this.DBTagebuch.CurrentTagebuch.Betreff;
@@ -833,6 +915,12 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           break;
 
+        case this.Pool.Emailcontentvarinaten.LOPListe:
+
+          return this.DBLOPListe.CurrentLOPListe.Nachricht;
+
+          break;
+
         case this.Pool.Emailcontentvarinaten.Bautagebuch:
 
           return this.DBTagebuch.CurrentTagebuch.Nachricht;
@@ -863,6 +951,12 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
         case this.Pool.Emailcontentvarinaten.Protokoll:
 
           return this.DBProtokolle.CurrentProtokoll.Filename;
+
+          break;
+
+        case this.Pool.Emailcontentvarinaten.LOPListe:
+
+          return this.DBLOPListe.CurrentLOPListe.Filename;
 
           break;
 

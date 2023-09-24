@@ -34,6 +34,7 @@ import {DatabaseLoplisteService} from "../../services/database-lopliste/database
 import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 import {DatabaseGebaeudestrukturService} from "../../services/database-gebaeudestruktur/database-gebaeudestruktur";
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
+import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
 
 @Component({
   selector:    'pj-baustelle-lopliste-editor',
@@ -49,6 +50,7 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
   @Output() TeamteilnehmerClicked       = new EventEmitter();
   @Output() BeteiligteteilnehmerClicked = new EventEmitter();
   @Output() AddLOPListepunktClicked     = new EventEmitter();
+  @Output() LOPListeDeleted             = new EventEmitter();
   @Output() LOPListepunktClicked        = new EventEmitter<Projektpunktestruktur>();
   @Output() ValidChanged                = new EventEmitter<boolean>();
 
@@ -112,7 +114,7 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
               public DBGebaeude: DatabaseGebaeudestrukturService,
               public Displayservice: DisplayService,
               private LoadingAnimation: LoadingAnimationService,
-              private Pool: DatabasePoolService) {
+              public Pool: DatabasePoolService) {
     try {
 
       this.Bereich                  = this.DB.LOPListeEditorViewModus;
@@ -277,102 +279,11 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
     }
   }
 
-  /*
-
-  AufgabeClickedHandler(Projektpunkt: Projektpunktestruktur) {
-
-    try {
-
-
-      tinymce.init({
-
-        menubar:false,
-        statusbar: false,
-        selector: 'div#' + Projektpunkt._id,  // change this value according to your HTML
-        auto_focus : true,
-        // plugins: 'autoresize',
-        // icons: 'material',
-        language: 'de',
-        browser_spellcheck: true,
-        height: 200,
-        // forced_root_block: 'span',
-        base_url: 'assets/tinymce', // Root for resources
-        suffix: '.min',        // Suffix to use when loading resources
-        toolbar: [
-          { name: 'history',     items: [ 'undo', 'redo' ] },
-          { name: 'styles',      items: [ 'forecolor', 'backcolor', 'fontfamily', 'fontsize' ] },
-          { name: 'formatting',  items: [ 'bold', 'italic', 'underline' ] },
-          { name: 'alignment',   items: [ 'alignleft', 'aligncenter', 'alignright', 'alignjustify' ] },
-          { name: 'indentation', items: [ 'outdent', 'indent' ] }
-        ],
-      });
-
-
-
-      if(this.ShowUpload === false) {
-
-        for(let Punkt of this.Punkteliste) {
-
-          if(Punkt._id !== Projektpunkt._id)  Punkt.LiveEditor = false;
-        }
-
-        Projektpunkt.LiveEditor = true;
-
-        this.LiveEditorOpen = true;
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Projektpunkteintrag', 'AufgabeClickedHandler', this.Debug.Typen.Component);
-    }
-  }
-
-   */
-
-  /*
-
-  private PreparePersonen() {
-
-    try {
-
-      let Mitarbeiter: Mitarbeiterstruktur;
-      let Projektbeteiligter: Projektbeteiligtestruktur;
-
-      if(this.DB.CurrentLOPListe !== null) {
-
-        this.Projektbeteiligteliste = [];
-
-        for (let ProjektbeteiligteID of this.DB.CurrentLOPListe.ProjektbeteiligteIDListe) {
-
-          Projektbeteiligter = <Projektbeteiligtestruktur>lodash.find(this.Pool.Projektbeteiligtenliste[this.DBProjekte.CurrentProjektindex], {ProjektbeteiligteID: ProjektbeteiligteID});
-
-          if (lodash.isUndefined(Projektbeteiligter) === false) this.Projektbeteiligteliste.push(Projektbeteiligter);
-        }
-
-        this.Teammitgliederliste = [];
-
-        for (let MitarbeiterID of this.DB.CurrentLOPListe.TeambeteiligtenIDListe) {
-
-          Mitarbeiter = <Mitarbeiterstruktur>lodash.find(this.Pool.Mitarbeiterliste, {MitarbeiterID: MitarbeiterID});
-
-          if (lodash.isUndefined(Mitarbeiter) === false) this.Teammitgliederliste.push(Mitarbeiter);
-        }
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Projektpunkteintrag', 'PreparePersonen', this.Debug.Typen.Component);
-    }
-  }
-
-   */
-
   private PrepareData() {
 
     try {
 
       let Projektpunkt: Projektpunktestruktur;
-      let Nummer: number = 1;
 
       if(this.DB.CurrentLOPListe !== null) {
 
@@ -398,18 +309,11 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
 
         this.Punkteliste.sort((a: Projektpunktestruktur, b: Projektpunktestruktur) => {
 
-          if (a.Startzeitsptempel < b.Startzeitsptempel) return -1;
-          if (a.Startzeitsptempel > b.Startzeitsptempel) return 1;
+          if (parseInt(a.Nummer) > parseInt(b.Nummer)) return -1;
+          if (parseInt(a.Nummer) < parseInt(b.Nummer)) return  1;
+
           return 0;
         });
-
-        /*
-        for(let Punkt of this.Punkteliste) {
-
-          Punkt.Nummer = Nummer.toString();
-          Nummer++;
-        }
-         */
       }
 
       this.DBProjektpunkte.CurrentProjektpunkteliste = lodash.cloneDeep(this.Punkteliste);
@@ -463,68 +367,6 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
       this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
-
-  /*
-  ProjektButtonClicked() {
-
-    try {
-
-      this.Auswahlliste = [];
-
-      for(let Projekt of this.Pool.Gesamtprojektliste) {
-
-        this.Auswahlliste.push(Projekt.Projektkurzname);
-      }
-
-      if(this.DBProjekte.CurrentProjekt !== null) {
-
-        this.Auswahlindex = lodash.findIndex(this.Pool.Gesamtprojektliste, {id: this.DB.CurrentLOPListe._id});
-
-      }
-      else this.Auswahlindex = -1;
-
-      this.Auswahltitel = 'Projektauswahl';
-
-      // this.MyAuswahlDialog.Open(false, this.Auswahlindex);
-    }
-    catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'ProjektButtonClicked', this.Debug.Typen.Component);
-    }
-  }
-
-   */
-
-
-
-  GetProjektname(): string {
-
-    try {
-
-      return this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt.Projektname : 'unbekannt';
-
-
-    }
-    catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'GetProjektname', this.Debug.Typen.Component);
-    }
-  }
-
-  GetProjektkurzname(): string {
-
-    try {
-
-      return this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt.Projektkurzname : 'unbekannt';
-
-
-    }
-    catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'GetProjektkurzname', this.Debug.Typen.Component);
-    }
-  }
-
 
   DatumChanged(currentmoment: Moment) {
 
@@ -657,7 +499,7 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
 
           this.DB.DeleteLOPListe(this.DB.CurrentLOPListe).then(() => {
 
-            this.Tools.PopPage();
+            this.LOPListeDeleted.emit();
 
           }).catch((error: any) => {
 
@@ -668,7 +510,6 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
           this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'DeleteLOPListeClicked', this.Debug.Typen.Component);
         });
       }
-
 
     } catch (error) {
 
@@ -688,32 +529,6 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
     }
   }
 
-
-  CheckProjektbeteiligterExist(index: number): boolean {
-
-    try {
-
-      if(lodash.isUndefined(this.Projektbeteiligteliste[index]) === true) return false;
-      else return true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'CheckProjektbeteiligterExist', this.Debug.Typen.Component);
-    }
-  }
-
-  CheckTeammitgliedExist(index: number): boolean {
-
-    try {
-
-      if(lodash.isUndefined(this.Teammitgliederliste[index]) === true) return false;
-      else return true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'CheckTeammitgliedExist', this.Debug.Typen.Component);
-    }
-  }
 
   public CheckLOPListepunktBearbeitung(): boolean {
 
@@ -779,72 +594,6 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
     }
   }
 
-  /*
-
-  ProjektpunktAufgabeTextChangedHandler(event: any, Detailindex) {
-
-    try {
-
-      this.Punkteliste[Detailindex].Aufgabe     = event.detail.value;
-      this.Punkteliste[Detailindex].DataChanged = true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'ProjektpunktAufgabeTextChangedHandler', this.Debug.Typen.Component);
-    }
-  }
-
-   */
-
-  DeleteOrCancelProjektpunkt(Projektpunkt: Projektpunktestruktur) {
-
-    try {
-
-      let Nummer: number = 1;
-
-
-      this.StopSaveLOPListeTimer();
-
-      /*
-
-      this.Punkteliste = lodash.filter(this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjektindex], (punkt: Projektpunktestruktur) => {
-
-        return punkt._id !== Projektpunkt._id && punkt._id === this.DB.CurrentLOPListe._id;
-      });
-
-      this.Punkteliste.sort((a: Projektpunktestruktur, b: Projektpunktestruktur) => {
-
-        if (a.Startzeitsptempel < b.Startzeitsptempel) return -1;
-        if (a.Startzeitsptempel > b.Startzeitsptempel) return 1;
-        return 0;
-      });
-
-      this.DB.CurrentLOPListe.ProjektpunkteIDListe = [];
-
-      for(let Punkt of this.Punkteliste) {
-
-        this.DB.CurrentLOPListe.ProjektpunkteIDListe.push(Punkt._id);
-
-        Punkt.LiveEditor = false;
-        Punkt.Nummer     = Nummer.toString();
-        Nummer++;
-      }
-
-
-
-      this.DBProjektpunkte.DeleteProjektpunkt(Projektpunkt).then(() => {
-
-        this.StartSaveProtokollTimer();
-      });
-
-       */
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'DeleteOrCancelProjektpunkt', this.Debug.Typen.Component);
-    }
-  }
-
   GetTermindatum(Projektpunkt: Projektpunktestruktur) {
 
     try {
@@ -877,164 +626,6 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
     }
   }
 
-
-
-
-
-  EndezeitChanged(event: Moment) {
-
-    try {
-
-      this.StopSaveLOPListeTimer();
-
-      this.DB.CurrentLOPListe.Zeitstempel = event.valueOf();
-
-      this.StopSaveLOPListeTimer();
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'EndezeitChanged', this.Debug.Typen.Component);
-    }
-  }
-
-
-
-
-
-  ShowDetailsChanged(event: any) {
-
-    try {
-
-      this.DB.CurrentLOPListe.ShowDetails = !this.DB.CurrentLOPListe.ShowDetails;
-
-      this.StartSaveLOPListeTimer();
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'ShowDetailsChanged', this.Debug.Typen.Component);
-    }
-  }
-
-  TeammitgliederButtonClicked() {
-
-    try {
-
-      /*
-      let Mitarbeiterliste: Mitarbeiterstruktur[] = [];
-      let Mitarbeiter: Mitarbeiterstruktur;
-
-      if(this.CheckOkButtonEnabled()) {
-
-        this.StopSaveProtokollTimer();
-
-        for (let MitarbeiterID of this.DB.CurrentLOPListe.TeambeteiligtenIDListe) {
-
-          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {MitarbeiterID: MitarbeiterID});
-
-          if (lodash.isUndefined(Mitarbeiter) === false) Mitarbeiterliste.push(Mitarbeiter);
-        }
-
-        this.NavParams.Mitarbeiterauswahl = {
-
-          Auswahlliste: Mitarbeiterliste,
-          FastSelection: false,
-          NoSelectionEnabled: true,
-          Title: "Teammitglieder wählen"
-        };
-
-        this.StartSubscription();
-
-        this.Personenauswahlservice.Auswahlursprung    = this.Personenauswahlservice.Auswahlurspungsvarianten.Protokoll;
-        this.DB.PersonenauswahlModus    = this.Constclass.Eventvarianten.BesprechungsteilnehmerIntern;
-
-        this.Tools.PushPage(this.Constclass.Pages.FiMitarbeiterauswahlPage);
-      }
-
-       */
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'TeammitgliederButtonClicked', this.Debug.Typen.Component);
-    }
-  }
-
-  GetTeammitgliedername(Index: number) {
-
-    try {
-
-      let Mitarbeiter: Mitarbeiterstruktur;
-
-      if (lodash.isUndefined(this.Teammitgliederliste[Index]) === false) {
-
-        Mitarbeiter = this.Teammitgliederliste[Index];
-
-        return Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
-
-      } else {
-
-        return 'unbekannt';
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'GetTeammitgliedername', this.Debug.Typen.Component);
-    }
-  }
-
-  GetTeammitgliederkuerzel(Index: number) {
-
-    try {
-
-      let Mitarbeiter: Mitarbeiterstruktur;
-
-      if (lodash.isUndefined(this.Teammitgliederliste[Index]) === false) {
-
-        Mitarbeiter = this.Teammitgliederliste[Index];
-
-        return Mitarbeiter.Kuerzel;
-
-      } else {
-
-        return 'unbekannt';
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'GetTeammitgliederkuerzel', this.Debug.Typen.Component);
-    }
-  }
-
-
-  ZoomImageClicked(Projektpunkt: Projektpunktestruktur) {
-
-    try {
-
-      /*
-
-      this.DBProjekte.Projektpunkt = Projektpunkt;
-
-      this.Auswahltitel = 'Bildzoom';
-
-      this.Auswahlliste = [];
-
-      for(let Zahl of this.Zoomfaktorenliste) {
-
-        this.Auswahlliste.push(Zahl.toFixed(1));
-      }
-
-      this.Auswahlindex = this.Zoomfaktorenliste.indexOf(Projektpunkt.Filezoom);
-
-      this.MyAuswahlDialog.Open(false, this.Auswahlindex);
-
-
-       */
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'ZoomImageClicked', this.Debug.Typen.Component);
-    }
-  }
-
   public TextChangedHandler() {
 
     try {
@@ -1046,8 +637,6 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
       this.Debug.ShowErrorMessage(error.message, 'Festlegung Liste', 'TextChangedHandler', this.Debug.Typen.Component);
     }
   }
-
-
 
   AllgemeinMenuButtonClicked() {
 
@@ -1105,8 +694,6 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
       this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'GetTeamteilnehmerliste', this.Debug.Typen.Component);
     }
   }
-
-
 
   GetThemenlisteIconcolor(): string {
 
@@ -1166,6 +753,19 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'LOP Liste Editor', 'GetBauteilnamen', this.Debug.Typen.Page);
+    }
+  }
+
+
+  CanDeleteCheckedChanged(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.CanDelete = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Editor', 'CanDeleteCheckedChanged', this.Debug.Typen.Page);
     }
   }
 }

@@ -14,7 +14,7 @@
                     autocomplete="off"
                    [value]="Value"
                    [color]="Textcolor"
-                   (ionChange)="TextChangedHandler($event)"></ion-input>
+                   (ionInput)= "TextChangedHandler($event)"></ion-input>
         <ion-label *ngIf="Enabled === false">{{Value}}</ion-label>
       </td>
     </tr>

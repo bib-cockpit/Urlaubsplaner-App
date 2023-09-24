@@ -22,6 +22,7 @@ import {Bautagebuchstruktur} from "../../dataclasses/bautagebuchstruktur";
 import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 import {Outlookkategoriesstruktur} from "../../dataclasses/outlookkategoriesstruktur";
 import {Notizenkapitelstruktur} from "../../dataclasses/notizenkapitelstruktur";
+import {Fachbereiche, Fachbereichestruktur} from "../../dataclasses/fachbereicheclass";
 
 @Injectable({
   providedIn: 'root'
@@ -49,12 +50,15 @@ export class DatabasePoolService {
   public Emailcontent: string;
   public Outlookkatekorien: Outlookkategoriesstruktur[];
   public ContacsSubscriptionURl: string;
+  public CurrentLOPGewerkeliste: Fachbereichestruktur[];
+  public Fachbereich: Fachbereiche;
   public Emailcontentvarinaten = {
 
     NONE: this.Const.NONE,
     Protokoll:    'Protokoll',
     Bautagebuch:  'Bautagebuch',
-    Festlegungen: 'Festlegungen'
+    Festlegungen: 'Festlegungen',
+    LOPListe:     'LOPListe'
   };
 
   public StandortelisteChanged: EventEmitter<any> = new EventEmitter<any>();
@@ -77,6 +81,7 @@ export class DatabasePoolService {
   public MitarbeiterAuswahlChanged: EventEmitter<any> = new EventEmitter<any>();
   public BeteiligteAuswahlChanged: EventEmitter<any> = new EventEmitter<any>();
   public NotizenkapitellisteChanged: EventEmitter<any> = new EventEmitter<any>();
+  public CurrentLOPGewerkelisteChanged: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private Debug: DebugProvider,
               private Const: ConstProvider,
@@ -105,6 +110,8 @@ export class DatabasePoolService {
       this.CockpitserverURL         = environment.production === true ? 'https://bae-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
       this.Emailcontent             = this.Emailcontentvarinaten.NONE;
       this.ContacsSubscriptionURl   = this.CockpitserverURL + '/subscription';
+      this.CurrentLOPGewerkeliste   = [];
+      this.Fachbereich              = new Fachbereiche();
 
     } catch (error) {
 
@@ -119,6 +126,8 @@ export class DatabasePoolService {
       let Params: HttpParams;
       let Headers: HttpHeaders;
       let ProjektpunkteObservable: Observable<any>;
+      let Gewerk: Fachbereichestruktur;
+      let Index: number;
 
       this.Projektpunkteliste[projekt.Projektkey] = [];
 
@@ -168,6 +177,20 @@ export class DatabasePoolService {
 
                 Anmerkung.LiveEditor = false;
               });
+
+              Gewerk = this.Fachbereich.GetFachbereichbyKey(Projektpunkt.Fachbereich);
+
+              if(!lodash.isUndefined(Gewerk)) {
+
+                Index = lodash.findIndex(this.CurrentLOPGewerkeliste, {Key: Gewerk.Key});
+
+                if(Index === -1) {
+
+                  Gewerk.Visible = true;
+
+                  this.CurrentLOPGewerkeliste.push(Gewerk);
+                }
+              }
             });
 
             resolve(true);
@@ -759,14 +782,15 @@ export class DatabasePoolService {
 
     try {
 
-      let Steps: number         = 5;
-      this.ShowProgress         = true;
-      this.MaxProgressValue     = projektliste.length * Steps;
-      this.CurrentProgressValue = 0;
-      this.Projektpunkteliste   = [];
-      this.Protokollliste       = [];
-      this.Bautagebuchliste     = [];
-      this.LOPListe             = [];
+      let Steps: number           = 5;
+      this.ShowProgress           = true;
+      this.MaxProgressValue       = projektliste.length * Steps;
+      this.CurrentProgressValue   = 0;
+      this.Projektpunkteliste     = [];
+      this.Protokollliste         = [];
+      this.Bautagebuchliste       = [];
+      this.LOPListe               = [];
+      this.CurrentLOPGewerkeliste = [];
 
       try {
 
@@ -816,7 +840,6 @@ export class DatabasePoolService {
       this.BautagebuchlisteChanged.emit();
       this.LOPListeChanged.emit();
       this.NotizenkapitellisteChanged.emit();
-
 
       this.CurrentProgressValue = this.MaxProgressValue;
       this.ShowProgress = false;

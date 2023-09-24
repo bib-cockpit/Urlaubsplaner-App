@@ -26,6 +26,8 @@ import {Graphservice} from "../../services/graph/graph";
 import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
 import {DatabaseOutlookemailService} from "../../services/database-email/database-outlookemail.service";
 import {DatabasePlanungsmatrixService} from "../../services/database-planungsmatrix/database-planungsmatrix.service";
+import {DatabaseLoplisteService} from "../../services/database-lopliste/database-lopliste.service";
+import {Fachbereichestruktur} from "../../dataclasses/fachbereicheclass";
 
 @Component({
   selector: 'page-header-menu',
@@ -62,6 +64,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   @Output()  ProjektsortierungChanged = new EventEmitter<any>();
   @Output()  EmailDatumChanged = new EventEmitter<any>();
   @Output()  PlanungsmatrixLeistungsphaseClicked = new EventEmitter<any>();
+  @Output()  ShowLOPListeInfoeintraegeChanged = new EventEmitter<any>();
 
   private SuchleisteInputSubscription: Subscription;
   private Suchleiste2InputSubscription: Subscription;
@@ -90,6 +93,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
               public DBEmail: DatabaseOutlookemailService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public DBPlanungsmatrix: DatabasePlanungsmatrixService,
+              public DBLOPliste: DatabaseLoplisteService,
               public GraphService: Graphservice,
               public  AuthService: DatabaseAuthenticationService,
               public  Pool: DatabasePoolService,
@@ -1089,6 +1093,34 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'AlleProjekteClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  ShowLOPListeInfoeintraegeChangedHandler(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.DBLOPliste.ShowLOPListeInfoeintraege = event.status;
+
+      this.ShowLOPListeInfoeintraegeChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ShowLOPListeInfoeintraegeChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  ShowLOPListeGewerkChangedHandler(event: {status: boolean; index: number; event: any}, Gewerk: Fachbereichestruktur) {
+
+    try {
+
+      Gewerk.Visible = event.status;
+
+      this.Pool.CurrentLOPGewerkelisteChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ShowLOPListeGewerkChangedHandler', this.Debug.Typen.Component);
     }
   }
 }
