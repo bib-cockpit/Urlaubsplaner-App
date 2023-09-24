@@ -40,6 +40,8 @@ export class Fachbereiche {
   private _HR: Fachbereichestruktur = { Bezeichnung: 'Human Resources', Kuerzel: 'HR', Key: 'HR'};
   private _Test: Fachbereichestruktur = { Bezeichnung: 'Test', Kuerzel: 'TEST', Key: 'TEST'};
 
+  // Testeintrag
+
   public get Elektrotechnik(): Fachbereichestruktur { return this._Elektrotechnik; }
   public get Unbekannt():      Fachbereichestruktur { return this._Unbekannt; }
   public get HLS():            Fachbereichestruktur { return this._HLS; }
