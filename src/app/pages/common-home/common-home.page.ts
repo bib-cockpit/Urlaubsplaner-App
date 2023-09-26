@@ -79,6 +79,8 @@ export class CommonHomePage implements OnInit, OnDestroy {
       this.ShowChangelogEditor    = false;
       this.ChangelogSubscription  = null;
       this.ProgressMessage        = '';
+
+      // Test
     }
     catch (error) {
 
