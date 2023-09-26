@@ -12,6 +12,7 @@ import {Graphuserstruktur} from "../../dataclasses/graphuserstruktur";
 import {catchError, map, Observable, of} from "rxjs";
 import {DomSanitizer} from "@angular/platform-browser";
 import Cookies from "js-cookie";
+import * as lodash from "lodash-es";
 
 const GRAPH_ENDPOINT          = 'https://graph.microsoft.com/v1.0/me';
 const GRAPH_ENDPOINT_PHOTO    = 'https://graph.microsoft.com/v1.0/me/photo/$value';
@@ -91,7 +92,10 @@ export class DatabaseAuthenticationService {
 
     try {
 
-      let Account;
+      let Account: any;
+      let Accounts: any[];
+
+      this.Debug.AddDebugMessage('Set Active User started');
 
       return new  Promise((resolve) => {
 
@@ -100,6 +104,24 @@ export class DatabaseAuthenticationService {
         if(this.SecurityEnabled) {
 
           Account = this.MSALService.instance.getActiveAccount();
+
+          if(Account === null) {
+
+            this.Debug.AddDebugMessage('Active Account ist null');
+
+            Accounts = this.MSALService.instance.getAllAccounts();
+
+            if(!lodash.isUndefined(Accounts) && Accounts !== null && Accounts.length > 0) {
+
+              this.Debug.AddDebugMessage('Accountlist vorhanden');
+
+              Account = Accounts[0];
+            }
+            else {
+
+              this.Debug.AddDebugMessage('keine Accountlist vorhanden');
+            }
+          }
 
           if(Account !== null) {
 
@@ -111,6 +133,8 @@ export class DatabaseAuthenticationService {
                 this.AccessToken = token;
               }
               else {
+
+                this.Debug.AddDebugMessage('Token konte nicht geladen werden.');
 
                 this.UnsetActiveUser();
               }

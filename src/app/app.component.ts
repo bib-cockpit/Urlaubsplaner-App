@@ -326,10 +326,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         // Benutzer ist nicht angemeldet -> der Login wird angezeigt
 
+        /*
         this.Tools.SetRootPage(this.Const.Pages.HomePage).then(() => {
 
 
         });
+         */
 
         this.Debug.ShowMessage('Benutzer ist nicht angemeldet', 'App Component', 'StartApp', this.Debug.Typen.Component);
 
