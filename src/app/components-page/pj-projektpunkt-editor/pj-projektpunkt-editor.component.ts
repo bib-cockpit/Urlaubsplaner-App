@@ -277,10 +277,22 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
         for(File of Imageliste) {
 
           Thumb        = await this.Graph.GetSiteThumbnail(File);
-          Thumb.weburl = File.webUrl;
-          Merker       = lodash.find(Liste, {id: File.id});
 
-          if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+          if(Thumb !== null) {
+
+            Thumb.weburl = File.webUrl;
+            Merker       = lodash.find(Liste, {id: File.id});
+
+            if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+          }
+          else {
+
+            Thumb        = this.DB.GetEmptyThumbnail();
+            Thumb.id     = File.id;
+            Thumb.weburl = null;
+
+            Liste.push(Thumb);
+          }
         }
 
         Anzahl              = Liste.length;
@@ -542,7 +554,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       }
       else {
 
-        this.DB.UpdateProjektpunkt(this.DB.CurrentProjektpunkt).then(() => {
+        this.DB.UpdateProjektpunkt(this.DB.CurrentProjektpunkt, true).then(() => {
 
           this.ResetEditor();
 

@@ -489,7 +489,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
           this.DBProjektpunkte.CurrentProjektpunkt.Status = data;
 
-          this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt);
+          this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt, true);
 
           break;
 
@@ -503,7 +503,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
           this.DBProjektpunkte.CurrentProjektpunkt.Fortschritt = data;
 
-          this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt);
+          this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt, true);
 
           break;
 
@@ -544,7 +544,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
           this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeExternIDListe = idliste;
 
-          this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt);
+          this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt, true);
 
           break;
       }

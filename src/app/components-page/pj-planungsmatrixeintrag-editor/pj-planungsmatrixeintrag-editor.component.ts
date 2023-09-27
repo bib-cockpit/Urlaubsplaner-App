@@ -199,7 +199,7 @@ export class PjPlanungsmatrixeintragEditorComponent implements OnInit, OnDestroy
       }
       else {
 
-        this.DB.UpdateProjektpunkt(this.DB.CurrentProjektpunkt).then(() => {
+        this.DB.UpdateProjektpunkt(this.DB.CurrentProjektpunkt, true).then(() => {
 
 
           this.OkClickedEvent.emit();

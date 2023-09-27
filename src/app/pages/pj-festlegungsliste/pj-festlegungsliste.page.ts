@@ -628,7 +628,7 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
 
           this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeInternIDListe = idliste;
 
-          this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt);
+          this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt, true);
 
           break;
       }

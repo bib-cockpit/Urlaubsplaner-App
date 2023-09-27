@@ -331,11 +331,22 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
               for(File of Imageliste) {
 
-                Thumb        = await this.GraphService.GetSiteThumbnail(File);
-                Thumb.weburl = File.webUrl;
-                Merker       = lodash.find(Liste, {id: File.id});
+                Thumb = await this.GraphService.GetSiteThumbnail(File);
 
-                if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+                if(Thumb !== null) {
+
+                  Thumb.weburl = File.webUrl;
+                  Merker       = lodash.find(Liste, {id: File.id});
+
+                  if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+                }
+                else {
+
+                  Thumb    = this.DBProjektpunkte.GetEmptyThumbnail();
+                  Thumb.id = null;
+
+                  Liste.push(Thumb);
+                }
               }
 
               Anzahl              = Liste.length;
@@ -439,7 +450,10 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
     try {
 
+      debugger;
+
       switch (this.Projektschnellauswahlursprung) {
+
 
         case this.Projektschnellauswahlursprungvarianten.LOPListen:
 
@@ -450,6 +464,8 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
           this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
 
           this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+
+          debugger;
 
           this.PrepareData();
 
@@ -1310,6 +1326,31 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'LOP Liste', 'ThumbnailClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  CheckThumbnailliste(Thumbnailliste: Thumbnailstruktur[][][], lop_id: string, Punktindex: number) {
+
+    try {
+
+      if(!lodash.isUndefined(Thumbnailliste[lop_id])) {
+
+        if(!lodash.isUndefined(Thumbnailliste[lop_id][Punktindex])) {
+
+          return true;
+        }
+        else {
+
+          return false;
+        }
+      }
+      else {
+
+        return false;
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'CheckThumbnailliste', this.Debug.Typen.Page);
     }
   }
 }

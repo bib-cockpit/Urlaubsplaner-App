@@ -38,6 +38,7 @@ import {DatabaseLoplisteService} from "../../services/database-lopliste/database
 import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Graphservice} from "../../services/graph/graph";
+import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
 
 @Component({
   selector: 'pj-projektpunkteliste',
@@ -244,7 +245,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
 
         Projektpunkt.Meilenstein = Meilenstein;
 
-        this.Database.UpdateProjektpunkt(Projektpunkt).then(() => {
+        this.Database.UpdateProjektpunkt(Projektpunkt, true).then(() => {
 
           this.MeilensteinClicked.emit(Projektpunkt);
         });
@@ -323,11 +324,23 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
 
           for(File of Imageliste) {
 
-            Thumb        = await this.GraphService.GetSiteThumbnail(File);
-            Thumb.weburl = File.webUrl;
-            Merker       = lodash.find(Liste, {id: File.id});
+            Thumb = await this.GraphService.GetSiteThumbnail(File);
 
-            if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+            if(Thumb !== null) {
+
+              Thumb.weburl = File.webUrl;
+              Merker       = lodash.find(Liste, {id: File.id});
+
+              if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+            }
+            else {
+
+              Thumb        = this.Database.GetEmptyThumbnail();
+              Thumb.id     = File.id;
+              Thumb.weburl = null;
+
+              Liste.push(Thumb);
+            }
           }
 
           Anzahl                          = Liste.length;
@@ -502,7 +515,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
         return CurrentAnmerkung.AnmerkungID !== Anmerkung.AnmerkungID;
       });
 
-      this.Database.UpdateProjektpunkt(this.Database.CurrentProjektpunkt);
+      this.Database.UpdateProjektpunkt(this.Database.CurrentProjektpunkt, true);
 
       this.Database.CurrentProjektpunkt = null;
        this.Database.LiveEditorOpen      = false;
@@ -702,7 +715,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
         Projektpunkt.Geschlossenzeitstempel = null;
       }
 
-      this.Database.UpdateProjektpunkt(Projektpunkt);
+      this.Database.UpdateProjektpunkt(Projektpunkt, true);
 
     } catch (error) {
 
@@ -719,7 +732,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
         Anmerkung.LiveEditor         = false;
         this.Database.LiveEditorOpen = false;
 
-        this.Database.UpdateProjektpunkt(this.Database.CurrentProjektpunkt);
+        this.Database.UpdateProjektpunkt(this.Database.CurrentProjektpunkt, true);
       }
 
       this.Database.CurrentProjektpunkt = null;
@@ -1115,7 +1128,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'PlanungCheckedChanged', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'PlanungCheckedChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -1131,7 +1144,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'AusfuehrungCheckedChanged', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'AusfuehrungCheckedChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -1167,7 +1180,26 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'ThumbnailClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'ThumbnailClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  DeleteThumbnailClicked(event: MouseEvent, Projektpunkt: Projektpunktestruktur, Thumb: Thumbnailstruktur, i: number, Zeilenindex: number, Spaltenindex: number) {
+
+    try {
+
+      Projektpunkt.Bilderliste = lodash.filter(Projektpunkt.Bilderliste, (thumb: Projektpunktimagestruktur) => {
+
+        return thumb.FileID !== Thumb.id;
+      });
+
+      this.Thumbnailliste[i][Zeilenindex][Spaltenindex] = null;
+
+      this.Database.UpdateProjektpunkt(Projektpunkt, false);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'DeleteThumbnailClicked', this.Debug.Typen.Component);
     }
   }
 }

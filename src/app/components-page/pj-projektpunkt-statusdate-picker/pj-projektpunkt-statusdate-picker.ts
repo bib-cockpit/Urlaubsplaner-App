@@ -274,7 +274,7 @@ export class PjProjektpunktStatusdatePickerComponent implements OnInit, OnDestro
           break;
       }
 
-      this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt).then(() => {
+      this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt, true).then(() => {
 
         this.OkClickedEvent.emit();
 

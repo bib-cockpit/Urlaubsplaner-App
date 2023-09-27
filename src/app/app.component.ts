@@ -267,6 +267,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         this.Pool.Mitarbeitersettings = this.Pool.InitMitarbeitersettings(); // fehlende Settingseintraege initialisieren
 
+
         await this.MitarbeitersettingsDB.SaveMitarbeitersettings();
 
         this.Pool.ProgressMessage = 'Aktualisiere Mitarbeitereinstellungen';
@@ -304,16 +305,26 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           if(environment.production) {
 
             Page = this.Const.Pages.HomePage;
+
+
           }
           else {
 
-            Page = this.Const.Pages.PjBaustelleLoplistePage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
+            Page = this.Const.Pages.PjAufgabenlistePage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
+
 
             this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
             await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);                 // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
 
+            let test = this.ProjekteDB.CurrentProjekt;
+
+
+            debugger;
+
             this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.LOPListe; // .Aufgabenliste;
           }
+
+          this.SetProjekteMenuebereich(Page);
 
           this.Tools.SetRootPage(Page).then(() => {
 
@@ -342,6 +353,78 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
     }
   }
 
+  SetProjekteMenuebereich(Page: string) {
+
+    try {
+
+      switch (Page) {
+
+        case this.Const.Pages.HomePage:
+
+          this.Menuservice.MainMenuebereich     = this.Menuservice.MainMenuebereiche.Home;
+          this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Aufgabenliste;
+
+          break;
+
+        default:
+
+          this.Menuservice.MainMenuebereich = this.Menuservice.MainMenuebereiche.Projekte;
+
+          break;
+
+      }
+
+      switch (Page) {
+
+        case this.Const.Pages.PjAufgabenlistePage:
+
+          this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Aufgabenliste;
+
+          break;
+
+        case this.Const.Pages.PjProtokolleListePage:
+
+          this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Protokolle;
+
+          break;
+
+        case this.Const.Pages.PjBaustelleLoplistePage:
+
+          this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.LOPListe;
+
+          break;
+
+        case this.Const.Pages.PjBaustelleTagebuchlistePage:
+
+          this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Bautagebuch;
+
+          break;
+
+        case this.Const.Pages.PjFestlegungslistePage:
+
+          this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Festlegungen;
+
+          break;
+
+        case this.Const.Pages.PjPlanungsmatrixPage:
+
+          this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Planungsmatrix;
+
+          break;
+
+        case this.Const.Pages.PjNotizenListePage:
+
+          this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Notizen;
+
+          break;
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'App Component', 'function', this.Debug.Typen.Component);
+    }
+  }
+
   ngAfterContentChecked(): void {
 
     this.changeDetector.detectChanges();
@@ -350,7 +433,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'function', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'App Component', 'ngAfterContentChecked', this.Debug.Typen.Component);
     }
   }
 }

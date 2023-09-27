@@ -344,7 +344,7 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
 
         this.DBProjektpunkte.CurrentProjektpunkt = Istpunkt;
 
-        this.DBProjektpunkte.UpdateProjektpunkt(Istpunkt).then(() => {
+        this.DBProjektpunkte.UpdateProjektpunkt(Istpunkt, true).then(() => {
 
 
         }).catch((error) => {

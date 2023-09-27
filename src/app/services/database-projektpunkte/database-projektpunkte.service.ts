@@ -32,6 +32,7 @@ import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
 import {DatabaseFestlegungenService} from "../database-festlegungen/database-festlegungen.service";
 import {Teilaufgabeestruktur} from "../../dataclasses/teilaufgabeestruktur";
+import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 
 @Injectable({
   providedIn: 'root'
@@ -187,7 +188,7 @@ export class DatabaseProjektpunkteService {
 
       return new Promise((resolve, reject) => {
 
-        this.UpdateProjektpunkt(punkt).then(() => {
+        this.UpdateProjektpunkt(punkt, true).then(() => {
 
           if(punkt.ProtokollID !== null && this.DBProtokoll.CurrentProtokoll !== null) {
 
@@ -280,7 +281,7 @@ export class DatabaseProjektpunkteService {
     }
   }
 
-  UpdateProjektpunkt(punkt: Projektpunktestruktur): Promise<any> {
+  UpdateProjektpunkt(punkt: Projektpunktestruktur, emitevent: boolean): Promise<any> {
 
     try {
 
@@ -313,8 +314,11 @@ export class DatabaseProjektpunkteService {
 
               this.UpdateProjektpunkteliste(this.CurrentProjektpunkt);
 
-              this.Pool.ProjektpunktelisteChanged.emit();
-              this.Pool.ProjektpunktChanged.emit();
+              if(emitevent) {
+
+                this.Pool.ProjektpunktelisteChanged.emit();
+                this.Pool.ProjektpunktChanged.emit();
+              }
 
               resolve(true);
             }
@@ -1111,6 +1115,27 @@ export class DatabaseProjektpunkteService {
     catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projektpunkte', 'GetNewLOPListepunkt', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetEmptyThumbnail(): Thumbnailstruktur {
+
+    try {
+
+      return {
+        id:        "",
+        filename:  "",
+        largeurl:  "",
+        mediumurl: "",
+        smallurl:  "",
+        weburl:    "",
+        width:  {large: 0, medium: 0, small: 0},
+        height: {large: 0, medium: 0, small: 0}
+      };
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Service);
     }
   }
 

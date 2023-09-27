@@ -881,7 +881,7 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
 
           this.DBProjektpunkt.CurrentProjektpunkt.ZustaendigeInternIDListe = idliste;
 
-          this.DBProjektpunkt.UpdateProjektpunkt(this.DBProjektpunkt.CurrentProjektpunkt);
+          this.DBProjektpunkt.UpdateProjektpunkt(this.DBProjektpunkt.CurrentProjektpunkt, true);
 
           break;
       }

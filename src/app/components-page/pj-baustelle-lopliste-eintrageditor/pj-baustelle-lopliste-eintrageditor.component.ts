@@ -266,10 +266,22 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
         for(File of Imageliste) {
 
           Thumb        = await this.Graph.GetSiteThumbnail(File);
-          Thumb.weburl = File.webUrl;
-          Merker       = lodash.find(Liste, {id: File.id});
 
-          if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+          if(Thumb !== null) {
+
+            Thumb.weburl = File.webUrl;
+            Merker       = lodash.find(Liste, {id: File.id});
+
+            if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+          }
+          else {
+
+            Thumb        = this.DB.GetEmptyThumbnail();
+            Thumb.id     = File.id;
+            Thumb.weburl = null;
+
+            Liste.push(Thumb);
+          }
         }
 
         Anzahl              = Liste.length;
@@ -464,7 +476,7 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
       }
       else {
 
-         await this.DB.UpdateProjektpunkt(this.DB.CurrentProjektpunkt);
+         await this.DB.UpdateProjektpunkt(this.DB.CurrentProjektpunkt, true);
 
           this.ResetEditor();
 

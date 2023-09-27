@@ -463,11 +463,23 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
         for(File of Imageliste) {
 
-          Thumb        = await this.GraphService.GetSiteThumbnail(File);
-          Thumb.weburl = File.webUrl;
-          Merker       = lodash.find(Liste, {id: File.id});
+          Thumb = await this.GraphService.GetSiteThumbnail(File);
 
-          if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+          if(Thumb !== null) {
+
+            Thumb.weburl = File.webUrl;
+            Merker       = lodash.find(Liste, {id: File.id});
+
+            if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+          }
+          else {
+
+            Thumb        = this.DBProjektpunkte.GetEmptyThumbnail();
+            Thumb.id     = File.id;
+            Thumb.weburl = null;
+
+            Liste.push(Thumb);
+          }
         }
 
         debugger;

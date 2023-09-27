@@ -156,9 +156,11 @@
                   <td colspan="2" [innerHTML]="Tools.FormatLinebreaks(Punkt.Aufgabe) | safe: 'html'"></td>
                 </tr>
                 <tr>
-                  <td colspan="2">
+                  <td colspan="2" *ngIf="CheckThumbnailliste(Thumbnailliste, LOP._id, Punktindex)">
 
-                    <table>
+
+
+                    <table *ngIf="Thumbnailliste[LOP._id][Punktindex]">
                       <tr *ngFor="let Zeilenliste of Thumbnailliste[LOP._id][Punktindex]">
                         <ng-container *ngFor="let Thumb of Zeilenliste; let Thumbnailindex = index">
                           <td style="cursor: pointer;">
@@ -179,6 +181,8 @@
                         </ng-container>
                       </tr>
                     </table>
+
+
 
 
                   </td>
