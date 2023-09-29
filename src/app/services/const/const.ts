@@ -208,8 +208,6 @@ const _Pages = {
 
   PjListePage:  'PjListePage',
 
-  PjLOPListePage: 'PjLOPListePage',
-
   PjGebaeudestrukturBearbeitenPage: 'PjGebaeudestrukturBearbeitenPage',
   PjGebaeudestrukturBauteilBearbeitenPage: 'PjGebaeudestrukturBauteilBearbeitenPage',
   PjGebaeudestrukturGeschossBearbeitenPage: 'PjGebaeudestrukturGeschossBearbeitenPage',

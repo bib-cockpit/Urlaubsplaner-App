@@ -230,7 +230,8 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       let Imageliste: Teamsfilesstruktur[] = [];
       let File: Teamsfilesstruktur;
 
-      Stichtag = Heute.clone().subtract(this.Pool.Mitarbeitersettings.LOPListeGeschlossenZeitfilter, 'days');
+      if(this.Pool.Mitarbeitersettings !== null) Stichtag = Heute.clone().subtract(this.Pool.Mitarbeitersettings.LOPListeGeschlossenZeitfilter, 'days');
+      else                                       Stichtag = Heute.clone().subtract(10, 'days');
 
       this.Thumbnailliste    = [];
       this.Zeilenanzahlliste = [];
@@ -255,6 +256,8 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
           // Gewerke feststellen
 
+          debugger;
+
           for(Gewerk of this.Pool.CurrentLOPGewerkeliste) {
 
             Gewerk.Anzahl = 0;
@@ -263,11 +266,11 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
           this.DB.CurrentPunkteliste = [];
           this.DB.CurrentInfoliste   = [];
 
-          for(let LOPListen of this.LOPListen) {
+          for(let LOPListe of this.LOPListen) {
 
-            this.DB.CurrentPunkteliste[LOPListen._id] = [];
+            this.DB.CurrentPunkteliste[LOPListe._id] = [];
 
-            for(let PunktID of LOPListen.ProjektpunkteIDListe) {
+            for(let PunktID of LOPListe.ProjektpunkteIDListe) {
 
               Punkt = lodash.find(this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey], {_id: PunktID});
 
@@ -278,30 +281,47 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
                 Gewerk = lodash.find(this.Pool.CurrentLOPGewerkeliste, {Key: Punkt.Fachbereich});
 
-                if(!lodash.isUndefined(Gewerk))Gewerk.Anzahl++;
+                if(lodash.isUndefined(Gewerk)) {
+
+                  Gewerk = this.Pool.Fachbereich.Unbekannt;
+                  Index  = lodash.findIndex(this.Pool.CurrentLOPGewerkeliste, {Key: Gewerk.Key});
+
+                  if(Index === -1) this.Pool.CurrentLOPGewerkeliste.push(Gewerk);
+                }
+
 
                 if(Punkt.Status !== this.Const.Projektpunktstatustypen.Protokollpunkt.Name) {
 
                   if (Punkt.Status !== this.Const.Projektpunktstatustypen.Geschlossen.Name) {
 
-                    if(Gewerk.Visible === true) this.DB.CurrentPunkteliste[LOPListen._id].push(Punkt);
+                    if(Gewerk.Visible === true) {
+
+                      this.DB.CurrentPunkteliste[LOPListe._id].push(Punkt);
+                      Gewerk.Anzahl++;
+                    }
 
                   } else {
 
                     Datum = moment(Punkt.Geschlossenzeitstempel).locale('de');
 
-                    if (Gewerk.Visible === true && Datum.isAfter(Stichtag, 'day')) this.DB.CurrentPunkteliste[LOPListen._id].push(Punkt);
+                    if (Gewerk.Visible === true && Datum.isAfter(Stichtag, 'day')) {
+
+                      this.DB.CurrentPunkteliste[LOPListe._id].push(Punkt);
+                      Gewerk.Anzahl++;
+                    }
                   }
                 }
                 else {
 
-                  if(this.DB.ShowLOPListeInfoeintraege === true) this.DB.CurrentInfoliste.push(Punkt);
+                  if(this.DB.ShowLOPListeInfoeintraege === true) {
 
+                    this.DB.CurrentInfoliste.push(Punkt);
+                  }
                 }
               }
             }
 
-            this.DB.CurrentPunkteliste[LOPListen._id] = this.DB.CurrentPunkteliste[LOPListen._id].sort( (a: Projektpunktestruktur, b: Projektpunktestruktur) => {
+            this.DB.CurrentPunkteliste[LOPListe._id] = this.DB.CurrentPunkteliste[LOPListe._id].sort( (a: Projektpunktestruktur, b: Projektpunktestruktur) => {
 
               if (parseInt(a.Nummer) > parseInt(b.Nummer)) return -1;
               if (parseInt(a.Nummer) < parseInt(b.Nummer)) return  1;
@@ -311,11 +331,11 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
             // Bilder
 
-            this.Thumbnailliste[LOPListen._id]    = [];
-            this.Zeilenanzahlliste[LOPListen._id] = [];
+            this.Thumbnailliste[LOPListe._id]    = [];
+            this.Zeilenanzahlliste[LOPListe._id] = [];
             Punkteindex = 0;
 
-            for(Punkt of this.DB.CurrentPunkteliste[LOPListen._id]) {
+            for(Punkt of this.DB.CurrentPunkteliste[LOPListe._id]) {
 
               Imageliste = [];
               Liste      = [];
@@ -351,23 +371,23 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
               }
 
               Anzahl              = Liste.length;
-              this.Zeilenanzahlliste[LOPListen._id][Punkteindex] = Math.ceil(Anzahl / this.Spaltenanzahl);
+              this.Zeilenanzahlliste[LOPListe._id][Punkteindex] = Math.ceil(Anzahl / this.Spaltenanzahl);
               Index               = 0;
-              this.Thumbnailliste[LOPListen._id][Punkteindex] = [];
+              this.Thumbnailliste[LOPListe._id][Punkteindex] = [];
 
-              for(let Zeilenindex = 0; Zeilenindex < this.Zeilenanzahlliste[LOPListen._id][Punkteindex]; Zeilenindex++) {
+              for(let Zeilenindex = 0; Zeilenindex < this.Zeilenanzahlliste[LOPListe._id][Punkteindex]; Zeilenindex++) {
 
-                this.Thumbnailliste[LOPListen._id][Punkteindex][Zeilenindex] = [];
+                this.Thumbnailliste[LOPListe._id][Punkteindex][Zeilenindex] = [];
 
                 for(let Spaltenindex = 0; Spaltenindex < this.Spaltenanzahl; Spaltenindex++) {
 
                   if(!lodash.isUndefined(Liste[Index])) {
 
-                    this.Thumbnailliste[LOPListen._id][Punkteindex][Zeilenindex][Spaltenindex] = Liste[Index];
+                    this.Thumbnailliste[LOPListe._id][Punkteindex][Zeilenindex][Spaltenindex] = Liste[Index];
                   }
                   else {
 
-                    this.Thumbnailliste[LOPListen._id][Punkteindex][Zeilenindex][Spaltenindex] = null;
+                    this.Thumbnailliste[LOPListe._id][Punkteindex][Zeilenindex][Spaltenindex] = null;
                   }
 
                   Index++;
@@ -390,6 +410,10 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
         this.LOPListen = [];
       }
+
+      debugger;
+
+      // error = TypeError: Cannot read properties of null (reading 'LOPListeGeschlossenZeitfilter') at http://localhost:4200/main.js:24522:74 at Generator.next (<anonymous>) at asyncGeneratorStep (http://localhost:4200/vendor.js:118294:24) at _next (http://localhost:4200/vendor.js:118313:9) at http://localhost:4200/vendor.js:118318:7 at new ZoneAwarePromise (http://localhost:4200/polyfills.js:8666:23) at http://localhost:4200/vendor.js:118310:12 at PjBaustelleLoplistePage.PrepareData (http://localhost:4200/main.js:24629:7) at PjBaustelleLoplistePage.ngOnInit (http://localhost:4200/main.js:24501:12) at callHook (http://localhost:4200/vendor.js:159634:14)
 
     } catch (error) {
 

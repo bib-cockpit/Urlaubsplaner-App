@@ -465,8 +465,6 @@ export class Graphservice {
 
             this.Graphuser = <Graphuserstruktur>result;
 
-            debugger;
-
             resolve(true);
 
           }).catch((error: GraphError) => {
