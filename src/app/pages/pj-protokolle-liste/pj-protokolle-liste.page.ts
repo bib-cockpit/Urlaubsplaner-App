@@ -983,6 +983,8 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
         }
       }
 
+      debugger;3
+
       this.Imageviewer = new ImageViewer({
         images: Imagedaten,
         currentSelected: event.Index

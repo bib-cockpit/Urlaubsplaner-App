@@ -39,6 +39,7 @@ import {Outlookemailstruktur} from "../../dataclasses/outlookemailstruktur";
 import {Outlookemailattachmentstruktur} from "../../dataclasses/outlookemailattachmentstruktur";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Graphservice} from "../../services/graph/graph";
+import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
 
 @Component({
   selector: 'pj-baustelle-lopliste-eintrageditor',
@@ -758,8 +759,31 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'TerminGeschlossenChanged', this.Debug.Typen.Component);
     }
+  }
+
+  DeleteThumbnailClicked(event: MouseEvent, Thumb: Thumbnailstruktur, Zeilenindex: number, Thumbnailindex: number) {
+
+    try {
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      this.DB.CurrentProjektpunkt.Bilderliste = lodash.filter(this.DB.CurrentProjektpunkt.Bilderliste, (thumb: Projektpunktimagestruktur) => {
+
+        return thumb.FileID !== Thumb.id;
+      });
+
+      this.Thumbnailliste[Zeilenindex][Thumbnailindex] = null;
+
+      this.DB.UpdateProjektpunkt(this.DB.CurrentProjektpunkt, false);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'DeleteThumbnailClicked', this.Debug.Typen.Component);
+    }
+
   }
 }
 

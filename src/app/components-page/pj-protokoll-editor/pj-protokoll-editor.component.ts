@@ -450,6 +450,8 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
       for(let Punkt of this.DBProjektpunkte.CurrentProjektpunkteliste) {
 
+        Imageliste = [];
+
         for(let Bild of Punkt.Bilderliste) {
 
           File        = this.GraphService.GetEmptyTeamsfile();
@@ -1668,6 +1670,8 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
       event.preventDefault();
       event.stopPropagation();
+
+      debugger;
 
       this.ThumbnailClickedEvent.emit({
         Index:      Index,

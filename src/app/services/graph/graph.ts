@@ -458,12 +458,14 @@ export class Graphservice {
 
       return new Promise((resolve, reject) => {
 
-        if(token !== null) {
 
+        if(token !== null) {
 
           graphClient.api('/me').select('*').get().then((result: User) => {
 
             this.Graphuser = <Graphuserstruktur>result;
+
+            debugger;
 
             resolve(true);
 
@@ -473,7 +475,6 @@ export class Graphservice {
 
               case "InvalidAuthenticationToken":
 
-                debugger;
 
                 this.AuthService.AccessTokenExpired = true;
                 this.AuthService.UnsetActiveUser();

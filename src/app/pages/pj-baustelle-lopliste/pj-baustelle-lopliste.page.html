@@ -160,10 +160,43 @@
 
 
 
-                    <table *ngIf="Thumbnailliste[LOP._id][Punktindex]">
-                      <tr *ngFor="let Zeilenliste of Thumbnailliste[LOP._id][Punktindex]">
+                    <table *ngIf="Thumbnailliste[LOP._id][Punktindex];">
+                      <tr *ngFor="let Zeilenliste of Thumbnailliste[LOP._id][Punktindex];  let Zeilenindex = index">
                         <ng-container *ngFor="let Thumb of Zeilenliste; let Thumbnailindex = index">
                           <td style="cursor: pointer;">
+                            <ng-container *ngIf="Thumb !== null">
+
+                              <table *ngIf="Thumb.weburl !== null">
+                                <tr>
+                                  <td style="padding: 2px" (click)="ThumbnailClicked($event, Zeilenliste, Thumbnailindex)">
+                                    <img  [src]="Thumb.mediumurl" [style.width.px]="Thumbbreite"/>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <table *ngIf="Thumb.weburl === null">
+                                <tr>
+                                  <td style="padding: 2px">
+                                    <div style="border: 1px solid gray; font-size: 80%; min-height: 120px;" [style.width.px]="Thumbbreite">
+                                      <table width="100%">
+                                        <tr>
+                                          <td style="text-align: center">
+                                            Bild nicht<br>gefunden
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td align="center">
+                                            <ion-icon (click)="DeleteThumbnailClicked($event, Punkt, Thumb, LOP._id, Punktindex, Zeilenindex, Thumbnailindex)" name="trash" color="rot" slot="icon-only"></ion-icon>
+                                          </td>
+                                        </tr>
+                                      </table>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                            </ng-container>
+                            <!--
                             <ng-container *ngIf="Thumb !== null">
                               <table>
                                 <tr>
@@ -176,6 +209,7 @@
                                 </tr>
                               </table>
                             </ng-container>
+                            -->
 
                           </td>
                         </ng-container>

@@ -156,12 +156,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         try {
 
-          await this.GraphService.GetOwnUserinfo();  // 1
+          if(this.AuthService.SecurityEnabled === true) await this.GraphService.GetOwnUserinfo();  // 1
 
           this.Pool.ProgressMessage = 'Lade eigene Daten';
           this.Pool.CurrentProgressValue++;
 
-          await this.GraphService.GetOwnUserimage(); // 2
+          if(this.AuthService.SecurityEnabled === true) await this.GraphService.GetOwnUserimage(); // 2
 
           this.Pool.ProgressMessage = 'Lade eigens Bild';
           this.Pool.CurrentProgressValue++;
@@ -310,18 +310,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           }
           else {
 
-            Page = this.Const.Pages.PjAufgabenlistePage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
-
+            Page = this.Const.Pages.PjLOPListePage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
 
             this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
             await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);                 // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
 
-            let test = this.ProjekteDB.CurrentProjekt;
-
-
-            debugger;
-
-            this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.LOPListe; // .Aufgabenliste;
           }
 
           this.SetProjekteMenuebereich(Page);

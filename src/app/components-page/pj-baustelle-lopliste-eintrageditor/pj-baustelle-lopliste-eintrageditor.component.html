@@ -183,12 +183,16 @@
             </ion-row>
             <ion-row>
               <ion-col>
+
+
+
                 <table>
-                  <tr *ngFor="let Zeilenliste of Thumbnailliste">
-                    <ng-container *ngFor="let Thumb of Zeilenliste">
+                  <tr *ngFor="let Zeilenliste of Thumbnailliste; let Zeilenindex = index">
+                    <ng-container *ngFor="let Thumb of Zeilenliste; let Thumbnailindex = index">
                       <td style="cursor: pointer;">
                         <ng-container *ngIf="Thumb !== null">
-                          <table>
+
+                          <table *ngIf="Thumb.weburl !== null">
                             <tr>
                               <td style="padding: 2px">
                                 <img *ngIf="Thumb !== null" [src]="Thumb.largeurl" [style.width.px]="Thumbbreite"/>
@@ -198,6 +202,28 @@
                               <td style="font-size: 90%">{{Thumb.filename}}</td>
                             </tr>
                           </table>
+
+                          <table *ngIf="Thumb.weburl === null">
+                            <tr>
+                              <td style="padding: 2px">
+                                <div style="border: 1px solid gray; font-size: 80%; min-height: 120px;" [style.width.px]="Thumbbreite">
+                                  <table width="100%">
+                                    <tr>
+                                      <td style="text-align: center">
+                                        Bild nicht<br>gefunden
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td align="center">
+                                        <ion-icon (click)="DeleteThumbnailClicked($event, Thumb, Zeilenindex, Thumbnailindex)" name="trash" color="rot" slot="icon-only"></ion-icon>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </div>
+                              </td>
+                            </tr>
+                          </table>
+
                         </ng-container>
 
                       </td>
@@ -211,6 +237,8 @@
                     </td>
                   </tr>
                 </table>
+
+
               </ion-col>
             </ion-row>
 

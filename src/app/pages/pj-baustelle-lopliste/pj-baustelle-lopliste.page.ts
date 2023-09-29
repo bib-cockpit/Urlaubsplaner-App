@@ -342,8 +342,9 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
                 }
                 else {
 
-                  Thumb    = this.DBProjektpunkte.GetEmptyThumbnail();
-                  Thumb.id = null;
+                  Thumb        = this.DBProjektpunkte.GetEmptyThumbnail();
+                  Thumb.id     = File.id;
+                  Thumb.weburl = null;
 
                   Liste.push(Thumb);
                 }
@@ -1351,6 +1352,28 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'LOP Liste', 'CheckThumbnailliste', this.Debug.Typen.Page);
+    }
+  }
+
+  DeleteThumbnailClicked(event: MouseEvent, Punkt: any, Thumb: any, lopid: string, Punktindex: number, Zeilenindex: number, Thumbnailindex: number) {
+
+    try {
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      Punkt.Bilderliste = lodash.filter(Punkt.Bilderliste, (thumb: Projektpunktimagestruktur) => {
+
+        return thumb.FileID !== Thumb.id;
+      });
+
+      this.Thumbnailliste[lopid][Punktindex][Zeilenindex][Thumbnailindex] = null;
+
+      this.DBProjektpunkte.UpdateProjektpunkt(Punkt, false);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'DeleteThumbnailClicked', this.Debug.Typen.Page);
     }
   }
 }
