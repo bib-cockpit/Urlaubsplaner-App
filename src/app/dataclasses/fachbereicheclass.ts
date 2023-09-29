@@ -13,6 +13,7 @@ export class Fachbereiche {
   private _Elektrotechnik: Fachbereichestruktur = { Bezeichnung: 'Elektrotechnik',            Kuerzel: 'ELT',       Key: 'ELT'};
   private _Unbekannt:      Fachbereichestruktur = { Bezeichnung: 'Unbekannt',                 Kuerzel: '',          Key: 'Unbekannt'};
   private _HLS:            Fachbereichestruktur = { Bezeichnung: 'Heizung, Lüftung, Sanitär', Kuerzel: 'HLS',       Key: 'HLS'};
+  private _HLSE:           Fachbereichestruktur = { Bezeichnung: 'Heizung, Lüftung, Sanitär, Elektro', Kuerzel: 'HLSE',       Key: 'HLSE'};
   private _H:              Fachbereichestruktur = { Bezeichnung: 'Heizung', Kuerzel: 'H',       Key: 'H'};
   private _L:              Fachbereichestruktur = { Bezeichnung: 'Lüftung', Kuerzel: 'L',       Key: 'L'};
   private _S:              Fachbereichestruktur = { Bezeichnung: 'Sanitär', Kuerzel: 'S',       Key: 'S'};
@@ -42,13 +43,14 @@ export class Fachbereiche {
 
   // Testeintrag
 
-  public get Elektrotechnik(): Fachbereichestruktur { return this._Elektrotechnik; }
-  public get Unbekannt():      Fachbereichestruktur { return this._Unbekannt; }
-  public get HLS():            Fachbereichestruktur { return this._HLS; }
-  public get H():              Fachbereichestruktur { return this._H; }
-  public get L():              Fachbereichestruktur { return this._L; }
-  public get S():              Fachbereichestruktur { return this._S; }
-  public get K():              Fachbereichestruktur { return this._K; }
+  public get Elektrotechnik(): Fachbereichestruktur  { return this._Elektrotechnik; }
+  public get Unbekannt():      Fachbereichestruktur  { return this._Unbekannt; }
+  public get HLS():            Fachbereichestruktur  { return this._HLS; }
+  public get HLSE():            Fachbereichestruktur { return this._HLSE; }
+  public get H():              Fachbereichestruktur  { return this._H; }
+  public get L():              Fachbereichestruktur  { return this._L; }
+  public get S():              Fachbereichestruktur  { return this._S; }
+  public get K():              Fachbereichestruktur  { return this._K; }
   public get MSR():            Fachbereichestruktur { return this._MSR; }
 
   public get Geschaeftsfuehrung(): Fachbereichestruktur  { return this._Geschaeftsfuehrung; };
@@ -78,6 +80,7 @@ export class Fachbereiche {
       case 'ELT':       return this._Elektrotechnik; break;
       case 'Unbekannt': return this._Unbekannt; break;
       case 'HLS':      return this._HLS; break;
+      case 'HLSE':     return this._HLSE; break;
       case 'H': return this._H; break;
       case 'L': return this._L; break;
       case 'S': return this._S; break;
@@ -109,8 +112,3 @@ export class Fachbereiche {
   }
 }
 
-
-/*
-
-
- */
