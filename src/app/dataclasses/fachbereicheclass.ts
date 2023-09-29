@@ -46,7 +46,7 @@ export class Fachbereiche {
   public get Elektrotechnik(): Fachbereichestruktur  { return this._Elektrotechnik; }
   public get Unbekannt():      Fachbereichestruktur  { return this._Unbekannt; }
   public get HLS():            Fachbereichestruktur  { return this._HLS; }
-  public get HLSE():            Fachbereichestruktur { return this._HLSE; }
+  public get HLSE():           Fachbereichestruktur { return this._HLSE; }
   public get H():              Fachbereichestruktur  { return this._H; }
   public get L():              Fachbereichestruktur  { return this._L; }
   public get S():              Fachbereichestruktur  { return this._S; }
