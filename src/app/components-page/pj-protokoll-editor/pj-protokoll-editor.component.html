@@ -147,7 +147,7 @@
                   <table  style="width: 100%">
                     <tr *ngFor="let Projektpunkt of Punkteliste; let Punkteindex = index">
                       <td>
-                        <div (click)="ProtokollpunktClicked.emit(Projektpunkt)" style="width: 100%; display: flex; justify-content: center; align-items: flex-start;">
+                        <div  style="width: 100%; display: flex; justify-content: center; align-items: flex-start;">
 
                           <table class="docinnertablespezial">
                             <tr>
@@ -168,7 +168,7 @@
                                 <table class="nobordersmalltable" style="width: 100%;">
                                   <tr>
                                     <td>
-                                      <div  class="aufgabedivclass">
+                                      <div (click)="ProtokollpunktClicked.emit(Projektpunkt)" class="aufgabedivclass">
 
                                         <table style="font-size: 90%">
                                           <tr *ngIf="Projektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name">
@@ -188,17 +188,49 @@
                                     <td>
 
                                       <table>
-                                        <tr *ngFor="let Zeilenliste of Thumbnailliste[Punkteindex]">
-                                          <ng-container *ngFor="let Thumb of Zeilenliste">
+                                        <tr *ngFor="let Zeilenliste of Thumbnailliste[Punkteindex]; let Zeilenindex = index">
+                                          <ng-container *ngFor="let Thumb of Zeilenliste; let Thumbnailindex = index">
                                             <td style="cursor: pointer;">
                                               <ng-container *ngIf="Thumb !== null">
-                                                <table>
+
+                                                <table *ngIf="Thumb.weburl !== null">
                                                   <tr>
                                                     <td style="padding: 2px" (click)="ThumbnailClicked($event, Zeilenliste, Punkteindex)">
-                                                      <img *ngIf="Thumb !== null" [src]="Thumb.mediumurl" [style.width.px]="Thumbbreite"/>
+                                                      <div class="imageclass">
+                                                        <img *ngIf="Thumb !== null" [src]="Thumb.largeurl" [style.width.px]="Thumbbreite"/>
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td style="font-size: 90%">{{Thumb.filename}}</td>
+                                                  </tr>
+                                                </table>
+
+                                                <table *ngIf="Thumb.weburl === null">
+                                                  <tr>
+                                                    <td style="padding: 2px">
+                                                      <div class="imageclass">
+                                                        <div style="border: 1px solid gray; font-size: 80%; min-height: 120px;" [style.width.px]="Thumbbreite">
+                                                          <table width="100%">
+                                                            <tr>
+                                                              <td style="text-align: center">
+                                                                Bild nicht<br>gefunden
+                                                              </td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td align="center">
+                                                                <ion-icon (click)="DeleteThumbnailClicked($event, Projektpunkt, Thumb, Punkteindex, Zeilenindex, Thumbnailindex)" name="trash" color="rot" slot="icon-only"></ion-icon>
+                                                              </td>
+                                                            </tr>
+                                                          </table>
+                                                        </div>
+                                                      </div>
                                                     </td>
                                                   </tr>
                                                 </table>
+
+
+
                                               </ng-container>
 
                                             </td>

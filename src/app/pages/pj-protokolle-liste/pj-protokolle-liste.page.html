@@ -40,7 +40,7 @@
     </div>
     <div [style.height.px]="Listenhoehe" style="width: 100%; height: 100%; overflow: auto;">
 
-      <div  *ngFor="let Protokoll of Protokollliste;" (click)="ProtokollClicked(Protokoll)" style="width: 100%; cursor: pointer; padding-left: 8px; padding-right: 8px">
+      <div  *ngFor="let Protokoll of Protokollliste;"  style="width: 100%; padding-left: 8px; padding-right: 8px">
         <table width="100%" class="docinnertablenew">
           <tr>
             <td style="width: 60px; height: 40px">{{Protokoll.Protokollnummer}}</td>
@@ -51,12 +51,17 @@
             </td>
               -->
             <td style="width: auto;">
+              <div (click)="ProtokollClicked(Protokoll)" class="protokolldivclass">
+
               <ng-container *ngIf="Protokoll.Filtered !== true">
                 {{Protokoll.Titel}}
               </ng-container>
               <ng-container *ngIf="Protokoll.Filtered === true">
                 <span>{{Protokoll.Text_A}}</span><span style="color: orange">{{Protokoll.Text_B}}</span><span>{{Protokoll.Text_C}}</span>
               </ng-container>
+
+              </div>
+
             </td>
 
             <td style="width: 80px;">{{Protokoll.ProjektpunkteIDListe.length !== 0 ? Protokoll.ProjektpunkteIDListe.length : 'leer'}}</td>
@@ -214,7 +219,6 @@
                               [ZIndex]="20000"
                               [Titel]="'Bilder auswählen'"
                               [Dialogbreite]="Dialogbreite"
-                              [Dialoghoehe]="Dialoghoehe"
                               [PositionY]="100"
                               (SelectedImagesChanged)="SelectedImagesChangedHandler($event)"
                               (OkClickedEvent)="BilderAuswahlOKClicked($event)"

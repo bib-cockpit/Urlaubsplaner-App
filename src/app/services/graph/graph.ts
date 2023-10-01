@@ -1155,6 +1155,42 @@ export class Graphservice {
   }
 
 
+  public async GetSiteThumbnailContent(thumb: Thumbnailstruktur, size: string) : Promise<string> {
+
+    try {
+
+      let token = await this.AuthService.RequestToken('user.read');
+
+      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
+
+          done(null, token);
+        }
+      });
+
+      let Url = '/sites/' + this.BAESiteID + '/drive/items/' + thumb.id + '/thumbnails/0/' + size + '/content';
+
+      let Image        = await graphClient.api(Url).get();
+      let Imagebuffuer = await Image.arrayBuffer();
+
+      let binary = '';
+      let bytes  = new Uint8Array( Imagebuffuer );
+      let len    = bytes.byteLength;
+
+      for (let i = 0; i < len; i++) {
+
+        binary += String.fromCharCode( bytes[ i ] );
+      }
+
+      return window.btoa( binary );
+    }
+    catch(error) {
+
+      this.Debug.ShowErrorMessage(error, 'Graph', 'GetSiteThumbnailContent', this.Debug.Typen.Service);
+
+      return Promise.resolve(null);
+    }
+  }
+
   public async GetSiteThumbnail(file: Teamsfilesstruktur) : Promise<Thumbnailstruktur> {
 
     try {
@@ -1186,6 +1222,7 @@ export class Graphservice {
                   mediumurl: result.value[0].medium.url,
                   largeurl:  result.value[0].large.url,
                   smallurl:  result.value[0].small.url,
+                  content:   "",
                   height: {
 
                     small:  result.value[0].small.height,

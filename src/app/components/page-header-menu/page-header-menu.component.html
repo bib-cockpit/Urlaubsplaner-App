@@ -425,7 +425,7 @@
                 <td>Info Einträge anzeigen</td>
                 <td style="width: 100px"></td>
 
-                <ng-container *ngFor="let Gewerk of Pool.CurrentLOPGewerkeliste">
+                <ng-container *ngFor="let Gewerk of Pool.Fachbereich.Gewerkeliste">
                   <ng-container *ngIf="Gewerk.Anzahl > 0">
                     <td><checkbox-clon [Checked]="Gewerk.Visible" (CheckChanged)="ShowLOPListeGewerkChangedHandler($event, Gewerk)"></checkbox-clon></td>
                     <td>{{Gewerk.Bezeichnung}} [{{Gewerk.Anzahl}}]</td>

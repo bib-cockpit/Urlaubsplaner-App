@@ -38,6 +38,7 @@ import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.s
 import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Graphservice} from "../../services/graph/graph";
+import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
 // import tinymce from "../../../assets/tinymce/tinymce";
 
 @Component({
@@ -484,8 +485,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
           }
         }
 
-        debugger;
-
         Anzahl                          = Liste.length;
         this.Zeilenanzahl               = Math.ceil(Anzahl / this.Spaltenanzahl);
         this.Thumbnailliste[Punktindex] = [];
@@ -513,7 +512,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
         Punktindex++;
       }
 
-      debugger;
     }
     catch (error) {
 
@@ -542,56 +540,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ZoomImageClicked', this.Debug.Typen.Component);
     }
   }
-
-  /*
-  public AuswahlIndexChanged(Index: number) {
-
-    try {
-
-      switch (this.Auswahltitel) {
-
-        case 'Bildzoom':
-
-          this.StopSaveProtokollTimer();
-
-          // this.DB.Projektpunkt.Filezoom = this.Zoomfaktorenliste[Index];
-
-          this.StartSaveProtokollTimer();
-
-          break;
-
-        case 'Projektauswahl':
-
-          this.StopSaveProtokollTimer();
-
-          this.DBProjekte.CurrentProjekt          = this.Pool.Gesamtprojektliste[Index];
-          this.DBProjekte.CurrentProjektindex            = Index;
-          this.DB.CurrentProtokoll.ProjektID      = this.DBProjekte.CurrentProjekt._id;
-
-          this.StartSaveProtokollTimer();
-
-          break;
-
-        case 'Leistungsphase':
-
-          this.StopSaveProtokollTimer();
-
-          this.DB.CurrentProtokoll.Leistungsphase = this.Auswahlliste[Index];
-
-          this.StartSaveProtokollTimer();
-
-          break;
-      }
-
-      this.HideAuswahl = true;
-    }
-    catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'AuswahlIndexChanged', this.Debug.Typen.Component);
-    }
-  }
-
-   */
 
   CancelButtonClicked() {
 
@@ -652,68 +600,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
-
-  /*
-  ProjektButtonClicked() {
-
-    try {
-
-      this.Auswahlliste = [];
-
-      for(let Projekt of this.Pool.Gesamtprojektliste) {
-
-        this.Auswahlliste.push(Projekt.Projektkurzname);
-      }
-
-      if(this.DBProjekte.CurrentProjekt !== null) {
-
-        this.Auswahlindex = lodash.findIndex(this.Pool.Gesamtprojektliste, {id: this.DB.CurrentProtokoll._id});
-
-      }
-      else this.Auswahlindex = -1;
-
-      this.Auswahltitel = 'Projektauswahl';
-
-      // this.MyAuswahlDialog.Open(false, this.Auswahlindex);
-    }
-    catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ProjektButtonClicked', this.Debug.Typen.Component);
-    }
-  }
-
-   */
-
-
-
-  GetProjektname(): string {
-
-    try {
-
-      return this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt.Projektname : 'unbekannt';
-
-
-    }
-    catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetProjektname', this.Debug.Typen.Component);
-    }
-  }
-
-  GetProjektkurzname(): string {
-
-    try {
-
-      return this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt.Projektkurzname : 'unbekannt';
-
-
-    }
-    catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetProjektkurzname', this.Debug.Typen.Component);
-    }
-  }
-
 
   DatumChanged(currentmoment: Moment) {
 
@@ -1684,5 +1570,28 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
       this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ThumbnailClicked', this.Debug.Typen.Component);
     }
+  }
+
+  DeleteThumbnailClicked(event: MouseEvent, Projektpunkt: Projektpunktestruktur, Thumb: Thumbnailstruktur, Punkteindex: number, Zeilenindex: number, Thumbnailindex: number) {
+
+    try {
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      Projektpunkt.Bilderliste = lodash.filter(Projektpunkt.Bilderliste, (thumb: Projektpunktimagestruktur) => {
+
+        return thumb.FileID !== Thumb.id;
+      });
+
+      this.Thumbnailliste[Punkteindex][Zeilenindex][Thumbnailindex] = null;
+
+      this.DBProjektpunkte.UpdateProjektpunkt(Projektpunkt, false);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'DeleteThumbnailClicked', this.Debug.Typen.Component);
+    }
+
   }
 }

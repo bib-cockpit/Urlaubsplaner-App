@@ -40,6 +40,7 @@ export type Projektpunktestruktur = {
   DataChanged:         boolean;
   ProtokollOnly:       boolean;
   ProtokollPublic:     boolean;
+  ProtokollShowBilder: boolean;
   LiveEditor:          boolean;
   Meilenstein:         boolean;
   Meilensteinstatus:   string;

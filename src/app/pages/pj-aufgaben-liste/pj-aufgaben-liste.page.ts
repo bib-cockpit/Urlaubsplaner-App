@@ -2141,16 +2141,5 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Aufgabe Liste', 'ThumbnailClickedEventHandler', this.Debug.Typen.Page);
     }
   }
-
-  Test() {
-
-    try {
-
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
-    }
-  }
 }
 

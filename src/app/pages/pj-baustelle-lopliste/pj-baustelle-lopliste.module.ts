@@ -30,6 +30,7 @@ import {PjEmailSendModule} from "../../components-page/pj-email-send/pj-email-se
 import {
     PjProjekteSelectimagesModule
 } from "../../components-page/pj-projekte-selectimages/pj-projekte-selectimages.module";
+import {CheckboxClonModule} from "../../components/checkbox-clon/checkbox-clon.module";
 
 const routes: Routes = [
   {
@@ -58,6 +59,7 @@ const routes: Routes = [
         SafePipeModule,
         PjEmailSendModule,
         PjProjekteSelectimagesModule,
+        CheckboxClonModule,
     ],
   declarations: [PjBaustelleLoplistePage]
 })

@@ -60,6 +60,11 @@
           <img *ngIf="ShowImage === true" class="imgclass" [src]="ImageSRC" (click)="ZoomImageClicked($event)"/>
 
           <table class="paddingtable" *ngIf="GraphService.CurrentPDFDownload === null && ShowImage === false">
+            <tr *ngIf="LoadThumbnailsRunning === true">
+              <td colspan="100">
+                <b>{{LoadThumbsProgress}}</b> von <b>{{ThumbsProgressMaximum}}</b> Thumbnails geladen...
+              </td>
+            </tr>
             <tr *ngFor="let Zeilenliste of Thumbnailliste">
               <ng-container *ngFor="let Thumb of Zeilenliste">
                 <td (click)="ThumbnailClicked(Thumb)" style="cursor: pointer;">
@@ -67,7 +72,7 @@
                     <table>
                       <tr>
                         <td>
-                          <img [src]="Thumb.largeurl" [style.width.px]="Thumbbreite"/>
+                          <img [src]="'data:image/png;base64,' + Thumb.content" [style.width.px]="Thumbbreite"/>
                         </td>
                       </tr>
                       <tr>

@@ -41,6 +41,55 @@ export class Fachbereiche {
   private _HR: Fachbereichestruktur = { Bezeichnung: 'Human Resources', Kuerzel: 'HR', Key: 'HR'};
   private _Test: Fachbereichestruktur = { Bezeichnung: 'Test', Kuerzel: 'TEST', Key: 'TEST'};
 
+  public Gewerkeliste: Fachbereichestruktur[];
+
+  constructor() {
+
+    this.Gewerkeliste = [];
+
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('ELT'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('Unbekannt'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('HLS'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('HLSE'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('H'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('L'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('S'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('K'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('MSR'));
+
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('GF'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('AS'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('PRO'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('Planer'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('TL'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('PL'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('STUDI'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('AZUBI'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('OUE'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('BH'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('MA'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('PA'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('IT'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('CO'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('TECH'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('NL'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('AR'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('KF'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('HR'));
+
+    for(let Bereich of this.Gewerkeliste) {
+
+      Bereich.Visible = true;
+    }
+
+    this.Gewerkeliste.sort((a: Fachbereichestruktur, b: Fachbereichestruktur) => {
+
+      if (a.Bezeichnung < b.Bezeichnung) return -1;
+      if (a.Bezeichnung > b.Bezeichnung) return 1;
+      return 0;
+    });
+  }
+
   // Testeintrag
 
   public get Elektrotechnik(): Fachbereichestruktur  { return this._Elektrotechnik; }
@@ -84,6 +133,7 @@ export class Fachbereiche {
       case 'H': return this._H; break;
       case 'L': return this._L; break;
       case 'S': return this._S; break;
+      case 'K': return this._K; break;
       case 'MSR': return this._MSR; break;
       case 'GF': return this._Geschaeftsfuehrung; break;
       case 'AS': return this._Assistenz; break;

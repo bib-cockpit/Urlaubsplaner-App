@@ -6,6 +6,7 @@ export type Thumbnailstruktur = {
   smallurl:  string;
   mediumurl: string;
   largeurl:  string;
+  content:   string;
   height: {
 
     small:  number;

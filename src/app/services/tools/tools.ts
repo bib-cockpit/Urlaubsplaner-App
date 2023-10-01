@@ -63,7 +63,7 @@ export class ToolsProvider {
 
       let Zeitpunkt: Moment = moment(GesendetZeitstempel);
 
-      return Zeitpunkt.format('DD.MM.YYYY');
+      return Zeitpunkt.format('DD.MM.YY');
 
     } catch (error) {
 

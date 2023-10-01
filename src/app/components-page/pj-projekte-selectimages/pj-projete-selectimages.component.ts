@@ -8,6 +8,7 @@ import {DatabaseStandorteService} from "../../services/database-standorte/databa
 import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
+import {BasicsProvider} from "../../services/basics/basics";
 
 @Component({
   selector: 'pj-projekte-selectimages',
@@ -27,16 +28,17 @@ export class PjProjeteSelectimagesComponent implements OnInit, OnDestroy, AfterV
   @Input() Titel: string;
   @Input() Iconname: string;
   @Input() Dialogbreite: number;
-  @Input() Dialoghoehe: number;
   @Input() PositionY: number;
   @Input() ZIndex: number;
 
   public CurrentIndex: number;
+  public Browserhoehe: number;
 
   constructor(public Debug: DebugProvider,
               public Displayservice: DisplayService,
               public Const: ConstProvider,
               public  Pool: DatabasePoolService,
+              private Basics: BasicsProvider,
               public DBStandort: DatabaseStandorteService,
               public DBProjekte: DatabaseProjekteService) {
     try {
@@ -44,7 +46,6 @@ export class PjProjeteSelectimagesComponent implements OnInit, OnDestroy, AfterV
       this.Titel               = this.Const.NONE;
       this.Iconname            = 'folder';
       this.Dialogbreite        = 700;
-      this.Dialoghoehe         = 300;
       this.PositionY           = 100;
       this.ZIndex              = 2000;
       this.CurrentIndex        = -1;
@@ -76,6 +77,7 @@ export class PjProjeteSelectimagesComponent implements OnInit, OnDestroy, AfterV
 
       this.Displayservice.AddDialog(this.Displayservice.Dialognamen.Bilderauswahl, this.ZIndex);
 
+      this.Browserhoehe = this.Basics.Contenthoehe - this.PositionY * 2 - 2 * 60;
 
 
       this.PrepareData();

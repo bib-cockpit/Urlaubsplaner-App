@@ -56,6 +56,9 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
   public ImageHeight: number;
   private FilelisteAufruferMerker: string;
   private ZoomSubscription: Subscription;
+  public LoadThumbsProgress: number;
+  public ThumbsProgressMaximum: number;
+  public LoadThumbnailsRunning: boolean;
 
   constructor(private Debug: DebugProvider,
               public Basics: BasicsProvider,
@@ -84,6 +87,9 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
       this.SelectImages     = true;
       this.Projektpunktimageliste = [];
       this.CheckedThumnailliste   = [];
+      this.LoadThumbsProgress     = 0;
+      this.ThumbsProgressMaximum  = 0;
+      this.LoadThumbnailsRunning  = false;
 
     }
     catch (error) {
@@ -136,6 +142,7 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
               mediumurl: "",
               smallurl: "",
               weburl: Eintrag.WebUrl,
+              content: "",
               width: {large: 0, medium: 0, small: 0}
             });
           }
@@ -286,6 +293,7 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
       let Anzahl: number;
       let Index: number;
       let Liste: Thumbnailstruktur[] = [];
+      let Content: any;
 
       let Imageliste: Teamsfilesstruktur[] = lodash.filter(this.GraphService.TeamsCurrentfilelist, (fileitem: Teamsfilesstruktur) => {
 
@@ -299,16 +307,29 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
           else return false;
       });
 
+      this.ThumbsProgressMaximum = Imageliste.length;
+      this.LoadThumbsProgress    = 0;
+
       for(let File of Imageliste) {
+
+        this.LoadThumbnailsRunning  = true;
 
         Thumb = await this.GraphService.GetSiteThumbnail(File);
 
         if(Thumb !== null) {
 
           Thumb.weburl = File.webUrl;
-          Merker       = lodash.find(Liste, {id: File.id});
+          Merker        = lodash.find(Liste, {id: File.id});
+          Thumb.content = await this.GraphService.GetSiteThumbnailContent(Thumb, 'small');
 
-          if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+          if(lodash.isUndefined(Merker)) {
+
+            Liste.push(Thumb);
+          }
+          else {
+
+            // Datei nicht gefunden
+          }
         }
         else {
 
@@ -316,9 +337,14 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
           Thumb.id     = File.id;
           Thumb.weburl = null;
 
+
           Liste.push(Thumb);
         }
+
+        this.LoadThumbsProgress++;
       }
+
+      this.LoadThumbnailsRunning = false;
 
       Anzahl              = Liste.length;
       this.Zeilenanzahl   = Math.ceil(Anzahl / this.Spaltenanzahl);

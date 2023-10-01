@@ -32,7 +32,6 @@
             </td>
           </tr>
           <tr>
-            <td style="width: 34px"></td>
             <td style="width: 30px; text-align: center"><b>Nr.</b></td>
             <td style="width: 180px;"><b>Datum</b></td>
             <td style="min-width: 600px"><b>Beschreibung</b></td>
@@ -46,7 +45,6 @@
 
           <tr style="cursor: pointer" *ngFor="let Info of DB.CurrentInfoliste" (click)="LOPListepunktClickedHandler(Info, null)">
 
-            <td style="width: 34px;"></td>
             <td style="width: 30px; text-align: center; color: white; background: #307ac1">{{Info.Nummer}}</td>
             <td style="width: 180px;">{{Info.Startzeitstring}}</td>
             <td style="min-width: 600px">
@@ -75,34 +73,39 @@
           </td>
         </tr>
         <tr>
-          <td style="width: 34px"></td>
           <td style="width: 30px; text-align: center"><b>Nr.</b></td>
           <td style="width: 180px;"><b>Bauteil</b></td>
           <td style="width: 80px; text-align: center;"><b>Gewerk</b></td>
           <td style="width: 180px;"><b>Thematik</b></td>
           <td style="width: auto"><b>Beschreibung</b></td>
+          <td style="width: 90px; text-align: center;"><b>Bilder</b></td>
           <td style="width: 90px; text-align: center;"><b>Termin</b></td>
           <td style="width: 120px; text-align: center;"><b>Status</b></td>
           <td style="width: 100px; text-align: center;"><b>Priorität</b></td>
           <td style="width: 100px; text-align: center"><b>Zuständig</b></td>
           <td style="width: 120px; text-align: center"><b>Versand</b></td>
         </tr>
+
+        <!--
       </table>
 
       </div>
 
-    <div [style.height.px]="Listenhoehe" style="width: 100%; height: 100%; overflow: auto;">
+    <div style="width: 100%; height: 100%; overflow: auto;">
 
       <div  *ngFor="let LOP of LOPListen; let o = odd"  style="width: 100%; padding-left: 8px; padding-right: 8px">
         <table width="100%" class="docinnertablespezial">
+        -->
+        <ng-container *ngFor="let LOP of LOPListen; let o = odd">
           <tr>
-            <td colspan="10"  [style.background]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun">
+            <td colspan="10"  [style.background]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun" style="border-right: none !important;">
               <div class="loplisteheader" (click)="LOPListeClicked(LOP)">
                 {{LOP.Titel + ' ' + LOP.LOPListenummer + ' vom ' + LOP.Zeitstring + ' / KW ' + GetKalenderwoche(LOP.Zeitstempel)}}
               </div>
             </td>
-            <td align="center" style="border: 0;">
+            <td style="border-left: none !important;" align="center" [style.background]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun">
 
+              <div style="background: white; padding: 4px; border-radius: 3px; width: 110px">
                 <table class="nobordersmalltable">
                   <tr>
                     <td align="center">
@@ -128,15 +131,20 @@
                     </tr>
                   </ng-container>
                 </table>
+              </div>
 
 
 
             </td>
           </tr>
-          <tr style="cursor: pointer" *ngFor="let Punkt of DB.CurrentPunkteliste[LOP._id]; let Punktindex = index" (click)="LOPListepunktClickedHandler(Punkt, LOP)" (mouseenter)="EintragZeileEnterEvent(LOP, Punkt)" (mouseleave)="EintragZeileLeaveEvent()">
+          <tr style="cursor: pointer" *ngFor="let Punkt of DB.CurrentPunkteliste[LOP._id]; let Punktindex = index">
+
+            <!--
             <td style="width: 34px; font-size: 160%; font-weight: bold" [style.color]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun">
               <span *ngIf="CurrentLOPListeID === LOP._id && CurrentPunktID === Punkt._id">&rarr;</span>
             </td>
+            -->
+
             <td style="width: 30px; text-align: center; color: white;"
                 [style.border.color]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun"
                 [style.background]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun">
@@ -153,12 +161,12 @@
 
               <table class="nobordersmalltable" width="100%">
                 <tr>
-                  <td colspan="2" [innerHTML]="Tools.FormatLinebreaks(Punkt.Aufgabe) | safe: 'html'"></td>
+                  <td>
+                    <div class="aufgabedivclass" (click)="LOPListepunktClickedHandler(Punkt, LOP)" [innerHTML]="Tools.FormatLinebreaks(Punkt.Aufgabe) | safe: 'html'"></div>
+                  </td>
                 </tr>
-                <tr>
-                  <td colspan="2" *ngIf="CheckThumbnailliste(Thumbnailliste, LOP._id, Punktindex)">
-
-
+                <tr *ngIf="CheckThumbnailliste(Thumbnailliste, LOP._id, Punktindex) && Punkt.ProtokollShowBilder">
+                  <td>
 
                     <table *ngIf="Thumbnailliste[LOP._id][Punktindex];">
                       <tr *ngFor="let Zeilenliste of Thumbnailliste[LOP._id][Punktindex];  let Zeilenindex = index">
@@ -169,7 +177,9 @@
                               <table *ngIf="Thumb.weburl !== null">
                                 <tr>
                                   <td style="padding: 2px" (click)="ThumbnailClicked($event, Zeilenliste, Thumbnailindex)">
-                                    <img  [src]="Thumb.mediumurl" [style.width.px]="Thumbbreite"/>
+                                    <div class="imageclass">
+                                      <img  [src]="Thumb.mediumurl" [style.width.px]="Thumbbreite"/>
+                                    </div>
                                   </td>
                                 </tr>
                               </table>
@@ -177,63 +187,70 @@
                               <table *ngIf="Thumb.weburl === null">
                                 <tr>
                                   <td style="padding: 2px">
-                                    <div style="border: 1px solid gray; font-size: 80%; min-height: 120px;" [style.width.px]="Thumbbreite">
-                                      <table width="100%">
-                                        <tr>
-                                          <td style="text-align: center">
-                                            Bild nicht<br>gefunden
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td align="center">
-                                            <ion-icon (click)="DeleteThumbnailClicked($event, Punkt, Thumb, LOP._id, Punktindex, Zeilenindex, Thumbnailindex)" name="trash" color="rot" slot="icon-only"></ion-icon>
-                                          </td>
-                                        </tr>
-                                      </table>
+                                    <div class="imageclass">
+                                      <div style="border: 1px solid gray; font-size: 80%; min-height: 120px;" [style.width.px]="Thumbbreite">
+                                        <table width="100%">
+                                          <tr>
+                                            <td style="text-align: center">
+                                              Bild nicht<br>gefunden
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <td align="center">
+                                              <ion-icon (click)="DeleteThumbnailClicked($event, Punkt, Thumb, LOP._id, Punktindex, Zeilenindex, Thumbnailindex)" name="trash" color="rot" slot="icon-only"></ion-icon>
+                                            </td>
+                                          </tr>
+                                        </table>
+                                      </div>
                                     </div>
                                   </td>
                                 </tr>
                               </table>
 
                             </ng-container>
-                            <!--
-                            <ng-container *ngIf="Thumb !== null">
-                              <table>
-                                <tr>
-                                  <td style="padding: 2px" (click)="ThumbnailClicked($event, Zeilenliste, Thumbnailindex)">
-                                    <img *ngIf="Thumb !== null" [src]="Thumb.mediumurl" [style.width.px]="Thumbbreite"/>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="font-size: 90%">{{Thumb.filename}}</td>
-                                </tr>
-                              </table>
-                            </ng-container>
-                            -->
 
                           </td>
                         </ng-container>
                       </tr>
                     </table>
-
-
-
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <table>
+                      <ng-container *ngIf="Punkt.Anmerkungenliste.length > 0">
+                        <tr *ngFor="let Anmerkung of Punkt.Anmerkungenliste">
+                          <td style="width: 60px; color: orange">
+                            {{Anmerkung.Zeitstring}}
+                          </td>
+                          <td style="width: 40px; color: orange" *ngIf="DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email)">
+                            {{DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email).Kuerzel}}:
+                          </td>
+                          <td>
+                            {{Anmerkung.Anmerkung}}
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </table>
 
                   </td>
                 </tr>
-                <ng-container *ngIf="Punkt.Anmerkungenliste.length > 0">
-                  <tr *ngFor="let Anmerkung of Punkt.Anmerkungenliste">
-                    <td style="width: 40px; color: orange" *ngIf="DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email)">
-                      {{DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email).Kuerzel}}:
-                    </td>
-                    <td>
-                      {{Anmerkung.Anmerkung}}
-                    </td>
-                  </tr>
-                </ng-container>
               </table>
 
+            </td>
+            <td align="center" style="width: 90px">
+              <ng-container *ngIf="Punkt.Bilderliste.length >  0">
 
+                <table class="nobordersmalltable">
+                  <tr>
+                    <td><checkbox-clon [Checked]="Punkt.ProtokollShowBilder" (CheckChanged)="ShowBilderCheckChanged($event, Punkt)"></checkbox-clon></td>
+                    <!--
+                    <td style="font-size: 80%">Bilder anzeigen</td>
+                    -->
+                  </tr>
+                </table>
+
+              </ng-container>
 
             </td>
             <td style="width: 90px">{{GetTermindatum(Punkt)}}</td>
@@ -281,8 +298,15 @@
               </table>
 
             </td>
-            <td style="width: 120px; text-align: center; border-right: 0; border-bottom: 0;"></td>
+            <td style="width: 120px; text-align: center;"></td>
           </tr>
+
+        </ng-container>
+
+          <!--
+          <tr style="cursor: pointer" *ngFor="let Punkt of DB.CurrentPunkteliste[LOP._id]; let Punktindex = index">
+
+          -->
         </table>
       </div>
 
@@ -297,7 +321,9 @@
 
     </div>
 
+  <!--
   </div>
+  -->
 
 
 
@@ -408,7 +434,6 @@
                           [ZIndex]="20000"
                           [Titel]="'Bilder auswählen'"
                           [Dialogbreite]="Dialogbreite"
-                          [Dialoghoehe]="Dialoghoehe"
                           [PositionY]="100"
                           (SelectedImagesChanged)="SelectedImagesChangedHandler($event)"
                           (OkClickedEvent)="BilderAuswahlOKClicked($event)"

@@ -41,6 +41,7 @@ import {Outlookemailattachmentstruktur} from "../../dataclasses/outlookemailatta
 import {Graphservice} from "../../services/graph/graph";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
+import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
 
 @Component({
   selector: 'pj-projektpunkt-editor',
@@ -262,6 +263,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       let File: Teamsfilesstruktur;
 
       // Bilder
+      debugger;
 
       if(this.DB.CurrentProjektpunkt !== null) {
 
@@ -273,6 +275,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
           Imageliste.push(File);
         }
+
 
         for(File of Imageliste) {
 
@@ -1045,6 +1048,28 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'AddBildClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  DeleteThumbnailClicked(event: MouseEvent, Thumb: Thumbnailstruktur, Zeilenindex: number, Thumbnailindex: number) {
+
+    try {
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      this.DB.CurrentProjektpunkt.Bilderliste = lodash.filter(this.DB.CurrentProjektpunkt.Bilderliste, (thumb: Projektpunktimagestruktur) => {
+
+        return thumb.FileID !== Thumb.id;
+      });
+
+      this.Thumbnailliste[Zeilenindex][Thumbnailindex] = null;
+
+      this.DB.UpdateProjektpunkt(this.DB.CurrentProjektpunkt, false);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'DeleteThumbnailClicked', this.Debug.Typen.Component);
     }
   }
 

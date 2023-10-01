@@ -9,6 +9,7 @@ export type Teamsfilesstruktur = {
   cTag: string;
   size: number;
   isfolder?: boolean;
+  content?: string;
   createdBy: {
     user: {
       email: string;

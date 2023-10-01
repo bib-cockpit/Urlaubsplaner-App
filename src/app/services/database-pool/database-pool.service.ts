@@ -50,7 +50,6 @@ export class DatabasePoolService {
   public Emailcontent: string;
   public Outlookkatekorien: Outlookkategoriesstruktur[];
   public ContacsSubscriptionURl: string;
-  public CurrentLOPGewerkeliste: Fachbereichestruktur[];
   public Fachbereich: Fachbereiche;
   public Emailcontentvarinaten = {
 
@@ -110,7 +109,6 @@ export class DatabasePoolService {
       this.CockpitserverURL         = environment.production === true ? 'https://bae-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
       this.Emailcontent             = this.Emailcontentvarinaten.NONE;
       this.ContacsSubscriptionURl   = this.CockpitserverURL + '/subscription';
-      this.CurrentLOPGewerkeliste   = [];
       this.Fachbereich              = new Fachbereiche();
 
     } catch (error) {
@@ -172,6 +170,7 @@ export class DatabasePoolService {
               if(lodash.isUndefined(Projektpunkt.AufgabenteilbereichID))  Projektpunkt.AufgabenteilbereichID  = null;
               if(lodash.isUndefined(Projektpunkt.Matrixanwendung))        Projektpunkt.Matrixanwendung        = false;
               if(lodash.isUndefined(Projektpunkt.Bilderliste))            Projektpunkt.Bilderliste            = [];
+              if(lodash.isUndefined(Projektpunkt.ProtokollShowBilder))    Projektpunkt.ProtokollShowBilder    = true;
 
               Projektpunkt.Anmerkungenliste.forEach((Anmerkung: Projektpunktanmerkungstruktur) => {
 
@@ -179,7 +178,8 @@ export class DatabasePoolService {
               });
 
               // Gerwerke bestimmen
-              // nochmal geändert
+
+              /*
 
               Gewerk = this.Fachbereich.GetFachbereichbyKey(Projektpunkt.Fachbereich);
 
@@ -194,6 +194,10 @@ export class DatabasePoolService {
                   this.CurrentLOPGewerkeliste.push(Gewerk);
                 }
               }
+
+
+               */
+
             });
 
             resolve(true);
@@ -793,7 +797,6 @@ export class DatabasePoolService {
       this.Protokollliste         = [];
       this.Bautagebuchliste       = [];
       this.LOPListe               = [];
-      this.CurrentLOPGewerkeliste = [];
 
       try {
 

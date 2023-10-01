@@ -37,6 +37,42 @@
   border-right:  1px solid #000000;
 }
 
+.aufgabedivclass:hover {
+
+  background: silver;
+}
+
+.aufgabedivclass {
+
+  // padding: 4px;
+  background: white;
+  border-radius: 3px;
+  width: 100%;
+  min-height: 36px;
+  height: 100%;
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
+  cursor: pointer;
+  padding: 4px;
+  // border-radius: 3px;
+}
+
+.imageclass:hover {
+
+  background: silver;
+  // filter: grayscale();
+}
+
+.imageclass {
+
+  padding: 4px;
+  border-radius: 3px;
+  background: white;
+  cursor: pointer;
+
+}
+
 .listeheaderclass td {
 
   padding: 4px;
