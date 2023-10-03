@@ -72,7 +72,10 @@
                     <table>
                       <tr>
                         <td>
-                          <img [src]="'data:image/png;base64,' + Thumb.content" [style.width.px]="Thumbbreite"/>
+                          <!--
+                          'data:image/png;base64,' + Thumb.content
+                          -->
+                          <img [src]="Thumb.mediumurl" (load)="ImageLoadedHandler($event)" [style.width.px]="Thumbbreite"/>
                         </td>
                       </tr>
                       <tr>

@@ -84,8 +84,10 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
   public ShowBildauswahl: boolean;
   private Imageliste: Projektpunktimagestruktur[];
   public Thumbnailliste: Thumbnailstruktur[][][];
+  public BigThumbnailliste: Thumbnailstruktur[];
+  public BigThumbnailnumernliste: string[];
   public Zeilenanzahlliste: number[][][];
-  public Thumbbreite: number;
+  public Thumbbreite: number[][];
   public Spaltenanzahl: number;
   private Imageviewer: ImageViewer;
 
@@ -144,9 +146,11 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.Imageliste        = [];
       this.Thumbnailliste    = [];
       this.Zeilenanzahlliste = [];
-      this.Thumbbreite     = 100;
-      this.Spaltenanzahl   = 6;
-      this.Imageviewer     = null;
+      this.Thumbbreite       = [];
+      this.Spaltenanzahl     = 6;
+      this.Imageviewer       = null;
+      this.BigThumbnailliste = [];
+      this.BigThumbnailnumernliste = [];
 
     } catch (error) {
 
@@ -200,8 +204,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.LOPListepunkteSubscription = this.Pool.ProjektpunktelisteChanged.subscribe(() => {
 
         this.PrepareData();
-
-        debugger;
       });
 
       this.Headerhoehe = 38;
@@ -231,13 +233,15 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       let Liste: Thumbnailstruktur[] = [];
       let Imageliste: Teamsfilesstruktur[] = [];
       let File: Teamsfilesstruktur;
-      let Zeitpunkt: Moment;
 
       if(this.Pool.Mitarbeitersettings !== null) Stichtag = Heute.clone().subtract(this.Pool.Mitarbeitersettings.LOPListeGeschlossenZeitfilter, 'days');
       else                                       Stichtag = Heute.clone().subtract(10, 'days');
 
-      this.Thumbnailliste    = [];
-      this.Zeilenanzahlliste = [];
+      this.Thumbnailliste          = [];
+      this.Zeilenanzahlliste       = [];
+      this.Thumbbreite             = [];
+      this.BigThumbnailliste       = [];
+      this.BigThumbnailnumernliste = [];
 
       if(this.DBProjekte.CurrentProjekt !== null) {
 
@@ -257,8 +261,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
             return Eintrag.Deleted === false ;
           });
 
-
-
           // Gewerke feststellen
 
           for(Gewerk of this.Pool.Fachbereich.Gewerkeliste) {
@@ -266,16 +268,12 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
             Gewerk.Anzahl = 0;
           }
 
-          debugger;
-
           this.DB.CurrentPunkteliste = [];
           this.DB.CurrentInfoliste   = [];
 
           for(let LOPListe of this.LOPListen) {
 
             LOPListe.Zeitstring = moment(LOPListe.Zeitstempel).format('DD.MM.YY');
-
-            debugger;
 
             this.DB.CurrentPunkteliste[LOPListe._id] = [];
 
@@ -344,6 +342,8 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
             this.Thumbnailliste[LOPListe._id]    = [];
             this.Zeilenanzahlliste[LOPListe._id] = [];
+            this.Thumbbreite[LOPListe._id]       = [];
+
             Punkteindex = 0;
 
             for(Punkt of this.DB.CurrentPunkteliste[LOPListe._id]) {
@@ -364,21 +364,46 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
                 Thumb = await this.GraphService.GetSiteThumbnail(File);
 
-                if(Thumb !== null) {
+                if(Punkt.Thumbnailsize !== 'large') {
 
-                  Thumb.weburl = File.webUrl;
-                  Merker       = lodash.find(Liste, {id: File.id});
+                  if(Thumb !== null) {
 
-                  if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+                    Thumb.weburl = File.webUrl;
+                    Merker       = lodash.find(Liste, {id: File.id});
+
+                    if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+                  }
+                  else {
+
+                    Thumb        = this.DBProjektpunkte.GetEmptyThumbnail();
+                    Thumb.id     = File.id;
+                    Thumb.weburl = null;
+
+                    Liste.push(Thumb);
+                  }
                 }
                 else {
 
-                  Thumb        = this.DBProjektpunkte.GetEmptyThumbnail();
-                  Thumb.id     = File.id;
-                  Thumb.weburl = null;
+                  if(Thumb !== null) {
 
-                  Liste.push(Thumb);
+                    Thumb.weburl = File.webUrl;
+                    Thumb.id     = File.id;
+                    Merker       = lodash.find(this.BigThumbnailliste, {id: File.id});
+
+                    if(lodash.isUndefined(Merker)) {
+
+                      this.BigThumbnailliste.push(Thumb);
+                      this.BigThumbnailnumernliste.push(Punkt.Nummer);
+                    }
+                  }
                 }
+              }
+
+              switch (Punkt.Thumbnailsize) {
+
+                case 'small':  this.Spaltenanzahl = 4; this.Thumbbreite[LOPListe._id][Punkteindex] = 100; break;
+                case 'medium': this.Spaltenanzahl = 2; this.Thumbbreite[LOPListe._id][Punkteindex] = 200; break;
+                case 'large':  this.Spaltenanzahl = 1; this.Thumbbreite[LOPListe._id][Punkteindex] = 800; break;
               }
 
               Anzahl              = Liste.length;
@@ -786,6 +811,17 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
         case  this.Auswahlservice.Auswahloriginvarianten.LOPListe_Eintrageditor_Fachbereich:
 
           this.DBProjektpunkte.CurrentProjektpunkt.Fachbereich = data;
+
+          break;
+
+        case  this.Auswahlservice.Auswahloriginvarianten.LOPListe_Thumnailsize:
+
+          this.DBProjektpunkte.CurrentProjektpunkt.Thumbnailsize = data;
+
+          this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt, false).then(() => {
+
+            this.PrepareData();
+          });
 
           break;
 
@@ -1417,6 +1453,84 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'LOP Liste', 'ShowBilderCheckChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  GetTumbnailgroessetext(Thumbnailsize: string): string {
+
+    try {
+
+      switch (Thumbnailsize) {
+
+        case 'small':  return 'klein';   break;
+        case 'medium': return 'mittel';  break;
+        case 'large':  return 'groß';    break;
+      }
+
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'GetTumbnailgroessetext', this.Debug.Typen.Page);
+    }
+  }
+
+  ThumsizeClicked(Punkt: Projektpunktestruktur) {
+
+    try {
+      this.Auswahltitel = 'Thumbnailgrösse festlegen';
+      this.Auswahlliste = [];
+      this.Auswahlhoehe = 200;
+
+      this.DBProjektpunkte.CurrentProjektpunkt = Punkt;
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.LOPListe_Thumnailsize;
+
+      this.Auswahlliste.push({Index: 0, FirstColumn: 'klein',  SecoundColumn: '', Data: 'small'  });
+      this.Auswahlliste.push({Index: 1, FirstColumn: 'mittel', SecoundColumn: '', Data: 'medium' });
+      this.Auswahlliste.push({Index: 2, FirstColumn: 'gross',  SecoundColumn: '', Data: 'large'  });
+
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: Punkt.Thumbnailsize});
+      this.ShowAuswahl  = true;
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'ThumsizeClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  GetThumbSource(Punkt: Projektpunktestruktur, Thumb: Thumbnailstruktur): string {
+
+    try {
+
+      debugger;
+
+      switch (Punkt.Thumbnailsize) {
+
+        case 'small':
+
+          return Thumb.smallurl;
+
+          break;
+
+        case 'medium':
+
+          return Thumb.mediumurl;
+
+        break;
+
+        case 'large':
+
+          return Thumb.largeurl;
+
+        break;
+      }
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'GetThumbSource', this.Debug.Typen.Page);
     }
   }
 }

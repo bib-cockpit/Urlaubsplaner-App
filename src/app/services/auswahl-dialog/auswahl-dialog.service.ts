@@ -94,6 +94,7 @@ export class AuswahlDialogService {
     LOPListe_LOPListeeditor_InternTeilnehmer:       'LOPListe_LOPListeeditor_InternTeilnehmer',
     LOPListe_LOPListeeditor_ExternTeilnehmer:       'LOPListe_LOPListeeditor_ExternTeilnehmer',
     LOPListe:                                       'LOPListe',
+    LOPListe_Thumnailsize:                          'LOPListe_Thumnailsize',
 
     LOPListe_Eintrageditor_ZustaendigExtern:     'LOPListe_Eintrageditor_ZustaendigExtern',
     LOPListe_Eintrageditor_ZustaendigIntern:     'LOPListe_Eintrageditor_ZustaendigIntern',

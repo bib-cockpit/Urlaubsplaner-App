@@ -174,6 +174,8 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
 
     try {
 
+      this.Thumbnailliste = [];
+
       await this.GraphService.GetSiteSubdirictoryfilelist(File, true);
       await this.PrepareDaten();
 
@@ -200,6 +202,8 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
   async SubFolderBackClicked(index: number, file: Teamsfilesstruktur) {
 
     try {
+
+      this.Thumbnailliste = [];
 
       await this.GraphService.GetSiteSubdirictoryfilelist(file, true);
       await this.GraphService.RemoveSiteSubdirectory(file);
@@ -320,7 +324,7 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
 
           Thumb.weburl = File.webUrl;
           Merker        = lodash.find(Liste, {id: File.id});
-          Thumb.content = await this.GraphService.GetSiteThumbnailContent(Thumb, 'small');
+          // Thumb.content = await this.GraphService.GetSiteThumbnailContent(Thumb, 'medium');
 
           if(lodash.isUndefined(Merker)) {
 
@@ -340,8 +344,6 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
 
           Liste.push(Thumb);
         }
-
-        this.LoadThumbsProgress++;
       }
 
       this.LoadThumbnailsRunning = false;
@@ -548,6 +550,20 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Teams Filebrowser', 'ImageCheckedChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  ImageLoadedHandler(event: Event) {
+
+    try {
+
+      this.LoadThumbsProgress++;
+
+      debugger;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Teams Filebrowser', 'ImageLoadedHandler', this.Debug.Typen.Component);
     }
   }
 }

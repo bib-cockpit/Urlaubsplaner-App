@@ -17,7 +17,7 @@ export class BasicsProvider {
   public InnerContenthoehe: number    = 0;
   public Waittime: number             = 300;
   public Svgpath: string              = 'assets/svgs/';
-  public AppBuild: string             = '01.10.2023 11:45';
+  public AppBuild: string             = '03.10.2023 19:00';
   public ShowHomeScreenInfos          = true;
   public DebugNoExternalEmail         = true;
   public AppVersionName               = 'none';

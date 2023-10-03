@@ -121,10 +121,10 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
               public Pool: DatabasePoolService,
               public Database: DatabaseProjektpunkteService,
               public ProjekteDB: DatabaseProjekteService,
-              private ProtokolleDB: DatabaseProtokolleService,
-              private LOPListeDB: DatabaseLoplisteService,
-              private MitarbeiterDB: DatabaseMitarbeiterService,
-              private MitarbeitersettingsDB: DatabaseMitarbeitersettingsService,
+              public ProtokolleDB: DatabaseProtokolleService,
+              public LOPListeDB: DatabaseLoplisteService,
+              public  MitarbeiterDB: DatabaseMitarbeiterService,
+              public MitarbeitersettingsDB: DatabaseMitarbeitersettingsService,
               // private Emailservice: EmailService,
               public Const: ConstProvider) {
 
@@ -1200,6 +1200,18 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'DeleteThumbnailClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  GetAnmerkungDatum(Zeitstempel: number): string {
+
+    try {
+
+      return moment(Zeitstempel).format('DD.MM.YY');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'GetAnmerkungDatum', this.Debug.Typen.Component);
     }
   }
 }

@@ -171,6 +171,7 @@ export class DatabasePoolService {
               if(lodash.isUndefined(Projektpunkt.Matrixanwendung))        Projektpunkt.Matrixanwendung        = false;
               if(lodash.isUndefined(Projektpunkt.Bilderliste))            Projektpunkt.Bilderliste            = [];
               if(lodash.isUndefined(Projektpunkt.ProtokollShowBilder))    Projektpunkt.ProtokollShowBilder    = true;
+              if(lodash.isUndefined(Projektpunkt.Thumbnailsize))          Projektpunkt.Thumbnailsize          = 'small';
 
               Projektpunkt.Anmerkungenliste.forEach((Anmerkung: Projektpunktanmerkungstruktur) => {
 

@@ -168,6 +168,8 @@
                 <tr *ngIf="CheckThumbnailliste(Thumbnailliste, LOP._id, Punktindex) && Punkt.ProtokollShowBilder">
                   <td>
 
+                    <span *ngIf="Punkt.ProtokollShowBilder && Punkt.Bilderliste.length > 0 && Punkt.Thumbnailsize === 'large'" style="color: #307ac1">Siehe Bilder im Anhang</span>
+
                     <table *ngIf="Thumbnailliste[LOP._id][Punktindex];">
                       <tr *ngFor="let Zeilenliste of Thumbnailliste[LOP._id][Punktindex];  let Zeilenindex = index">
                         <ng-container *ngFor="let Thumb of Zeilenliste; let Thumbnailindex = index">
@@ -178,7 +180,7 @@
                                 <tr>
                                   <td style="padding: 2px" (click)="ThumbnailClicked($event, Zeilenliste, Thumbnailindex)">
                                     <div class="imageclass">
-                                      <img  [src]="Thumb.mediumurl" [style.width.px]="Thumbbreite"/>
+                                      <img  [src]="GetThumbSource(Punkt, Thumb)" [style.width.px]="Thumbbreite[LOP._id][Punktindex]"/>
                                     </div>
                                   </td>
                                 </tr>
@@ -243,10 +245,16 @@
 
                 <table class="nobordersmalltable">
                   <tr>
-                    <td><checkbox-clon [Checked]="Punkt.ProtokollShowBilder" (CheckChanged)="ShowBilderCheckChanged($event, Punkt)"></checkbox-clon></td>
-                    <!--
-                    <td style="font-size: 80%">Bilder anzeigen</td>
-                    -->
+                    <td>
+                      <div class="thumbsizedivlass" (click)="ThumsizeClicked(Punkt)">
+                        {{GetTumbnailgroessetext(Punkt.Thumbnailsize)}}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="center">
+                      <checkbox-clon [Checked]="Punkt.ProtokollShowBilder" (CheckChanged)="ShowBilderCheckChanged($event, Punkt)"></checkbox-clon>
+                    </td>
                   </tr>
                 </table>
 
@@ -303,6 +311,20 @@
 
         </ng-container>
 
+        <ng-container *ngIf="BigThumbnailliste.length > 0">
+          <tr style="background: #444444; color: white">
+            <td style="text-align: center"><b>Nr.</b></td>
+            <td colspan="10"><b>Abbildung</b></td>
+          </tr>
+          <tr *ngFor="let Thumb of BigThumbnailliste; let Index = index">
+            <td style="text-align: center; background: #444444; color: white;">{{BigThumbnailnumernliste[Index]}}</td>
+            <td colspan="10" (click)="ThumbnailClicked($event, BigThumbnailliste, Index)">
+              <img [src]="Thumb.largeurl">
+            </td>
+          </tr>
+
+        </ng-container>
+
           <!--
           <tr style="cursor: pointer" *ngFor="let Punkt of DB.CurrentPunkteliste[LOP._id]; let Punktindex = index">
 
@@ -310,10 +332,13 @@
         </table>
       </div>
 
+    <abstand-element-fixed></abstand-element-fixed>
+
 
       <div *ngIf="LOPListen.length === 0"  class="keineintragclass">
         <table   width="100%" class="docinnertable">
           <tr>
+            <td></td>
             <td style="text-align: center; height: 100px">Keine LOP Liste vorhanden</td>
           </tr>
         </table>

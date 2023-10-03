@@ -198,7 +198,7 @@
           </tr>
         </table>
       </td>
-      <td *ngIf="Settings.AufgabenShowBemerkung">
+      <td *ngIf="Settings.AufgabenShowBemerkung" valign="top">
 
         <div *ngIf="ShowAddNewDetail(Projektpunkt) === true && Projektpunkt.Anmerkungenliste.length === 0"
              (click)="AddAnmerkungClickedHandler(Projektpunkt)" class="rootbuttonsmallclass">
@@ -216,14 +216,30 @@
                     <table *ngIf="Anmerkung.LiveEditor === false && Pool.Mitarbeitersettings !== null"  style="width: 100%;">
                       <tr>
                         <td style="width: 100%;">
-                          <div style="width: 100%" class="bemerkungdivclass"
-                               [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
-                               (click)="EditAnmerkungClickedHandler(Projektpunkt, Anmerkung)" [innerHTML]="Anmerkung.Anmerkung | safe : 'html'"></div>
+                            <table>
+                              <tr>
+                                <td style="color: orange" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">
+                                  {{GetAnmerkungDatum(Anmerkung.Zeitstempel)}}
+                                </td>
+                                <td style="width: 3px"></td>
+                                <td style="color: orange" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize" *ngIf="MitarbeiterDB.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email)">
+                                  {{MitarbeiterDB.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email).Kuerzel}}:
+                                </td>
+                                <td>
+                                  <div  [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
+                                        [innerHTML]="Anmerkung.Anmerkung | safe : 'html'" style="width: 100%" class="bemerkungdivclass"
+                                        (click)="EditAnmerkungClickedHandler(Projektpunkt, Anmerkung)">
+                                  </div>
+                                </td>
+                              </tr>
+                            </table>
                         </td>
                       </tr>
+                      <!--
                       <tr *ngIf="Projektpunkt.Anmerkungenliste.length > 1 && Detailindex < Projektpunkt.Anmerkungenliste.length - 1">
                         <td colspan="2"><div style="height: 1px; background: silver; width: 100%"></div></td>
                       </tr>
+                      -->
                     </table>
 
 
