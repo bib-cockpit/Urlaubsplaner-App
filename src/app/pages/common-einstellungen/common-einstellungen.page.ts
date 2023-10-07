@@ -131,7 +131,7 @@ export class CommonEinstellungenPage implements OnInit {
           break;
       }
 
-      this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
+      this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null).then(() => {
 
 
       }).catch((error: HttpErrorResponse) => {
@@ -208,7 +208,7 @@ export class CommonEinstellungenPage implements OnInit {
           break;
       }
 
-      this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
+      this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null).then(() => {
 
 
         switch (this.Auswahldialogorigin) {

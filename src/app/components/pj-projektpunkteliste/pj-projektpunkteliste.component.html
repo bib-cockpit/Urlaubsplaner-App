@@ -25,7 +25,7 @@
       <table  class="nobordertable">
         <tr>
           <td><ion-icon name="create" style="font-size: 28px"></ion-icon></td>
-          <td><checkbox-clon [Checked]="Settings.AufgabenShowPlanung" (CheckChanged)="PlanungCheckedChanged($event)"></checkbox-clon></td>
+          <td><checkbox-clon [Checked]="Aufgabenansicht.AufgabenShowPlanung" (CheckChanged)="PlanungCheckedChanged($event)"></checkbox-clon></td>
         </tr>
       </table>
     </td>
@@ -33,7 +33,7 @@
       <table  class="nobordertable">
         <tr>
           <td><ion-icon name="hammer" style="font-size: 22px"></ion-icon></td>
-          <td><checkbox-clon [Checked]="Settings.AufgabenShowAusfuehrung" (CheckChanged)="AusfuehrungCheckedChanged($event)"></checkbox-clon></td>
+          <td><checkbox-clon [Checked]="Aufgabenansicht.AufgabenShowAusfuehrung" (CheckChanged)="AusfuehrungCheckedChanged($event)"></checkbox-clon></td>
         </tr>
       </table>
     </td>
@@ -213,7 +213,7 @@
                 <tr *ngFor="let Anmerkung of Projektpunkt.Anmerkungenliste; let Detailindex = index;">
                   <td>
 
-                    <table *ngIf="Anmerkung.LiveEditor === false && Pool.Mitarbeitersettings !== null"  style="width: 100%;">
+                    <table *ngIf="(Anmerkung.LiveEditor === false || Anmerkung.LiveEditor === undefined) && Pool.Mitarbeitersettings !== null"  style="width: 100%;">
                       <tr>
                         <td style="width: 100%;">
                             <table>

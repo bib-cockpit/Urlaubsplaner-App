@@ -599,9 +599,13 @@
 
     <!-- Einzelprojekt 3. Menüzeile -->
 
+    <!--
+     || Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Alle
+     -->
+
     <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Projekte &&
                          Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste &&
-                         (Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt || Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Alle)  &&
+                         (Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt)  &&
                          DBProjekte.CurrentProjekt        !== null">
       <tr>
         <td colspan="2" style="padding-left: 8px; padding-right: 8px">
@@ -623,15 +627,15 @@
                 </td>
                 <ng-container *ngIf="DBProjekte.CurrentFavoritprojektindex !== 1500">
                   <td align="center" class="trennertdclass"><div class="trennerdivclass"></div>
-                  <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowOffen"  (CheckChanged)="StatusFilterChanged($event, Const.Projektpunktstatustypen.Offen.Name)"></checkbox-clon></td>
+                  <td><checkbox-clon [Checked]="GetAufgabenansicht().AufgabenShowOffen"  (CheckChanged)="StatusFilterChanged($event, Const.Projektpunktstatustypen.Offen.Name)"></checkbox-clon></td>
                   <td><div class="statusvaianteclass" style="background: teal;">Offen</div></td><td style="width: 6px"></td>
-                  <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowGeschlossen" (CheckChanged)="StatusFilterChanged($event, Const.Projektpunktstatustypen.Geschlossen.Name)"></checkbox-clon></td>
+                  <td><checkbox-clon [Checked]="GetAufgabenansicht().AufgabenShowGeschlossen" (CheckChanged)="StatusFilterChanged($event, Const.Projektpunktstatustypen.Geschlossen.Name)"></checkbox-clon></td>
                   <td><div class="statusvaianteclass" style="background: #c7d304;">Geschlossen</div></td><td style="width: 6px"></td>
-                  <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowBearbeitung" (CheckChanged)="StatusFilterChanged($event, Const.Projektpunktstatustypen.Bearbeitung.Name)"></checkbox-clon></td>
+                  <td><checkbox-clon [Checked]="GetAufgabenansicht().AufgabenShowBearbeitung" (CheckChanged)="StatusFilterChanged($event, Const.Projektpunktstatustypen.Bearbeitung.Name)"></checkbox-clon></td>
                   <td><div class="statusvaianteclass" style="background: #616A6B;">In Bearbeitung</div></td><td style="width: 6px"></td>
-                  <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowRuecklauf"   (CheckChanged)="StatusFilterChanged($event, Const.Projektpunktstatustypen.Ruecklauf.Name)"></checkbox-clon></td>
+                  <td><checkbox-clon [Checked]="GetAufgabenansicht().AufgabenShowRuecklauf"   (CheckChanged)="StatusFilterChanged($event, Const.Projektpunktstatustypen.Ruecklauf.Name)"></checkbox-clon></td>
                   <td><div class="statusvaianteclass" style="background: #0020C2;">Rücklauf ausstehend</div></td><td style="width: 6px"></td>
-                  <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.AufgabenShowBilder"   (CheckChanged)="StatusFilterChanged($event, 'Bilder')"></checkbox-clon></td>
+                  <td><checkbox-clon [Checked]="GetAufgabenansicht().AufgabenShowBilder"   (CheckChanged)="StatusFilterChanged($event, 'Bilder')"></checkbox-clon></td>
                   <td><div class="statusvaianteclass" style="background: none;">Bilder anzeigen</div></td><td style="width: 6px"></td>
                   <!--
                   <td><checkbox-clon  [Checked]="Pool.Mitarbeitersettings.AufgabenShowMeilensteinOnly" (CheckChanged)="StatusFilterChanged($event, 'Meilenstein')"></checkbox-clon></td>

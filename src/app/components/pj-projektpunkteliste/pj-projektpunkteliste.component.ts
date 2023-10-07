@@ -39,6 +39,7 @@ import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Graphservice} from "../../services/graph/graph";
 import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 
 @Component({
   selector: 'pj-projektpunkteliste',
@@ -113,6 +114,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
   public Zeilenanzahl: number;
   public Thumbbreite: number;
   public Spaltenanzahl: number;
+  public Aufgabenansicht: Aufgabenansichtstruktur;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -141,6 +143,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
       this.ShowListentitel = true;
       this.ShowBilder = true;
       this.Thumbnailliste = [];
+      this.Aufgabenansicht = null;
 
 
     } catch (error) {
@@ -298,12 +301,15 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
       let File: Teamsfilesstruktur;
       let GoOn: boolean = false;
 
+
       this.Thumbnailliste = [];
       this.Thumbbreite    = 100;
       this.Spaltenanzahl  = 4;
       Punktindex          = 0;
 
-      if(this.Pool.Mitarbeitersettings !== null) GoOn = this.Pool.Mitarbeitersettings.AufgabenShowBilder;
+      this.Aufgabenansicht = this.Pool.GetAufgabenansichten(this.Projekt._id);
+
+      if(this.Pool.Mitarbeitersettings !== null) GoOn = this.Aufgabenansicht.AufgabenShowBilder;
 
       if(GoOn) {
 
@@ -951,7 +957,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
 
       this.TerminFiltermodusClicked.emit(this.Pool.Mitarbeitersettings.AufgabenSortiermodus);
 
-      this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+      this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null);
 
     } catch (error) {
 
@@ -968,7 +974,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
 
       this.TerminFiltermodusClicked.emit(this.Pool.Mitarbeitersettings.AufgabenSortiermodus);
 
-      this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+      this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null);
 
     } catch (error) {
 
@@ -1116,13 +1122,14 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
     }
   }
 
-  PlanungCheckedChanged(event: { status: boolean; index: number; event: any }) {
+  async PlanungCheckedChanged(event: { status: boolean; index: number; event: any }) {
 
     try {
 
-      this.Pool.Mitarbeitersettings.AufgabenShowPlanung = event.status;
 
-      this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+      this.Aufgabenansicht.AufgabenShowPlanung = event.status;
+
+      await this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, this.Aufgabenansicht);
 
       this.Pool.MitarbeitersettingsChanged.emit();
 
@@ -1132,13 +1139,13 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
     }
   }
 
-  AusfuehrungCheckedChanged(event: { status: boolean; index: number; event: any }) {
+  async AusfuehrungCheckedChanged(event: { status: boolean; index: number; event: any }) {
 
     try {
 
-      this.Pool.Mitarbeitersettings.AufgabenShowAusfuehrung = event.status;
+      this.Aufgabenansicht.AufgabenShowAusfuehrung = event.status;
 
-      this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+      await this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, this.Aufgabenansicht);
 
       this.Pool.MitarbeitersettingsChanged.emit();
 

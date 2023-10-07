@@ -29,6 +29,7 @@ import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
 import ImageViewer from "awesome-image-viewer";
 import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 
 @Component({
   selector:    'pj-protokolle-liste-page',
@@ -242,7 +243,8 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
   AuswahlOkButtonClicked(data: any) {
 
     try {
-      debugger;
+
+      let Aufgabenansicht: Aufgabenansichtstruktur = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
 
       switch (this.Auswahldialogorigin) {
 
@@ -251,7 +253,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
           this.DBStandort.CurrentStandortfilter        = data;
           this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
 
-          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht).then(() => {
 
             this.DBStandort.StandortfilterChanged.emit();
 
@@ -790,13 +792,16 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     try {
 
+      let Aufgabenansicht: Aufgabenansichtstruktur = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
+
+
       this.DBProjekte.CurrentProjekt      = projekt;
       this.DBProjekte.CurrentProjektindex = lodash.findIndex(this.DBProjekte.Projektliste, {_id: projekt._id});
 
       this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
       this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
 
-      this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+      this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht);
 
       this.ShowProjektschnellauswahl = false;
 
@@ -984,7 +989,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
         }
       }
 
-      debugger;3
+      debugger;
 
       this.Imageviewer = new ImageViewer({
         images: Imagedaten,
@@ -1002,7 +1007,6 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
   SelectedImagesChangedHandler(thumbliste: Thumbnailstruktur[]) {
 
     try {
-
       this.Imageliste = [];
 
       for(let Thumb of thumbliste) {

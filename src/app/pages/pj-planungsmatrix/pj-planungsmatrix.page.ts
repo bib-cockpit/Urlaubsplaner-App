@@ -24,6 +24,7 @@ import {Projektestruktur} from "../../dataclasses/projektestruktur";
 import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 
 @Component({
   selector: 'pj-planungsmatrix-page',
@@ -135,7 +136,8 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
 
     try {
 
-      debugger;
+      let Aufgabenansicht: Aufgabenansichtstruktur = this.Pool.GetAufgabenansichten(projekt !== null ? projekt._id : null);
+
 
       switch(this.SchnellauswahlOrigin) {
 
@@ -155,7 +157,7 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
           this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
           this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
 
-          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht).then(() => {
 
             this.ShowProjektschnellauswahl = false;
 

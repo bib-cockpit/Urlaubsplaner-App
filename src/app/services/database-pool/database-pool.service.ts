@@ -23,6 +23,7 @@ import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 import {Outlookkategoriesstruktur} from "../../dataclasses/outlookkategoriesstruktur";
 import {Notizenkapitelstruktur} from "../../dataclasses/notizenkapitelstruktur";
 import {Fachbereiche, Fachbereichestruktur} from "../../dataclasses/fachbereicheclass";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,7 @@ export class DatabasePoolService {
   public Mitarbeiterdaten: Mitarbeiterstruktur;
   public Mitarbeiterstandort: Standortestruktur;
   public Mitarbeitersettings: Mitarbeitersettingsstruktur;
+  public CurrentAufgabenansichten: Aufgabenansichtstruktur;
   public ShowProgress: boolean;
   public MaxProgressValue: number;
   public CurrentProgressValue: number;
@@ -110,12 +112,46 @@ export class DatabasePoolService {
       this.Emailcontent             = this.Emailcontentvarinaten.NONE;
       this.ContacsSubscriptionURl   = this.CockpitserverURL + '/subscription';
       this.Fachbereich              = new Fachbereiche();
+      this.CurrentAufgabenansichten = null;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'constructor', this.Debug.Typen.Service);
     }
   }
+
+  public GetAufgabenansichten(projektid: string): Aufgabenansichtstruktur {
+
+    try {
+      let Ansichtensetup: Aufgabenansichtstruktur;
+
+      if(this.Mitarbeitersettings !== null)  Ansichtensetup = lodash.find(this.Mitarbeitersettings.Aufgabenansicht, {ProjektID: projektid});
+
+      if(lodash.isUndefined(Ansichtensetup)) {
+
+        Ansichtensetup = {
+
+          ProjektID: projektid,
+          AufgabenShowAusfuehrung: true,
+          AufgabenShowBearbeitung: true,
+          AufgabenShowBilder: true,
+          AufgabenShowGeschlossen: false,
+          AufgabenShowMeilensteinOnly: false,
+          AufgabenShowOffen: true,
+          AufgabenShowPlanung: true,
+          AufgabenShowRuecklauf: true,
+          AufgabenShowMeilensteine: true,
+        };
+      }
+
+      return Ansichtensetup;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Pool', 'GetAufgabenansichten', this.Debug.Typen.Service);
+    }
+  }
+
 
   public ReadProjektpunkteliste(projekt: Projektestruktur): Promise<any> {
 
@@ -758,8 +794,6 @@ export class DatabasePoolService {
         if(lodash.isUndefined(Eintrag.Kalenderwoche)) Eintrag.Kalenderwoche = 0;
       }
 
-
-
       return mitarbeiter;
 
     } catch (error) {
@@ -885,12 +919,7 @@ export class DatabasePoolService {
         Textsize:                14,
         StandortFilter:          null,
         LeistungsphaseFilter:    this.Const.Leistungsphasenvarianten.UNBEKANNT,
-        AufgabenShowBearbeitung: true,
-        AufgabenShowGeschlossen: false,
-        AufgabenShowOffen:       true,
-        AufgabenShowRuecklauf:   true,
-        AufgabenShowBilder:      true,
-        AufgabenShowMeilensteinOnly: false,
+        Aufgabenansicht:         [],
         Deleted:                 false,
         HeadermenueMaxFavoriten: 6,
 
@@ -911,8 +940,6 @@ export class DatabasePoolService {
         AufgabenShowMeintag:       true,
         AufgabenShowZeitansatz:    false,
         AufgabenShowMeinewoche:    true,
-        AufgabenShowAusfuehrung:   true,
-        AufgabenShowPlanung:       true,
 
         OberkostengruppeFilter: null,
         HauptkostengruppeFilter: null,
@@ -969,17 +996,8 @@ export class DatabasePoolService {
           if(lodash.isUndefined(Settings.AufgabenShowMeintag))      Settings.AufgabenShowMeintag      = true;
           if(lodash.isUndefined(Settings.AufgabenShowZeitansatz))   Settings.AufgabenShowZeitansatz   = true;
           if(lodash.isUndefined(Settings.AufgabenShowMeinewoche))   Settings.AufgabenShowMeinewoche   = true;
+          if(lodash.isUndefined(Settings.Aufgabenansicht))          Settings.Aufgabenansicht          = [];
 
-          if(lodash.isUndefined(Settings.AufgabenShowMeilensteinOnly)) Settings.AufgabenShowMeilensteinOnly = false;
-
-          if(lodash.isUndefined(Settings.AufgabenShowGeschlossen))  Settings.AufgabenShowGeschlossen  = true;
-          if(lodash.isUndefined(Settings.AufgabenShowOffen))        Settings.AufgabenShowOffen        = true;
-          if(lodash.isUndefined(Settings.AufgabenShowBearbeitung))  Settings.AufgabenShowBearbeitung  = true;
-          if(lodash.isUndefined(Settings.AufgabenShowRuecklauf))    Settings.AufgabenShowRuecklauf    = true;
-          if(lodash.isUndefined(Settings.AufgabenShowMeilensteine)) Settings.AufgabenShowMeilensteine = true;
-          if(lodash.isUndefined(Settings.AufgabenShowAusfuehrung))  Settings.AufgabenShowAusfuehrung  = true;
-          if(lodash.isUndefined(Settings.AufgabenShowPlanung))      Settings.AufgabenShowPlanung      = true;
-          if(lodash.isUndefined(Settings.AufgabenShowBilder))       Settings.AufgabenShowBilder       = true;
 
           if(lodash.isUndefined(Settings.AufgabenTerminfiltervariante))  Settings.AufgabenTerminfiltervariante  = null;
           if(lodash.isUndefined(Settings.AufgabenTerminfilterStartwert)) Settings.AufgabenTerminfilterStartwert = null;
@@ -995,6 +1013,8 @@ export class DatabasePoolService {
           if(lodash.isUndefined(Settings.OberkostengruppeFilter))  Settings.OberkostengruppeFilter   = null;
           if(lodash.isUndefined(Settings.UnterkostengruppeFilter)) Settings.UnterkostengruppeFilter  = null;
           if(lodash.isUndefined(Settings.HauptkostengruppeFilter)) Settings.HauptkostengruppeFilter  = null;
+
+          this.CurrentAufgabenansichten = this.GetAufgabenansichten(null);
 
           return Settings;
         }

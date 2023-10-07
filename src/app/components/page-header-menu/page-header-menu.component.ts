@@ -28,6 +28,7 @@ import {DatabaseOutlookemailService} from "../../services/database-email/databas
 import {DatabasePlanungsmatrixService} from "../../services/database-planungsmatrix/database-planungsmatrix.service";
 import {DatabaseLoplisteService} from "../../services/database-lopliste/database-lopliste.service";
 import {Fachbereichestruktur} from "../../dataclasses/fachbereicheclass";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 
 @Component({
   selector: 'page-header-menu',
@@ -376,52 +377,68 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+  public GetAufgabenansicht(): Aufgabenansichtstruktur {
+
+    try {
+
+      let Aufgabenansicht: Aufgabenansichtstruktur = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
+
+      return Aufgabenansicht;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetAufgabenansicht', this.Debug.Typen.Component);
+    }
+  }
+
   StatusFilterChanged(event: any, Statusname: string) {
 
     try {
 
       let status = event.status;
 
+      let Aufgabenansicht: Aufgabenansichtstruktur = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
+
       switch (Statusname) {
 
         case 'Bilder':
 
-          this.Pool.Mitarbeitersettings.AufgabenShowBilder = status;
+          Aufgabenansicht.AufgabenShowBilder = status;
 
           break;
 
         case this.Const.Projektpunktstatustypen.Offen.Name:
 
-          this.Pool.Mitarbeitersettings.AufgabenShowOffen = status;
+          Aufgabenansicht.AufgabenShowOffen = status;
 
           break;
 
         case this.Const.Projektpunktstatustypen.Geschlossen.Name:
 
-          this.Pool.Mitarbeitersettings.AufgabenShowGeschlossen= status;
+          Aufgabenansicht.AufgabenShowGeschlossen= status;
 
           break;
 
         case this.Const.Projektpunktstatustypen.Bearbeitung.Name:
 
-          this.Pool.Mitarbeitersettings.AufgabenShowBearbeitung = status;
+          Aufgabenansicht.AufgabenShowBearbeitung = status;
 
           break;
 
         case this.Const.Projektpunktstatustypen.Ruecklauf.Name:
 
-          this.Pool.Mitarbeitersettings.AufgabenShowRuecklauf = status;
+          Aufgabenansicht.AufgabenShowRuecklauf = status;
 
           break;
 
         case 'Meilenstein':
 
-          this.Pool.Mitarbeitersettings.AufgabenShowMeilensteinOnly = status;
+          Aufgabenansicht.AufgabenShowMeilensteinOnly = status;
 
           break;
       }
 
-      this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
+      this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht).then(() => {
 
         this.FilterChanged.emit(Statusname);
 
@@ -673,6 +690,8 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     try {
 
+      let Aufgabenansichten: Aufgabenansichtstruktur;
+
       if(this.DBProjekte.CurrentProjektindex > 0) {
 
         this.DBProjekte.CurrentProjektindex--;
@@ -681,7 +700,9 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
         this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
         this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
 
-        this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+        Aufgabenansichten = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt._id);
+
+        this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansichten);
 
         this.DBProjekte.CurrentFavoritenProjektChanged.emit();
       }
@@ -696,6 +717,8 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     try {
 
+      let Aufgabenansichten: Aufgabenansichtstruktur;
+
       if(this.DBProjekte.CurrentProjektindex < this.DBProjekte.Projektliste.length - 1) {
 
         this.DBProjekte.CurrentProjektindex++;
@@ -704,7 +727,10 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
         this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
         this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
 
-        this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+
+        Aufgabenansichten = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt._id);
+
+        this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansichten);
 
         this.DBProjekte.CurrentFavoritenProjektChanged.emit();
       }

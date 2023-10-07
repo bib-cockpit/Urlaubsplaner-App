@@ -37,6 +37,7 @@ import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestru
 import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 import ImageViewer from 'awesome-image-viewer';
 import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 
 @Component({
   selector:    'pj-aufgaben-liste-page',
@@ -390,8 +391,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     try {
 
-
-
      this.InitScreen();
 
 
@@ -466,7 +465,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
           this.DBStandort.CurrentStandortfilter        = data;
           this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
 
-          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null).then(() => {
 
             this.DBStandort.StandortfilterChanged.emit();
 
@@ -1064,6 +1063,8 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
           }
 
           Anzahl = this.DBProjektpunkte.CountProjektpunkte(this.FavoritenProjektpunkteliste, false);
+
+          debugger;
 
           this.DBProjekte.SetProjektpunkteanzahl(Anzahl, this.DBProjekte.CurrentProjekt.Projektkey);
 
@@ -1942,6 +1943,8 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     try {
 
+      let Aufgabenansicht: Aufgabenansichtstruktur;
+
       switch (this.Projektschnellauswahlursprung) {
 
         case this.Projektschnellauswahlursprungvarianten.Projektfavoriten:
@@ -1952,7 +1955,9 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
           this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
           this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
 
-          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+          Aufgabenansicht = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
+
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht);
 
           break;
 

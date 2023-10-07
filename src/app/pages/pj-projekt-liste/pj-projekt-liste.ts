@@ -691,7 +691,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
           this.DBStandort.CurrentStandortfilter = cloneDeep(data);
           this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
 
-          this.DBMitarbeiterstettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
+          this.DBMitarbeiterstettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null).then(() => {
 
             this.DBStandort.StandortfilterChanged.emit();
 
@@ -709,7 +709,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
           this.DBStandort.CurrentStandortfilter = cloneDeep(data);
           this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
 
-          this.DBMitarbeiterstettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
+          this.DBMitarbeiterstettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null).then(() => {
 
             this.DBStandort.StandortfilterChanged.emit();
 

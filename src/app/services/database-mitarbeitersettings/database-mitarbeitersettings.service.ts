@@ -10,6 +10,7 @@ import {DatabaseAuthenticationService} from "../database-authentication/database
 import {head} from "lodash-es";
 import {Mitarbeitersettingsstruktur} from "../../dataclasses/mitarbeitersettingsstruktur";
 import {ConstProvider} from "../const/const";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,7 @@ export class DatabaseMitarbeitersettingsService {
       this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeitersettings', 'constructor', this.Debug.Typen.Service);
     }
   }
+
 
   public InitService() {
 
@@ -117,14 +119,27 @@ export class DatabaseMitarbeitersettingsService {
     this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'SaveMitarbeitersettings', this.Debug.Typen.Service);
   }
 
-  public UpdateMitarbeitersettings(settings: Mitarbeitersettingsstruktur) {
+  public UpdateMitarbeitersettings(settings: Mitarbeitersettingsstruktur, ansicht: Aufgabenansichtstruktur) {
 
     try {
 
       let Observer: Observable<any>;
       let Params = new HttpParams();
+      let Index: number;
 
       Params.set('id', settings._id);
+
+      if(ansicht !== null) {
+
+        if(ansicht.ProjektID !== null) {
+
+          Index = lodash.findIndex(settings.Aufgabenansicht, { ProjektID: ansicht.ProjektID });
+
+          if(Index === -1) settings.Aufgabenansicht.push(ansicht);
+        }
+      }
+
+      delete settings.__v;
 
       return new Promise<any>((resove, reject) => {
 
@@ -167,6 +182,7 @@ export class DatabaseMitarbeitersettingsService {
     try {
 
       let Index: number;
+
 
       Index = lodash.findIndex(this.Pool.Mitarbeitersettingsliste, {_id : settings._id});
 
@@ -242,6 +258,8 @@ export class DatabaseMitarbeitersettingsService {
       this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeitersettings', 'AddMitarbeiter', this.Debug.Typen.Page);
     }
   }
+
+  /*
   public DeleteMitarbeitersetting(setting: Mitarbeitersettingsstruktur): Promise<any> {
 
     try {
@@ -255,4 +273,6 @@ export class DatabaseMitarbeitersettingsService {
       this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeitersettings', 'DeleteMitarbeiter', this.Debug.Typen.Service);
     }
   }
+
+   */
 }

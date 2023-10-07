@@ -33,6 +33,8 @@ import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestru
 import {DatabaseFestlegungenService} from "../database-festlegungen/database-festlegungen.service";
 import {Teilaufgabeestruktur} from "../../dataclasses/teilaufgabeestruktur";
 import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
+import {DatabaseMitarbeitersettingsService} from "../database-mitarbeitersettings/database-mitarbeitersettings.service";
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +56,7 @@ export class DatabaseProjektpunkteService {
               private http: HttpClient,
               private Pool: DatabasePoolService,
               private DBMitarbeiter: DatabaseMitarbeiterService,
+              private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               private DBProjekt: DatabaseProjekteService,
               private DBProtokoll: DatabaseProtokolleService,
               private DBFestlegungen: DatabaseFestlegungenService,
@@ -1366,6 +1369,11 @@ export class DatabaseProjektpunkteService {
 
         this.Debug.ShowMessage('Projektpunkt nicht gefunden -> neuen Projektpunkt hinzufügen', 'Projektpunkte', 'UpdateProjektpunkteliste', this.Debug.Typen.Service);
 
+        if(lodash.isUndefined(Projektpunkt.LiveEditor)) {
+
+          Projektpunkt.LiveEditor = false;
+        }
+
         this.Pool.Projektpunkteliste[Projektpunkt.Projektkey].push(Projektpunkt); // neuen
       }
 
@@ -1455,6 +1463,7 @@ export class DatabaseProjektpunkteService {
       let Endetag: Moment;
       let ResultA: boolean;
       let ResultB: boolean;
+      let Ansichtensetup: Aufgabenansichtstruktur
 
       // let Wocheanzahl: number = MyMoment().isoWeeksInYear();
       // let NaechsteWoche: number       = this.Heute.isoWeek();
@@ -1474,6 +1483,8 @@ export class DatabaseProjektpunkteService {
         else                     GoOn = false;
       }
 
+      Ansichtensetup = this.Pool.GetAufgabenansichten(Projektpunkt.ProjektID);
+
       if(Projektpunkt.PlanungsmatrixID !== null) GoOn = false;
 
       if(GoOn === true) {
@@ -1482,25 +1493,25 @@ export class DatabaseProjektpunkteService {
 
             case this.Const.Projektpunktstatustypen.Offen.Name:
 
-              GoOn = Settings.AufgabenShowOffen;
+              GoOn = Ansichtensetup.AufgabenShowOffen;
 
               break;
 
             case this.Const.Projektpunktstatustypen.Geschlossen.Name:
 
-              GoOn = Settings.AufgabenShowGeschlossen;
+              GoOn = Ansichtensetup.AufgabenShowGeschlossen;
 
               break;
 
             case this.Const.Projektpunktstatustypen.Bearbeitung.Name:
 
-              GoOn = Settings.AufgabenShowBearbeitung;
+              GoOn = Ansichtensetup.AufgabenShowBearbeitung;
 
               break;
 
             case this.Const.Projektpunktstatustypen.Ruecklauf.Name:
 
-              GoOn = Settings.AufgabenShowRuecklauf;
+              GoOn = Ansichtensetup.AufgabenShowRuecklauf;
 
               break;
 
@@ -1517,19 +1528,19 @@ export class DatabaseProjektpunkteService {
               break;
           }
 
-          if(Settings.AufgabenShowMeilensteinOnly === true && GoOn === true) {
+          if(Ansichtensetup.AufgabenShowMeilensteinOnly === true && GoOn === true) {
 
             GoOn = Projektpunkt.Meilenstein === true;
           }
 
           // Aufgaben / Protokolle und LOP Liste filtern
 
-          if(Settings.AufgabenShowPlanung === false) {
+          if(Ansichtensetup.AufgabenShowPlanung === false) {
 
             if(Projektpunkt.LOPListeID == null) GoOn = false; // Wenn es kein LOP Liste Punkt ist ist es eine Aufgabe oder ein Protokolleintrag
           }
 
-          if(Settings.AufgabenShowAusfuehrung === false) {
+          if(Ansichtensetup.AufgabenShowAusfuehrung === false) {
 
             if(Projektpunkt.LOPListeID !== null) GoOn = false;
           }

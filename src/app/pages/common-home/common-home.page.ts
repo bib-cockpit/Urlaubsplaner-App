@@ -25,6 +25,7 @@ import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {DatabaseProtokolleService} from "../../services/database-protokolle/database-protokolle.service";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 
 
 @Component({
@@ -291,6 +292,8 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     try {
 
+      let Aufgabenansicht: Aufgabenansichtstruktur;
+
       if(this.DBProjekte.CurrentFavorit !== null && this.DBProjekte.GesamtprojektlisteHasDatenerror === false) {
 
         this.ProgressMessage = 'Projektdaten werden geladen';
@@ -309,7 +312,10 @@ export class CommonHomePage implements OnInit, OnDestroy {
         this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
         this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
 
-        await this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+        Aufgabenansicht = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
+
+
+        await this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht);
 
         this.Tools.SetRootPage(this.Const.Pages.PjAufgabenlistePage);
       }

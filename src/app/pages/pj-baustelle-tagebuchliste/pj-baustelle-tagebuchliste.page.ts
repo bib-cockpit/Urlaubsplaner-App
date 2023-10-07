@@ -25,6 +25,7 @@ import {Projektestruktur} from "../../dataclasses/projektestruktur";
 import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 
 @Component({
   selector: 'pj-baustelle-tagebuchliste',
@@ -478,7 +479,7 @@ export class PjBaustelleTagebuchlistePage implements OnInit, OnDestroy {
 
     try {
 
-      debugger;
+      let Aufgabenansicht: Aufgabenansichtstruktur;
 
       this.DBProjekte.CurrentProjekt      = projekt;
       this.DBProjekte.CurrentProjektindex = lodash.findIndex(this.DBProjekte.Projektliste, {_id: projekt._id});
@@ -486,7 +487,10 @@ export class PjBaustelleTagebuchlistePage implements OnInit, OnDestroy {
       this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
       this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
 
-      this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+      Aufgabenansicht = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
+
+
+      this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht);
 
 
 

@@ -22,6 +22,7 @@ import {Mitarbeitersettingsstruktur} from "../../dataclasses/mitarbeitersettings
 import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 
 @Component({
   selector: 'pj-favoriten-auswahl',
@@ -165,6 +166,7 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
 
     try {
 
+
       this.DBProjekte.CurrentFavorit = lodash.cloneDeep(this.Favorit);
 
       if(this.DBProjekte.CurrentFavorit === null) {
@@ -180,7 +182,9 @@ export class PjFavoritenAuswahlComponent implements OnInit, OnDestroy, AfterView
         this.Pool.Mitarbeitersettings.ProjektID    = null;
       }
 
-      await this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+
+
+      await this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null);
 
       this.DBProjekte.InitProjektfavoritenliste();
 

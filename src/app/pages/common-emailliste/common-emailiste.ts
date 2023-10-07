@@ -32,6 +32,7 @@ import {
 } from "../../services/database-projektbeteiligte/database-projektbeteiligte.service";
 import {Subscription} from "rxjs";
 import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 
 @Component({
   selector: 'common-emailliste-page',
@@ -970,6 +971,8 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
 
     try {
 
+      let Aufgabenansicht: Aufgabenansichtstruktur;
+
       if(this.DBProjekte.CurrentProjektindex > 0) {
 
         this.DBProjekte.CurrentProjektindex--;
@@ -978,7 +981,9 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
         this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
         this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
 
-        this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+        Aufgabenansicht = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
+
+        this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht);
 
         this.DBProjekte.CurrentFavoritenProjektChanged.emit();
       }
@@ -1033,6 +1038,7 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
 
     try {
 
+      let Aufgabenansicht: Aufgabenansichtstruktur;
 
       this.DBProjekte.CurrentProjekt      = projekt;
       this.DBProjekte.CurrentProjektindex = lodash.findIndex(this.DBProjekte.Projektliste, {_id: projekt._id});
@@ -1040,7 +1046,9 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
       this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
       this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
 
-      this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+      Aufgabenansicht = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
+
+      this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht);
 
       this.Dialoghoehe               = 400;
       this.Dialogbreite              = 600;

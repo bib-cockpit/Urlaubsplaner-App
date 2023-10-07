@@ -16,6 +16,8 @@ import {Mitarbeitersettingsstruktur} from "../../dataclasses/mitarbeitersettings
 import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
+import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 
 @Component({
   selector:    'pj-aufgaben-listefilter',
@@ -43,6 +45,7 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
               public Const: ConstProvider,
               public MitarbeitersettingsDB: DatabaseMitarbeitersettingsService,
               public DB: DatabaseProjektpunkteService,
+              private ProjekteDB: DatabaseProjekteService,
               public Pool: DatabasePoolService,
               public Displayservice: DisplayService) {
     try {
@@ -166,10 +169,14 @@ export class PjAufgabenListefilterComponent implements OnDestroy, OnInit, AfterV
 
     try {
 
+      let Aufgabwenansicht: Aufgabenansichtstruktur = this.Pool.GetAufgabenansichten(this.ProjekteDB.CurrentProjekt !== null ? this.ProjekteDB.CurrentProjekt._id : null);
+
       this.Pool.Mitarbeitersettings = this.Mitarbeitersettings;
 
 
-      this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
+
+
+      this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabwenansicht).then(() => {
 
         this.OkClickedEvent.emit();
 

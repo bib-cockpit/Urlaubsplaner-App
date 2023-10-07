@@ -31,6 +31,7 @@ import {Fachbereiche, Fachbereichestruktur} from "../../dataclasses/fachbereiche
 import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
 import ImageViewer from "awesome-image-viewer";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 
 @Component({
   selector: 'pj-baustelle-lopliste',
@@ -507,6 +508,9 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
     try {
 
+      let Aufgabenansicht: Aufgabenansichtstruktur;
+
+
       switch (this.Projektschnellauswahlursprung) {
 
         case this.Projektschnellauswahlursprungvarianten.LOPListen:
@@ -517,7 +521,9 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
           this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
           this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
 
-          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+          Aufgabenansicht = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
+
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht);
 
           this.PrepareData();
 
@@ -777,7 +783,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
           this.Pool.Mitarbeitersettings.LOPListeGeschlossenZeitfilter = data;
 
-          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null);
 
           this.PrepareData();
 

@@ -263,7 +263,6 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       let File: Teamsfilesstruktur;
 
       // Bilder
-      debugger;
 
       if(this.DB.CurrentProjektpunkt !== null) {
 
@@ -275,7 +274,6 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
           Imageliste.push(File);
         }
-
 
         for(File of Imageliste) {
 

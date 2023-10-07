@@ -30,6 +30,7 @@ import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {DatabaseFestlegungenService} from "../../services/database-festlegungen/database-festlegungen.service";
 import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
 import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 
 @Component({
   selector: 'pj-festlegungsliste',
@@ -443,6 +444,9 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
 
     try {
 
+      let Aufgabenansicht: Aufgabenansichtstruktur = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
+
+
       switch (this.Auswahldialogorigin) {
 
         case this.Auswahlservice.Auswahloriginvarianten.Festlegungsliste_Editor_Leistungsphase:
@@ -455,7 +459,7 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
 
           this.Pool.Mitarbeitersettings.LeistungsphaseFilter = data;
 
-          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht);
 
           this.PrepareData();
 
@@ -478,7 +482,7 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
           this.DBStandort.CurrentStandortfilter        = data;
           this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
 
-          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht).then(() => {
 
             this.DBStandort.StandortfilterChanged.emit();
 
@@ -683,13 +687,16 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
 
     try {
 
+      let Aufgabenansicht: Aufgabenansichtstruktur = this.Pool.GetAufgabenansichten(projekt !== null ? projekt._id : null);
+
+
       this.DBProjekte.CurrentProjekt      = projekt;
       this.DBProjekte.CurrentProjektindex = lodash.findIndex(this.DBProjekte.Projektliste, {_id: projekt._id});
 
       this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
       this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
 
-      this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+      this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht);
 
       this.ShowProjektschnellauswahl = false;
 
@@ -891,6 +898,8 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
 
     try {
 
+
+
       this.ShowKostengruppenauswahl = false;
 
       if(this.KostengruppenOrigin === 'Filter') {
@@ -899,7 +908,7 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
         this.Pool.Mitarbeitersettings.UnterkostengruppeFilter = this.DBProjektpunkte.CurrentProjektpunkt.Unterkostengruppe;
         this.Pool.Mitarbeitersettings.OberkostengruppeFilter  = this.DBProjektpunkte.CurrentProjektpunkt.Oberkostengruppe;
 
-        this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings);
+        this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null);
 
         this.PrepareData();
       }

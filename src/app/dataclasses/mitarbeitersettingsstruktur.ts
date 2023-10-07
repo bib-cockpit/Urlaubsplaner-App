@@ -1,5 +1,7 @@
 // import {LOPListefelderSettingsstruktur} from "./loplistefeldersettingsstruktur";
 
+import {Aufgabenansichtstruktur} from "./aufgabenansichtstruktur";
+
 export type Mitarbeitersettingsstruktur = {
 
 
@@ -17,19 +19,11 @@ export type Mitarbeitersettingsstruktur = {
   HauptkostengruppeFilter: number;
   UnterkostengruppeFilter: number;
 
-  AufgabenShowOffen:        boolean;
-  AufgabenShowGeschlossen:  boolean;
-  AufgabenShowBearbeitung:  boolean;
-  AufgabenShowRuecklauf:    boolean;
-  AufgabenShowBilder:       boolean;
-  AufgabenShowMeilensteinOnly: boolean;
-
-  AufgabenShowPlanung: boolean;
-  AufgabenShowAusfuehrung: boolean;
-
   AufgabenTerminfiltervariante:  string;
   AufgabenTerminfilterStartwert: number;
   AufgabenTerminfilterEndewert:  number;
+
+  Aufgabenansicht: Aufgabenansichtstruktur[];
 
   AufgabenSortiermodus:  string;
 
@@ -54,4 +48,5 @@ export type Mitarbeitersettingsstruktur = {
   AufgabenShowZeitansatz:    boolean;
   AufgabenShowMeinewoche:    boolean;
 
+  __v?: any;
 };

@@ -328,7 +328,7 @@ export class PjFavoritenListePage implements OnInit, OnDestroy {
           this.DBStandort.CurrentStandortfilter        = data;
           this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
 
-          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings).then(() => {
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null).then(() => {
 
             this.DBStandort.StandortfilterChanged.emit();
 
