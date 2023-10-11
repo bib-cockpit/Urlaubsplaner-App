@@ -10,6 +10,9 @@ import {AlphabetModule} from "../../components/alphabet/alphabet.module";
 import {AlphabetRelativeModule} from "../../components/alphabet-relative/alphabet-relative.module";
 import {PageHeaderModule} from "../../components/page-header/page-header.module";
 import {PageFooterModule} from "../../components/page-footer/page-footer.module";
+import {ButtonValueModule} from "../../components/button-value/button-value.module";
+import {ButtonValueDateModule} from "../../components/button-value-date/button-value-date.module";
+import {SafePipeModule} from "../../pipes/safe.pipe.module";
 
 @NgModule({
   declarations: [
@@ -31,7 +34,10 @@ import {PageFooterModule} from "../../components/page-footer/page-footer.module"
         AlphabetModule,
         AlphabetRelativeModule,
         PageHeaderModule,
-        PageFooterModule
+        PageFooterModule,
+        ButtonValueModule,
+        ButtonValueDateModule,
+        SafePipeModule
     ],
   providers: [
 

@@ -99,8 +99,6 @@ export class PjNotizenListePage implements OnInit, OnDestroy {
           { name: 'indentation', items: [ 'outdent', 'indent' ] }
         ],
       };
-
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Notizen Liste', 'constructor', this.Debug.Typen.Page);

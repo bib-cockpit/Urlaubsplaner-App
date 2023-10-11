@@ -6,7 +6,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import {BasicsProvider} from "../../services/basics/basics";
 import {DebugProvider} from "../../services/debug/debug";
@@ -35,6 +35,7 @@ import {DatabaseProjektpunkteService} from "../../services/database-projektpunkt
 import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 import {DatabaseLoplisteService} from "../../services/database-lopliste/database-lopliste.service";
 import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
+import moment, {Moment} from "moment";
 
 @Component({
   selector: 'pj-email-send',
@@ -50,11 +51,14 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() Dialogbreite: number;
   @Input() PositionY: number;
   @Input() ZIndex: number;
+  @Input() SendAttachment: boolean;
+  @Input() ShowEmpfaengerBAE: boolean;
+  @Input() ShowCcEmpfaengerExtern: boolean;
 
   @Output() OkClickedEvent              = new EventEmitter<any>();
   @Output() CancelClickedEvent          = new EventEmitter<any>();
-  @Output() EmpfaengerBurnicklClicked   = new EventEmitter<any>();
-  @Output() CcEmpfaengerBurnicklClicked = new EventEmitter<any>();
+  @Output() EmpfaengerInternClicked     = new EventEmitter<any>();
+  @Output() CcEmpfaengerInternClicked   = new EventEmitter<any>();
   @Output() EmpfaengerExternClicked     = new EventEmitter<any>();
   @Output() CcEmpfaengerExternClicked   = new EventEmitter<any>();
 
@@ -69,6 +73,9 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
   public SendMailFinished: boolean;
   public Dateityp: string;
   private EmpfaengerSubscription: Subscription;
+  public ZeitstempelMerker: number;
+  public ShowSignatur: boolean;
+
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -83,7 +90,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
               public DBLOPListe: DatabaseLoplisteService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public GraphService: Graphservice,
-              private Pool: DatabasePoolService) {
+              public Pool: DatabasePoolService) {
 
     try {
 
@@ -103,6 +110,10 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
       this.SaveFileFinished            = false;
       this.Dateityp                    = '';
       this.EmpfaengerSubscription      = null;
+      this.SendAttachment              = true;
+      this.ShowEmpfaengerBAE           = true;
+      this.ShowCcEmpfaengerExtern      = true;
+      this.ShowSignatur                = false;
 
     } catch (error) {
 
@@ -156,6 +167,14 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
           this.Titel    = 'Festlegungen versenden';
 
           break;
+
+        case this.Pool.Emailcontentvarinaten.Aufgabenliste:
+
+
+          this.Dateityp = '';
+          this.Titel    = 'Erinnerung versenden';
+
+          break;
       }
 
     } catch (error) {
@@ -193,6 +212,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
       let AnzahlBurnickl = 0;
       let AnzahlCcExtern = 0;
       let AnzahlCcBunrnickl = 0;
+      let Heute: Moment = moment();
 
       switch (this.Pool.Emailcontent) {
 
@@ -235,12 +255,24 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
           AnzahlCcBunrnickl = this.DBFestlegungen.CcEmpfaengerInternIDListe.length;
 
           break;
+
+        case this.Pool.Emailcontentvarinaten.Aufgabenliste:
+
+          this.ZeitstempelMerker = Heute.add('5', 'day').valueOf(); //  this.DBProjektpunkte.CurrentProjektpunkt.Endezeitstempel;
+
+          AnzahlExtern   = this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeExternIDListe.length;
+          AnzahlBurnickl = 0;
+
+          AnzahlCcExtern    = 0;
+          AnzahlCcBunrnickl = this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeInternIDListe.length;
+
+          break;
       }
 
       this.LinesanzahlEmpfaenger   = Math.max(AnzahlExtern, AnzahlBurnickl);
       this.LinesanzahlCcEmpfaenger = Math.max(AnzahlCcExtern, AnzahlCcBunrnickl);
 
-      await this.ValidateFilename();
+      if(this.SendAttachment) await this.ValidateFilename();
 
 
       this.Validate();
@@ -252,6 +284,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   CancelButtonClicked() {
+
 
     this.CancelClickedEvent.emit();
 
@@ -380,6 +413,27 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           break;
 
+        case this.Pool.Emailcontentvarinaten.Aufgabenliste:
+
+          this.DBProjektpunkte.CurrentProjektpunkt.Endezeitstempel = this.ZeitstempelMerker;
+          this.DBProjektpunkte.CurrentProjektpunkt.Endezeitstring  = moment(this.ZeitstempelMerker).format('DD.MM.YY');
+
+          this.DBProjektpunkte.CurrentProjektpunkt.Nachricht       = this.DBProjektpunkte.CurrentProjektpunkt.Nachricht.replace('[', '');
+          this.DBProjektpunkte.CurrentProjektpunkt.Nachricht       = this.DBProjektpunkte.CurrentProjektpunkt.Nachricht.replace(']', '');
+
+          Result = await this.DBProjektpunkte.SendReminderEmail();
+
+          this.SendMailFinished = true;
+
+          lodash.delay(() => {
+
+            this.OkClickedEvent.emit();
+
+          }, 600);
+
+
+          break;
+
       }
 
     }
@@ -388,6 +442,32 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
       this.Tools.ShowHinweisDialog(error.message);
 
       // this.Debug.ShowErrorMessage(error.message, 'Send Mail', 'OkButtonClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  GetTermindatum(): Moment {
+
+    try {
+
+      return moment(this.ZeitstempelMerker);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Send Mail', 'GetStartdatum', this.Debug.Typen.Component);
+    }
+  }
+
+  TeermindatumChanged(value: Moment) {
+
+    try {
+
+      let Zeitpunkt: Moment = value;
+
+      this.ZeitstempelMerker = Zeitpunkt.valueOf();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Send Mail', 'StartdatumChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -411,6 +491,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
       let Beteiligte: Projektbeteiligtestruktur;
       let Value: string = '';
       let idliste: string[];
+      let Anzahl: number = 0;
 
       switch (this.Pool.Emailcontent) {
 
@@ -435,6 +516,12 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
         case this.Pool.Emailcontentvarinaten.Festlegungen:
 
           idliste = cc === false ? this.DBFestlegungen.EmpfaengerExternIDListe : this.DBFestlegungen.CcEmpfaengerExternIDListe;
+
+          break;
+
+        case this.Pool.Emailcontentvarinaten.Aufgabenliste:
+
+          idliste = this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeExternIDListe;
 
           break;
       }
@@ -496,6 +583,12 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
         case this.Pool.Emailcontentvarinaten.Festlegungen:
 
           idliste = cc === false ? this.DBFestlegungen.EmpfaengerInternIDListe : this.DBFestlegungen.CcEmpfaengerInternIDListe;
+
+          break;
+
+        case this.Pool.Emailcontentvarinaten.Aufgabenliste:
+
+          idliste = this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeInternIDListe;
 
           break;
       }
@@ -727,9 +820,23 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
           }
 
           break;
+
+        case this.Pool.Emailcontentvarinaten.Aufgabenliste:
+
+          if(this.DBProjektpunkte.CurrentProjektpunkt.Betreff   !== '' &&
+             this.DBProjektpunkte.CurrentProjektpunkt.Nachricht !== '') {
+
+            this.ContentIsValid = true;
+          }
+          else {
+
+            this.ContentIsValid = false;
+          }
+
+          break;
       }
 
-      if(this.FileExists === null) this.ContentIsValid = false;
+      if(this.SendAttachment && this.FileExists === null) this.ContentIsValid = false;
 
     } catch (error) {
 
@@ -853,6 +960,12 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           break;
 
+        case this.Pool.Emailcontentvarinaten.Aufgabenliste:
+
+          return this.DBProjektpunkte.CurrentProjektpunkt !== null;
+
+          break;
+
       }
 
     } catch (error) {
@@ -891,10 +1004,13 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
           return this.DBFestlegungen.Betreff;
 
           break;
+
+        case this.Pool.Emailcontentvarinaten.Aufgabenliste:
+
+          return this.DBProjektpunkte.CurrentProjektpunkt.Betreff;
+
+          break;
       }
-
-
-
 
     } catch (error) {
 
@@ -907,32 +1023,54 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
     try {
 
+      let Nachricht: string;
+      let Datum: string = moment(this.ZeitstempelMerker).format('DD.MM.YY');
+      let TeilA: string;
+      let TeilB: string;
+      let Teile: string[];
+
       switch (this.Pool.Emailcontent) {
 
         case this.Pool.Emailcontentvarinaten.Protokoll:
 
-          return this.DBProtokolle.CurrentProtokoll.Nachricht;
+          Nachricht = this.DBProtokolle.CurrentProtokoll.Nachricht;
 
           break;
 
         case this.Pool.Emailcontentvarinaten.LOPListe:
 
-          return this.DBLOPListe.CurrentLOPListe.Nachricht;
+          Nachricht =  this.DBLOPListe.CurrentLOPListe.Nachricht;
 
           break;
 
         case this.Pool.Emailcontentvarinaten.Bautagebuch:
 
-          return this.DBTagebuch.CurrentTagebuch.Nachricht;
+          Nachricht =  this.DBTagebuch.CurrentTagebuch.Nachricht;
 
           break;
 
         case this.Pool.Emailcontentvarinaten.Festlegungen:
 
-          return this.DBFestlegungen.Nachricht;
+          Nachricht =  this.DBFestlegungen.Nachricht;
+
+          break;
+
+        case this.Pool.Emailcontentvarinaten.Aufgabenliste:
+
+          Nachricht = this.DBProjektpunkte.CurrentProjektpunkt.Nachricht;
+          Teile     = Nachricht.split('[');
+          TeilA     = Teile[0];
+          Teile     = Nachricht.split(']');
+          TeilB     = Teile[1];
+          Nachricht = TeilA + '[' +Datum + ']'+ TeilB;
+
+          this.DBProjektpunkte.CurrentProjektpunkt.Nachricht = Nachricht;
 
           break;
       }
+
+
+      return Nachricht;
 
     } catch (error) {
 

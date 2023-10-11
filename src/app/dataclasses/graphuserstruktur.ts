@@ -5,9 +5,9 @@ export type Graphuserstruktur = {
   givenName:         string;   // "Peter"
   id:                string;   // "xxxxx-xxxxx-xxxxx-xxxxx";
   jobTitle:          string;   // "Projektleiter"
-  mail:              string;   // "p.hornburger@burnickl.com"
+  mail:              string;   //
   mobilePhone:       string;   // "+49 151 18067165"
-  officeLocation:    string;   // "(BIB) Burnickl Ingenieur GmbH Bamberg"
+  officeLocation:    string;   //
   surname:           string;   // "Hornburger"
-  userPrincipalName: string;   // "p.hornburger@burnickl.com"
+  userPrincipalName: string;   //
 };

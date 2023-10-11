@@ -936,7 +936,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
     }
   }
 
-  EmpfaengerBurnicklClickedHandler() {
+  EmpfaengerInternClickedHandler() {
 
     try {
 
@@ -947,7 +947,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'EmpfaengerExternClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'EmpfaengerInternClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -982,7 +982,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
     }
   }
 
-  CcEmpfaengerBurnicklClickedHandler() {
+  CcEmpfaengerInternClickedHandler() {
 
     try {
 
@@ -993,7 +993,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'CcEmpfaengerBurnicklClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'CcEmpfaengerInternClickedHandler', this.Debug.Typen.Page);
     }
   }
 

@@ -22,37 +22,37 @@
           <ion-grid *ngIf="DataReady()">
             <ion-row>
               <ion-col size="3">
-                <ion-text color="burnicklgruen"><b>Empfänger</b></ion-text>
+                <ion-text color="baeblau"><b>Empfänger</b></ion-text>
               </ion-col>
             </ion-row>
             <ion-row>
               <ion-col size="6">
                 <input-clone [MinHeight]="44" [Lines]="LinesanzahlEmpfaenger"
                              [Clickable]="true"
-                             [Enabled]="false" Titel="Teilnehmer Extern"
+                             [Enabled]="false" Titel="Extern"
                              [Value]="GetExternTeilnehmerliste(false)"
                              (click)="EmpfaengerExternClicked.emit()">
                 </input-clone>
               </ion-col>
-              <ion-col size="6">
+              <ion-col *ngIf="ShowEmpfaengerBAE === true" size="6">
                 <input-clone [MinHeight]="44" [Lines]="LinesanzahlEmpfaenger"
                              [Clickable]="true"
-                             [Enabled]="false" Titel="Teilnehmer BAE"
+                             [Enabled]="false" Titel="BAE"
                              [Value]="GetBrunicklteilnehmerliste(false)"
-                             (click)="EmpfaengerBurnicklClicked.emit()">
+                             (click)="EmpfaengerInternClicked.emit()">
                 </input-clone>
               </ion-col>
             </ion-row>
             <ion-row>
               <ion-col size="3">
-                <ion-text color="burnicklgruen"><b>Kopienempfänger</b></ion-text>
+                <ion-text color="baeblau"><b>Kopienempfänger</b></ion-text>
               </ion-col>
             </ion-row>
             <ion-row>
-              <ion-col size="6">
+              <ion-col *ngIf="ShowCcEmpfaengerExtern === true" size="6">
                 <input-clone [MinHeight]="44" [Lines]="LinesanzahlCcEmpfaenger"
                              [Clickable]="true"
-                             [Enabled]="false" Titel="Teilnehmer Extern"
+                             [Enabled]="false" Titel="Extern"
                              [Value]="GetExternTeilnehmerliste(true)"
                              (click)="CcEmpfaengerExternClicked.emit()">
                 </input-clone>
@@ -60,23 +60,34 @@
               <ion-col size="6">
                 <input-clone [MinHeight]="44" [Lines]="LinesanzahlCcEmpfaenger"
                              [Clickable]="true"
-                             [Enabled]="false" Titel="Teilnehmer BAE"
+                             [Enabled]="false" Titel="BAE"
                              [Value]="GetBrunicklteilnehmerliste(true)"
-                             (click)="CcEmpfaengerBurnicklClicked.emit()">
+                             (click)="CcEmpfaengerInternClicked.emit()">
                 </input-clone>
               </ion-col>
             </ion-row>
             <ion-row>
               <ion-col size="3">
-                <ion-text color="burnicklgruen"><b>Betreff</b></ion-text>
+                <ion-text color="baeblau"><b>Betreff</b></ion-text>
               </ion-col>
             </ion-row>
             <ion-row>
               <ion-col><input-clone [Required]="true" [MaxLength]="100" [Titel]="'Betreff'" [Titelcolor]="'white'" [Value]="GetBetreff()" (TextChanged)="TextChanged($event)"></input-clone></ion-col>
             </ion-row>
             <ion-row>
+              <ion-col size="6">
+                <button-value-date [Datum]="GetTermindatum()"
+                                   [Buttontext]="'Termin'" [ElementID]="'termin-datum'" (TimeChanged)="TeermindatumChanged($event)"></button-value-date>
+                <!--
+                <button-value (ButtonClicked)="TerminButtonClicked.emit()" [Wert_A]="GetTerminWert()" [Buttontext]="'Termin'">
+
+                </button-value>
+                -->
+              </ion-col>
+            </ion-row>
+            <ion-row>
               <ion-col size="3">
-                <ion-text color="burnicklgruen"><b>Nachricht</b></ion-text>
+                <ion-text color="baeblau"><b>Nachricht</b></ion-text>
               </ion-col>
             </ion-row>
             <ion-row>
@@ -84,25 +95,47 @@
             </ion-row>
             <ion-row>
               <ion-col size="3">
-                <ion-text color="burnicklgruen"><b>{{Dateityp}}</b></ion-text>
+                <table>
+                  <tr>
+                    <td>
+                      <ion-text color="baeblau"><b>Signatur</b></ion-text>
+                    </td>
+                    <td style="width: 5px"></td>
+                    <td>
+                      <ion-icon (click)="ShowSignatur = !ShowSignatur" [color]="Basics.Ionicfarben.BurnicklBraun" [name]="ShowSignatur ? 'chevron-up-circle' : 'chevron-down-circle'" style="font-size: 28px"></ion-icon>
+                    </td>
+                  </tr>
+                </table>
               </ion-col>
             </ion-row>
-            <ion-row class="ion-align-items-center">
-              <ion-col size="6">
-                <input-clone Titel="Dateiname"  Titelcolor="weiss"
-                             [Value]="GetFilename()"
-                             [Textcolor]="FilenameIsValid ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Rot"
-                             (TextChanged)="FilenameChanged($event)">
-                </input-clone>
-              </ion-col>
-              <ion-col size="6">
-                <ng-container *ngIf="!SendInProgress">
-                  <span *ngIf="FileExists === true  && FilenameIsValid === true"  style="color: darkorange; font-weight: bold">{{Dateityp}} existiert bereits. Datei wird überschrieben.</span>
-                  <span *ngIf="FileExists === false && FilenameIsValid === true" style="color: green; font-weight: bold">{{Dateityp}} wird neu erstellt.</span>
-                  <span *ngIf="FilenameIsValid === false" style="color: red; font-weight: bold">Dateiname ist fehlerhaft.</span>
-                </ng-container>
+            <ion-row *ngIf="ShowSignatur === true">
+              <ion-col>
+                <div style="border: 1px solid black; padding: 4px;" [innerHTML]="Pool.GetFilledSignatur(true) | safe: 'html'"></div>
               </ion-col>
             </ion-row>
+            <ng-container *ngIf="SendAttachment">
+              <ion-row>
+                <ion-col size="3">
+                  <ion-text color="burnicklgruen"><b>{{Dateityp}}</b></ion-text>
+                </ion-col>
+              </ion-row>
+              <ion-row class="ion-align-items-center">
+                <ion-col size="6">
+                  <input-clone Titel="Dateiname"  Titelcolor="weiss"
+                               [Value]="GetFilename()"
+                               [Textcolor]="FilenameIsValid ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Rot"
+                               (TextChanged)="FilenameChanged($event)">
+                  </input-clone>
+                </ion-col>
+                <ion-col size="6">
+                  <ng-container *ngIf="!SendInProgress">
+                    <span *ngIf="FileExists === true  && FilenameIsValid === true"  style="color: darkorange; font-weight: bold">{{Dateityp}} existiert bereits. Datei wird überschrieben.</span>
+                    <span *ngIf="FileExists === false && FilenameIsValid === true" style="color: green; font-weight: bold">{{Dateityp}} wird neu erstellt.</span>
+                    <span *ngIf="FilenameIsValid === false" style="color: red; font-weight: bold">Dateiname ist fehlerhaft.</span>
+                  </ng-container>
+                </ion-col>
+              </ion-row>
+            </ng-container>
             <ng-container *ngIf="SendInProgress">
               <ion-row>
                 <ion-col>
@@ -111,7 +144,7 @@
                       <tr>
                         <td colspan="2"><ion-text color="burnicklgruen"><b>{{Dateityp}} wird gesendet...</b></ion-text></td>
                       </tr>
-                      <tr>
+                      <tr *ngIf="SendAttachment === true">
                         <td>
                           <ion-icon name="checkmark-circle" [color]="SaveFileFinished ? Basics.Ionicfarben.Gruen : Basics.Ionicfarben.Grau"></ion-icon>
                         </td>
@@ -134,6 +167,8 @@
           </ion-grid>
 
         </div>
+
+        <abstand-element-fixed></abstand-element-fixed>
 
       </ion-content>
 

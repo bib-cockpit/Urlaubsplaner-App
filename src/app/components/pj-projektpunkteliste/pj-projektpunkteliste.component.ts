@@ -96,6 +96,12 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
       Detail: Projektpunktanmerkungstruktur;
     }>();
 
+  @Output() SendeRuecklauferinnerungEvent = new EventEmitter<
+    {
+      Projektpunkt: Projektpunktestruktur;
+      Projekt: Projektestruktur;
+    }>();
+
   // public Heute: Moment;
 
   @Input() Datenliste: Projektpunktestruktur[];
@@ -521,54 +527,16 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
         return CurrentAnmerkung.AnmerkungID !== Anmerkung.AnmerkungID;
       });
 
-      this.Database.UpdateProjektpunkt(this.Database.CurrentProjektpunkt, true);
+      this.Database.UpdateProjektpunkt(this.Database.CurrentProjektpunkt, false);
 
       this.Database.CurrentProjektpunkt = null;
-       this.Database.LiveEditorOpen      = false;
-
-      // this.Service.Projektpunkt = null;
-
-      /*
-
-      if(Detail.ProjektpunktdetailID === this.Const.NONE) {
-
-
-        this.CancelDetailClicked.emit({
-
-          Projektpunkt: Projektpunkt,
-          Detail:       Detail
-        });
-      }
-      else {
-
-        this.DeleteDetailClicked.emit({
-
-          Projektpunkt: Projektpunkt,
-          Detail:       Detail
-        });
-      }
-
-       */
+      this.Database.LiveEditorOpen      = false;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'DeleteAnmerkung', this.Debug.Typen.Component);
     }
   }
-
-
-  GetAnmerkungdatum(Anmerkung: Projektpunktanmerkungstruktur) {
-
-    try {
-
-      return moment(Anmerkung.Zeitstempel);
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'GetAnmerkungdatum', this.Debug.Typen.Component);
-    }
-  }
-
 
   EditAnmerkungClickedHandler(Projektpunkt: Projektpunktestruktur, anmerkung: Projektpunktanmerkungstruktur) {
 
@@ -644,22 +612,6 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
     }
   }
 
-
-
-  public ProjektpunktDetailtypChanged(event: any, Detail: Projektpunktanmerkungstruktur) {
-
-    try {
-
-      let Typ = event.detail.value;
-
-      // Detail.Detailtyp = Typ;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'ProjektpunktDetailtypChanged', this.Debug.Typen.Component);
-    }
-  }
-
   EndedatumClickedHandler(Projektpunkt: Projektpunktestruktur) {
 
     try {
@@ -672,7 +624,6 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
       this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'EndedatumClicked', this.Debug.Typen.Component);
     }
   }
-
 
   ProtokollMarkeClicked(Projektpunkt: Projektpunktestruktur) {
 
@@ -763,36 +714,6 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
       this.Debug.ShowErrorMessage(error.message, 'LOP Projektpunkteintrag', 'SaveAnmerkung', this.Debug.Typen.Component);
     }
   }
-
-  /*
-
-  BemerkungMouseOver(event: MouseEvent, Projektpunkt: Projektpunktestruktur) {
-
-    try {
-
-      Projektpunkt.BemerkungMouseOver = true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'BemerkungMouseOver', this.Debug.Typen.Component);
-    }
-  }
-
-  BemerkungMouseOut(event: MouseEvent, Projektpunkt: Projektpunktestruktur) {
-
-    try {
-
-      Projektpunkt.BemerkungMouseOver = false;
-
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'BemerkungMouseOut', this.Debug.Typen.Component);
-    }
-  }
-
-   */
-
 
   GetEndedatumstyle(Projektpunkt: Projektpunktestruktur) {
 
@@ -1219,6 +1140,26 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'GetAnmerkungDatum', this.Debug.Typen.Component);
+    }
+  }
+
+  SendeRuecklauferinnerungMail(event: MouseEvent, Projektpunkt: Projektpunktestruktur, Projekt: Projektestruktur) {
+
+    try {
+
+      event.stopPropagation();
+      event.preventDefault();
+
+
+      this.SendeRuecklauferinnerungEvent.emit({
+
+        Projektpunkt: Projektpunkt,
+        Projekt: Projekt
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'SendeRuecklauferinnerungMail', this.Debug.Typen.Component);
     }
   }
 }

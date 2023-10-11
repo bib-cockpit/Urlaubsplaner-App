@@ -65,7 +65,6 @@
       </table>
     </div>
     <div class="contentdivclass" [style.height.px]="ContentHoehe" *ngIf="DB.CurrentNotizenkapitelabschnitt !== null">
-
       <editor
         [apiKey]="'7hvzif1s8dafhu40z0kjgpw1y4zwc2p5cokjkfox946qpfjc'"
         [init]="Editorconfig" [id]="'Maineditor'"
@@ -76,10 +75,6 @@
         (onCut)="NotizTextChangedHandler($event)"
         (onKeyPress)="NotizTextChangedHandler($event)">
       </editor>
-      <!--
-              [initialValue]="DB.CurrentNotizenkapitelabschnitt.HTML"
-      -->
-
     </div>
   </div>
 

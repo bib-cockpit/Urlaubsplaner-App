@@ -10,7 +10,7 @@
   </tr>
 </table>
 
-<table *ngIf="Settings !== null && Projekt !== null" style="width: 100%" class="docinnertable">
+<table *ngIf="Settings !== null && Projekt !== null && Aufgabenansicht !== null" style="width: 100%" class="docinnertable">
   <tr *ngIf="ShowListentitel">
     <!--
     <td style="width: 70px; text-align: center"><b>Debug</b></td>
@@ -248,7 +248,7 @@
                         <td style="width: auto" rowspan="3">
                           <ion-textarea style="border: 1px solid #7b6a58; width: 100%; min-height: 90px;" auto-grow placeholder="Neue Bemerkung hier"
                                         [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
-                                        [value]="Anmerkung.Anmerkung" (ionChange)="AnmerkungTextChangedHandler($event, Detailindex)"></ion-textarea>
+                                        [value]="Anmerkung.Anmerkung" (ionInput)="AnmerkungTextChangedHandler($event, Detailindex)"></ion-textarea>
                         </td>
                         <td align="center" style="width: 40px;">
                           <div class="rootbuttonsmallclass" (click)="DeleteAnmerkung(Projektpunkt, Anmerkung)">
@@ -262,7 +262,7 @@
                       <tr>
                         <td align="center">
                           <div class="rootbuttonsmallclass" (click)="Anmerkung.Anmerkung !== '' ? SaveAnmerkung(Projektpunkt, Anmerkung) : null">
-                            <ion-icon style="font-size: 24px" [color]="Anmerkung.Anmerkung !== '' ? 'weiss' : 'grau'" name="save-outline"></ion-icon>
+                            <ion-icon style="font-size: 24px" [color]="Anmerkung.Anmerkung !== '' ? 'weiss' : 'schwarz'" name="save-outline"></ion-icon>
                           </div>
                         </td>
                       </tr>
@@ -284,6 +284,34 @@
             </td>
           </tr>
         </table>
+
+
+        <table *ngIf="Projektpunkt.Ruecklaufreminderliste.length !== 0" style="width:100%" class="nobordersmalltable">
+          <tr>
+            <td style="height: 4px"></td>
+          </tr>
+          <tr>
+            <td>
+
+              <table class="nobordersmalltable">
+                <tr *ngFor="let Reminder of Projektpunkt.Ruecklaufreminderliste;">
+                  <td style="color: #0020C2" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">
+                    {{GetAnmerkungDatum(Reminder.Zeitstempel)}}
+                  </td>
+                  <td style="width: 3px"></td>
+                  <td style="color: #0020C2" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize" *ngIf="MitarbeiterDB.GetMitarbeiterByEmail(Reminder.Verfasser.Email)">
+                    {{MitarbeiterDB.GetMitarbeiterByEmail(Reminder.Verfasser.Email).Kuerzel}}:
+                  </td>
+                  <td [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">
+                    Erinnerung gesendet.
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+        </table>
+
 
       </td>
 
@@ -327,10 +355,8 @@
                      Database.CheckProjektpunktFaellig(Projektpunkt) !== Const.Faelligkeitsstatus.Nicht_faellig &&
                      Projektpunkt.ZustaendigeExternIDListe.length > 0">
             <td style="padding-top: 4px; height: inherit">
-              <!--
-               (click)="SendeRuecklauferinnerungMail($event, Projektpunkt)"
-              -->
-              <div class="endedatumdivclass" [style.background]="Database.GetFaelligBackground(Projektpunkt)">
+
+              <div (click)="SendeRuecklauferinnerungMail($event, Projektpunkt, Projekt)" class="endedatumdivclass" [style.background]="Database.GetFaelligBackground(Projektpunkt)">
                   <ion-icon style="font-size: 20px" color="weiss" name="skull"></ion-icon>
               </div>
             </td>

@@ -138,6 +138,9 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   public ImageIndex: number;
   public Imageliste: string[];
   private Imageviewer: ImageViewer;
+  public ShowEmailSenden: boolean;
+  public EmailDialogbreite: number;
+  public EmailDialoghoehe: number;
 
   constructor(public Displayservice: DisplayService,
               public Basics: BasicsProvider,
@@ -218,6 +221,9 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.Kalenderliste = [];
       this.MeinTagindex  = 0;
       this.ImageIndex    = 0;
+      this.ShowEmailSenden = false;
+      this.EmailDialogbreite        = 800;
+      this.EmailDialoghoehe         = 800;
       this.Imageliste    = [];
       this.Tageliste = [
         { Tag: 'Montag',     Datum: '' },
@@ -636,6 +642,14 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
         case this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_ZustaendigIntern:
 
           this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeInternIDListe = idliste;
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_ZustaendigIntern:
+
+          this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeInternIDListe = idliste;
+
+          this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt, true);
 
           break;
 
@@ -2144,6 +2158,81 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Aufgabe Liste', 'ThumbnailClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  SendeRuecklauferinnerungHandler(event: { Projektpunkt: Projektpunktestruktur; Projekt: Projektestruktur }) {
+
+    try {
+
+      let Betreff, Nachricht, Filename;
+
+      this.Pool.Emailcontent                   = this.Pool.Emailcontentvarinaten.Aufgabenliste;
+      this.EmailDialogbreite                   = 1100;
+      this.EmailDialoghoehe                    = this.Basics.InnerContenthoehe - 200;
+      this.DBProjektpunkte.CurrentProjektpunkt = event.Projektpunkt;
+      this.DBProjekte.CurrentProjekt           = event.Projekt;
+
+      Betreff    = this.DBProjekte.CurrentProjekt.Projektnummer + ' ' + this.DBProjekte.CurrentProjekt.Projektname + ': Erinnerung';
+
+      Nachricht  = 'Sehr geehrte Damen und Herren,\n\n';
+      Nachricht += 'Wir benötigen bitte zum nachfolgenden Thema noch eine Rückmledung:\n\n';
+      Nachricht += this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe;
+      Nachricht += '\n\n';
+      Nachricht += 'Bitte geben Sie uns eine Rückmeldung bis zum [Termin].';
+
+      this.DBProjektpunkte.CurrentProjektpunkt.Betreff   = Betreff;
+      this.DBProjektpunkte.CurrentProjektpunkt.Nachricht = Nachricht;
+
+      this.ShowEmailSenden = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgabe Liste', 'SendeRuecklauferinnerungHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  EmailCcEmpfaengerInternClickedHandler() {
+
+    try {
+
+      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_ZustaendigIntern;
+      this.AuswahlIDliste         = this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeInternIDListe;
+      this.ShowMitarbeiterauswahl = true;
+      this.Dialoghoehe            = this.Basics.InnerContenthoehe - 200;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'EmailCcEmpfaengerInternClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+
+  EmailSendenOkButtonClicked($event: any) {
+
+    try {
+
+      this.ShowEmailSenden = false;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'EmailSendenOkButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  EmailEmpfaengerExternClickedHandler() {
+
+    try {
+
+      this.Auswahldialogorigin   = this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_ZustaendigExtern;
+      this.AuswahlIDliste        = this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeExternIDListe;
+      this.ShowBeteiligteauswahl = true;
+      this.Dialoghoehe           = this.Basics.InnerContenthoehe - 200;
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'EmailEmpfaengerExternClickedHandler', this.Debug.Typen.Page);
     }
   }
 }

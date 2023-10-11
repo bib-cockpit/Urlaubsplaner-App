@@ -132,6 +132,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
         Name:      Joi.string().required().max(100),
         Vorname:   Joi.string().required().max(100),
         Kuerzel:   Joi.string().required().min(3).max(10),
+        Jobtitel:  Joi.string().required().min(3).max(100),
         Email:     Joi.string().required().max(255).email({ tlds: { allow: false } }).required(),
 
       }).options({ stripUnknown: true });
@@ -180,6 +181,8 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
       this.ValidateInput();
 
+      /*
+
       this.GraphService.GetOtherUserteams(this.DB.CurrentMitarbeiter.Email).then((teamsliste: Teamsstruktur[]) => {
 
         this.Teamsliste = teamsliste;
@@ -188,6 +191,8 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
         this.ErrorMessage = error.error;
       });
+
+       */
 
     } catch (error) {
 

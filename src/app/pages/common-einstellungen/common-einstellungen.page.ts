@@ -11,6 +11,7 @@ import {
 import {ConstProvider} from "../../services/const/const";
 import {BasicsProvider} from "../../services/basics/basics";
 import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
+import {EventObj} from "@tinymce/tinymce-angular/editor/Events";
 
 @Component({
   selector: 'common-einstellungen-page',
@@ -24,6 +25,7 @@ export class CommonEinstellungenPage implements OnInit {
   public Auswahltitel: string;
   public ShowAuswahl: boolean;
   private Auswahldialogorigin: string;
+  public Editorconfig: any;
 
   constructor(public MitarbeitersettingsDB: DatabaseMitarbeitersettingsService,
               public ProjekteDB: DatabaseProjekteService,
@@ -39,6 +41,25 @@ export class CommonEinstellungenPage implements OnInit {
       this.Auswahltitel             = '';
       this.ShowAuswahl              = false;
       this.Auswahldialogorigin      = this.Const.NONE;
+
+      this.Editorconfig = {
+
+        menubar:   false,
+        statusbar: false,
+        language: 'de',
+        browser_spellcheck: true,
+        height: 800,
+        auto_focus : true,
+        content_style: 'body { color: black; margin: 0; line-height: 0.9; }, ',
+        // base_url: 'assets/tinymce', // Root for resources
+        // suffix: '.min',        // Suffix to use when loading resources
+        toolbar: [
+          { name: 'styles',      items: [ 'forecolor', 'backcolor' ] }, // , 'fontfamily', 'fontsize'
+          { name: 'formatting',  items: [ 'bold', 'italic', 'underline', 'strikethrough' ] },
+          { name: 'alignment',   items: [ 'alignleft', 'aligncenter', 'alignright', 'alignjustify' ] },
+          { name: 'indentation', items: [ 'outdent', 'indent' ] }
+        ],
+      };
 
 
     } catch (error) {
@@ -142,6 +163,18 @@ export class CommonEinstellungenPage implements OnInit {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Settings', 'ListesettingCheckChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  SignaturTextChangedHandler(event: EventObj<any>) {
+
+    try {
+
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Settings', 'SignaturTextChangedHandler', this.Debug.Typen.Page);
     }
   }
 

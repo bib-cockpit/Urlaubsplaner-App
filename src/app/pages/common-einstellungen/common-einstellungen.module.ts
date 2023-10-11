@@ -10,6 +10,7 @@ import {PageFooterModule} from "../../components/page-footer/page-footer.module"
 import {CheckboxClonModule} from "../../components/checkbox-clon/checkbox-clon.module";
 import {ButtonValueModule} from "../../components/button-value/button-value.module";
 import {AuswahlDialogModule} from "../../components/auswahl-dialog/auswahl-dialog.module";
+import {EditorComponent} from "@tinymce/tinymce-angular";
 
 const routes: Routes = [
   {
@@ -19,18 +20,19 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    PageHeaderModule,
-    RouterModule.forChild(routes),
-    PageHeaderMenuModule,
-    PageFooterModule,
-    CheckboxClonModule,
-    ButtonValueModule,
-    AuswahlDialogModule,
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        PageHeaderModule,
+        RouterModule.forChild(routes),
+        PageHeaderMenuModule,
+        PageFooterModule,
+        CheckboxClonModule,
+        ButtonValueModule,
+        AuswahlDialogModule,
+        EditorComponent,
+    ],
   declarations: [CommonEinstellungenPage]
 })
 export class CommonEinstellungenPageModule {}

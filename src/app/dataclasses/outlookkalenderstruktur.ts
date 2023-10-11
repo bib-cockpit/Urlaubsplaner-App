@@ -69,7 +69,7 @@ export type Outlookkalenderstruktur = {
     organizer: {
       emailAddress: {
         name: string; // "Peter Hornburger",
-        address: string; //  "p.hornburger@burnickl.com"
+        address: string; //
       };
     };
     onlineMeeting: any; //  null

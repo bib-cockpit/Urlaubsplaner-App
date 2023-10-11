@@ -1,6 +1,7 @@
 import {Verfasserstruktur} from "./verfasserstruktur";
 import {Projektpunktanmerkungstruktur} from "./projektpunktanmerkungstruktur";
 import {Projektpunktimagestruktur} from "./projektpunktimagestruktur";
+import {Ruecklaufreminderstruktur} from "./ruecklaufreminderstruktur";
 
 export type Projektpunktestruktur = {
 
@@ -71,6 +72,7 @@ export type Projektpunktestruktur = {
   Hauptkostengruppe: number;
   Unterkostengruppe: number;
   Deleted:           boolean;
+  Ruecklaufreminderliste: Ruecklaufreminderstruktur[];
 
   ZustaendigeExternIDListe: string[];
   ZustaendigeInternIDListe: string[];
@@ -80,9 +82,20 @@ export type Projektpunktestruktur = {
   Minuten?: number;
   Kostengruppenname?: string;
   Bauteilname?: string;
+  CcEmpfaengerliste?: {
+    Name:  string;
+    Email: string;
+  }[];
+  Empfaengerliste?: {
+    Name:  string;
+    Email: string;
+  }[];
 
   Filtered?: boolean;
   Text_A?: string;
   Text_B?: string;
   Text_C?: string;
+
+  Betreff?: string;
+  Nachricht?: string;
 };

@@ -50,6 +50,9 @@ export class DatabaseProjektpunkteService {
   public Wochenpunkteliste: Projektpunktestruktur[][];
   private ServerSendFestlegungenToTeamsUrl: string;
   private ServerSaveFestlegungenToTeamsUrl: string;
+  private ServerSendReminderUrl: string;
+  EmpfaengerExternIDListe: string[];
+  CcEmpfaengerInternIDListe: string[];
 
   constructor(private Debug: DebugProvider,
               private Basics: BasicsProvider,
@@ -70,6 +73,7 @@ export class DatabaseProjektpunkteService {
       this.CurrentProjektpunkt       = null;
       this.Statustypenliste          = [];
       this.ServerProjektpunkteUrl    = this.Pool.CockpitserverURL + '/projektpunkte';
+      this.ServerSendReminderUrl     = this.Pool.CockpitserverURL + '/sendreminder';
       this.Heute                     = moment().locale('de');
       this.LiveEditorOpen            = false;
       this.Wochenpunkteliste         = [];
@@ -77,6 +81,9 @@ export class DatabaseProjektpunkteService {
 
       this.ServerSendFestlegungenToTeamsUrl = this.Pool.CockpitserverURL + '/sendfestlegungen';
       this.ServerSaveFestlegungenToTeamsUrl = this.Pool.CockpitserverURL + '/savefestlegungen';
+
+      this.EmpfaengerExternIDListe   = [];
+      this.CcEmpfaengerInternIDListe = [];
 
       this.InitStatustypen();
 
@@ -104,6 +111,160 @@ export class DatabaseProjektpunkteService {
     catch(error)
     {
       this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'InitStatustypen', this.Debug.Typen.Service);
+    }
+  }
+
+  public async SendReminderEmail(): Promise<any> {
+
+    try {
+
+      let token = await this.AuthService.RequestToken('Mail.Send');
+      let Name: string;
+      let Beteiligter: Projektbeteiligtestruktur;
+      let Heute: Moment = moment();
+      let Observer: Observable<any>;
+      let Merker: Teamsfilesstruktur;
+      let Mitarbeiter: Mitarbeiterstruktur;
+      let CcEmpfaengerliste: {
+        Name:  string;
+        Email: string;
+      }[];
+      let Empfaengerliste: {
+        Name:  string;
+        Email: string;
+      }[];
+      let Daten: {
+
+        Betreff:     string;
+        Nachricht:   string;
+        Signatur:    string;
+        FileID:      string;
+        Filename:    string;
+        UserID:      string;
+        Token:       string;
+        Empfaengerliste:   any[];
+        CcEmpfaengerliste: any[];
+      };
+
+      Empfaengerliste = [];
+
+      for(let ExternEmpfaengerID of this.CurrentProjektpunkt.ZustaendigeExternIDListe) {
+
+        Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: ExternEmpfaengerID});
+
+        if(!lodash.isUndefined(Beteiligter)) {
+
+          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+
+          Empfaengerliste.push({
+
+            Name: Name,
+            Email: Beteiligter.Email
+          });
+        }
+      }
+
+      CcEmpfaengerliste = [];
+
+      for(let InternEmpfaengerID of this.CurrentProjektpunkt.ZustaendigeInternIDListe) {
+
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: InternEmpfaengerID});
+
+        if(!lodash.isUndefined(Mitarbeiter)) CcEmpfaengerliste.push({
+
+          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
+          Email: Mitarbeiter.Email
+        });
+      }
+
+      this.CurrentProjektpunkt.Empfaengerliste   = Empfaengerliste;
+      this.CurrentProjektpunkt.CcEmpfaengerliste = CcEmpfaengerliste;
+
+      if(this.Basics.DebugNoExternalEmail) {
+
+        this.CurrentProjektpunkt.Empfaengerliste   = lodash.filter(this.CurrentProjektpunkt.Empfaengerliste,   { Email : 'p.hornburger@gmail.com' });
+        this.CurrentProjektpunkt.CcEmpfaengerliste = lodash.filter(this.CurrentProjektpunkt.CcEmpfaengerliste, { Email : 'p.hornburger@gmail.com' });
+
+        if(this.CurrentProjektpunkt.Empfaengerliste.length === 0) {
+
+          this.CurrentProjektpunkt.Empfaengerliste.push({
+            Email: 'p.hornburger@gmail.com',
+            Name:  'Peter Hornburger'
+          });
+        }
+
+        if(this.CurrentProjektpunkt.CcEmpfaengerliste.length === 0) {
+
+          this.CurrentProjektpunkt.Empfaengerliste.push({
+            Email: 'p.hornburger@gmail.com',
+            Name:  'Peter Hornburger'
+          });
+        }
+      }
+
+      Daten = {
+
+        Betreff:     this.CurrentProjektpunkt.Betreff,
+        Nachricht:   this.CurrentProjektpunkt.Nachricht,
+        Signatur:    this.Pool.GetFilledSignatur(false), // this.Pool.Signatur,
+        UserID:      this.GraphService.Graphuser.id,
+        FileID:      this.Const.NONE, // protokoll.FileID,
+        Filename:    this.Const.NONE, // protokoll.Filename,
+        Token:       token,
+        Empfaengerliste:   this.CurrentProjektpunkt.Empfaengerliste,
+        CcEmpfaengerliste: this.CurrentProjektpunkt.CcEmpfaengerliste
+      };
+
+      return new Promise((resolve, reject) => {
+
+        // PUT für update
+
+        Observer = this.http.put(this.ServerSendReminderUrl, Daten);
+
+        Observer.subscribe({
+
+          next: (ne) => {
+
+            Merker = ne;
+
+          },
+          complete: () => {
+
+            this.CurrentProjektpunkt.Ruecklaufreminderliste.push({
+
+              Zeitstempel: Heute.valueOf(),
+              Zeitstring:  Heute.format('HH:mm DD.MM.YY'),
+              Verfasser: {
+
+                Email:   this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten.Email   : this.Const.NONE,
+                Vorname: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten.Vorname : this.Const.NONE,
+                Name:    this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten.Name    : this.Const.NONE
+              }
+            });
+
+            this.UpdateProjektpunkt(this.CurrentProjektpunkt, false).then(() => {
+
+              resolve(true);
+
+            }).catch((errora) => {
+
+              debugger;
+
+              reject(errora);
+            });
+
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'SendReminderEmail', this.Debug.Typen.Service);
     }
   }
 
@@ -299,6 +460,19 @@ export class DatabaseProjektpunkteService {
         // PUT für update
 
         delete punkt.__v;
+        delete punkt.Minuten;
+        delete punkt.Kostengruppenname;
+        delete punkt.Bauteilname;
+        delete punkt.CcEmpfaengerliste;
+        delete punkt.Empfaengerliste;
+        delete punkt.Zustaendigkeitsliste;
+        delete punkt.Teilnehmeremailliste;
+        delete punkt.Betreff;
+        delete punkt.Nachricht;
+        delete punkt.Filtered;
+        delete punkt.Text_A;
+        delete punkt.Text_B;
+        delete punkt.Text_C;
 
         Observer = this.http.put(this.ServerProjektpunkteUrl, punkt);
 
@@ -478,6 +652,7 @@ export class DatabaseProjektpunkteService {
         Hauptkostengruppe:  null,
         Unterkostengruppe:  null,
         Bilderliste:        [],
+        Ruecklaufreminderliste: [],
 
         Verfasser: {
 
@@ -573,6 +748,7 @@ export class DatabaseProjektpunkteService {
         Hauptkostengruppe:  null,
         Unterkostengruppe:  null,
         Bilderliste:        [],
+        Ruecklaufreminderliste: [],
 
         Verfasser: {
 
@@ -669,6 +845,7 @@ export class DatabaseProjektpunkteService {
         Hauptkostengruppe:  null,
         Unterkostengruppe:  null,
         Bilderliste:        [],
+        Ruecklaufreminderliste: [],
 
         Verfasser: {
 
@@ -771,6 +948,7 @@ export class DatabaseProjektpunkteService {
         Hauptkostengruppe:  null,
         Unterkostengruppe:  null,
         Bilderliste:        [],
+        Ruecklaufreminderliste: [],
 
         Verfasser: {
 
@@ -1113,6 +1291,7 @@ export class DatabaseProjektpunkteService {
         Hauptkostengruppe:  null,
         Unterkostengruppe:  null,
         Bilderliste:        [],
+        Ruecklaufreminderliste: [],
 
         Verfasser: {
 
@@ -1463,7 +1642,7 @@ export class DatabaseProjektpunkteService {
       let Endetag: Moment;
       let ResultA: boolean;
       let ResultB: boolean;
-      let Ansichtensetup: Aufgabenansichtstruktur
+      let Ansichtensetup: Aufgabenansichtstruktur;
 
       // let Wocheanzahl: number = MyMoment().isoWeeksInYear();
       // let NaechsteWoche: number       = this.Heute.isoWeek();

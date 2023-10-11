@@ -435,6 +435,7 @@ export class DatabaseProtokolleService {
         DirectoryID: string;
         FileID:      string;
         Filename:    string;
+        Signatur:    string;
         UserID:      string;
         Token:       string;
         Empfaengerliste:   any[];
@@ -459,6 +460,7 @@ export class DatabaseProtokolleService {
 
         Betreff:     protokoll.Betreff,
         Nachricht:   protokoll.Nachricht,
+        Signatur:    this.Pool.GetFilledSignatur(false),
         DirectoryID: this.DBProjekt.CurrentProjekt.ProtokolleFolderID,
         UserID:      this.GraphService.Graphuser.id,
         FileID:      protokoll.FileID,

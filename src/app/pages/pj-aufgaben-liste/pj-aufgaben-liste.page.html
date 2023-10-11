@@ -81,7 +81,8 @@
                                (ThumbnailClickedEvent)="ThumbnailClickedEventHandler($event)"
                                (AddProjektpunktClicked)="AddAufgabeClickedHandler(projektindex, Datenursprungsvarianten.Alle)"
                                (MeinewocheZuweisenClicked)="MeinewocheZuweisenClickedHandler($event, projektindex, Datenursprungsvarianten.Alle)"
-                               (MeinewocheBearbeitenClicked)="MeineWocheBearbeitenClickedHandler($event, projektindex, Datenursprungsvarianten.Alle)">
+                               (MeinewocheBearbeitenClicked)="MeineWocheBearbeitenClickedHandler($event, projektindex, Datenursprungsvarianten.Alle)"
+                               (SendeRuecklauferinnerungEvent)="SendeRuecklauferinnerungHandler($event)">
         </pj-projektpunkteliste>
 
       </div>
@@ -382,7 +383,8 @@
                            (ThumbnailClickedEvent)="ThumbnailClickedEventHandler($event)"
                            (AddProjektpunktClicked)="AddAufgabeClickedHandler(null, Datenursprungsvarianten.Favoritenprojekt)"
                            (MeinewocheZuweisenClicked)="MeinewocheZuweisenClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
-                           (MeinewocheBearbeitenClicked)="MeineWocheBearbeitenClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)">
+                           (MeinewocheBearbeitenClicked)="MeineWocheBearbeitenClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
+                           (SendeRuecklauferinnerungEvent)="SendeRuecklauferinnerungHandler($event)">
     </pj-projektpunkteliste>
     <!--
       <table *ngIf="DBProjekte.CurrentProjekt !== null && Kalenderliste.length > 0" style="width: 100%" class="docinnertable">
@@ -580,6 +582,27 @@
                               (LOPListepunktClicked)="LOPListepunktClickedHandler($event)"
                               (AddLOPListepunktClicked)="AddLOPListepunktClickedHandler()">
 </pj-baustelle-lopliste-editor>
+
+<pj-email-send *ngIf="ShowEmailSenden"
+               [Titel]="'LOP Liste senden'"
+               [Dialogbreite]="EmailDialogbreite"
+               [PositionY]="DialogPosY"
+               [ZIndex]="1000"
+               [SendAttachment]="false"
+               [ShowEmpfaengerBAE]="false"
+               [ShowCcEmpfaengerExtern]="false"
+               Iconname="mail-outline"
+               (CcEmpfaengerInternClicked)="EmailCcEmpfaengerInternClickedHandler()"
+               (EmpfaengerExternClicked)="EmailEmpfaengerExternClickedHandler()"
+               (CancelClickedEvent)="ShowEmailSenden = false"
+               (OkClickedEvent)="EmailSendenOkButtonClicked($event)"></pj-email-send>
+
+<!--
+   (EmpfaengerInternClicked)="EmailEmpfaengerInternClickedHandler()"
+   (CcEmpfaengerExternClicked)="EmailCcEmpfaengerExternClickedHandler()"
+
+
+-->
 
 
 

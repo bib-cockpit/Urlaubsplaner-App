@@ -738,6 +738,7 @@ export class DatabaseLoplisteService {
 
         Betreff:     string;
         Nachricht:   string;
+        Signatur:    string;
         FileID:      string;
         Filename:    string;
         UserID:      string;
@@ -764,6 +765,7 @@ export class DatabaseLoplisteService {
 
         Betreff:     protokoll.Betreff,
         Nachricht:   protokoll.Nachricht,
+        Signatur:    this.Pool.GetFilledSignatur(false),
         UserID:      this.GraphService.Graphuser.id,
         FileID:      protokoll.FileID,
         Filename:    protokoll.Filename,
@@ -802,8 +804,6 @@ export class DatabaseLoplisteService {
       this.Debug.ShowErrorMessage(error.message, 'Database LOP Liste', 'SaveLOPListeInTeams', this.Debug.Typen.Service);
     }
   }
-
-
 
   public SaveLOPListeInTeams(
 

@@ -51,8 +51,9 @@ export type Projektestruktur = {
 
   Selected?: boolean;
   Filtered?: boolean;
-  Text_A?: string;
-  Text_B?: string;
-  Text_C?: string;
-  __v?: any;
+  Text_A?:  string;
+  Text_B?:  string;
+  Text_C?:  string;
+  __v?:     any;
+
 };

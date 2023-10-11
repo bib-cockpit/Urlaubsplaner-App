@@ -59,7 +59,8 @@ export class DatabasePoolService {
     Protokoll:    'Protokoll',
     Bautagebuch:  'Bautagebuch',
     Festlegungen: 'Festlegungen',
-    LOPListe:     'LOPListe'
+    LOPListe:     'LOPListe',
+    Aufgabenliste: 'Aufgabenliste'
   };
 
   public StandortelisteChanged: EventEmitter<any> = new EventEmitter<any>();
@@ -83,6 +84,7 @@ export class DatabasePoolService {
   public BeteiligteAuswahlChanged: EventEmitter<any> = new EventEmitter<any>();
   public NotizenkapitellisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public CurrentLOPGewerkelisteChanged: EventEmitter<any> = new EventEmitter<any>();
+  public Signatur: string;
 
   constructor(private Debug: DebugProvider,
               private Const: ConstProvider,
@@ -114,9 +116,96 @@ export class DatabasePoolService {
       this.Fachbereich              = new Fachbereiche();
       this.CurrentAufgabenansichten = null;
 
+      this.Signatur                 =
+        `<span style="font-size: 14px;">
+        Beste Grüße,<br><br>
+        [Name]<br>
+        [Jobtitel]<br><br>
+        </span>
+        <span style="font-size: 14px; font-weight: bold;">
+        BAE-GmbH<br>
+        Ingenieure für Versorgungstechnik
+        </span>
+        <table style="font-size: 12px;">
+           <tr><td colspan="2">[Strasse]</td></tr>
+           <tr><td colspan="2">[Ort]</td></tr>
+           <tr><td>Telefon:</td><td>[Telefon]</td></tr>
+           <tr><td>Mobil:</td><td>[Mobil]</td></tr>
+           <tr><td>Email:</td><td><a href="mailto:[Email]">[Email]</a></td></tr>
+           <tr><td>Web:</td><td><a href="http://www.bae-ingenieure.de">www.bae-ingenieure.de</a></td></tr>
+        </table>
+        <span style="font-size: 12px; font-weight: bold;">
+        Sitz: Coburg, Amtsgericht Coburg HRB 6357, USt.-IdNr.: DE327804364<br>
+        Geschäftsführer Jürgen Kerscher, Michael Hölzle<br>
+        Bürostandorte: Coburg, Bamberg, Deggendorf, München, Sofia, Varna<br>
+        </span>
+        <span style="font-size: 10px">
+        Der Inhalt dieser E-Mail ist ausschließlich für den bezeichneten Adressaten bestimmt. Wenn Sie nicht der vorgesehene Adressat dieser E-Mail oder dessen Vertreter sein sollten,
+        so beachten Sie, dass jede Form der Kenntnis- und Vorteilsnahme, Veröffentlichung, Vervielfältigung oder Weitergabe des Inhalts dieser Mail unzulässig ist. Wir bitten Sie, sich
+        in diesem Fall mit dem Absender der E-Mail in Verbindung zu setzen. Aussagen gegenüber dem Adressaten unterliegen den Regelungen des zugrundeliegenden Angebotes bzw. Auftrags,
+        insbesondere den Allgemeinen Auftragsbedingungen und der individuellen Haftungsvereinbarung. Der Inhalt der E-Mail ist nur rechtsverbindlich, wenn er unsererseits durch einen Brief
+        entsprechend bestätigt wird. Die Versendung von E-Mails an uns hat keine fristwahrende Wirkung. Wir möchten Sie außerdem darauf hinweisen, dass die Kommunikation per E-Mail über das
+        Internet unsicher ist, da für unberechtigte Dritte grundsätzlich die Möglichkeit der Kenntnisnahme und Manipulation besteht.<br><br>
+        The information contained in this email is intended exclusively for the addressee. Access to this email by anyone else is unauthorized. If you are not the intended recipient or his
+        representative, any form of disclosure, reproduction, distribution or any action taken or refrained from in reliance on it, is prohibited. Please notify the sender immediately. All
+        statements directed via this email to our clients are subject to the conditions of the submitted offer respectively order, in particular to the General Terms and Conditions and to
+        the individual liability agreement between the parties. The content of this email is not legally binding unless confirmed by letter. The sending of emails to us will not constitute
+        compliance with any time limits or deadlines. Please note that communication via email over the internet is insecure because third parties generally have the possibility to access
+        and manipulate emails.</span><br>
+        <img src="[Image]" style="width: 200px;">`;
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'constructor', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetFilledSignatur(local: boolean): string {
+
+    try {
+
+      let Signatur: string = this.Signatur;
+      let Telefon: string  = this.Mitarbeiterdaten.Telefon;
+      let Mobil: string    = this.Mitarbeiterdaten.Mobil;
+      let Email: string    = this.Mitarbeiterdaten.Email;
+      let Name: string     = this.Mitarbeiterdaten.Vorname + ' ' + this.Mitarbeiterdaten.Name;
+      let Jobtitel: string = this.Mitarbeiterdaten.Jobtitel;
+      let Standort: Standortestruktur = lodash.find(this.Standorteliste, {_id: this.Mitarbeiterdaten.StandortID });
+      let Strasse: string;
+      let Ort: string;
+
+      if(!lodash.isUndefined(Standort)) {
+
+        Strasse = Standort.Strasse;
+        Ort     = Standort.PLZ + ' ' + Standort.Ort;
+
+        Signatur = Signatur.replace('[Strasse]', Strasse);
+        Signatur = Signatur.replace('[Ort]',     Ort);
+      }
+
+      Signatur = Signatur.replace('[Name]',     Name);
+      Signatur = Signatur.replace('[Jobtitel]', Jobtitel);
+      Signatur = Signatur.replace('[Telefon]',  Telefon);
+      Signatur = Signatur.replace('[Mobil]',    Mobil);
+
+      Signatur = Signatur.split('[Email]').join(Email);
+
+      if(local) {
+
+        Signatur = Signatur.split('[Image]').join('assets/images/logo_large.png');
+      }
+      else {
+
+
+      }
+
+
+
+      return Signatur;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Pool', 'GetFilledSignatur', this.Debug.Typen.Service);
     }
   }
 
@@ -208,6 +297,7 @@ export class DatabasePoolService {
               if(lodash.isUndefined(Projektpunkt.Bilderliste))            Projektpunkt.Bilderliste            = [];
               if(lodash.isUndefined(Projektpunkt.ProtokollShowBilder))    Projektpunkt.ProtokollShowBilder    = true;
               if(lodash.isUndefined(Projektpunkt.Thumbnailsize))          Projektpunkt.Thumbnailsize          = 'small';
+              if(lodash.isUndefined(Projektpunkt.Ruecklaufreminderliste)) Projektpunkt.Ruecklaufreminderliste = [];
 
               Projektpunkt.Anmerkungenliste.forEach((Anmerkung: Projektpunktanmerkungstruktur) => {
 

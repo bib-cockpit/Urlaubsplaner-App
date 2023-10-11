@@ -63,7 +63,7 @@ export class DatabaseAuthenticationService {
         homeAccountId:  "",
         localAccountId: "",
         tenantId: "",
-        username: "p.hornburger@burnickl.com",
+        username: "peter.hornburger@b-a-e.eu",
         name:     "Peter Hornburger"
       };
     } catch (error) {
