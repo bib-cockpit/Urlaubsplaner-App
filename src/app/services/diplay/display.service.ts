@@ -44,7 +44,8 @@ export class DisplayService {
     LOPListeEditor: 'LOPListeEditor',
     LOPListeEintragEditor: 'LOPListeEintragEditor',
     Planungsmatrixeintrageditor: 'Planungsmatrixeintrageditor',
-    Notizenkapiteleditor: 'Notizenkapiteleditor'
+    Notizenkapiteleditor: 'Notizenkapiteleditor',
+    Festlegungkategorieneditor: 'Festlegungkategorieneditor'
 
   };
 

@@ -1,0 +1,114 @@
+
+<div [style.z-index]="ZIndex" style="position: absolute; top: 0px; left: 0px; background: none; width: 100%; height: 100%">
+  <div  class="keeperdivclass" [style.background]="Displayservice.ShowOpacity(Displayservice.Dialognamen.Festlegungkategorieneditor) ? 'rgba(0, 0, 0, 0.5)' : 'none'" (click)="ContentClicked($event)">
+    <div class="contentdivclass"
+         [style.width.px]="Dialogbreite"
+         [style.height.px]="Dialoghoehe" [style.top.px]="PositionY" (click)="ContentClicked($event)">
+      <ion-header>
+        <page-header>
+          <table class="paddingsmalltable">
+            <tr>
+              <td><ion-icon [name]="Iconname" color="weiss"></ion-icon></td>
+              <td [style.color]="'white'">{{Titel}}</td>
+            </tr>
+          </table>
+        </page-header>
+      </ion-header>
+
+      <ion-content>
+
+        <div class="contentinnerclass">
+
+          <ion-grid *ngIf="DB.CurrentFestlegungskategorie">
+            <ion-row>
+              <ion-col>
+                <input-clone Titel="Beschreibung" [(Value)]="DB.CurrentFestlegungskategorie.Beschreibung" [Required]="true"  [MaxLength]="100" (TextChanged)="TextChanged($event)"></input-clone>
+              </ion-col>
+              <!--
+              <ion-col>
+                <input-clone Titel="Kürzel" [(Value)]="DB.CurrentStandort.Kuerzel" [Required]="true" [MinLength]="3" [MaxLength]="10" (TextChanged)="TextChanged($event)"></input-clone>
+              </ion-col>
+              -->
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <button-value [Buttontext]="'Kostengruppe'"
+                              [Wert_A]="KostenService.GetKostengruppennameByFestlegungskategorie(this.DB.CurrentFestlegungskategorie)" (ButtonClicked)="KostengruppeClicked.emit()">
+                </button-value>
+              </ion-col>
+            </ion-row>
+
+            <!--
+            <ion-row>
+              <ion-col>
+                <input-clone Titel="Straße" [(Value)]="DB.CurrentStandort.Strasse" [Required]="true" [MaxLength]="100" (TextChanged)="TextChanged($event)"></input-clone>
+              </ion-col>
+              <ion-col></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <input-clone Titel="PLZ" [Required]="true" [MinLength]="5" [MaxLength]="5" [(Value)]="DB.CurrentStandort.PLZ" (TextChanged)="TextChanged($event)"></input-clone>
+              </ion-col>
+              <ion-col>
+                <input-clone Titel="Ort" [Required]="true" [MaxLength]="100" [(Value)]="DB.CurrentStandort.Ort" (TextChanged)="TextChanged($event)"></input-clone>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12"><br><br></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <input-clone Titel="Telefon" Inputtype="text" [(Value)]="DB.CurrentStandort.Telefon" (TextChanged)="TextChanged($event)"></input-clone>
+              </ion-col>
+              <ion-col>
+                <input-clone Titel="Email"  Inputtype="email" [MaxLength]="255" [Required]="true" [(Value)]="DB.CurrentStandort.Email" (TextChanged)="TextChanged($event)"></input-clone>
+              </ion-col>
+            </ion-row>
+            -->
+            <ion-row *ngIf="DB.CurrentFestlegungskategorie._id !== null">
+              <ion-col>
+                <table>
+                  <tr>
+                    <td><checkbox-clon [Checked]="CanDelete" (CheckChanged)="CanDeleteCheckedChanged($event)"></checkbox-clon></td>
+                    <td style="width: 6px"></td>
+                    <td>
+                      <ion-button size="small" color="rot" [disabled]="!CanDelete" (click)="DeleteButtonClicked()">
+                        <ion-icon name="trash-outline" style="font-size: 20px"></ion-icon>
+                        <ion-text>Eintrag löschen</ion-text>
+                      </ion-button>
+                    </td>
+                  </tr>
+                </table>
+              </ion-col>
+            </ion-row>
+
+  </ion-grid>
+
+        </div>
+      </ion-content>
+
+      <ion-footer>
+        <page-footer>
+
+          <table class="paddingsmalltable" width="100%">
+            <tr>
+              <td>
+                <div class="rootbuttonclass" (click)="CancelButtonClicked()">
+                  <ion-icon style="font-size: 28px" color="weiss" name="close-outline"></ion-icon>
+                </div>
+              <td style="width: 100%"></td>
+              <td>
+                <div class="rootbuttonclass" (click)="Valid === true ? OkButtonClicked() : null">
+                  <ion-icon style="font-size: 28px" [color]="Valid === true ? 'weiss' : 'grau'" name="save-outline"></ion-icon>
+                </div>
+              </td>
+            </tr>
+          </table>
+
+        </page-footer>
+
+      </ion-footer>
+
+    </div>
+  </div>
+</div>

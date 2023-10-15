@@ -22,6 +22,12 @@ import {
 } from "../../components-page/pj-gebaeude-raumauswahl/pj-gebaeude-raumauswahl.module";
 import {PjEmailSendModule} from "../../components-page/pj-email-send/pj-email-send.module";
 import {PjBeteiligtenAuswahlModule} from "../../components-page/pj-beteiligten-auswahl/pj-beteiligten-auswahl.module";
+import {
+    PjFestlegungskategorieEditorModule
+} from "../../components-page/pj-festlegungskategorie-editor/pj-festlegungskategorie-editor.module";
+import {
+    PjKostengruppenFestlegungskategorieAuswahlModule
+} from "../../components-page/pj-kostengruppen-festlegungkategorie-auswahl/pj-kostengruppen-festlegungskategorie-auswahl.module";
 
 const routes: Routes = [
   {
@@ -31,24 +37,26 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    PageHeaderModule,
-    RouterModule.forChild(routes),
-    PageHeaderMenuModule,
-    PageFooterModule,
-    PjProtokollEditorModule,
-    AuswahlDialogModule,
-    FiMitarbeiterAuswahlModule,
-    PjProjekteSchnellauswahlModule,
-    PjProjektpunktEditorModule,
-    PjKostengruppenAuswahlModule,
-    PjGebaeudeRaumauswahlModule,
-    PjEmailSendModule,
-    PjBeteiligtenAuswahlModule,
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        PageHeaderModule,
+        RouterModule.forChild(routes),
+        PageHeaderMenuModule,
+        PageFooterModule,
+        PjProtokollEditorModule,
+        AuswahlDialogModule,
+        FiMitarbeiterAuswahlModule,
+        PjProjekteSchnellauswahlModule,
+        PjProjektpunktEditorModule,
+        PjKostengruppenAuswahlModule,
+        PjGebaeudeRaumauswahlModule,
+        PjEmailSendModule,
+        PjBeteiligtenAuswahlModule,
+        PjFestlegungskategorieEditorModule,
+        PjKostengruppenFestlegungskategorieAuswahlModule,
+    ],
   declarations: [PjFestlegungslistePage]
 })
 export class PjFestlegungslistePageModule {}

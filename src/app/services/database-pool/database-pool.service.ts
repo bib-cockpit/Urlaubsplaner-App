@@ -24,6 +24,7 @@ import {Outlookkategoriesstruktur} from "../../dataclasses/outlookkategoriesstru
 import {Notizenkapitelstruktur} from "../../dataclasses/notizenkapitelstruktur";
 import {Fachbereiche, Fachbereichestruktur} from "../../dataclasses/fachbereicheclass";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
+import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +54,7 @@ export class DatabasePoolService {
   public Outlookkatekorien: Outlookkategoriesstruktur[];
   public ContacsSubscriptionURl: string;
   public Fachbereich: Fachbereiche;
+  public  Festlegungskategorienliste: Festlegungskategoriestruktur[][];
   public Emailcontentvarinaten = {
 
     NONE: this.Const.NONE,
@@ -84,6 +86,7 @@ export class DatabasePoolService {
   public BeteiligteAuswahlChanged: EventEmitter<any> = new EventEmitter<any>();
   public NotizenkapitellisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public CurrentLOPGewerkelisteChanged: EventEmitter<any> = new EventEmitter<any>();
+  public FestlegungskategorienlisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public Signatur: string;
 
   constructor(private Debug: DebugProvider,
@@ -115,6 +118,7 @@ export class DatabasePoolService {
       this.ContacsSubscriptionURl   = this.CockpitserverURL + '/subscription';
       this.Fachbereich              = new Fachbereiche();
       this.CurrentAufgabenansichten = null;
+      this.Festlegungskategorienliste = [];
 
       this.Signatur                 =
         `<span style="font-size: 14px;">
@@ -492,8 +496,7 @@ export class DatabasePoolService {
 
              // debugger;
 
-            this.Debug.ShowMessage('Read LOP Liste von ' + projekt.Projektkurzname + ' fertig.', 'Database Pool', 'NotizenkReadNotizenkapitellisteapitelroutsClass', this.Debug.Typen.Service);
-
+            this.Debug.ShowMessage('Read Notizenliste von ' + projekt.Projektkurzname + ' fertig.', 'Database Pool', 'NotizenkReadNotizenkapitellisteapitelroutsClass', this.Debug.Typen.Service);
 
 
             resolve(true);
@@ -509,6 +512,58 @@ export class DatabasePoolService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadNotizenkapitelliste', this.Debug.Typen.Service);
+    }
+  }
+
+  public ReadFestlegungskategorieliste(projekt: Projektestruktur): Promise<any> {
+
+    try {
+
+      let Params: HttpParams;
+      let Headers: HttpHeaders;
+      let FestlegungskategorieObservable: Observable<any>;
+
+      // debugger;
+
+      this.Festlegungskategorienliste[projekt.Projektkey] = [];
+
+      return new Promise((resolve, reject) => {
+
+        Params  = new HttpParams({ fromObject: { projektkey: projekt.Projektkey }} );
+        Headers = new HttpHeaders({
+
+          'content-type': 'application/json',
+        });
+
+        FestlegungskategorieObservable = this.Http.get(this.CockpitserverURL + '/festlegungskategorie', { headers: Headers, params: Params } );
+
+        FestlegungskategorieObservable.subscribe({
+
+          next: (data) => {
+
+            this.Festlegungskategorienliste[projekt.Projektkey] = <Festlegungskategoriestruktur[]>data;
+
+          },
+          complete: () => {
+
+
+
+
+            this.Debug.ShowMessage('Read Festlegungskategorieliste von ' + projekt.Projektkurzname + ' fertig.', 'Database Pool', 'ReadFestlegungskategorieliste', this.Debug.Typen.Service);
+
+            resolve(true);
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadFestlegungskategorieliste', this.Debug.Typen.Service);
     }
   }
 
@@ -914,7 +969,7 @@ export class DatabasePoolService {
 
     try {
 
-      let Steps: number           = 5;
+      let Steps: number           = 7;
       this.ShowProgress           = true;
       this.MaxProgressValue       = projektliste.length * Steps;
       this.CurrentProgressValue   = 0;
@@ -956,6 +1011,12 @@ export class DatabasePoolService {
           this.ProgressMessage = 'Notizenkapitel Liste ' + Projekt.Projektkurzname;
 
           await this.ReadNotizenkapitelliste(Projekt);
+
+          this.CurrentProgressValue++;
+
+          this.ProgressMessage = 'Festlegungskategorien Liste ' + Projekt.Projektkurzname;
+
+          await this.ReadFestlegungskategorieliste(Projekt);
 
           this.CurrentProgressValue++;
         }

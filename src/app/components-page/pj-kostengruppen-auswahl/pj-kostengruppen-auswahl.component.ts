@@ -20,6 +20,8 @@ import {DatabaseProjektpunkteService} from "../../services/database-projektpunkt
 import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
 import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
+import {DatabaseFestlegungenService} from "../../services/database-festlegungen/database-festlegungen.service";
+import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 
 @Component({
   selector: 'pj-kostengruppen-auswahl',
@@ -48,6 +50,8 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
               public DB: DatabaseProjektpunkteService,
+              private DBProjekte: DatabaseProjekteService,
+              public DBFestlegungskategorie: DatabaseFestlegungenService,
               private Pool: DatabasePoolService,
               public Displayservice: DisplayService,
               public Kostengruppenservice: KostengruppenService,
@@ -90,8 +94,8 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
 
       this.Displayservice.AddDialog(this.Displayservice.Dialognamen.Kostengruppenauswahl, this.ZIndex);
 
-
       this.PrepareData();
+
 
     } catch (error) {
 
@@ -147,6 +151,57 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
     }
   }
 
+  private PrepareDataFestlegungskatego() {
+
+    try {
+
+      this.Oberkostengruppenliste  = [];
+
+      if(this.DBFestlegungskategorie.CurrentFestlegungskategorie === null) {
+
+        this.DBFestlegungskategorie.CurrentFestlegungskategorie = this.DBFestlegungskategorie.GetEmptyFestlegungskategorie(this.DBProjekte.CurrentProjekt);
+      }
+
+      this.Oberkostengruppenliste = <Kostengruppenstruktur[]>lodash.filter(this.Kostengruppenservice.Kostengruppen, (Gruppe: Kostengruppenstruktur) => {
+
+        return Gruppe.Typ === this.Kostengruppenservice.Kostengruppentypen.Obergruppe;
+      });
+
+      this.Hauptkostengruppenliste = [];
+
+      if(this.DBFestlegungskategorie.CurrentFestlegungskategorie.Oberkostengruppe !== null) {
+
+        this.Hauptkostengruppenliste = <Kostengruppenstruktur[]>lodash.filter(this.Kostengruppenservice.Kostengruppen, (Gruppe: Kostengruppenstruktur) => {
+
+          return Gruppe.Typ === this.Kostengruppenservice.Kostengruppentypen.Hauptgruppe && Gruppe.Obergruppennummer === this.DBFestlegungskategorie.CurrentFestlegungskategorie.Oberkostengruppe;
+        });
+      }
+      else {
+
+        this.DBFestlegungskategorie.CurrentFestlegungskategorie.Hauptkostengruppe = null;
+        this.DBFestlegungskategorie.CurrentFestlegungskategorie.Unterkostengruppe = null;
+      }
+
+      this.Unterkostengruppenliste = [];
+
+      if(this.DBFestlegungskategorie.CurrentFestlegungskategorie.Hauptkostengruppe !== null) {
+
+        this.Unterkostengruppenliste = <Kostengruppenstruktur[]>lodash.filter(this.Kostengruppenservice.Kostengruppen, (Gruppe: Kostengruppenstruktur) => {
+
+          return Gruppe.Typ === this.Kostengruppenservice.Kostengruppentypen.Untergruppe && Gruppe.Hauptgruppennummer === this.DBFestlegungskategorie.CurrentFestlegungskategorie.Hauptkostengruppe;
+        });
+      }
+      else {
+
+        this.DBFestlegungskategorie.CurrentFestlegungskategorie.Unterkostengruppe = null;
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen Auswahl', 'PrepareDataFestlegungskategorie', this.Debug.Typen.Component);
+    }
+  }
+
   ngAfterViewInit(): void {
 
     try {
@@ -184,6 +239,8 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
 
       this.PrepareData();
 
+
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Kostengruppen Auswahl', 'OberkostengruppeChanged', this.Debug.Typen.Component);
@@ -195,12 +252,12 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
     try {
 
       this.DB.CurrentProjektpunkt.Hauptkostengruppe = event.detail.value;
-
       this.DB.CurrentProjektpunkt.Unterkostengruppe = null;
 
       this.Pool.ProjektpunktKostengruppeChanged.emit();
 
       this.PrepareData();
+
 
     } catch (error) {
 
@@ -217,6 +274,7 @@ export class PjKostengruppenAuswahlComponent implements OnInit, OnDestroy, After
       this.Pool.ProjektpunktKostengruppeChanged.emit();
 
       this.PrepareData();
+
 
     } catch (error) {
 

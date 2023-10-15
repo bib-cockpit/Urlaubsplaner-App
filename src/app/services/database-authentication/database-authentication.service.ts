@@ -205,9 +205,20 @@ export class DatabaseAuthenticationService {
 
       return new Promise((resolve, reject) => {
 
+        /*
+
+        AADSTS65001: The user or administrator has not consented to use the application with ID 'bc457d46-6f13-4fa7-a973-e94cf4102dd9' named 'Cockpit App Registration'.
+        Send an interactive authorization request for this user and resource.
+Trace ID: 257e9ec6-70af-4900-96d7-5c0b68dfea00
+Correlation ID: dbb0bbfe-6c4d-4f39-bd7d-592fc8f01a39
+Timestamp: 2023-10-11 17:54:01Z
+         */
+
         this.authService.acquireTokenSilent(accessTokenRequest).pipe(catchError(err => {
 
           if(err) {
+
+            debugger;
 
             switch (err.errorCode) {
 

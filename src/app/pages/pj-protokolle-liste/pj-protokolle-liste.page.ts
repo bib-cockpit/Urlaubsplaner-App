@@ -30,6 +30,7 @@ import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestru
 import ImageViewer from "awesome-image-viewer";
 import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
+import {DatabaseAuthenticationService} from "../../services/database-authentication/database-authentication.service";
 
 @Component({
   selector:    'pj-protokolle-liste-page',
@@ -89,6 +90,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
               public Pool: DatabasePoolService,
               public Tools: ToolsProvider,
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
+              private AuthService: DatabaseAuthenticationService,
               public Debug: DebugProvider) {
 
     try {
@@ -921,7 +923,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
     }
   }
 
-  EmpfaengerBurnicklClickedHandler() {
+  EmpfaengerInternClickedHandler() {
 
     try {
 
@@ -970,11 +972,13 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
     }
   }
 
-  ThumbnailClickedEventHandler(event: { Index: number; Thumbliste: Thumbnailstruktur[] }) {
+  async ThumbnailClickedEventHandler(event: { Index: number; Thumbliste: Thumbnailstruktur[] }) {
 
     try {
 
       let Imagedaten: any[] = [];
+
+      await this.AuthService.RequestToken('.default');
 
       for (let Thumb of event.Thumbliste) {
 
@@ -989,7 +993,6 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
         }
       }
 
-      debugger;
 
       this.Imageviewer = new ImageViewer({
         images: Imagedaten,

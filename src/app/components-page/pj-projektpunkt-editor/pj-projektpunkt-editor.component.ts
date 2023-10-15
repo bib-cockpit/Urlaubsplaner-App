@@ -42,6 +42,7 @@ import {Graphservice} from "../../services/graph/graph";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
+import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
 
 @Component({
   selector: 'pj-projektpunkt-editor',
@@ -1071,5 +1072,29 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
+  GetKostengruppennamen(): string {
+
+    try {
+
+      let Text = 'unbekannt';
+      let Kategorie: Festlegungskategoriestruktur;
+
+      if(this.DBProjekt.CurrentProjekt !== null && this.DB.CurrentProjektpunkt !== null) {
+
+        Kategorie = lodash.find(this.Pool.Festlegungskategorienliste[this.DBProjekt.CurrentProjekt.Projektkey], {_id : this.DB.CurrentProjektpunkt.FestlegungskategorieID})
+
+        if(!lodash.isUndefined(Kategorie)) {
+
+
+        }
+      }
+
+      return Text;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetKostengruppennamen', this.Debug.Typen.Component);
+    }
+  }
 }
 

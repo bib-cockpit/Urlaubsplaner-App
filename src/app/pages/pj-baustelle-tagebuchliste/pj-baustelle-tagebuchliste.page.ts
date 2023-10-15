@@ -444,7 +444,7 @@ export class PjBaustelleTagebuchlistePage implements OnInit, OnDestroy {
     }
   }
 
-  EmpfaengerBurnicklClickedHandler() {
+  EmpfaengerInternClickedHandler() {
 
     try {
 

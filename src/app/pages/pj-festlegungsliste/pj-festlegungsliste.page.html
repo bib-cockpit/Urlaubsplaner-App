@@ -13,18 +13,88 @@
 </ion-header>
 <ion-content>
 
-  <table *ngIf="DBProjekte.CurrentProjekt !== null" class="nobordertable">
-    <tr>
-      <td>
-        <div class="projecticonclass" [style.background]="DBProjekte.GetProjektfarbeByProjekt(DBProjekte.CurrentProjekt)"></div>
-      </td>
-      <td>
-        <ion-text color="baeblau" style="font-size: 120%"><b>{{DBProjekte.CurrentProjekt.Projektname}}</b></ion-text>
-      </td>
-    </tr>
-  </table>
+  <ng-container *ngIf="DBProjekte.CurrentProjekt !== null && Eintraegeanzahl  > 0">
 
-  <table *ngIf="DB.Kostengruppenliste.length === 0" width="100%">
+    <div style="width: 100%; padding-left: 8px; padding-right: 8px">
+
+      <table  class="nobordertable">
+        <tr>
+          <td>
+            <div class="projecticonclass" [style.background]="DBProjekte.GetProjektfarbeByProjekt(DBProjekte.CurrentProjekt)"></div>
+          </td>
+          <td>
+            <ion-text color="baeblau" style="font-size: 120%"><b>{{DBProjekte.CurrentProjekt.Projektname}}</b></ion-text>
+          </td>
+        </tr>
+      </table>
+
+      <table  width="100%" class="docinnertable">
+        <tr>
+          <td style="width: 3px"><b>Nr.</b></td>
+          <td style="width: 80px; text-align: center"><b>Datum</b></td>
+          <td style="width: auto"><b>Beschreibung</b></td>
+          <td style="width: 80px; text-align: center"><b>Phase</b></td>
+          <td style="width: 80px; text-align: center"><b>Ursprung</b></td>
+        </tr>
+        <ng-container *ngFor="let Kategorie of Pool.Festlegungskategorienliste[DBProjekte.CurrentProjekt.Projektkey]; let Kategorieindex = index; let o = odd">
+          <tr *ngIf="Kategorie.DisplayKostengruppe">
+            <td colspan="5" [style.background]="Kategorie.Kostengruppecolor" style="border-right: none !important;">
+
+              <div class="festlegunglisteheader" (click)="FestlegungskategorieClicked(Kategorie)">
+                {{KostenService.GetKostengruppennameByFestlegungskategorie(Kategorie)}}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="5" [style.background]="'silver'" style="border-right: none !important;">
+              <div class="festlegunglisteheader" (click)="FestlegungskategorieClicked(Kategorie)">
+                {{Kategorie.Beschreibung}}
+              </div>
+            </td>
+          </tr>
+          <tr *ngFor="let Punkt of DB.Displayliste[Kategorieindex];  let Punktindex = index">
+            <td>{{(Punktindex + 1).toString()}}</td>
+            <td style="text-align: center">{{Punkt.Startzeitstring}}</td>
+            <td>
+              <div class="festlegungdivclass" (click)="FestlegungClicked(Punkt)">
+                <table class="nobordertable">
+                  <tr>
+                    <td *ngIf="Punkt.OpenFestlegung">
+                      <div style="width: 10px; height: 10px; background: red; border-radius: 50%"></div>
+                    </td>
+                    <td *ngIf="!Punkt.Filtered">
+                      {{Punkt.Aufgabe}}
+                    </td>
+                    <td *ngIf="Punkt.Filtered">
+                      <span>{{Punkt.Text_A}}</span><span style="color: orange">{{Punkt.Text_B}}</span><span>{{Punkt.Text_C}}</span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </td>
+            <td style="text-align: center;">{{Punkt.Leistungsphase}}</td>
+            <td align="center">
+              <ion-button *ngIf="Punkt.ProtokollID !== null" size="small" [color]="Basics.Ionicfarben.BurnicklBraun" (click)="ProtokollButtonClicked(Punkt)">P</ion-button>
+            </td>
+          </tr>
+        </ng-container>
+        <tr>
+          <td colspan="10" style="border: none !important;">
+            <ion-button size="small" color="burnicklbraun"
+                        (click)="AddFestlegungClicked()">
+              <ion-icon name="add-circle-outline" color="weiss" slot="start"></ion-icon>
+              <ion-text color="weiss">Neuer Eintrag</ion-text>
+            </ion-button>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+  </ng-container>
+
+
+  <table *ngIf="Eintraegeanzahl === 0" width="100%">
     <tr>
       <td>
         <div class="keineintragclass">
@@ -40,66 +110,22 @@
     </tr>
   </table>
 
-  <table  class="paddingtable" style="width: 100%">
-    <ng-container *ngFor="let Kostengruppe of DB.Kostengruppenliste; let i = index">
-      <tr>
-        <td>
-          <ion-text color="braun"><b>{{Kostengruppe.Kostengruppenname}}</b></ion-text>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <table width="100%" class="docinnertable">
-            <tr>
-              <td style="width: 3px"><b>Nr.</b></td>
-              <td style="width: 80px; text-align: center"><b>Datum</b></td>
-              <td style="width: auto"><b>Beschreibung</b></td>
-              <td style="width: 80px; text-align: center"><b>Phase</b></td>
-              <td style="width: 80px; text-align: center"><b>Ursprung</b></td>
-            </tr>
-            <tr *ngFor="let Punkt of DB.Displayliste[i]; let j = index">
-              <td>{{(j + 1).toString()}}</td>
-              <td style="text-align: center">{{Punkt.Startzeitstring}}</td>
-              <td>
-                <div class="festlegungdivclass" (click)="FestlegungClicked(Punkt)">
-                  <table class="nobordertable">
-                    <tr>
-                      <td *ngIf="Punkt.OpenFestlegung">
-                        <div style="width: 10px; height: 10px; background: red; border-radius: 50%"></div>
-                      </td>
-                      <td *ngIf="!Punkt.Filtered">
-                        {{Punkt.Aufgabe}}
-                      </td>
-                      <td *ngIf="Punkt.Filtered">
-                        <span>{{Punkt.Text_A}}</span><span style="color: orange">{{Punkt.Text_B}}</span><span>{{Punkt.Text_C}}</span>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-              </td>
-              <td style="text-align: center;">{{Punkt.Leistungsphase}}</td>
-              <td align="center">
-                <ion-button *ngIf="Punkt.ProtokollID !== null" size="small" [color]="Basics.Ionicfarben.BurnicklBraun" (click)="ProtokollButtonClicked(Punkt)">P</ion-button>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </ng-container>
-    <tr>
-      <td>
-        <ion-button size="small" color="burnicklbraun"
-                    (click)="AddFestlegungClicked()">
-          <ion-icon name="add-circle-outline" color="weiss" slot="start"></ion-icon>
-          <ion-text color="weiss">Neuer Eintrag</ion-text>
-        </ion-button>
-      </td>
-    </tr>
-  </table>
-
 </ion-content>
 <ion-footer>
   <page-footer #PageFooter>
+
+    <div class="rootbuttonclass" (click)="NeueFetslegungskategorieButtonClicked()">
+      <table border="0">
+        <tr>
+          <td style="width: 130px">
+            <ion-text color="weiss">Neue Kostengruppe</ion-text>
+          </td>
+          <td>
+            <ion-icon style="font-size: 28px" color="weiss" name="add-circle-outline"></ion-icon>
+          </td>
+        </tr>
+      </table>
+    </div>
 
   </page-footer>
 </ion-footer>
@@ -112,7 +138,7 @@
 <pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor && DBProjektpunkte.CurrentProjektpunkt !== null" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
                         [ZIndex]="3000" [Titel]="DBProjektpunkte.CurrentProjektpunkt._id !== null ? 'Festlegung bearbeiten' : 'Neue Festlegung'" Iconname="book-outline"
                         (FachbereichClicked)="FachbereichClickedHandler()"
-                        (KostengruppeClicked)="KostengruppeClickedHandler()"
+                        (KostengruppeClicked)="KostengruppeClickedHandler('Editor')"
                         (ZustaendigInternClicked)="EditorZustaendigInternHandler()"
                         (ZustaendigExternClicked)="EditorZustaendigExternHandler()"
                         (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
@@ -140,7 +166,7 @@
                         (OkClickedEvent)="BeteiligteauswahlOkButtonClicked($event)"></pj-beteiligten-auswahl>
 
 <auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"
-                [Dialogbreite]="300" [Dialoghoehe]="Auswahlhoehe" [PositionY]="200"
+                [Dialogbreite]="Auswahlbreite" [Dialoghoehe]="Auswahlhoehe" [PositionY]="200"
                 [Titel]="Auswahltitel" [Iconname]="GetDialogTitelicon()"
                 (OkClickedEvent)="AuswahlOkButtonClicked($event)"
                 (CancelClickedEvent)="ShowAuswahl = false">
@@ -167,6 +193,10 @@
                           (OkClickedEvent)="KostengruppenauswahlOkClicked()"
                           (CancelClickedEvent)="ShowKostengruppenauswahl = false"></pj-kostengruppen-auswahl>
 
+<pj-kostengruppen-festlegungskategorie-auswahl *ngIf="ShowKostengruppenauswahlFestlegungskategorie" [Titel]="Kostengruppeauswahltitel"
+                          [Dialogbreite]="KostenDialogbreite" [Dialoghoehe]="KostenDialoghoehe" [PositionY]="DialogPosY"
+                          (OkClickedEvent)="KostengruppenauswahlOkClicked()"
+                          (CancelClickedEvent)="ShowKostengruppenauswahlFestlegungskategorie = false"></pj-kostengruppen-festlegungskategorie-auswahl>
 
 <pj-protokoll-editor *ngIf="ShowProtokollEditor"  [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
                      [Titel]="'Protokoll bearbeiten'" Iconname="book-outline"
@@ -185,10 +215,16 @@
                [PositionY]="DialogPosY"
                [ZIndex]="1000"
                Iconname="mail-outline"
-               (EmpfaengerBurnicklClicked)="EmpfaengerBurnicklClickedHandler()"
-               (CcEmpfaengerBurnicklClicked)="CcEmpfaengerBurnicklClickedHandler()"
+               (EmpfaengerInternClicked)="EmpfaengerInternClickedHandler()"
+               (CcEmpfaengerInternClicked)="CcEmpfaengerBurnicklClickedHandler()"
                (EmpfaengerExternClicked)="EmpfaengerExternClickedHandler()"
                (CcEmpfaengerExternClicked)="CcEmpfaengerExternClickedHandler()"
                (CancelClickedEvent)="ShowEmailSenden = false"
                (OkClickedEvent)="EmailSendenOkButtonClicked($event)"></pj-email-send>
+
+<pj-festlegungskategorie-editor *ngIf="ShowFestlegungskategorieEditor"
+  (KostengruppeClicked)="KostengruppeClickedHandler('Festlegungskategorie')"
+  (CancelClickedEvent)="ShowFestlegungskategorieEditor = false"
+  (OkClickedEvent)="ShowFestlegungskategorieEditor = false">
+</pj-festlegungskategorie-editor>
 

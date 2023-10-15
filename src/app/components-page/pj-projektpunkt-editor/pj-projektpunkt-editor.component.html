@@ -89,10 +89,11 @@
                         <tr>
                           <td>
                             <button-value [Buttontext]="'Kostengruppe'"
-                                          [Wert_A]="KostenService.GetKostengruppennameByProjektpunkt(this.DB.CurrentProjektpunkt)" (ButtonClicked)="KostengruppeClicked.emit()">
+                                          [Wert_A]="GetKostengruppennamen()" (ButtonClicked)="KostengruppeClicked.emit()">
                             </button-value>
                           </td>
                         </tr>
+                        <!--
                         <tr *ngIf="Kostengruppenpunkteliste.length > 0">
                           <td>
                             <table class="paddingsmalltable">
@@ -107,6 +108,7 @@
 
                           </td>
                         </tr>
+                        -->
                       </table>
                     </ion-col>
 
@@ -130,11 +132,13 @@
                     </ion-col>
                   </ion-row>
 
+                  <!--
                   <ion-row [hidden]="true">
                     <ion-col [size]="Tools.GetButtonvalueSize()">
                       <input-clone Titel="Aufgabennummer" [(Value)]="DB.CurrentProjektpunkt.Nummer"></input-clone>
                     </ion-col>
                   </ion-row>
+                  -->
                   <ion-row>
                     <ion-col>
                       <ion-text color="burnicklgruen"><b>Thema</b></ion-text>

@@ -21,7 +21,7 @@
 
         <div class="contentinnerclass">
 
-          <table *ngIf="DB.CurrentProjektpunkt !== null" class="paddingtable">
+          <table *ngIf="DB.CurrentProjektpunkt !== null || DBFestlegungskategorie.CurrentFestlegungskategorie !== null" class="paddingtable">
             <tr>
               <td style="width: 33%"><ion-text color="burnicklgruen"><b>1. Ebene</b></ion-text></td>
               <td style="width: 33%"><ion-text *ngIf="DB.CurrentProjektpunkt.Oberkostengruppe  !== null" color="burnicklgruen"><b>2. Ebene</b></ion-text></td>

@@ -48,6 +48,7 @@ export class AuswahlDialogService {
     Festlegungliste_Emaileditor_Standortfilter:    'Festlegungliste_Emaileditor_Standortfilter',
     Festlegungliste_Editor_Status:                 'Festlegungliste_Editor_Status',
     Festlegungliste_Editor_Fachbereich:            'Festlegungliste_Editor_Fachbereich',
+    Festlegungliste_Editor_Kostengruppe:            'Festlegungliste_Editor_Kostengruppe',
     Festlegungliste_Editor_ZustaendigExtern:       'Festlegungliste_Editor_ZustaendigExtern',
     Festlegungliste_Editor_ZustaendigIntern:       'Festlegungliste_Editor_ZustaendigIntern',
 

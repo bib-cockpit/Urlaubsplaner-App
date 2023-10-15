@@ -38,6 +38,7 @@ import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 import ImageViewer from 'awesome-image-viewer';
 import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
+import {DatabaseAuthenticationService} from "../../services/database-authentication/database-authentication.service";
 
 @Component({
   selector:    'pj-aufgaben-liste-page',
@@ -157,6 +158,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
               public Menuservice: MenueService,
               public Const: ConstProvider,
               public Pool: DatabasePoolService,
+              private AuthService: DatabaseAuthenticationService,
               public Debug: DebugProvider) {
 
     try {
@@ -2131,11 +2133,13 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     }
   }
 
-  ThumbnailClickedEventHandler(event: { Index: number; Thumbliste: Thumbnailstruktur[] }) {
+  async ThumbnailClickedEventHandler(event: { Index: number; Thumbliste: Thumbnailstruktur[] }) {
 
     try {
 
       let Imagedaten: any[] = [];
+
+      await this.AuthService.RequestToken('.default');
 
       for (let Thumb of event.Thumbliste) {
 
@@ -2145,7 +2149,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
             {
               mainUrl:      Thumb.weburl,
               thumbnailUrl: Thumb.smallurl,
-              description:  ''
+              description:  '',
             });
         }
       }
@@ -2155,7 +2159,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
         currentSelected: event.Index
       });
 
-    } catch (error) {
+    } catch (error: any) {
 
       this.Debug.ShowErrorMessage(error, 'Aufgabe Liste', 'ThumbnailClickedEventHandler', this.Debug.Typen.Page);
     }

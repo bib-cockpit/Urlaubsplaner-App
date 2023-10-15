@@ -273,6 +273,8 @@ export class DatabaseStandorteService {
       this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'UpdateStandort', this.Debug.Typen.Service);
     }
   }
+
+
   public DeleteStandort(): Promise<any> {
 
     try {

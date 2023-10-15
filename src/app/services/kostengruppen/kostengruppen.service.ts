@@ -4,6 +4,7 @@ import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
 import {DebugProvider} from "../debug/debug";
 import * as lodash from 'lodash-es';
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
+import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -2019,6 +2020,51 @@ export class KostengruppenService {
     }
   }
 
+  public GetKostengruppeByFestlegungskategorie(festlegungskategorie: Festlegungskategoriestruktur): Kostengruppenstruktur {
+
+    try {
+
+      let Kostengruppe: Kostengruppenstruktur;
+
+      if(festlegungskategorie !== null) {
+
+        if(festlegungskategorie.Unterkostengruppe !== null) {
+
+          Kostengruppe = lodash.find(this.Kostengruppen, (gruppe: Kostengruppenstruktur) => {
+
+            return gruppe.Typ === this.Kostengruppentypen.Untergruppe && gruppe.Kostengruppennummer === festlegungskategorie.Unterkostengruppe;
+          });
+
+           if(!lodash.isUndefined(!Kostengruppe)) return Kostengruppe;
+        }
+        else if(festlegungskategorie.Hauptkostengruppe !== null) {
+
+          Kostengruppe = lodash.find(this.Kostengruppen, (gruppe: Kostengruppenstruktur) => {
+
+            return gruppe.Typ === this.Kostengruppentypen.Hauptgruppe && gruppe.Kostengruppennummer === festlegungskategorie.Hauptkostengruppe;
+          });
+
+          if(!lodash.isUndefined(!Kostengruppe)) return Kostengruppe;
+        }
+        else if(festlegungskategorie.Oberkostengruppe !== null) {
+
+          Kostengruppe = lodash.find(this.Kostengruppen, (gruppe: Kostengruppenstruktur) => {
+
+            return gruppe.Typ === this.Kostengruppentypen.Obergruppe && gruppe.Kostengruppennummer === festlegungskategorie.Oberkostengruppe;
+          });
+
+          if(!lodash.isUndefined(!Kostengruppe)) return Kostengruppe;
+        }
+      }
+
+      return null;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'GetKostengruppeByFestlegungskategorie', this.Debug.Typen.Service);
+    }
+  }
+
   public GetKostengruppeByGruppennummern(Unterkostengruppe: number,  Hauptkostengruppe: number, Oberkostengruppe: number ): Kostengruppenstruktur {
 
     try {
@@ -2072,6 +2118,20 @@ export class KostengruppenService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'GetKostengruppennameByProjektpunkt', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetKostengruppennameByFestlegungskategorie(Festlegungskategorie: Festlegungskategoriestruktur): string {
+
+    try {
+
+      let Kostengruppe: Kostengruppenstruktur = this.GetKostengruppeByFestlegungskategorie(Festlegungskategorie);
+
+      return Kostengruppe !== null ? Kostengruppe.Kostengruppennummer + ' ' + Kostengruppe.Bezeichnung : 'Unbekannt';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'GetKostengruppennameByFestlegungskategorie', this.Debug.Typen.Service);
     }
   }
 

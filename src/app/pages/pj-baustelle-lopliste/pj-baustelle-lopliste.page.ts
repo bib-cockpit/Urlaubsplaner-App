@@ -32,6 +32,7 @@ import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
 import ImageViewer from "awesome-image-viewer";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
+import {DatabaseAuthenticationService} from "../../services/database-authentication/database-authentication.service";
 
 @Component({
   selector: 'pj-baustelle-lopliste',
@@ -106,6 +107,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
               public DBMitarbeiter: DatabaseMitarbeiterService,
               public Const: ConstProvider,
               public Tools: ToolsProvider,
+              private AuthService: DatabaseAuthenticationService,
               public Debug: DebugProvider) {
 
     try {
@@ -1367,7 +1369,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
   }
 
 
-  ThumbnailClicked(event: MouseEvent, Thumbliste: Thumbnailstruktur[], Index: number) {
+  async ThumbnailClicked(event: MouseEvent, Thumbliste: Thumbnailstruktur[], Index: number) {
 
     try {
 
@@ -1375,6 +1377,8 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
       event.preventDefault();
       event.stopPropagation();
+
+      await this.AuthService.RequestToken('.default');
 
       for (let Thumb of Thumbliste) {
 
