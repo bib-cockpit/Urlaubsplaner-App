@@ -281,6 +281,17 @@
                           </table>
                         </div>
                       </td>
+                      <td *ngIf="Menuservice.MainMenuebereich !== Menuservice.MainMenuebereiche.Email && Menuservice.Aufgabenlisteansicht !== Menuservice.Aufgabenlisteansichten.Alle">
+                        <div (click)="ProjektSettingsClicked()" (mouseover)="FilesMouseOver = true" (mouseleave)="FilesMouseOver = false" [style.border-color]="FilesMouseOver === true ? '#c7d304' : 'white'"  class="buttonsmallclass">
+                          <table>
+                            <tr>
+                              <td>
+                                <ion-icon name="folder-outline" style="font-size: 18px" [color]="FilesMouseOver === true ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.Weiss"></ion-icon>
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
+                      </td>
                       <td>
                         <ion-button (click)="ProjektGoForwardClicked()" slot="icon-only"
                                     [color]="GetProjektForwardButtoncolor()" size="small">

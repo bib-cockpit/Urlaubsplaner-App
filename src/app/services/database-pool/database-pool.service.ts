@@ -40,6 +40,7 @@ export class DatabasePoolService {
   public Notizenkapitelliste:     Notizenkapitelstruktur[][];
   public Mitarbeitersettingsliste: Mitarbeitersettingsstruktur[];
   public CockpitserverURL:        string;
+  public CockpitdockerURL:        string;
   public Mitarbeiterdaten: Mitarbeiterstruktur;
   public Mitarbeiterstandort: Standortestruktur;
   public Mitarbeitersettings: Mitarbeitersettingsstruktur;
@@ -114,6 +115,7 @@ export class DatabasePoolService {
       this.Notizenkapitelliste      = [];
       this.Outlookkatekorien        = [];
       this.CockpitserverURL         = environment.production === true ? 'https://bae-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
+      this.CockpitdockerURL         = environment.production === true ? 'https://bae-cockpit-docker.azurewebsites.net' : 'http://localhost:80';
       this.Emailcontent             = this.Emailcontentvarinaten.NONE;
       this.ContacsSubscriptionURl   = this.CockpitserverURL + '/subscription';
       this.Fachbereich              = new Fachbereiche();

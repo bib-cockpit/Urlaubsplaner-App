@@ -598,8 +598,6 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
     this.Auswahltitel = 'Stataus festlegen';
     this.Auswahlliste = [];
 
-
-
     this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Projektpunkteditor_Fachbereich;
 
     this.Auswahlliste.push({Index: 0, FirstColumn: this.Pool.Fachbereich.Unbekannt.Bezeichnung,      SecoundColumn: this.Pool.Fachbereich.Unbekannt.Kuerzel,      Data: this.Pool.Fachbereich.Unbekannt.Key});
@@ -611,6 +609,9 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
     this.Auswahlliste.push({Index: 6, FirstColumn: this.Pool.Fachbereich.S.Bezeichnung,              SecoundColumn: this.Pool.Fachbereich.S.Kuerzel,              Data: this.Pool.Fachbereich.S.Key});
     this.Auswahlliste.push({Index: 7, FirstColumn: this.Pool.Fachbereich.K.Bezeichnung,              SecoundColumn: this.Pool.Fachbereich.K.Kuerzel,              Data: this.Pool.Fachbereich.K.Key});
     this.Auswahlliste.push({Index: 8, FirstColumn: this.Pool.Fachbereich.MSR.Bezeichnung,            SecoundColumn: this.Pool.Fachbereich.MSR.Kuerzel,            Data: this.Pool.Fachbereich.MSR.Key});
+    this.Auswahlliste.push({Index: 9, FirstColumn: this.Pool.Fachbereich.EMA.Bezeichnung, SecoundColumn: this.Pool.Fachbereich.EMA.Kuerzel, Data: this.Pool.Fachbereich.EMA.Key});
+    this.Auswahlliste.push({Index: 10, FirstColumn: this.Pool.Fachbereich.BMA.Bezeichnung, SecoundColumn: this.Pool.Fachbereich.BMA.Kuerzel, Data: this.Pool.Fachbereich.BMA.Key});
+    this.Auswahlliste.push({Index: 11, FirstColumn: this.Pool.Fachbereich.GMA.Bezeichnung, SecoundColumn: this.Pool.Fachbereich.GMA.Kuerzel, Data: this.Pool.Fachbereich.GMA.Key});
 
     this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.DBProjektpunkte.CurrentProjektpunkt.Fachbereich});
     this.ShowAuswahl  = true;

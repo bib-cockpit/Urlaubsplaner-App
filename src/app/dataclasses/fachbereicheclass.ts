@@ -11,6 +11,9 @@ export type Fachbereichestruktur = {
 export class Fachbereiche {
 
   private _Elektrotechnik: Fachbereichestruktur = { Bezeichnung: 'Elektrotechnik',            Kuerzel: 'ELT',       Key: 'ELT'};
+  private _BMA: Fachbereichestruktur = { Bezeichnung: 'Brandmeldeanlage',            Kuerzel: 'BMA',       Key: 'BMA'};
+  private _EMA: Fachbereichestruktur = { Bezeichnung: 'Einbruchmeldeanlage',            Kuerzel: 'EMA',       Key: 'EMA'};
+  private _GMA: Fachbereichestruktur = { Bezeichnung: 'Gefahrenmeldeanlage',            Kuerzel: 'GMA',       Key: 'GMA'};
   private _Unbekannt:      Fachbereichestruktur = { Bezeichnung: 'Unbekannt',                 Kuerzel: '',          Key: 'Unbekannt'};
   private _HLS:            Fachbereichestruktur = { Bezeichnung: 'Heizung, Lüftung, Sanitär', Kuerzel: 'HLS',       Key: 'HLS'};
   private _HLSE:           Fachbereichestruktur = { Bezeichnung: 'Heizung, Lüftung, Sanitär, Elektro', Kuerzel: 'HLSE',       Key: 'HLSE'};
@@ -76,6 +79,9 @@ export class Fachbereiche {
     this.Gewerkeliste.push(this.GetFachbereichbyKey('AR'));
     this.Gewerkeliste.push(this.GetFachbereichbyKey('KF'));
     this.Gewerkeliste.push(this.GetFachbereichbyKey('HR'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('BMA'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('EMA'));
+    this.Gewerkeliste.push(this.GetFachbereichbyKey('GMA'));
 
     for(let Bereich of this.Gewerkeliste) {
 
@@ -93,6 +99,9 @@ export class Fachbereiche {
   // Testeintrag
 
   public get Elektrotechnik(): Fachbereichestruktur  { return this._Elektrotechnik; }
+  public get BMA(): Fachbereichestruktur  { return this._BMA; }
+  public get EMA(): Fachbereichestruktur  { return this._EMA; }
+  public get GMA(): Fachbereichestruktur  { return this._GMA; }
   public get Unbekannt():      Fachbereichestruktur  { return this._Unbekannt; }
   public get HLS():            Fachbereichestruktur  { return this._HLS; }
   public get HLSE():           Fachbereichestruktur { return this._HLSE; }
@@ -127,6 +136,9 @@ export class Fachbereiche {
     switch (key) {
 
       case 'ELT':       return this._Elektrotechnik; break;
+      case 'BMA':       return this._BMA; break;
+      case 'EMA':       return this._EMA; break;
+      case 'GMA':       return this._GMA; break;
       case 'Unbekannt': return this._Unbekannt; break;
       case 'HLS':      return this._HLS; break;
       case 'HLSE':     return this._HLSE; break;

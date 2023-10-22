@@ -29,6 +29,7 @@ import {DatabasePlanungsmatrixService} from "../../services/database-planungsmat
 import {DatabaseLoplisteService} from "../../services/database-lopliste/database-lopliste.service";
 import {Fachbereichestruktur} from "../../dataclasses/fachbereicheclass";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
+import {ToolsProvider} from "../../services/tools/tools";
 
 @Component({
   selector: 'page-header-menu',
@@ -98,6 +99,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
               public GraphService: Graphservice,
               public  AuthService: DatabaseAuthenticationService,
               public  Pool: DatabasePoolService,
+              private Tools: ToolsProvider,
               public Kostengruppenservice: KostengruppenService,
               public  Menuservice: MenueService) {
     try {
@@ -1147,6 +1149,19 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ShowLOPListeGewerkChangedHandler', this.Debug.Typen.Component);
+    }
+  }
+
+  ProjektSettingsClicked() {
+
+    try {
+
+
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ProjektSettingsClicked', this.Debug.Typen.Component);
     }
   }
 }

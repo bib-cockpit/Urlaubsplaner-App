@@ -83,7 +83,8 @@ export class DatabaseProtokolleService {
       this.MaxDatum                = null;
 
       this.ServerProtokollUrl            = this.Pool.CockpitserverURL + '/protokolle';
-      this.ServerSaveProtokollToTeamsUrl = this.Pool.CockpitserverURL + '/saveprotokoll';
+      // this.ServerSaveProtokollToTeamsUrl = this.Pool.CockpitserverURL + '/saveprotokoll';
+      this.ServerSaveProtokollToTeamsUrl = this.Pool.CockpitdockerURL + '/saveprotokoll';
       this.ServerSendProtokollToTeamsUrl = this.Pool.CockpitserverURL + '/sendprotokoll';
 
     } catch (error) {
@@ -456,6 +457,8 @@ export class DatabaseProtokolleService {
         }
       }
 
+
+
       Daten = {
 
         Betreff:     protokoll.Betreff,
@@ -681,6 +684,7 @@ export class DatabaseProtokolleService {
       Daten.Protokoll.CcEmpfaengerliste = CcEmpfaengerliste;
 
       // Protokoll versenden
+      // Hello World
 
       return new Promise((resolve, reject) => {
 
