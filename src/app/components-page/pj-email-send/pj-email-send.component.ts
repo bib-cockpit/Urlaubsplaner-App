@@ -75,6 +75,8 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
   private EmpfaengerSubscription: Subscription;
   public ZeitstempelMerker: number;
   public ShowSignatur: boolean;
+  public FileError: boolean;
+  public SendError: boolean;
 
 
   constructor(public Basics: BasicsProvider,
@@ -94,6 +96,8 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
     try {
 
+      this.FileError                   = false;
+      this.SendError                   = false;
       this.Titel                       = this.Const.NONE;
       this.Iconname                    = 'help-circle-outline';
       this.Dialogbreite                = 400;
@@ -321,13 +325,29 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           LOPListe      = this.DBLOPListe.CurrentLOPListe;
           Filename      = LOPListe.Filename;
-          NextLOPListe  = await this.DBLOPListe.SaveLOPListeInSites(Filename, Projekt, LOPListe, Standort, Mitarbeiter, true);
 
-          this.SaveFileFinished = true;
+          try {
 
-          await this.DBLOPListe.SendLOPListeFromSite(NextLOPListe);
+            NextLOPListe          = await this.DBLOPListe.SaveLOPListeInSites(Filename, Projekt, LOPListe, Standort, Mitarbeiter, true);
+            this.SaveFileFinished = true;
 
-          this.SendMailFinished = true;
+          } catch (error) {
+
+            this.FileError = true;
+          }
+
+          try {
+
+            await this.DBLOPListe.SendLOPListeFromSite(NextLOPListe);
+
+            this.SendMailFinished = true;
+
+          } catch (error) {
+
+            this.SendError = true;
+          }
+
+          this.SendInProgress   = false;
 
           this.DBLOPListe.CurrentLOPListe.GesendetZeitstempel = NextLOPListe.GesendetZeitstempel;
           this.DBLOPListe.CurrentLOPListe.GesendetZeitstring  = NextLOPListe.GesendetZeitstring;
@@ -348,13 +368,28 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           Protokoll     = this.DBProtokolle.CurrentProtokoll;
           Filename      = Protokoll.Filename;
-          NextProtokoll = await this.DBProtokolle.SaveProtokollInSites(Filename, Projekt, Protokoll, Standort, Mitarbeiter, true);
 
-          this.SaveFileFinished = true;
+          try {
 
-          await this.DBProtokolle.SendProtokollFromSite(NextProtokoll);
+            NextProtokoll         = await this.DBProtokolle.SaveProtokollInSites(Filename, Projekt, Protokoll, Standort, Mitarbeiter, true);
+            this.SaveFileFinished = true;
 
-          this.SendMailFinished = true;
+          } catch (error) {
+
+            this.FileError = true;
+          }
+
+          try {
+
+            await this.DBProtokolle.SendProtokollFromSite(NextProtokoll);
+            this.SendMailFinished = true;
+          }
+          catch (error) {
+
+            this.SendError = true;
+          }
+
+          this.SendInProgress = false;
 
           this.DBProtokolle.CurrentProtokoll.GesendetZeitstempel = NextProtokoll.GesendetZeitstempel;
           this.DBProtokolle.CurrentProtokoll.GesendetZeitstring  = NextProtokoll.GesendetZeitstring;

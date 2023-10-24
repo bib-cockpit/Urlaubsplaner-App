@@ -146,13 +146,15 @@
                       </tr>
                       <tr *ngIf="SendAttachment === true">
                         <td>
-                          <ion-icon name="checkmark-circle" [color]="SaveFileFinished ? Basics.Ionicfarben.Gruen : Basics.Ionicfarben.Grau"></ion-icon>
+                          <ion-icon *ngIf="FileError === false" name="checkmark-circle" [color]="SaveFileFinished ? Basics.Ionicfarben.Gruen : Basics.Ionicfarben.Grau"></ion-icon>
+                          <ion-icon *ngIf="FileError === true"  name="close"            [color]="Basics.Ionicfarben.Rot"></ion-icon>
                         </td>
                         <td>{{Dateityp}} im Projekt ablegen</td>
                       </tr>
                       <tr>
                         <td>
-                          <ion-icon name="checkmark-circle" [color]="SendMailFinished ? Basics.Ionicfarben.Gruen : Basics.Ionicfarben.Grau"></ion-icon>
+                          <ion-icon *ngIf="SendError === false" name="checkmark-circle" [color]="SendMailFinished ? Basics.Ionicfarben.Gruen : Basics.Ionicfarben.Grau"></ion-icon>
+                          <ion-icon *ngIf="SendError === true"  name="close"            [color]="Basics.Ionicfarben.Rot"></ion-icon>
                         </td>
                         <td>{{Dateityp}} versenden</td>
                       </tr>
@@ -183,7 +185,7 @@
               <td style="width: 100%"></td>
               <td>
 
-                <div *ngIf="!SendInProgress" class="rootbuttonclass" (click)="ContentIsValid === true ? OkButtonClicked() : null">
+                <div *ngIf="!SendInProgress && FileError === false && SendError === false" class="rootbuttonclass" (click)="ContentIsValid === true ? OkButtonClicked() : null">
                   <table>
                     <tr>
                       <td [style.color]="ContentIsValid === true ? 'white' : '#444444'" style=" white-space: nowrap;">Email senden</td>

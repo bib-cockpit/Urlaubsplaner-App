@@ -51,10 +51,10 @@ export class PjProjeteSchnellauswahlComponent implements OnInit, OnDestroy, Afte
   @Input() Iconname: string;
   @Input() Dialogbreite: number;
   @Input() Dialoghoehe: number;
-  @Input() PositionY: number;
   @Input() ZIndex: number;
 
   public CurrentIndex: number;
+  public PositionY: number;
 
   constructor(public Debug: DebugProvider,
               public Displayservice: DisplayService,

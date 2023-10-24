@@ -122,6 +122,8 @@ export class DatabasePoolService {
       this.CurrentAufgabenansichten = null;
       this.Festlegungskategorienliste = [];
 
+      debugger;
+
       this.Signatur                 =
         `<span style="font-size: 14px;">
         Beste Grüße,<br><br>
@@ -309,28 +311,6 @@ export class DatabasePoolService {
 
                 Anmerkung.LiveEditor = false;
               });
-
-              // Gerwerke bestimmen
-
-              /*
-
-              Gewerk = this.Fachbereich.GetFachbereichbyKey(Projektpunkt.Fachbereich);
-
-              if(!lodash.isUndefined(Gewerk)) {
-
-                Index = lodash.findIndex(this.CurrentLOPGewerkeliste, {Key: Gewerk.Key});
-
-                if(Index === -1) {
-
-                  Gewerk.Visible = true;
-
-                  this.CurrentLOPGewerkeliste.push(Gewerk);
-                }
-              }
-
-
-               */
-
             });
 
             resolve(true);

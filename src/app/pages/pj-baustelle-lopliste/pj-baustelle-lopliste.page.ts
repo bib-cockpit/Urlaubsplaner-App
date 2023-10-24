@@ -294,14 +294,14 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
                 if(lodash.isUndefined(Gewerk)) {
 
+                  debugger;
+
                   console.log('Gewerk unbekannt: ' + Gewerk + ' / PunktID: ' + Punkt._id);
 
-                  Gewerk = this.Pool.Fachbereich.Unbekannt;
-                  Index  = lodash.findIndex(this.Pool.Fachbereich.Gewerkeliste, {Key: Gewerk.Key});
+                  Gewerk = lodash.find(this.Pool.Fachbereich.Gewerkeliste, {Key: this.Pool.Fachbereich.Unbekannt.Key});
 
-                  if(Index === -1) this.Pool.Fachbereich.Gewerkeliste.push(Gewerk);
+                  Punkt.Fachbereich = this.Pool.Fachbereich.Unbekannt.Key;
                 }
-
 
                 if(Punkt.Status !== this.Const.Projektpunktstatustypen.Protokollpunkt.Name) {
 
@@ -311,9 +311,9 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
                       this.DB.CurrentPunkteliste[LOPListe._id].push(Punkt);
 
-                      Gewerk.Anzahl++;
                     }
 
+                    Gewerk.Anzahl++;
 
                   } else {
 
@@ -325,7 +325,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
                       Gewerk.Anzahl++;
                     }
-
                   }
                 }
                 else {
@@ -1524,8 +1523,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
   GetThumbSource(Punkt: Projektpunktestruktur, Thumb: Thumbnailstruktur): string {
 
     try {
-
-      debugger;
 
       switch (Punkt.Thumbnailsize) {
 

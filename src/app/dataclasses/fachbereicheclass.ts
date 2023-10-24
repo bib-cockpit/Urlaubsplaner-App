@@ -15,7 +15,7 @@ export class Fachbereiche {
   private _EMA: Fachbereichestruktur = { Bezeichnung: 'Einbruchmeldeanlage',            Kuerzel: 'EMA',       Key: 'EMA'};
   private _GMA: Fachbereichestruktur = { Bezeichnung: 'Gefahrenmeldeanlage',            Kuerzel: 'GMA',       Key: 'GMA'};
   private _Aufzug: Fachbereichestruktur = { Bezeichnung: 'Förderanlagen',               Kuerzel: 'Aufzug',       Key: 'Aufzug'};
-  private _Unbekannt:      Fachbereichestruktur = { Bezeichnung: 'Unbekannt',                 Kuerzel: '',          Key: 'Unbekannt'};
+  private _Unbekannt:      Fachbereichestruktur = { Bezeichnung: 'Unbekannt',                 Kuerzel: 'Unbekannt',          Key: 'Unbekannt'};
   private _HLS:            Fachbereichestruktur = { Bezeichnung: 'Heizung, Lüftung, Sanitär', Kuerzel: 'HLS',       Key: 'HLS'};
   private _HLSE:           Fachbereichestruktur = { Bezeichnung: 'Heizung, Lüftung, Sanitär, Elektro', Kuerzel: 'HLSE',       Key: 'HLSE'};
   private _H:              Fachbereichestruktur = { Bezeichnung: 'Heizung', Kuerzel: 'H',       Key: 'H'};
@@ -139,10 +139,6 @@ export class Fachbereiche {
     switch (key) {
 
       case 'ELT':       return this._Elektrotechnik; break;
-      case 'BMA':       return this._BMA; break;
-      case 'EMA':       return this._EMA; break;
-      case 'GMA':       return this._GMA; break;
-      case 'Aufzug':    return this._Aufzug; break;
       case 'Unbekannt': return this._Unbekannt; break;
       case 'HLS':      return this._HLS; break;
       case 'HLSE':     return this._HLSE; break;
@@ -151,18 +147,18 @@ export class Fachbereiche {
       case 'S': return this._S; break;
       case 'K': return this._K; break;
       case 'MSR': return this._MSR; break;
+
       case 'GF': return this._Geschaeftsfuehrung; break;
       case 'AS': return this._Assistenz; break;
       case 'PRO': return this._Prokurist; break;
-
       case 'Planer': return this._Planer; break;
       case 'TL': return this._Teamleitung; break;
       case 'PL': return this._Projektleitung; break;
       case 'STUDI': return this._Studentin; break;
       case 'AZUBI': return this._Auszubildende; break;
+      case 'OUE': return this._Objektueberwachung; break;
       case 'BH': return this._Buchhaltung; break;
       case 'MA': return this._Marketing; break;
-
       case 'PA': return this._Praktikantin; break;
       case 'IT': return this._IT; break;
       case 'CO': return this._Controlling; break;
@@ -171,8 +167,16 @@ export class Fachbereiche {
       case 'AR': return this._Architektin; break;
       case 'KF': return this._Kauffrau; break;
       case 'HR': return this._HR; break;
+      case 'BMA':       return this._BMA; break;
+      case 'EMA':       return this._EMA; break;
+      case 'GMA':       return this._GMA; break;
+      case 'Aufzug':    return this._Aufzug; break;
 
-      default: return this._Unbekannt; break;
+      default:
+
+        return this._Unbekannt;
+
+        break;
 
     }
   }
