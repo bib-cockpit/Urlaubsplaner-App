@@ -1152,16 +1152,4 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
-  ProjektSettingsClicked() {
-
-    try {
-
-
-
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ProjektSettingsClicked', this.Debug.Typen.Component);
-    }
-  }
 }

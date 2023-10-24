@@ -85,7 +85,7 @@ export const MSALInstanceFactory = (): IPublicClientApplication => {
     system: {
       loggerOptions: {
         loggerCallback,
-        logLevel: LogLevel.Info,
+        logLevel: LogLevel.Error,
         piiLoggingEnabled: false
       }
     }

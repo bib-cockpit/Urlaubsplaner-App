@@ -1721,7 +1721,7 @@ export class DatabaseProjektpunkteService {
 
           if(Ansichtensetup.AufgabenShowAusfuehrung === false) {
 
-            if(Projektpunkt.LOPListeID !== null) GoOn = false;
+            if(Projektpunkt.LOPListeID !== null || Projektpunkt.Leistungsphase === this.Const.Leistungsphasenvarianten.LPH8) GoOn = false;
           }
 
 

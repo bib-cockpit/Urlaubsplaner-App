@@ -83,9 +83,10 @@ export class DatabaseProtokolleService {
       this.MaxDatum                = null;
 
       this.ServerProtokollUrl            = this.Pool.CockpitserverURL + '/protokolle';
-      // this.ServerSaveProtokollToTeamsUrl = this.Pool.CockpitserverURL + '/saveprotokoll';
       this.ServerSaveProtokollToTeamsUrl = this.Pool.CockpitdockerURL + '/saveprotokoll';
-      this.ServerSendProtokollToTeamsUrl = this.Pool.CockpitserverURL + '/sendprotokoll';
+      // this.ServerSaveProtokollToTeamsUrl = this.Pool.CockpitserverURL + '/saveprotokoll';
+      this.ServerSendProtokollToTeamsUrl = this.Pool.CockpitdockerURL + '/sendprotokoll';
+      // this.ServerSendProtokollToTeamsUrl = this.Pool.CockpitserverURL + '/sendprotokoll';
 
     } catch (error) {
 
@@ -720,6 +721,7 @@ export class DatabaseProtokolleService {
       this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'SaveProtokollInSites', this.Debug.Typen.Service);
     }
   }
+
 
   public GetZustaendigInternName(ZustaendigID: string): string {
 
