@@ -53,6 +53,7 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
   @Output() StatusClicked           = new EventEmitter<any>();
   @Output() FachbereichClicked      = new EventEmitter<any>();
   @Output() TerminButtonClicked     = new EventEmitter<any>();
+  @Output() GeschlossenButtonClicked = new EventEmitter<any>();
   @Output() GeschlossenTerminButtonClicked = new EventEmitter<any>();
   @Output() ZustaendigInternClicked = new EventEmitter<any>();
   @Output() ZustaendigExternClicked = new EventEmitter<any>();
@@ -784,6 +785,31 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
       this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'DeleteThumbnailClicked', this.Debug.Typen.Component);
     }
 
+  }
+
+  GetGeschlossenWert() {
+
+    try {
+
+      return moment(this.DB.CurrentProjektpunkt.Geschlossenzeitstempel).format('DD.MM.YYYY');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'GetGeschlossenWert', this.Debug.Typen.Component);
+    }
+  }
+
+  GeschlossenDatumChanged(zeitpunkt: moment.Moment) {
+
+    try {
+
+      this.DB.CurrentProjektpunkt.Geschlossenzeitstempel = zeitpunkt.valueOf();
+      this.DB.CurrentProjektpunkt.Geschlossenzeitstring  = zeitpunkt.format('DD.MM.YY');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'GeschlossenDatumChanged', this.Debug.Typen.Component);
+    }
   }
 }
 

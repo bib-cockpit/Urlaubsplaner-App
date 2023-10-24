@@ -95,7 +95,8 @@ export class DatabaseLoplisteService {
       this.LOPListeEditorViewModus = this.LOPListeEditorViewModusvarianten.Allgemein;
 
       this.ServerLOPListeUrl            = this.Pool.CockpitserverURL + '/lopliste';
-      this.ServerSaveLOPListeToSitesUrl = this.Pool.CockpitserverURL + '/savelopliste';
+      this.ServerSaveLOPListeToSitesUrl = this.Pool.CockpitdockerURL + '/savelopliste';
+      // this.ServerSaveLOPListeToSitesUrl = this.Pool.CockpitserverURL + '/savelopliste';
       this.ServerSendLOPListeToSitesUrl = this.Pool.CockpitserverURL + '/sendlopliste';
 
       this.ShowLOPListeInfoeintraege = true;

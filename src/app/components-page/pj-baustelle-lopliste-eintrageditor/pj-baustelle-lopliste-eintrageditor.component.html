@@ -41,109 +41,113 @@
             <ion-row>
               <ion-col size="6">
 
-                <ion-grid>
-                  <ion-row *ngIf="DB.CurrentProjektpunkt.LOPListeID !== null">
-                      <ion-col size="3">
-                        <input-clone [MinHeight]="44" Titel="Eintragnummer" [Enabled]="false" [(Value)]="DB.CurrentProjektpunkt.Nummer"></input-clone>
-                      </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col size="3">
-                      <button-value (ButtonClicked)="TerminButtonClicked.emit()" [Wert_A]="GetTerminWert()" [Buttontext]="DB.CurrentProjektpunkt.EndeKalenderwoche === null ? 'Termin' : 'Kalenderwoche'">
-                      </button-value>
-                    </ion-col>
-                    <ion-col size="3">
-                      <button-value  *ngIf="DB.CurrentProjektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name" [Buttontext]="'Priorität'"
-                                    [Wert_A]="DB.GetProjektpunktPrioritaetByName(DB.CurrentProjektpunkt.Prioritaet).Displayname" [Buttoncolor]="Basics.Farben.Burnicklbraun"
-                                    [Buttonvaluecolor]="DB.GetPrioritaetcolor(DB.CurrentProjektpunkt)" (ButtonClicked)="PrioritaetClicked.emit()">
-                      </button-value>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col size="3" *ngIf="Pool.Mitarbeiterdaten !== null">
-                      <button-value [Buttontext]="'Fachbereich'" [Wert_A]="Pool.Fachbereich.GetFachbereichbyKey(DB.CurrentProjektpunkt.Fachbereich).Bezeichnung" (ButtonClicked)="FachbereichClicked.emit()"></button-value>
-                    </ion-col>
-                    <ion-col size="3">
-                      <button-value [Buttontext]="'Status'"
-                                    [Wert_A]="DB.GetProjektpunktstusByName(DB.CurrentProjektpunkt.Status).Displayname" [Buttoncolor]="Basics.Farben.Burnicklbraun"
-                                    [Buttonvaluecolor]="DB.GetLOPStatuscolor(DB.CurrentProjektpunkt)" [Enabled]="StatusbuttonEnabled" (ButtonClicked)="StatusClicked.emit()">
-                      </button-value>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row *ngIf="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Geschlossen.Name">
-                    <ion-col size="3">
+                <table style="width: 100%">
+                  <tr>
+                    <td style="width: 50%">
+                      <ion-grid>
+                        <ion-row *ngIf="DB.CurrentProjektpunkt.LOPListeID !== null">
+                            <ion-col size="6">
+                              <input-clone [MinHeight]="44" Titel="Eintragnummer" [Enabled]="false" [(Value)]="DB.CurrentProjektpunkt.Nummer"></input-clone>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row>
+                          <ion-col size="6">
+                            <button-value (ButtonClicked)="TerminButtonClicked.emit()" [Wert_A]="GetTerminWert()" [Buttontext]="DB.CurrentProjektpunkt.EndeKalenderwoche === null ? 'Termin' : 'Kalenderwoche'">
+                            </button-value>
+                          </ion-col>
+                        </ion-row>
+                        <ion-row *ngIf="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Geschlossen.Name">
+                          <ion-col size="6">
+                            <button-value-date [Buttontext]="'Abschlusstermin'"
+                                               [ElementID]="'terminbis'"
+                                               [Datum]="GetGeschlossenDatum()"
+                                               [Enabled]="true"
+                                               (TimeChanged)="TerminGeschlossenChanged($event)">
+                            </button-value-date>
+                          </ion-col>
+                        </ion-row>
+                        <ion-row>
+                          <ion-col size="6" *ngIf="Pool.Mitarbeiterdaten !== null">
+                            <button-value [Buttontext]="'Fachbereich'" [Wert_A]="Pool.Fachbereich.GetFachbereichbyKey(DB.CurrentProjektpunkt.Fachbereich).Bezeichnung" (ButtonClicked)="FachbereichClicked.emit()"></button-value>
+                          </ion-col>
+                        </ion-row>
+                      </ion-grid>
 
-                    </ion-col>
-                    <ion-col size="3">
-                      <button-value-date [Buttontext]="'Datum'"
-                                         [ElementID]="'terminbis'"
-                                         [Datum]="GetGeschlossenDatum()"
-                                         [Enabled]="true"
-                                         (TimeChanged)="TerminGeschlossenChanged($event)">
-                      </button-value-date>
-                    </ion-col>
-                  </ion-row>
+                    </td>
+                    <td style="width: 50%" valign="bottom">
 
-                  <ion-row *ngIf="DB.CurrentProjektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name">
-                    <ion-col size="6">
-                      <button-value [Buttontext]="'Gebäudeteil'"
-                                    [Wert_A]="DBGebaeude.GetGebaeudeteilname(DBProjekt.CurrentProjekt, DB.CurrentProjektpunkt)" (ButtonClicked)="GebaeudeteilClicked.emit()"></button-value>
-                    </ion-col>
-                  </ion-row>
+                      <ion-grid>
+                        <ion-row>
+                          <ion-col size="6">
+                            <button-value  *ngIf="DB.CurrentProjektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name" [Buttontext]="'Priorität'"
+                                          [Wert_A]="DB.GetProjektpunktPrioritaetByName(DB.CurrentProjektpunkt.Prioritaet).Displayname" [Buttoncolor]="Basics.Farben.Burnicklbraun"
+                                          [Buttonvaluecolor]="DB.GetPrioritaetcolor(DB.CurrentProjektpunkt)" (ButtonClicked)="PrioritaetClicked.emit()">
+                            </button-value>
+                          </ion-col>
+                        </ion-row>
+                        <ion-row>
 
+                          <ion-col size="6">
+                            <button-value [Buttontext]="'Status'"
+                                          [Wert_A]="DB.GetProjektpunktstusByName(DB.CurrentProjektpunkt.Status).Displayname" [Buttoncolor]="Basics.Farben.Burnicklbraun"
+                                          [Buttonvaluecolor]="DB.GetLOPStatuscolor(DB.CurrentProjektpunkt)" [Enabled]="StatusbuttonEnabled" (ButtonClicked)="StatusClicked.emit()">
+                            </button-value>
+                          </ion-col>
+                        </ion-row>
 
-                  <ion-row>
-                    <ion-col size="3">
-                      <input-clone [MinHeight]="44" [Lines]="GetLinienanzahl()"
-                                   [Clickable]="true" [Enabled]="false" Titel="Zuständig Extern" [Value]="GetZustaendigExternListe()" (click)="ZustaendigExternClicked.emit()"></input-clone>
-                    </ion-col>
-                    <ion-col size="3">
-                      <input-clone [MinHeight]="44" [Lines]="GetLinienanzahl()"
-                                   [Clickable]="true" [Enabled]="false" Titel="Zuständig Intern" [Value]="GetZustaendigInternListe()"
-                                   (click)="ZustaendigInternClicked.emit()"></input-clone>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col>
-                      <ion-text color="burnicklgruen"><b>Thematik</b></ion-text>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col [size]="3">
-                      <input-clone Titel="Thematik" [MinLength]="3" [MaxLength]="250" [(Value)]="DB.CurrentProjektpunkt.Thematik" (TextChanged)="TextChangedHandler()"></input-clone>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col>
-                      <ion-text color="burnicklgruen"><b>Beschreibung</b></ion-text>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col size="6">
+                      </ion-grid>
 
-                        <ion-textarea [value]="DB.CurrentProjektpunkt.Aufgabe" auto-grow style="border: 1px solid #444444; min-height: 140px" (ionInput)="AufgabeTextChangedHandler($event)"></ion-textarea>
-
-                        <!--
-                        <editor
-                          [apiKey]="'7hvzif1s8dafhu40z0kjgpw1y4zwc2p5cokjkfox946qpfjc'"
-                          [init]="Editorconfig" [id]="'Maineditor'"
-                          [(ngModel)]="DB.CurrentProjektpunkt.Aufgabe"
-                          (onNodeChange)="AufgabeTextChangedHandler($event)"
-                          (onChange)="AufgabeTextChangedHandler($event)"
-                          (onPaste)="AufgabeTextChangedHandler($event)" (onCut)="AufgabeTextChangedHandler($event)"
-                          (onKeyPress)="AufgabeTextChangedHandler($event)">
-                        </editor>
-                        -->
-
-
-
-                    </ion-col>
-                  </ion-row>
-
-                </ion-grid>
+                    </td>
+                  </tr>
+                </table>
 
               </ion-col>
             </ion-row>
+
+            <ion-row *ngIf="DB.CurrentProjektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name">
+              <ion-col size="6">
+                <button-value [Buttontext]="'Gebäudeteil'"
+                              [Wert_A]="DBGebaeude.GetGebaeudeteilname(DBProjekt.CurrentProjekt, DB.CurrentProjektpunkt)" (ButtonClicked)="GebaeudeteilClicked.emit()"></button-value>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col size="3">
+                <input-clone [MinHeight]="44" [Lines]="GetLinienanzahl()"
+                             [Clickable]="true" [Enabled]="false" Titel="Zuständig Extern" [Value]="GetZustaendigExternListe()" (click)="ZustaendigExternClicked.emit()"></input-clone>
+              </ion-col>
+              <ion-col size="3">
+                <input-clone [MinHeight]="44" [Lines]="GetLinienanzahl()"
+                             [Clickable]="true" [Enabled]="false" Titel="Zuständig Intern" [Value]="GetZustaendigInternListe()"
+                             (click)="ZustaendigInternClicked.emit()"></input-clone>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-text color="burnicklgruen"><b>Thematik</b></ion-text>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col [size]="3">
+                <input-clone Titel="Thematik" [MinLength]="3" [MaxLength]="250" [(Value)]="DB.CurrentProjektpunkt.Thematik" (TextChanged)="TextChangedHandler()"></input-clone>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-text color="burnicklgruen"><b>Beschreibung</b></ion-text>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="6">
+
+                  <ion-textarea [value]="DB.CurrentProjektpunkt.Aufgabe" auto-grow style="border: 1px solid #444444; min-height: 140px" (ionInput)="AufgabeTextChangedHandler($event)"></ion-textarea>
+
+              </ion-col>
+            </ion-row>
+
+          </ion-grid>
+
+          <ion-grid>
             <ion-row>
               <ion-col>
                 <ion-text color="burnicklgruen"><b>{{DB.CurrentProjektpunkt.Anmerkungenliste.length > 1 ? 'Anmerkungen' : 'Anmerkung'}}</b></ion-text>
