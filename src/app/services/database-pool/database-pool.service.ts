@@ -122,8 +122,6 @@ export class DatabasePoolService {
       this.CurrentAufgabenansichten = null;
       this.Festlegungskategorienliste = [];
 
-      debugger;
-
       this.Signatur                 =
         `<span style="font-size: 14px;">
         Beste Grüße,<br><br>

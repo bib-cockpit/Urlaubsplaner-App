@@ -56,6 +56,8 @@
                           <td class="ergonametextclass">Stadort:</td><td>{{DBStandort.GetStandort(Mitarbeiter.StandortID)}}</td><td style="width: 20px"></td>
                           <td class="ergonametextclass">Email:</td><td>{{Mitarbeiter.Email}}</td><td style="width: 20px"></td>
                           <td class="ergonametextclass">Fachbereich:</td><td>{{Mitarbeiter.Fachbereich}}</td><td style="width: 20px"></td>
+                          <td class="ergonametextclass">ID:</td><td>{{Mitarbeiter._id}}</td><td style="width: 20px"></td>
+                          <td class="ergonametextclass">Zeitstring:</td><td>{{Mitarbeiter.Zeitstring}}</td><td style="width: 20px"></td>
                         </tr>
                       </table>
                   </tr>
@@ -127,7 +129,7 @@
   </page-footer>
 </ion-footer>
 
-<fi-mitarbeiter-editor *ngIf="ShowEditor" [Dialogbreite]="600" [Dialoghoehe]="850" [PositionY]="100"  [Titel]="GetDialogTitel()" Iconname="people-outline"
+<fi-mitarbeiter-editor *ngIf="ShowEditor" [Dialogbreite]="600" [Titel]="GetDialogTitel()" Iconname="people-outline"
                        (StandortClickedEvent)="StandortClickedHandler()"
                        (CancelClickedEvent)="ShowEditor = false"
                        (OkClickedEvent)="ShowEditor = false" (DeleteClickedEvent)="ShowEditor = false"

@@ -96,8 +96,7 @@ export class DatabaseLoplisteService {
 
       this.ServerLOPListeUrl            = this.Pool.CockpitserverURL + '/lopliste';
       this.ServerSaveLOPListeToSitesUrl = this.Pool.CockpitdockerURL + '/savelopliste';
-      // this.ServerSaveLOPListeToSitesUrl = this.Pool.CockpitserverURL + '/savelopliste';
-      this.ServerSendLOPListeToSitesUrl = this.Pool.CockpitserverURL + '/sendlopliste';
+      this.ServerSendLOPListeToSitesUrl = this.Pool.CockpitdockerURL + '/sendlopliste';
 
       this.ShowLOPListeInfoeintraege = true;
       this.CurrentPunkteliste        = [];

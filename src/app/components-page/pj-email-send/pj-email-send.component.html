@@ -136,7 +136,7 @@
                 </ion-col>
               </ion-row>
             </ng-container>
-            <ng-container *ngIf="SendInProgress">
+            <ng-container *ngIf="SendInProgress || FileError || SendError">
               <ion-row>
                 <ion-col>
                   <div class="progressdiv">

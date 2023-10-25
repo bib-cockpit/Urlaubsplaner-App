@@ -84,9 +84,7 @@ export class DatabaseProtokolleService {
 
       this.ServerProtokollUrl            = this.Pool.CockpitserverURL + '/protokolle';
       this.ServerSaveProtokollToTeamsUrl = this.Pool.CockpitdockerURL + '/saveprotokoll';
-      // this.ServerSaveProtokollToTeamsUrl = this.Pool.CockpitserverURL + '/saveprotokoll';
       this.ServerSendProtokollToTeamsUrl = this.Pool.CockpitdockerURL + '/sendprotokoll';
-      // this.ServerSendProtokollToTeamsUrl = this.Pool.CockpitserverURL + '/sendprotokoll';
 
     } catch (error) {
 

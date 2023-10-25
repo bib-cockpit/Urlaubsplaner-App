@@ -294,8 +294,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
                 if(lodash.isUndefined(Gewerk)) {
 
-                  debugger;
-
                   console.log('Gewerk unbekannt: ' + Gewerk + ' / PunktID: ' + Punkt._id);
 
                   Gewerk = lodash.find(this.Pool.Fachbereich.Gewerkeliste, {Key: this.Pool.Fachbereich.Unbekannt.Key});
@@ -310,7 +308,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
                     if(Gewerk.Visible === true) {
 
                       this.DB.CurrentPunkteliste[LOPListe._id].push(Punkt);
-
                     }
 
                     Gewerk.Anzahl++;

@@ -12,18 +12,6 @@ const routes: Routes = [
     // canLoad: [SecurityService]
   },
   {
-    path: 'RegistrierungPage',
-    loadChildren: () => import('./pages/common-registrierung/common-registrierung.module').then(m => m.CommonRegistrierungPageModule),
-    // canLoad: [SecurityService]
-  },
-  /*
-  {
-    path: 'LoginPage',
-    loadChildren: () => import('./pages/common-login/common-login.module').then(m => m.CommonLoginPageModule),
-  },
-
-   */
-  {
     path: 'HomePage',
     loadChildren: () => import('./pages/common-home/common-home.module').then(m => m.CommonHomePageModule),
     // canLoad: [SecurityService]

@@ -39,8 +39,6 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
   @Input() Titel: string;
   @Input() Iconname: string;
   @Input() Dialogbreite: number;
-  @Input() Dialoghoehe: number;
-  @Input() PositionY: number;
   @Input() ZIndex: number;
   @Input() SkipOkButtonAction: boolean;
   @Input() EmailinputEnabled: boolean;
@@ -49,6 +47,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
   public Teamsliste: Teamsstruktur[];
   private JoiShema: ObjectSchema;
   public ErrorMessage: string;
+  public PositionY: number;
 
   constructor(public Debug: DebugProvider,
               public Tools: ToolsProvider,
@@ -69,7 +68,6 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
       this.Titel              = this.Const.NONE;
       this.Iconname           = 'help-circle-outline';
       this.Dialogbreite       = 400;
-      this.Dialoghoehe        = 300;
       this.PositionY          = 100;
       this.ZIndex             = 2000;
       this.SkipOkButtonAction = false;

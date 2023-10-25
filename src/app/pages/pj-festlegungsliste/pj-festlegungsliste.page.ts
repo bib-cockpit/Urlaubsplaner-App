@@ -349,8 +349,6 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
 
       this.Eintraegeanzahl += this.NoKostengruppePunkteliste.length;
 
-      debugger;
-
 
         /*
 
