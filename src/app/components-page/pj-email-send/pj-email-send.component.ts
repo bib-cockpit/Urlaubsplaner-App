@@ -389,14 +389,14 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
             this.SendError = true;
           }
 
-          this.SendInProgress = false;
-
           this.DBProtokolle.CurrentProtokoll.GesendetZeitstempel = NextProtokoll.GesendetZeitstempel;
           this.DBProtokolle.CurrentProtokoll.GesendetZeitstring  = NextProtokoll.GesendetZeitstring;
 
           await this.DBProtokolle.SaveProtokoll();
 
           lodash.delay(() => {
+
+            this.SendInProgress = false;
 
             this.OkClickedEvent.emit();
 

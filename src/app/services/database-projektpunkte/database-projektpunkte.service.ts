@@ -1347,8 +1347,8 @@ export class DatabaseProjektpunkteService {
         Verfasser: {
 
           Vorname: this.Pool.Mitarbeiterdaten.Vorname,
-          Name: this.Pool.Mitarbeiterdaten.Name,
-          Email: this.Pool.Mitarbeiterdaten.Email
+          Name:    this.Pool.Mitarbeiterdaten.Name,
+          Email:   this.Pool.Mitarbeiterdaten.Email
         },
         Zeitstempel: Heute.valueOf(),
         Zeitstring:   Heute.format('DD.MM.YYYY'),
