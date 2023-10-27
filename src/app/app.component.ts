@@ -110,10 +110,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           )
           .subscribe((status_b: InteractionStatus) => {
 
+            this.Debug.ShowMessage('Interaction Status: ' + status_b, 'App Component', 'StartApp', this.Debug.Typen.Component);
+
             this.AuthService.SetShowLoginStatus();
           });
 
         this.AuthService.LoginSuccessEvent.subscribe(() => {
+
+          this.Debug.ShowMessage('LoginSuccessEvent -> Start App', 'App Component', 'StartApp', this.Debug.Typen.Component);
 
           this.StartApp();
         });

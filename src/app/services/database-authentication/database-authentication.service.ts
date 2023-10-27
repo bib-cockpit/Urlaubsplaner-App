@@ -114,7 +114,7 @@ export class DatabaseAuthenticationService {
 
             if(!lodash.isUndefined(Accounts) && Accounts !== null && Accounts.length > 0) {
 
-              this.Debug.AddDebugMessage('Accountlist vorhanden');
+              this.Debug.AddDebugMessage('Accountliste vorhanden');
 
               Account = Accounts[0];
             }
