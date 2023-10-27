@@ -158,8 +158,12 @@
                       <div  class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.LOPListe)">
                         <table class="paddingsmalltable">
                           <tr>
-                            <td><ion-icon name="list" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.LOPListe)"></ion-icon></td>
-                            <td style="white-space: nowrap;" [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.LOPListe)">LOP Liste</td>
+                            <td>
+                              <div class="planungheaderdiv">
+                                <ion-icon  name="list" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.LOPListe)"></ion-icon>
+                              </div>
+                            </td>
+                            <td style="white-space: nowrap;" [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.LOPListe)">Baustellenbericht</td>
                           </tr>
                         </table>
                       </div>
@@ -185,7 +189,9 @@
                 <table>
                   <tr>
                     <td colspan="3">
-                      <div class="planungheaderdiv"><ion-icon name="book" style="font-size: 22px"></ion-icon></div>
+                      <div class="planungheaderdiv">
+                        <ion-icon name="book" style="font-size: 22px"></ion-icon>
+                      </div>
                     </td>
                     <td>
                       <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Festlegungen)">

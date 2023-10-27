@@ -15,6 +15,7 @@
 
 .planungheaderdiv {
 
+  border-radius: 6px;
   width: 40px;
   height: 40px;
   background: #454545;
@@ -53,6 +54,17 @@ ion-searchbar {
   --border-radius: none;
   --box-shadow: none;
   --background: black;
+}
+
+.iconboxclass {
+
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  border-radius: 6px;
+  width: 40px;
+  height: 40px;
+  background: #444444;
 }
 
 .menubuttonclass {

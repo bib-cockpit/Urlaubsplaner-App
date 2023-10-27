@@ -46,9 +46,11 @@ export class DatabaseBautagebuchService {
       this.CurrentTagebuch = null;
       this.CurrentTagebucheintrag = null;
       this.ServerUrl                       = this.Pool.CockpitserverURL + '/bautagebuch/';
-      this.ServerSaveBautagebuchToTeamsUrl = this.Pool.CockpitserverURL + '/savebautagebuch';
-      this.ServerSendBautagebuchToTeamsUrl = this.Pool.CockpitserverURL + '/sendbautagebuch';
+      this.ServerSaveBautagebuchToTeamsUrl = this.Pool.CockpitdockerURL + '/savebautagebuch';
+      this.ServerSendBautagebuchToTeamsUrl = this.Pool.CockpitdockerURL + '/sendbautagebuch';
 
+      // this.ServerSendBautagebuchToTeamsUrl = this.Pool.CockpitserverURL + '/sendbautagebuch';
+      // this.ServerSaveBautagebuchToTeamsUrl = this.Pool.CockpitserverURL + '/savebautagebuch';
 
     } catch (error) {
 
@@ -100,6 +102,7 @@ export class DatabaseBautagebuchService {
         Vorarbeiter: '0',
         Auftraggeber: "",
         Gewerk: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten.Fachbereich : 'unbekannt',
+        BeteiligtInternIDListe: this.Pool.Mitarbeiterdaten !== null ? [this.Pool.Mitarbeiterdaten._id] : [],
         Verfasser: {
           Name:    this.Pool.Mitarbeiterdaten      !== null ? this.Pool.Mitarbeiterdaten.Name : 'unbekannt',
           Vorname: this.Pool.Mitarbeiterdaten      !== null ? this.Pool.Mitarbeiterdaten.Vorname : 'unbekannt',
@@ -165,6 +168,37 @@ export class DatabaseBautagebuchService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Bautagebuch', 'GetEmptyBautagebuch', this.Debug.Typen.Service);
+    }
+  }
+
+
+  public GetInterneTeilnehmerliste(getliste: boolean): any {
+
+    try {
+
+      let Teammitglied: Mitarbeiterstruktur;
+      let Value: string = '';
+      let Liste:string[] = [];
+      let Eintrag: string;
+
+      for(let id of this.CurrentTagebuch.BeteiligtInternIDListe) {
+
+        Teammitglied = <Mitarbeiterstruktur>lodash.find(this.Pool.Mitarbeiterliste, {_id: id});
+
+        if(!lodash.isUndefined(Teammitglied)) {
+
+          Eintrag = Teammitglied.Vorname + ' ' + Teammitglied.Name + ' / ' + Teammitglied.Kuerzel;
+          Value +=  Eintrag + '\n';
+
+          Liste.push(Eintrag);
+        }
+      }
+
+      return getliste ? Liste : Value;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Bautagebuch', 'GetTeamteilnehmerliste', this.Debug.Typen.Service);
     }
   }
 

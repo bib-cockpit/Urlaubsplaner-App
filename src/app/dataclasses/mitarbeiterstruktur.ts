@@ -7,6 +7,8 @@ export interface Mitarbeiterstruktur  {
     _id: string;
     UserID: string;
     StandortID:  string;
+    Anrede: string;
+    Urlaub: number;
     Jobtitel:   string;
     Location: string;
     Vorname: string;

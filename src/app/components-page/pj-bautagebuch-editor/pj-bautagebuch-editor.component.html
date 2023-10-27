@@ -30,7 +30,8 @@
                 <input-clone Titel="Auftraggeber" [(Value)]="DB.CurrentTagebuch.Auftraggeber" [Required]="true"  [MaxLength]="100" (TextChanged)="TextChanged($event)"></input-clone>
               </ion-col>
               <ion-col>
-                <input-clone Titel="Bearbeiter" [Enabled]="false" [Value]="DB.CurrentTagebuch.Verfasser.Vorname + ' ' + DB.CurrentTagebuch.Verfasser.Name"></input-clone>
+                <input-clone [MinHeight]="44" [Lines]="LinesanzahlTeilnehmer"
+                               [Clickable]="true" [Enabled]="false" Titel="Objektüberwachung" [Value]="DB.GetInterneTeilnehmerliste(false)" (click)="BeteiligteteilnehmerClicked.emit()"></input-clone>
               </ion-col>
             </ion-row>
             <ion-row>

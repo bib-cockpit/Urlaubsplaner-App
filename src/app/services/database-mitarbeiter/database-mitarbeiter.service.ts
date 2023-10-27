@@ -236,6 +236,8 @@ export class DatabaseMitarbeiterService {
 
         _id: null,
         UserID: null,
+        Anrede: this.Const.NONE,
+        Urlaub: 30,
         Location: "",
         Jobtitel: "",
         Vorname: "",

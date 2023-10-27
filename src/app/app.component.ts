@@ -324,7 +324,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
             this.Pool.LoadingAllDataFinished.emit();
           });
         }
-
       }
       else {
 

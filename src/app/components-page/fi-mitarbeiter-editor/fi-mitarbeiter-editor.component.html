@@ -22,12 +22,17 @@
           <ion-grid *ngIf="DB.CurrentMitarbeiter">
             <ion-row>
               <ion-col>
-                <ion-text color="burnicklgruen"><b>Mitarbeiter</b></ion-text>
+                <ion-text color="baeblau"><b>Mitarbeiter</b></ion-text>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="6">
+                <button-value [Buttontext]="'Anrede'" [Wert_A]="GetAnrede()" (ButtonClicked)="AnredeClickedEvent.emit()"></button-value>
               </ion-col>
             </ion-row>
             <ion-row>
               <ion-col [size]="Tools.GetButtonvalueSize()">
-                <input-clone [(Value)]="DB.CurrentMitarbeiter.Vorname" [Required]="true" [MaxLength]="100"  Titel="Vorname" (TextChanged)="TextChanged($event)"></input-clone>
+                <input-clone [(Value)]="DB.CurrentMitarbeiter.Vorname"  [Required]="true" [MaxLength]="100"  Titel="Vorname" (TextChanged)="TextChanged($event)"></input-clone>
               </ion-col>
               <ion-col [size]="Tools.GetButtonvalueSize()">
                 <input-clone [(Value)]="DB.CurrentMitarbeiter.Name" [Required]="true" [MaxLength]="100"  Titel="Name" (TextChanged)="TextChanged($event)"></input-clone>
@@ -59,10 +64,9 @@
             </ion-row>
             <ion-row>
               <ion-col>
-                <ion-text color="burnicklgruen"><b>Kontakt</b></ion-text>
+                <ion-text color="baeblau"><b>Kontakt</b></ion-text>
               </ion-col>
             </ion-row>
-
             <ion-row>
               <ion-col [size]="Tools.GetButtonvalueSize()">
                 <input-clone [(Value)]="DB.CurrentMitarbeiter.Telefon" Titel="Telefon"></input-clone>
@@ -70,6 +74,20 @@
               <ion-col [size]="Tools.GetButtonvalueSize()">
                 <input-clone [(Value)]="DB.CurrentMitarbeiter.Mobil" Titel="Mobil"></input-clone>
               </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12"></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-text color="baeblau"><b>Urlaub</b></ion-text>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="6">
+                <button-value [Buttontext]="'Urlaubstage'" [Wert_A]="DB.CurrentMitarbeiter.Urlaub + ' Tage'" (ButtonClicked)="UrlaubClickedEvent.emit()"></button-value>
+              </ion-col>
+
             </ion-row>
             <ion-row>
               <ion-col size="12"></ion-col>
@@ -85,6 +103,8 @@
                 </table>
               </ion-col>
             </ion-row>
+
+            <!--
             <ion-row>
               <ion-col>
                 <ion-text color="burnicklgruen"><b>Teamsprojekte</b></ion-text>
@@ -111,6 +131,7 @@
                 <span style="color: red; font-size: 90%">{{ErrorMessage}}</span>
               </ion-col>
             </ion-row>
+            -->
           </ion-grid>
         </div>
       </ion-content>

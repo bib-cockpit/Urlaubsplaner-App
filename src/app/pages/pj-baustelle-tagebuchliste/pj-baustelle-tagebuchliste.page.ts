@@ -316,6 +316,12 @@ export class PjBaustelleTagebuchlistePage implements OnInit, OnDestroy {
 
       switch (this.Auswahldialogorigin) {
 
+        case this.Auswahlservice.Auswahloriginvarianten.Bautagebuchliste_Bautagebucheditor:
+
+          this.DB.CurrentTagebuch.BeteiligtInternIDListe = idliste;
+
+          break;
+
         case this.Auswahlservice.Auswahloriginvarianten.Bautagebuchliste_Emaileditor_Intern_Empfaenger:
 
           this.DB.CurrentTagebuch.EmpfaengerInternIDListe = idliste;
@@ -332,6 +338,7 @@ export class PjBaustelleTagebuchlistePage implements OnInit, OnDestroy {
       this.ShowMitarbeiterauswahl = false;
 
       this.Pool.EmailempfaengerChanged.emit();
+      this.Pool.MitarbeiterAuswahlChanged.emit();
 
     } catch (error) {
 
@@ -470,7 +477,7 @@ export class PjBaustelleTagebuchlistePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Bautagebuch List', 'CcEmpfaengerBurnicklClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Bautagebuch Liste', 'CcEmpfaengerBurnicklClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -498,7 +505,22 @@ export class PjBaustelleTagebuchlistePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'ProjektSchnellauswahlProjektClickedEventHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Bautagebuch Liste', 'ProjektSchnellauswahlProjektClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  BeteiligteteilnehmerClickedHandler() {
+
+    try {
+
+      this.AuswahlIDliste = lodash.cloneDeep(this.DB.CurrentTagebuch.BeteiligtInternIDListe);
+
+      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Bautagebuchliste_Bautagebucheditor;
+      this.ShowMitarbeiterauswahl = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Bautagebuch Liste', 'BeteiligteteilnehmerClickedHandler', this.Debug.Typen.Page);
     }
   }
 }

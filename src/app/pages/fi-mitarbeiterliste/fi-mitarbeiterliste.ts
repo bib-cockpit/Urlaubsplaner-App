@@ -487,6 +487,18 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
       switch (this.Auswahldialogorigin) {
 
+        case this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Editor_Anrede:
+
+          this.DB.CurrentMitarbeiter.Anrede = data;
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Editor_Urlaub:
+
+          this.DB.CurrentMitarbeiter.Urlaub = data;
+
+          break;
+
         case this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Editor_Standort:
 
           this.DB.CurrentMitarbeiter.StandortID = data._id;
@@ -676,5 +688,63 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'ShowArchivierteChanged', this.Debug.Typen.Page);
     }
+  }
+
+  AnredeClickedEventHandler() {
+
+    try {
+
+      this.ShowAuswahl  = true;
+      this.Auswahltitel = 'Anrede festlegen';
+      this.Auswahlliste = [];
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Editor_Anrede;
+
+      this.Auswahlliste.push({ Index: 0, FirstColumn: 'Unbekannt', SecoundColumn: '', Data: this.Const.NONE });
+      this.Auswahlliste.push({ Index: 1, FirstColumn: 'Frau',      SecoundColumn: '', Data: 'Frau' });
+      this.Auswahlliste.push({ Index: 2, FirstColumn: 'Herr',      SecoundColumn: '', Data: 'Herr' });
+
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.DB.CurrentMitarbeiter.Anrede});
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'AnredeClickedEvent', 'AnredeClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  UrlaubClickedEventHandler() {
+
+    this.ShowAuswahl  = true;
+    this.Auswahltitel = 'Urlaubstage festlegen';
+    this.Auswahlliste = [];
+
+    this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Editor_Urlaub;
+
+    this.Auswahlliste.push({ Index:  0, FirstColumn: '20', SecoundColumn: '', Data: 20 });
+    this.Auswahlliste.push({ Index:  1, FirstColumn: '21', SecoundColumn: '', Data: 21 });
+    this.Auswahlliste.push({ Index:  2, FirstColumn: '22', SecoundColumn: '', Data: 22 });
+    this.Auswahlliste.push({ Index:  3, FirstColumn: '23', SecoundColumn: '', Data: 23 });
+    this.Auswahlliste.push({ Index:  4, FirstColumn: '24', SecoundColumn: '', Data: 24 });
+    this.Auswahlliste.push({ Index:  5, FirstColumn: '25', SecoundColumn: '', Data: 25 });
+    this.Auswahlliste.push({ Index:  6, FirstColumn: '26', SecoundColumn: '', Data: 26 });
+    this.Auswahlliste.push({ Index:  7, FirstColumn: '27', SecoundColumn: '', Data: 27 });
+    this.Auswahlliste.push({ Index:  8, FirstColumn: '28', SecoundColumn: '', Data: 28 });
+    this.Auswahlliste.push({ Index:  9, FirstColumn: '29', SecoundColumn: '', Data: 29 });
+    this.Auswahlliste.push({ Index: 10, FirstColumn: '30', SecoundColumn: '', Data: 30 });
+    this.Auswahlliste.push({ Index: 11, FirstColumn: '31', SecoundColumn: '', Data: 31 });
+    this.Auswahlliste.push({ Index: 12, FirstColumn: '32', SecoundColumn: '', Data: 32 });
+    this.Auswahlliste.push({ Index: 13, FirstColumn: '33', SecoundColumn: '', Data: 33 });
+    this.Auswahlliste.push({ Index: 14, FirstColumn: '34', SecoundColumn: '', Data: 34 });
+    this.Auswahlliste.push({ Index: 15, FirstColumn: '35', SecoundColumn: '', Data: 35 });
+    this.Auswahlliste.push({ Index: 16, FirstColumn: '36', SecoundColumn: '', Data: 36 });
+
+
+    this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.DB.CurrentMitarbeiter.Anrede});
+
+
+  } catch (error) {
+
+    this.Debug.ShowErrorMessage(error, 'AnredeClickedEvent', 'UrlaubClickedEventHandler', this.Debug.Typen.Page);
   }
 }

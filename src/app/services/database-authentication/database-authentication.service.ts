@@ -1,7 +1,8 @@
 import {EventEmitter, Inject, Injectable} from '@angular/core';
 import {DebugProvider} from "../debug/debug";
 import {MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService} from "@azure/msal-angular";
-import {AccountInfo, AuthenticationResult, InteractionType, PopupRequest, RedirectRequest, SilentRequest
+import {
+  AccountEntity, AccountInfo, AuthenticationResult, InteractionType, PopupRequest, RedirectRequest, SilentRequest
 } from "@azure/msal-browser";
 import {ConstProvider} from "../const/const";
 import {LocalstorageService} from "../localstorage/localstorage";
@@ -129,12 +130,14 @@ export class DatabaseAuthenticationService {
 
               if(token !== this.Const.NONE) {
 
+                this.Debug.AddDebugMessage('Token konte aus Cookie geladen werden.');
+
                 this.ActiveUser  = Account;
                 this.AccessToken = token;
               }
               else {
 
-                this.Debug.AddDebugMessage('Token konte nicht geladen werden.');
+                this.Debug.AddDebugMessage('Token konte nicht aus Cookie geladen werden.');
 
                 this.UnsetActiveUser();
               }
@@ -171,11 +174,13 @@ export class DatabaseAuthenticationService {
       let message: string;
       let acountliste: any[] = this.MSALService.instance.getAllAccounts();
 
+      console.log('Accountliste: ' + acountliste);
+
       if(acountliste.length === 0) {
 
         this.ShowLogin   = true;
-        // this.ActiveUser  = null;
-        // this.AccessToken = null;
+
+        console.log('Accountliste ist leer. LOGIN anzeigen.');
       }
       else {
 
@@ -357,9 +362,7 @@ Timestamp: 2023-10-11 17:54:01Z
 
         let Wert = Cookies.get(Keys.AccessToken);
 
-        console.log('Load Access Token: ' + Wert);
-
-        if(typeof Wert === 'undefined') {
+        if(lodash.isUndefined(Wert)) {
 
           resolve(this.Const.NONE);
         }

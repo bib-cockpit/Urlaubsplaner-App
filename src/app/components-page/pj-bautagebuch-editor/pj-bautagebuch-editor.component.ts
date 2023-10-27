@@ -11,6 +11,8 @@ import {DatabaseBautagebuchService} from "../../services/database-bautagebuch/da
 import moment, {Moment} from "moment";
 import {BasicsProvider} from "../../services/basics/basics";
 import {Bautagebucheintragstruktur} from "../../dataclasses/bautagebucheintragstruktur";
+import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'pj-bautagebuch-editor',
@@ -27,6 +29,7 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
   public Gesamthoehe: number;
   public Headerhoehe: number;
   public   Listehoehe: number;
+  public LinesanzahlTeilnehmer: number;
 
   @Output() ValidChange = new EventEmitter<boolean>();
   @Output() CancelClickedEvent         = new EventEmitter<any>();
@@ -34,6 +37,7 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
   @Output() DeleteClickedEvent         = new EventEmitter<any>();
   @Output() AddTaetigkeiteintragEvent  = new EventEmitter<any>();
   @Output() EintragClickedEvent        = new EventEmitter<any>();
+  @Output() BeteiligteteilnehmerClicked = new EventEmitter();
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -41,12 +45,14 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
   @Input() Dialoghoehe: number;
   @Input() PositionY: number;
   @Input() ZIndex: number;
+  private MitarbeiterSubscription: Subscription;
 
   constructor(public Debug: DebugProvider,
               public Displayservice: DisplayService,
               public Const: ConstProvider,
               private Tools: ToolsProvider,
               public Basics: BasicsProvider,
+              public Pool: DatabasePoolService,
               public DB: DatabaseBautagebuchService) {
 
     try {
@@ -57,6 +63,7 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
       this.Iconname          = 'book-outline';
       this.Dialogbreite      = 400;
       this.Dialoghoehe       = 300;
+      this.LinesanzahlTeilnehmer    = 1;
       this.PositionY         = 100;
       this.ZIndex            = 2000;
       this.CanDelete         = false;
@@ -64,6 +71,7 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
       this.Gesamthoehe       = 350;
       this.Headerhoehe       = 30;
       this.Listehoehe        = this.Gesamthoehe - this.Headerhoehe;
+      this.MitarbeiterSubscription = null;
 
     } catch (error) {
 
@@ -74,6 +82,8 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
   ngOnDestroy(): void {
 
       try {
+
+        this.MitarbeiterSubscription.unsubscribe();
 
         this.Displayservice.RemoveDialog(this.Displayservice.Dialognamen.Bautagebucheditor);
 
@@ -105,10 +115,28 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
     }
   }
 
+  PrepareData() {
+
+    try {
+
+      this.LinesanzahlTeilnehmer = this.DB.CurrentTagebuch.BeteiligtInternIDListe.length;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Bautagebuch Editor', 'function', this.Debug.Typen.Component);
+    }
+  }
+
   ngOnInit() {
 
     try {
 
+      this.MitarbeiterSubscription = this.Pool.MitarbeiterAuswahlChanged.subscribe(() => {
+
+        this.PrepareData();
+      });
+
+      this.PrepareData();
       this.SetupValidation();
 
       this.Displayservice.AddDialog(this.Displayservice.Dialognamen.Bautagebucheditor, this.ZIndex);

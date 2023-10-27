@@ -128,14 +128,10 @@ export class PjNotizenListePage implements OnInit, OnDestroy {
 
       this.FavoritenProjektSubcription = this.DBProjekte.CurrentFavoritenProjektChanged.subscribe(() => {
 
-        debugger;
-
         this.PrepareDaten();
       });
 
       this.NotizenkapitelProjektSubcription = this.Pool.NotizenkapitellisteChanged.subscribe(() => {
-
-        debugger;
 
         this.PrepareDaten();
       });
@@ -360,8 +356,6 @@ export class PjNotizenListePage implements OnInit, OnDestroy {
 
       if(this.DBProjekte.CurrentProjekt !== null) {
 
-        debugger;
-
         if(this.DB.CurrentNotizenkapitel !== null) {
 
           Notizenkapitel = lodash.find(this.Pool.Notizenkapitelliste[this.DBProjekte.CurrentProjekt.Projektkey], {_id: this.DB.CurrentNotizenkapitel._id});
@@ -469,11 +463,15 @@ export class PjNotizenListePage implements OnInit, OnDestroy {
 
     try {
 
-      this.TextSaved = false;
+      debugger;
 
-      this.StopSaveNotizTimer();
-      this.StartSaveNotizTimer();
+      if (this.DB.CurrentNotizenkapitelabschnitt.HTML !== '') {
 
+        this.TextSaved = false;
+
+        this.StopSaveNotizTimer();
+        this.StartSaveNotizTimer();
+      }
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Notizen List', 'NotizTextChangedHandler', this.Debug.Typen.Page);
@@ -483,8 +481,6 @@ export class PjNotizenListePage implements OnInit, OnDestroy {
   NotizenkapitelabschnittClicked(event: MouseEvent, Abschnitt: Notizenkapitelabschnittstruktur) {
 
     try {
-
-      debugger;
 
       this.DB.CurrentNotizenkapitelabschnitt = Abschnitt;
 

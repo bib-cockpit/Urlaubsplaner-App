@@ -79,13 +79,13 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
       this.Enabled         = true;
       this.Titel           = '';
       this.Value           = '';
-      this.MinHeight       = 0;
+      this.MinHeight       = 30;
       this.Inputtype       = 'text';
       this.Lines           = 1;
       this.Debouncetime    = 0;
       this.Clickable       = false;
       this.Required        = false;
-      this.Titelcolor      = 'gray';
+      this.Titelcolor      = 'black';
       this.ParseToFloat    = false;
       this.Textcolor       = this.Basics.Ionicfarben.Schwarz;
 

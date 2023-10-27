@@ -24,6 +24,8 @@ export class AuswahlDialogService {
 
     Mitarbeiter_Editor_Standort:                       'Mitarbeiter_Editor_Standort',
     Mitarbeiter_Editor_Fachbereich:                    'Mitarbeiter_Editor_Fachbereich',
+    Mitarbeiter_Editor_Anrede:                         'Mitarbeiter_Editor_Anrede',
+    Mitarbeiter_Editor_Urlaub:                         'Mitarbeiter_Editor_Urlaub',
     Mitarbeiter_Liste_Standortfilter:                  'Mitarbeiter_Liste_Standortfilter',
 
     Aufgabenliste_ZustaendigExtern:                    'Aufgabenliste_ZustaendigExtern',
@@ -61,6 +63,7 @@ export class AuswahlDialogService {
     Bautagebuchliste_Emaileditor_Intern_CcEmpfaenger:       'Bautagebuchliste_Emaileditor_Intern_CcEmpfaenger',
     Bautagebuchliste_Emaileditor_Extern_Empfaenger:         'Bautagebuchliste_Emaileditor_Extern_Empfaenger',
     Bautagebuchliste_Emaileditor_Extern_CcEmpfaenger:       'Bautagebuchliste_Emaileditor_Extern_CcEmpfaenger',
+    Bautagebuchliste_Bautagebucheditor:                     'Bautagebuchliste_Bautagebucheditor',
 
     Protokollliste_Editor_Leistungsphase:                   'Protokollliste_Editor_Leistungsphase',
     Protokollliste_Protokolleditor_Teamteilnehmer:          'Protokollliste_Protokolleditor_Teamteilnehmer',

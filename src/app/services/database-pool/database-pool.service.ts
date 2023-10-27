@@ -580,8 +580,9 @@ export class DatabasePoolService {
 
             this.Bautagebuchliste[projekt.Projektkey].forEach((Tagebuch: Bautagebuchstruktur) => {
 
-              if(lodash.isUndefined(Tagebuch.GesendetZeitstring))  Tagebuch.GesendetZeitstring  = this.Const.NONE;
-              if(lodash.isUndefined(Tagebuch.GesendetZeitstempel)) Tagebuch.GesendetZeitstempel = null;
+              if(lodash.isUndefined(Tagebuch.GesendetZeitstring))     Tagebuch.GesendetZeitstring     = this.Const.NONE;
+              if(lodash.isUndefined(Tagebuch.GesendetZeitstempel))    Tagebuch.GesendetZeitstempel    = null;
+              if(lodash.isUndefined(Tagebuch.BeteiligtInternIDListe)) Tagebuch.BeteiligtInternIDListe = [this.Mitarbeiterdaten._id];
 
             });
 
@@ -912,6 +913,16 @@ export class DatabasePoolService {
       if(lodash.isUndefined(mitarbeiter.Meinewocheliste)) {
 
         mitarbeiter.Meinewocheliste = [];
+      }
+
+      if(lodash.isUndefined(mitarbeiter.Anrede)) {
+
+        mitarbeiter.Anrede = this.Const.NONE;
+      }
+
+      if(lodash.isUndefined(mitarbeiter.Urlaub)) {
+
+        mitarbeiter.Urlaub = 30;
       }
 
       for(let Eintrag of mitarbeiter.Meinewocheliste) {

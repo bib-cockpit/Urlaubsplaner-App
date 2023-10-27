@@ -3,13 +3,15 @@
      [style.min-height.px]="MinHeight"
      [style.border]="Enabled === true ? Valid === true ? OkBorder : RequiredBorder : DisabledBorder">
   <table width="100%">
-    <tr *ngIf="Titel !== null && Titel !== ''" [style.color]="Titelcolor">
+
+    <tr *ngIf="Titel !== null && Titel !== '' && Enabled === false" [style.color]="Titelcolor">
       <td class="uppercellclass">{{Titel}}</td>
       <td style="text-align: right" [hidden]="Clickable === false"><ion-icon color="burnicklgruen" name="list-outline" style="font-size: 20px"></ion-icon></td>
     </tr>
+
     <tr *ngIf="Lines === 1">
       <td class="lowercellclass" colspan="2">
-        <ion-input *ngIf="Enabled === true" [type]="Inputtype"
+        <ion-input *ngIf="Enabled === true" [type]="Inputtype" class="inputclass"  [label]="Titel" labelPlacement="stacked"
                    [debounce]="Debouncetime"
                     autocomplete="off"
                    [value]="Value"

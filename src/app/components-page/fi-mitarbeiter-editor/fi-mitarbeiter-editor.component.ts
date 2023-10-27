@@ -29,6 +29,8 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
   @Output() ValidChanged            = new EventEmitter<boolean>();
   @Output() StandortClickedEvent    = new EventEmitter<boolean>();
+  @Output() AnredeClickedEvent      = new EventEmitter<boolean>();
+  @Output() UrlaubClickedEvent      = new EventEmitter<boolean>();
   @Output() FachbereichClickedEvent = new EventEmitter<boolean>();
 
   @Output() CancelClickedEvent         = new EventEmitter<any>();
@@ -368,4 +370,23 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
       this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'SaveNewProjekte', this.Debug.Typen.Component);
     }
   }
+
+  GetAnrede(): string {
+
+    try {
+
+      if(this.DB.CurrentMitarbeiter !== null) {
+
+        if(this.DB.CurrentMitarbeiter.Anrede === this.Const.NONE) return 'unbekannt';
+        else return this.DB.CurrentMitarbeiter.Anrede;
+      }
+      else return 'null';
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'function', this.Debug.Typen.Component);
+    }
+  }
+
 }
