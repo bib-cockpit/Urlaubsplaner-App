@@ -102,24 +102,26 @@ export class DatabaseAuthenticationService {
 
       return new  Promise((resolve) => {
 
-        // this.AccessTokenExpired = false;
-
         if(this.SecurityEnabled) {
 
-          Account = this.MSALService.instance.getActiveAccount();
+          Account  = this.MSALService.instance.getActiveAccount();
+          Accounts = this.MSALService.instance.getAllAccounts();
+
+          if(!lodash.isUndefined(Accounts) && Accounts !== null && Accounts.length > 0) {
+
+            for(Account of Accounts) {
+
+              console.log(Account.username);
+            }
+          }
+
+          console.log(Account !== null ? Account.username : 'Account ist null');
 
           if(Account === null) {
 
             this.Debug.ShowMessage('Active Account ist null', 'Database Authentication', 'SetActiveUser', this.Debug.Typen.Service);
 
-            Accounts = this.MSALService.instance.getAllAccounts();
-
             if(!lodash.isUndefined(Accounts) && Accounts !== null && Accounts.length > 0) {
-
-              for(Account of Accounts) {
-
-                console.log(Account.username);
-              }
 
               this.Debug.ShowMessage('Accountliste vorhanden', 'Database Authentication', 'SetActiveUser', this.Debug.Typen.Service);
 
@@ -187,11 +189,11 @@ export class DatabaseAuthenticationService {
       let message: string;
       let acountliste: any[] = this.MSALService.instance.getAllAccounts();
 
-      console.log('Accountliste: ' + acountliste);
+      this.Debug.ShowMessage(message, 'SetShowLoginStatus gestartet', 'SetShowLogin', this.Debug.Typen.Service );
 
       if(acountliste.length === 0) {
 
-        this.ShowLogin   = true;
+        this.ShowLogin = true;
 
         console.log('Accountliste ist leer. LOGIN anzeigen.');
       }
