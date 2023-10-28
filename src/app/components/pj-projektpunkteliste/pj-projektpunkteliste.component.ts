@@ -996,23 +996,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
     }
   }
 
-  DebugButtonClicked(event: MouseEvent, Projektpunkt: Projektpunktestruktur) {
 
-    try {
-
-      event.preventDefault();
-      event.stopPropagation();
-
-      this.Debug.AddDebugMessage(Projektpunkt);
-
-      this.Tools.ShowHinweisDialog('Debug Message printed...');
-
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Projektpunkteliste', 'DebugButtonClicked', this.Debug.Typen.Component);
-    }
-  }
 
   LOPMarkeClicked(Projektpunkt: Projektpunktestruktur) {
 

@@ -77,7 +77,7 @@ export class DatabaseAuthenticationService {
 
     try {
 
-      this.Debug.AddDebugMessage('Unset Active User');
+      this.Debug.ShowMessage('Unset Active User', 'Database Authentication', 'UnsetActiveUser', this.Debug.Typen.Service);
 
       this.ActiveUser  = null;
       this.AccessToken = null;
@@ -96,7 +96,7 @@ export class DatabaseAuthenticationService {
       let Account: any;
       let Accounts: any[];
 
-      this.Debug.AddDebugMessage('Set Active User started');
+      this.Debug.ShowMessage('Set Active User started',  'Database Authentication', 'SetActiveUser', this.Debug.Typen.Service);
 
       return new  Promise((resolve) => {
 
@@ -108,19 +108,19 @@ export class DatabaseAuthenticationService {
 
           if(Account === null) {
 
-            this.Debug.AddDebugMessage('Active Account ist null');
+            this.Debug.ShowMessage('Active Account ist null', 'Database Authentication', 'SetActiveUser', this.Debug.Typen.Service);
 
             Accounts = this.MSALService.instance.getAllAccounts();
 
             if(!lodash.isUndefined(Accounts) && Accounts !== null && Accounts.length > 0) {
 
-              this.Debug.AddDebugMessage('Accountliste vorhanden');
+              this.Debug.ShowMessage('Accountliste vorhanden', 'Database Authentication', 'SetActiveUser', this.Debug.Typen.Service);
 
               Account = Accounts[0];
             }
             else {
 
-              this.Debug.AddDebugMessage('keine Accountlist vorhanden');
+              this.Debug.ShowMessage('keine Accountlist vorhanden', 'Database Authentication', 'SetActiveUser', this.Debug.Typen.Service,);
             }
           }
 
@@ -130,14 +130,14 @@ export class DatabaseAuthenticationService {
 
               if(token !== this.Const.NONE) {
 
-                this.Debug.AddDebugMessage('Token konte aus Cookie geladen werden.');
+                this.Debug.ShowMessage('Token konte aus Cookie geladen werden.', 'Database Authentication', 'SetActiveUser', this.Debug.Typen.Service);
 
                 this.ActiveUser  = Account;
                 this.AccessToken = token;
               }
               else {
 
-                this.Debug.AddDebugMessage('Token konte nicht aus Cookie geladen werden.');
+                this.Debug.ShowMessage('Token konte nicht aus Cookie geladen werden.', 'Database Authentication', 'SetActiveUser', this.Debug.Typen.Service);
 
                 this.UnsetActiveUser();
               }

@@ -35,18 +35,12 @@ export class DebugProvider {
     }
   }
 
-  public AddDebugMessage(message: any) {
-
-    this.Debugmessageliste.push(message);
-  }
 
   public ShowErrorMessage(message, script, funktion, typ)
   {
     try {
 
-      console.log('----------------- ERROR -----------------------');
-      console.log(message);
-      console.log('File: ' + script + ' | Function: ' + funktion + ' | Typ: ' + typ);
+      console.log('File: ' + script + ' | Function: ' + funktion + ' | Message: ' + message);
 
       this.Debugmessageliste.push({
 
@@ -73,9 +67,7 @@ export class DebugProvider {
         stack: ''
       };
 
-      console.log('----------------- INFO -----------------------');
-      console.log(message);
-      console.log('File: ' + script + ' | Function: ' + funktion + ' | Typ: ' + typ);
+      console.log('File: ' + script + ' | Function: ' + funktion + ' | Message: ' + message);
 
       this.Debugmessageliste.push({
 
