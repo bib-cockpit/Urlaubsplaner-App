@@ -84,20 +84,22 @@ export class CommonDebugPage implements OnInit, OnDestroy {
     }
   }
 
-  ClearAccessToken() {
+  /*
+    ClearAccessToken() {
 
-    try {
+      try {
 
-      this.AuthService.AccessToken = null;
-      this.AuthService.ActiveUser  = null;
+        // this.AuthService.AccessToken = null;
+        this.AuthService.ActiveUser  = null;
 
-      this.AuthService.DeleteAccessToken();
+        this.AuthService.DeleteAccessToken();
 
-    } catch (error) {
+      } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Debug', 'ClearAccessToken', this.Debug.Typen.Page);
+        this.Debug.ShowErrorMessage(error.message, 'Debug', 'ClearAccessToken', this.Debug.Typen.Page);
+      }
     }
-  }
+   */
 
   public TestButtonCLcicked() {
 

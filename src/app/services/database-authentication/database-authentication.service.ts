@@ -32,8 +32,8 @@ export class DatabaseAuthenticationService {
   public LoginSuccessEvent: EventEmitter<any> = new EventEmitter<any>();
   public ActiveUsername: string;
   public ActiveUser: AccountInfo;
-  public AccessToken: string;
-  public AccessTokenExpired: boolean;
+  // public AccessToken: string;
+  // public AccessTokenExpired: boolean;
   public SecurityEnabled: boolean;
   private DevelopmentUser: AccountInfo;
   public ShowLogin: boolean;
@@ -53,8 +53,8 @@ export class DatabaseAuthenticationService {
     try {
 
       this.SecurityEnabled    = true;
-      this.AccessToken        = this.Const.NONE;
-      this.AccessTokenExpired = false;
+      // this.AccessToken        = this.Const.NONE;
+      // this.AccessTokenExpired = false;
       this.ActiveUser         = null;
       this.ShowLogin          = false;
 
@@ -80,7 +80,7 @@ export class DatabaseAuthenticationService {
       this.Debug.ShowMessage('Unset Active User', 'Database Authentication', 'UnsetActiveUser', this.Debug.Typen.Service);
 
       this.ActiveUser  = null;
-      this.AccessToken = null;
+      // this.AccessToken = null;
       this.ShowLogin   = true;
 
     } catch (error) {
@@ -96,11 +96,13 @@ export class DatabaseAuthenticationService {
       let Account: any;
       let Accounts: any[];
 
+      debugger;
+
       this.Debug.ShowMessage('Set Active User started',  'Database Authentication', 'SetActiveUser', this.Debug.Typen.Service);
 
       return new  Promise((resolve) => {
 
-        this.AccessTokenExpired = false;
+        // this.AccessTokenExpired = false;
 
         if(this.SecurityEnabled) {
 
@@ -114,6 +116,11 @@ export class DatabaseAuthenticationService {
 
             if(!lodash.isUndefined(Accounts) && Accounts !== null && Accounts.length > 0) {
 
+              for(Account of Accounts) {
+
+                console.log(Account.username);
+              }
+
               this.Debug.ShowMessage('Accountliste vorhanden', 'Database Authentication', 'SetActiveUser', this.Debug.Typen.Service);
 
               Account = Accounts[0];
@@ -126,14 +133,18 @@ export class DatabaseAuthenticationService {
 
           if(Account !== null) {
 
+            this.ActiveUser  = Account;
+
+            resolve(true);
+            /*
+
             this.LoadAccessToken().then((token) => {
 
               if(token !== this.Const.NONE) {
 
                 this.Debug.ShowMessage('Token konte aus Cookie geladen werden.', 'Database Authentication', 'SetActiveUser', this.Debug.Typen.Service);
 
-                this.ActiveUser  = Account;
-                this.AccessToken = token;
+                // this.AccessToken = token;
               }
               else {
 
@@ -144,6 +155,8 @@ export class DatabaseAuthenticationService {
 
               resolve(true);
             });
+
+             */
           }
           else
           {
@@ -155,7 +168,7 @@ export class DatabaseAuthenticationService {
         else {
 
           this.ActiveUser  = this.DevelopmentUser;
-          this.AccessToken = null;
+          // this.AccessToken = null;
 
           resolve(true);
         }
@@ -263,15 +276,13 @@ Timestamp: 2023-10-11 17:54:01Z
             this.authService.loginPopup({ ...this.msalGuardConfig.authRequest } as PopupRequest)
               .subscribe((response: AuthenticationResult) => {
 
-
                 this.authService.instance.setActiveAccount(response.account);
               });
           } else {
             this.authService.loginPopup()
               .subscribe((response: AuthenticationResult) => {
 
-
-                this.SaveAccessToken(response.accessToken);
+                // this.SaveAccessToken(response.accessToken);
                 this.authService.instance.setActiveAccount(response.account);
               });
           }
@@ -378,6 +389,7 @@ Timestamp: 2023-10-11 17:54:01Z
     }
   }
 
+  /*
   public SaveAccessToken(token: string): Promise<boolean> {
 
     try {
@@ -397,6 +409,10 @@ Timestamp: 2023-10-11 17:54:01Z
     }
   }
 
+   */
+
+  /*
+
   public DeleteAccessToken(): Promise<boolean> {
 
     try {
@@ -413,4 +429,6 @@ Timestamp: 2023-10-11 17:54:01Z
       this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'DeleteAccessToken', this.Debug.Typen.Service);
     }
   }
+
+   */
 }

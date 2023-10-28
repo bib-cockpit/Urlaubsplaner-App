@@ -266,7 +266,6 @@ export class DatabasePoolService {
         Headers = new HttpHeaders({
 
           'content-type': 'application/json',
-          // 'authorization': this.AuthService.AccessToken
         });
 
         ProjektpunkteObservable = this.Http.get(this.CockpitserverURL + '/projektpunkte', { headers: Headers, params: Params } );
@@ -343,7 +342,6 @@ export class DatabasePoolService {
         Headers = new HttpHeaders({
 
           'content-type': 'application/json',
-          // 'authorization': this.AuthService.AccessToken
         });
 
         ProtokollObservable = this.Http.get(this.CockpitserverURL + '/protokolle', { headers: Headers, params: Params } );
@@ -563,7 +561,6 @@ export class DatabasePoolService {
         Headers = new HttpHeaders({
 
           'content-type': 'application/json',
-          // 'authorization': this.AuthService.AccessToken
         });
 
         BautagebuchObservable = this.Http.get(this.CockpitserverURL + '/bautagebuch', { headers: Headers, params: Params } );
@@ -715,7 +712,6 @@ export class DatabasePoolService {
       let headers: HttpHeaders = new HttpHeaders({
 
         'content-type': 'application/json',
-        // 'authorization': `Bearer ${this.AuthService.AccessToken}`
       });
 
       return new Promise((resolve, reject) => {
@@ -761,7 +757,6 @@ export class DatabasePoolService {
       let headers: HttpHeaders = new HttpHeaders({
 
         'content-type': 'application/json',
-        // 'authorization': this.AuthService.AccessToken
       });
 
       return new Promise((resolve, reject) => {
@@ -813,7 +808,6 @@ export class DatabasePoolService {
       let headers: HttpHeaders = new HttpHeaders({
 
         'content-type': 'application/json',
-        // 'authorization': this.AuthService.AccessToken
       });
 
       return new Promise((resolve, reject) => {
@@ -857,7 +851,6 @@ export class DatabasePoolService {
       let headers: HttpHeaders = new HttpHeaders({
 
         'content-type': 'application/json',
-        // 'authorization': this.AuthService.AccessToken
       });
 
       return new Promise((resolve, reject) => {

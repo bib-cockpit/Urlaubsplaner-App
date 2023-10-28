@@ -473,8 +473,7 @@ export class Graphservice {
 
               case "InvalidAuthenticationToken":
 
-
-                this.AuthService.AccessTokenExpired = true;
+                // this.AuthService.AccessTokenExpired = true;
                 this.AuthService.UnsetActiveUser();
 
                 this.Tools.SetRootPage(this.Const.Pages.HomePage);
@@ -544,7 +543,7 @@ export class Graphservice {
 
                 debugger;
 
-                this.AuthService.AccessTokenExpired = true;
+                // this.AuthService.AccessTokenExpired = true;
                 this.AuthService.UnsetActiveUser();
 
                 this.Tools.SetRootPage(this.Const.Pages.HomePage);
@@ -601,7 +600,7 @@ export class Graphservice {
 
                 debugger;
 
-                this.AuthService.AccessTokenExpired = true;
+                // this.AuthService.AccessTokenExpired = true;
                 this.AuthService.UnsetActiveUser();
 
                 this.Tools.SetRootPage(this.Const.Pages.HomePage);

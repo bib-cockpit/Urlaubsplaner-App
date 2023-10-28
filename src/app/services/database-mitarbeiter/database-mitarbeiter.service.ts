@@ -451,7 +451,6 @@ export class DatabaseMitarbeiterService {
       let headers: HttpHeaders = new HttpHeaders({
 
         'content-type': 'application/json',
-        // 'authorization': this.AuthService.AccessToken
       });
 
       return new Promise((resolve, reject) => {

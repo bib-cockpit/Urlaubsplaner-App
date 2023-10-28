@@ -28,6 +28,4 @@ export class LocalstorageService {
       this.Debug.ShowErrorMessage(error.message, 'LocalstorageService', 'constructor', this.Debug.Typen.Service);
     }
   }
-
-
 }

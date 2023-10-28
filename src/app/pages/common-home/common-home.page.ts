@@ -106,17 +106,20 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
           const payload = result.payload as AuthenticationResult;
 
+          this.authService.instance.setActiveAccount(payload.account);
+
+          this.AuthService.ActiveUser  = payload.account;
+          // this.AuthService.AccessToken = payload.accessToken;
+
+          this.AuthService.SetShowLoginStatus();
+
+          this.AuthService.LoginSuccessEvent.emit();
+          /*
           this.AuthService.SaveAccessToken(payload.accessToken).then(() => {
 
-            this.authService.instance.setActiveAccount(payload.account);
-
-            this.AuthService.ActiveUser  = payload.account;
-            this.AuthService.AccessToken = payload.accessToken;
-
-            this.AuthService.SetShowLoginStatus();
-
-            this.AuthService.LoginSuccessEvent.emit();
           });
+
+           */
         });
 
     } catch (error) {
