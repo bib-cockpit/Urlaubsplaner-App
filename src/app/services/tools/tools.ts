@@ -84,11 +84,12 @@ export class ToolsProvider {
     }
   }
 
-  public GenerateFilename(name: string, extention: string): string {
+  public GenerateFilename(name: string, extention: string, nummer: string): string {
 
     try {
 
       let key: string = name; // .toUpperCase();
+      let zahl: string = nummer !== '' ? '_' + nummer : '';
 
       key = key.replace(/ /g, '_');
       key = key.replace(/ä/g, 'ae');
@@ -100,7 +101,7 @@ export class ToolsProvider {
       key = key.replace(/ß/g, 'ss');
       key = key.replace(/[^a-zA-Z0-9 ]/g, '_'); // /[&\/\\#,+()$~%.'§=^!`´;":.,*-?<>{}]/g, '_');
 
-      return key + '.' + extention;
+      return key + zahl + '.' + extention;
 
     } catch (error) {
 

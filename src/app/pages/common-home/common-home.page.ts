@@ -16,7 +16,6 @@ import {Changelogstruktur} from "../../dataclasses/changelogstruktur";
 import {filter, Subscription} from "rxjs";
 import {MsalBroadcastService, MsalService} from "@azure/msal-angular";
 import {AuthenticationResult, EventMessage, EventType, InteractionStatus} from "@azure/msal-browser";
-import {LocalstorageService} from "../../services/localstorage/localstorage";
 import {Graphservice} from "../../services/graph/graph";
 import {
   DatabaseMitarbeitersettingsService
@@ -55,7 +54,6 @@ export class CommonHomePage implements OnInit, OnDestroy {
               public Tools: ToolsProvider,
               public Const: ConstProvider,
               public Pool: DatabasePoolService,
-              private Storage: LocalstorageService,
               private authService: MsalService,
               private msalBroadcastService: MsalBroadcastService,
               public DBProjekte: DatabaseProjekteService,

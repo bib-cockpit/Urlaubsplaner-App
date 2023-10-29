@@ -27,7 +27,7 @@ export class DatabaseOutlookemailService {
 
       this.CurrentEmail          = null;
       this.ServerUrl             = this.Pool.CockpitserverURL + '/email';
-      this.ShowUngelesenOnly     = false;
+      this.ShowUngelesenOnly     = true;
       this.Projektsortierung     = true;
 
       this.Heute = moment();

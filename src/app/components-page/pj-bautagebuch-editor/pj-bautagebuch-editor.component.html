@@ -31,7 +31,7 @@
               </ion-col>
               <ion-col>
                 <input-clone [MinHeight]="44" [Lines]="LinesanzahlTeilnehmer"
-                               [Clickable]="true" [Enabled]="false" Titel="Objektüberwachung" [Value]="DB.GetInterneTeilnehmerliste(false)" (click)="BeteiligteteilnehmerClicked.emit()"></input-clone>
+                               [Clickable]="true" [Enabled]="false" Titel="Objektüberwachung" [Value]="GetInterneTeilnehmerliste()" (click)="BeteiligteteilnehmerClicked.emit()"></input-clone>
               </ion-col>
             </ion-row>
             <ion-row>

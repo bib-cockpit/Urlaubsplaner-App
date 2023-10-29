@@ -45,6 +45,7 @@ export class LoadingAnimationService {
         enableBackdropDismiss: false,
         translucent: false,
         dismissOnPageChange	: false,
+
       };
 
       return new Promise((resolve, reject) => {

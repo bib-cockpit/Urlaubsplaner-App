@@ -5,11 +5,8 @@ import {
   AccountEntity, AccountInfo, AuthenticationResult, InteractionType, PopupRequest, RedirectRequest, SilentRequest
 } from "@azure/msal-browser";
 import {ConstProvider} from "../const/const";
-import {LocalstorageService} from "../localstorage/localstorage";
-import {environment} from "../../../environments/environment";
 import {Route, Router} from "@angular/router";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Graphuserstruktur} from "../../dataclasses/graphuserstruktur";
 import {catchError, map, Observable, of} from "rxjs";
 import {DomSanitizer} from "@angular/platform-browser";
 import Cookies from "js-cookie";
@@ -44,10 +41,8 @@ export class DatabaseAuthenticationService {
               private authService: MsalService,
               private Const: ConstProvider,
               private http: HttpClient,
-              private StorgeService: LocalstorageService,
               private router: Router,
               private domSanitizer: DomSanitizer,
-              private Storage: LocalstorageService,
               private MSALService: MsalService
   ) {
     try {
@@ -95,8 +90,6 @@ export class DatabaseAuthenticationService {
 
       let Account: any;
       let Accounts: any[];
-
-      debugger;
 
       this.Debug.ShowMessage('Set Active User started',  'Database Authentication', 'SetActiveUser', this.Debug.Typen.Service);
 
@@ -225,20 +218,9 @@ export class DatabaseAuthenticationService {
 
       return new Promise((resolve, reject) => {
 
-        /*
-
-        AADSTS65001: The user or administrator has not consented to use the application with ID 'bc457d46-6f13-4fa7-a973-e94cf4102dd9' named 'Cockpit App Registration'.
-        Send an interactive authorization request for this user and resource.
-Trace ID: 257e9ec6-70af-4900-96d7-5c0b68dfea00
-Correlation ID: dbb0bbfe-6c4d-4f39-bd7d-592fc8f01a39
-Timestamp: 2023-10-11 17:54:01Z
-         */
-
         this.authService.acquireTokenSilent(accessTokenRequest).pipe(catchError(err => {
 
           if(err) {
-
-            debugger;
 
             switch (err.errorCode) {
 
@@ -253,6 +235,7 @@ Timestamp: 2023-10-11 17:54:01Z
           return of(err != null);
 
         })).subscribe((response: AuthenticationResult) => {
+
 
           if(response.accessToken) {
 

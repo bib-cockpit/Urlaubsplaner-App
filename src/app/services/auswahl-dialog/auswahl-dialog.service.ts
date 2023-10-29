@@ -91,6 +91,7 @@ export class AuswahlDialogService {
     Emailliste_Projektpunkteditor_Fachbereich:     'Emailliste_Projektpunkteditor_Fachbereich',
     Emailliste_Editor_ZustaendigIntern:            'Emailliste_Editor_ZustaendigIntern',
     Emailliste_Editor_ZustaendigExtern:            'Emailliste_Editor_ZustaendigExtern',
+    Emailliste_Beteiligteneditor_Projektauswahl:   'Emailliste_Beteiligteneditor_Projektauswahl',
 
     Protokollliste_Filter_Leistungsphase:     'Protokollliste_Filter_Leistungsphase',
     Protokollliste_Filter_Zeitspanne:         'Protokollliste_Filter_Zeitspanne',

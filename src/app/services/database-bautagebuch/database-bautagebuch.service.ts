@@ -172,12 +172,11 @@ export class DatabaseBautagebuchService {
   }
 
 
-  public GetInterneTeilnehmerliste(getliste: boolean): any {
+  public GetInterneTeilnehmerliste(): any {
 
     try {
 
       let Teammitglied: Mitarbeiterstruktur;
-      let Value: string = '';
       let Liste:string[] = [];
       let Eintrag: string;
 
@@ -187,14 +186,13 @@ export class DatabaseBautagebuchService {
 
         if(!lodash.isUndefined(Teammitglied)) {
 
-          Eintrag = Teammitglied.Vorname + ' ' + Teammitglied.Name + ' / ' + Teammitglied.Kuerzel;
-          Value +=  Eintrag + '\n';
+          Eintrag = Teammitglied.Vorname + ' ' + Teammitglied.Name + ' ( ' + Teammitglied.Fachbereich + ')';
 
           Liste.push(Eintrag);
         }
       }
 
-      return getliste ? Liste : Value;
+      return Liste;
 
     } catch (error) {
 
@@ -442,6 +440,8 @@ export class DatabaseBautagebuchService {
         }
       }
 
+
+
       Daten = {
 
         Betreff:     bautagebuch.Betreff,
@@ -486,6 +486,31 @@ export class DatabaseBautagebuchService {
     }
   }
 
+
+  public GetBeteiligtInternName(ZustaendigID: string): string {
+
+    try {
+
+      let Mitarbeiter: Mitarbeiterstruktur = lodash.find(this.Pool.Mitarbeiterliste, {_id: ZustaendigID});
+
+      if(lodash.isUndefined(Mitarbeiter) === false) {
+
+        return Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' (' + Mitarbeiter.Fachbereich + ')';
+      }
+      else {
+
+        return 'unbekannt';
+      }
+
+      return '';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Bautagebuch', 'GetBeteiligtInternName', this.Debug.Typen.Service);
+    }
+  }
+
+
   public SaveBautagebuchInSite(
 
     filename: string,
@@ -499,6 +524,7 @@ export class DatabaseBautagebuchService {
       let Teamsfile: Teamsfilesstruktur;
       let Beteiligter: Projektbeteiligtestruktur;
       let Mitarbeiter: Mitarbeiterstruktur;
+      let Liste: string[] = [];
       let Name: string;
       let CcEmpfaengerliste: {
         Name:  string;
@@ -508,6 +534,13 @@ export class DatabaseBautagebuchService {
         Name:  string;
         Email: string;
       }[];
+
+      for(let InternID of bautagebuch.BeteiligtInternIDListe) {
+
+        Liste.push(this.GetBeteiligtInternName(InternID));
+      }
+
+
       let Daten: {
 
         DirectoryID: string;
@@ -517,6 +550,7 @@ export class DatabaseBautagebuchService {
         Standort:    Standortestruktur;
         Mitarbeiter: Mitarbeiterstruktur;
         ShowMailinformations: boolean;
+        BeteiligtInternListe: string[];
       } = {
 
         DirectoryID: this.DBProjekt.CurrentProjekt.BautagebuchFolderID,
@@ -525,7 +559,8 @@ export class DatabaseBautagebuchService {
         Filename:    filename,
         Standort:    standort,
         Mitarbeiter: mitarbeiter,
-        ShowMailinformations: showmailinformations
+        ShowMailinformations: showmailinformations,
+        BeteiligtInternListe: Liste,
       };
 
       debugger;

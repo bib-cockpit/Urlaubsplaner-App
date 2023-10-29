@@ -857,7 +857,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       this.EmailDialoghoehe    = this.Basics.InnerContenthoehe - 200;
       this.DB.CurrentProtokoll = lodash.cloneDeep(Protokoll);
 
-      Filename = moment(this.DB.CurrentProtokoll.Endestempel).format('YYMMDD_') + this.Tools.GenerateFilename(this.DB.CurrentProtokoll.Titel, 'pdf');
+      Filename = moment(this.DB.CurrentProtokoll.Endestempel).format('YYMMDD_') + this.Tools.GenerateFilename(this.DB.CurrentProtokoll.Titel, 'pdf', this.DB.CurrentProtokoll.Protokollnummer);
 
       Betreff    = 'Protokoll zur ' + this.DB.CurrentProtokoll.Titel + ' vom ' + moment(this.DB.CurrentProtokoll.Endestempel).format('DD.MM.YYYY');
 

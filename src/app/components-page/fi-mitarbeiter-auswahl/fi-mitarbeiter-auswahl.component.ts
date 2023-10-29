@@ -35,8 +35,6 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
   @Input() AuswahlIDliste: string[];
   @Input() Multiselect: boolean;
   @Input() Dialogbreite: number;
-  @Input() Dialoghoehe: number;
-  @Input() PositionY: number;
   @Input() ZIndex: number;
 
   @Output() OkClickedEvent     = new EventEmitter<string[]>();
@@ -53,6 +51,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
   public Mitarbeiterfiltertext: string;
   public Mitarbeiterliste: Mitarbeiterstruktur[];
   private FilterSubscription: Subscription;
+  public PositionY: number;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -76,7 +75,6 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
       this.Titel                       = this.Const.NONE;
       this.Iconname                    = 'people-outline';
       this.Dialogbreite                = 400;
-      this.Dialoghoehe                 = 300;
       this.PositionY                   = 100;
       this.ZIndex                      = 3000;
       this.Mitarbeiterliste            = [];

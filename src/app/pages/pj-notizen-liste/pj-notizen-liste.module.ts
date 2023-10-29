@@ -12,6 +12,9 @@ import {
 } from "../../components-page/pj-notizenkapitel-editor/pj-notizenkapitel-editor.module";
 import {EditorComponent} from "@tinymce/tinymce-angular";
 import {FormsModule} from "@angular/forms";
+import {
+    PjProjekteSchnellauswahlModule
+} from "../../components-page/pj-projekte-schnellauswahl/pj-projekte-schnellauswahl.module";
 
 
 const routes: Routes = [
@@ -22,20 +25,21 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    IonicModule,
-    PageHeaderModule,
-    RouterModule.forChild(routes),
-    PageHeaderMenuModule,
-    PageFooterModule,
-    AuswahlDialogModule,
-    PjNotizenkapitelEditorModule,
-    EditorComponent,
-    FormsModule,
+    imports: [
+        CommonModule,
+        IonicModule,
+        PageHeaderModule,
+        RouterModule.forChild(routes),
+        PageHeaderMenuModule,
+        PageFooterModule,
+        AuswahlDialogModule,
+        PjNotizenkapitelEditorModule,
+        EditorComponent,
+        FormsModule,
+        PjProjekteSchnellauswahlModule,
 
 
-  ],
+    ],
   declarations: [PjNotizenListePage],
   exports: [
     PjNotizenListePage

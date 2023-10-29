@@ -821,7 +821,7 @@ export class Graphservice {
         }
       }
 
-      debugger;
+      // debugger;
 
       Emailliste = lodash.filter(Emailliste, (Eintrag: Outlookemailstruktur) => {
 

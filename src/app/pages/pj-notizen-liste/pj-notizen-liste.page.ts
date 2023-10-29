@@ -17,6 +17,11 @@ import {DatabaseNotizenService} from "../../services/database-notizen/database-n
 import {Notizenkapitelstruktur} from "../../dataclasses/notizenkapitelstruktur";
 import {EventObj} from "@tinymce/tinymce-angular/editor/Events";
 import {Notizenkapitelabschnittstruktur} from "../../dataclasses/notizenkapitelabschnittstruktur";
+import {Projektestruktur} from "../../dataclasses/projektestruktur";
+import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
+import {
+  DatabaseMitarbeitersettingsService
+} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 
 @Component({
   selector:    'pj-aufgaben-liste-page',
@@ -43,6 +48,7 @@ export class PjNotizenListePage implements OnInit, OnDestroy {
   private PageLoaded: boolean;
   private SaveTimer: any;
   public TextSaved: boolean;
+  public Auswahlhoehe: number;
 
   constructor(public Displayservice: DisplayService,
               public Basics: BasicsProvider,
@@ -53,6 +59,7 @@ export class PjNotizenListePage implements OnInit, OnDestroy {
               public Menuservice: MenueService,
               public Const: ConstProvider,
               public Pool: DatabasePoolService,
+              private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public Debug: DebugProvider) {
 
     try {
@@ -70,6 +77,7 @@ export class PjNotizenListePage implements OnInit, OnDestroy {
       this.FavoritenProjektSubcription      = null;
       this.NotizenkapitelProjektSubcription = null;
       this.ShowProjektschnellauswahl        = false;
+      this.Auswahlhoehe        = 300;
 
       this.Editorconfig = {
 
@@ -489,5 +497,32 @@ export class PjNotizenListePage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Notizen List', 'NotizenkapitelabschnittClicked', this.Debug.Typen.Page);
     }
   }
+
+
+  public ProjektSchnellauswahlProjektClickedEventHandler(projekt: Projektestruktur) {
+
+    try {
+
+      let Aufgabenansicht: Aufgabenansichtstruktur = this.Pool.GetAufgabenansichten(projekt !== null ? projekt._id : null);
+
+
+      this.DBProjekte.CurrentProjekt      = projekt;
+      this.DBProjekte.CurrentProjektindex = lodash.findIndex(this.DBProjekte.Projektliste, {_id: projekt._id});
+
+      this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
+      this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
+
+      this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht);
+
+      this.ShowProjektschnellauswahl = false;
+
+      this.PrepareDaten();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Festlegungliste', 'ProjektSchnellauswahlProjektClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
 }
 

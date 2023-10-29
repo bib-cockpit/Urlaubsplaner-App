@@ -26,7 +26,6 @@ import {
   MsalService
 } from "@azure/msal-angular";
 import {BrowserCacheLocation, InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication} from "@azure/msal-browser";
-import {LocalstorageService} from "./services/localstorage/localstorage";
 import {environment} from "../environments/environment";
 import { EditorModule } from '@tinymce/tinymce-angular';
 
@@ -138,7 +137,9 @@ const MSALGuardConfigFactory = (): MsalGuardConfiguration => {
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(),
+    IonicModule.forRoot({
+      innerHTMLTemplatesEnabled: true
+    }),
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
@@ -173,8 +174,7 @@ const MSALGuardConfigFactory = (): MsalGuardConfiguration => {
     BasicsProvider,
     MenueService,
     LoadingAnimationService,
-    DisplayService,
-    LocalstorageService,
+    DisplayService
     ],
   bootstrap: [AppComponent, MsalRedirectComponent],
   exports: [

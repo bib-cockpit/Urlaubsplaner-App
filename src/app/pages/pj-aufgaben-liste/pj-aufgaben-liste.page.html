@@ -486,7 +486,7 @@
 
 <fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
                         [Titel]="'Zuständige Kollegen festlegen'"
-                        [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe - 200" [PositionY]="DialogPosY + 100" [ZIndex]="4000"
+                        [Dialogbreite]="600" [ZIndex]="4000"
                         [Multiselect]="true"
                         Iconname="people-outline"
                         [AuswahlIDliste]="AuswahlIDliste"
@@ -496,7 +496,7 @@
 
 <pj-beteiligten-auswahl *ngIf="ShowBeteiligteauswahl"
                         [Titel]="GetBeteiligtenauswahlTitel()"
-                        [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe - 200" [PositionY]="DialogPosY + 100" [ZIndex]="4000"
+                        [Dialogbreite]="600" [ZIndex]="4000"
                         [Multiselect]="true"
                         Iconname="people-outline"
                         [AuswahlIDliste]="AuswahlIDliste"

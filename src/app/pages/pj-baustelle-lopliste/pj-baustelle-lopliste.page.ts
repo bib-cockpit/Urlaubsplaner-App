@@ -893,7 +893,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.EmailDialoghoehe    = this.Basics.InnerContenthoehe - 200;
       this.DB.CurrentLOPListe  = lodash.cloneDeep(LOPListe);
 
-      Filename = moment(this.DB.CurrentLOPListe.Zeitstempel).format('YYMMDD_') + this.Tools.GenerateFilename(this.DB.CurrentLOPListe.Titel, 'pdf');
+      Filename = moment(this.DB.CurrentLOPListe.Zeitstempel).format('YYMMDD_') + this.Tools.GenerateFilename(this.DB.CurrentLOPListe.Titel, 'pdf', this.DB.CurrentLOPListe.LOPListenummer);
 
       Betreff    = this.DB.CurrentLOPListe.Titel + ' vom ' + moment(this.DB.CurrentLOPListe.Zeitstempel).format('DD.MM.YYYY');
 
@@ -1385,7 +1385,9 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       event.preventDefault();
       event.stopPropagation();
 
-      await this.AuthService.RequestToken('.default');
+      let Token = await this.AuthService.RequestToken('.default');
+
+      debugger;
 
       for (let Thumb of Thumbliste) {
 

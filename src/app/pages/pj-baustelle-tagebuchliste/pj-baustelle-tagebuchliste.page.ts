@@ -253,13 +253,12 @@ export class PjBaustelleTagebuchlistePage implements OnInit, OnDestroy {
       this.EmailDialoghoehe    = this.Basics.InnerContenthoehe - 200;
       this.DB.CurrentTagebuch  = lodash.cloneDeep(Tagebuch);
 
-      Filename = moment(this.DB.CurrentTagebuch.Zeitstempel).format('YYMMDD_') + this.Tools.GenerateFilename('Bautagebuch_' + this.DB.CurrentTagebuch.Nummer, 'pdf');
+      Filename = moment(this.DB.CurrentTagebuch.Zeitstempel).format('YYMMDD_') + this.Tools.GenerateFilename('Bautagebuch', 'pdf', this.DB.CurrentTagebuch.Nummer);
 
       Betreff    = 'Bautagebuch ' + this.DB.CurrentTagebuch.Nummer + ' vom ' + moment(this.DB.CurrentTagebuch.Zeitstempel).format('DD.MM.YYYY');
 
       Nachricht  = 'Sehr geehrte Damen und Herren,\n\n';
       Nachricht += 'anbei übersende ich Ihnen das Bautagebuch vom ' + moment(this.DB.CurrentTagebuch.Zeitstempel).format('DD.MM.YYYY') + '\n';
-      // Nachricht += 'mit der Protokollnummer ' + this.DB.CurrentTagebuch.Protokollnummer + '.\n\n';
 
       this.DB.CurrentTagebuch.EmpfaengerExternIDListe   = [];
       this.DB.CurrentTagebuch.CcEmpfaengerInternIDListe = [];

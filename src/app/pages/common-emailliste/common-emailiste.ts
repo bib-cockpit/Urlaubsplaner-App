@@ -33,6 +33,7 @@ import {
 import {Subscription} from "rxjs";
 import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
+import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
 
 @Component({
   selector: 'common-emailliste-page',
@@ -52,6 +53,7 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
   public Auswahltitel: string;
   public ShowEditor: boolean;
   public Emailliste: Outlookemailstruktur[];
+  public BAE_Emailliste: Outlookemailstruktur[];
   public SortierteEmailliste: Outlookemailstruktur[][];
   public Folderliste: Emailfolderstruktur[];
   public Folderindex: number;
@@ -88,6 +90,7 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
   private ProjektSubscription: Subscription;
   private BeteiligteSubscription: Subscription;
   public ShowAllEmpfaenger: boolean;
+  public Projekt: Projektestruktur;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -109,6 +112,7 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
     {
 
       this.Emailliste        = [];
+      this.BAE_Emailliste    = [];
       this.Maillistebreite   = 600;
       this.Mailcontentbreite = 200;
       this.MailTitlehoehe    = 200;
@@ -141,6 +145,7 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
       this.ProjektSubscription = null;
       this.BeteiligteSubscription = null;
       this.ShowAllEmpfaenger = false;
+      this.Projekt = null;
 
       this.Editorconfig = {
 
@@ -181,6 +186,8 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
   GebaeudeteilClickedHandler() {
 
     try {
+
+
 
       this.ShowRaumauswahl = true;
 
@@ -292,7 +299,7 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
         return 0;
       });
 
-      Index = 5;
+      Index = 0;
 
       if(this.Emailliste.length > 0 && !lodash.isUndefined(this.Emailliste[Index])) {
 
@@ -307,6 +314,16 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
       this.Folderliste[this.Folderindex].totalItemCount = this.Emailliste.length;
 
       this.SortierteEmailliste[0] = [];
+
+      this.BAE_Emailliste = lodash.filter(this.Emailliste, (currentmail: Outlookemailstruktur) => {
+
+        return currentmail.from.emailAddress.address.toLowerCase().indexOf('@b-a-e.eu') !== -1;
+      });
+
+      this.Emailliste = lodash.filter(this.Emailliste, (currentmail: Outlookemailstruktur) => {
+
+        return currentmail.from.emailAddress.address.toLowerCase().indexOf('@b-a-e.eu') === -1;
+      });
 
       for(let Email of this.Emailliste) {
 
@@ -347,6 +364,8 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
     try {
 
       await this.LoadingAnimation.ShowLoadingAnimation('Email', 'Emailliste wird geladen..');
+
+      navigator.clipboard.writeText(''); // Clipboard löschen
 
       let Folderliste: Emailfolderstruktur[] = await this.Graph.GetOwnEmailfolders();
 
@@ -684,6 +703,7 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
     try {
 
       let Anzahl: number = this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey].length + 1;
+      let Projekt: Projektestruktur = null;
 
       this.DBEmail.CurrentEmail             = lodash.cloneDeep(this.CurrentMail);
       this.DBEmail.CurrentEmail.ProjektID   = this.DBProjekte.CurrentProjekt._id;
@@ -691,36 +711,55 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
 
       try {
 
-        this.Pool.MaxProgressValue = 3;
-        this.Pool.ProgressMessage  = 'Emaildaten werden verarbeitet.';
-        this.Pool.ShowProgress     = true;
+        for(let CurrentProjekt of this.DBProjekte.Gesamtprojektliste) {
 
-        this.DBEmail.CurrentEmail = await this.DBEmail.AddEmail();
+          let Beteiligter = lodash.find(CurrentProjekt.Beteiligtenliste, (eintrag: Projektbeteiligtestruktur) => {
 
-        this.Pool.CurrentProgressValue++;
+            return eintrag.Email.toLowerCase() === this.CurrentMail.from.emailAddress.address.toLowerCase();
 
-        this.DBProjektpunkt.CurrentProjektpunkt         = this.DBProjektpunkt.GetNewProjektpunkt(this.DBProjekte.CurrentProjekt, Anzahl);
-        this.DBProjektpunkt.CurrentProjektpunkt.EmailID = this.DBEmail.CurrentEmail._id;
-        this.DBProjektpunkt.CurrentProjektpunkt.Aufgabe = this.DBEmail.CurrentEmail.subject;
+          });
 
-        this.Pool.ProgressMessage  = 'Projekteintrag wird erzeugt.';
+          if(!lodash.isUndefined(Beteiligter)) {
 
-        await this.DBProjektpunkt.AddProjektpunkt(this.DBProjektpunkt.CurrentProjektpunkt);
+            Projekt = CurrentProjekt;
 
-        this.Pool.CurrentProgressValue++;
+            break;
+          }
+        }
 
-        this.DBEmail.CurrentEmail.ProjektpunktID = this.DBProjektpunkt.CurrentProjektpunkt._id;
+        if(Projekt !== null) {
 
-        this.Pool.ProgressMessage  = 'Emaildaten werden gespeichert.';
+          this.Pool.MaxProgressValue = 3;
+          this.Pool.ProgressMessage  = 'Emaildaten werden verarbeitet.';
+          this.Pool.ShowProgress     = true;
+          this.DBEmail.CurrentEmail = await this.DBEmail.AddEmail();
 
-        this.DBEmail.CurrentEmail = await this.DBEmail.UpdateEmail();
+          this.Pool.CurrentProgressValue++;
 
-        this.Pool.CurrentProgressValue++;
+          this.DBProjekte.CurrentProjekt                  = Projekt;
+          this.DBProjektpunkt.CurrentProjektpunkt         = this.DBProjektpunkt.GetNewProjektpunkt(Projekt, Anzahl);
+          this.DBProjektpunkt.CurrentProjektpunkt.EmailID = this.DBEmail.CurrentEmail._id;
+          this.DBProjektpunkt.CurrentProjektpunkt.Aufgabe = this.DBEmail.CurrentEmail.subject;
 
-        this.Dialoghoehe            = this.Basics.InnerContenthoehe - 100;
-        this.Dialogbreite           = 900;
-        this.ShowProjektpunktEditor = true;
-        this.Pool.ShowProgress      = false;
+          this.Pool.ProgressMessage  = 'Projekteintrag wird erzeugt.';
+
+          await this.DBProjektpunkt.AddProjektpunkt(this.DBProjektpunkt.CurrentProjektpunkt);
+
+          this.Pool.CurrentProgressValue++;
+
+          this.DBEmail.CurrentEmail.ProjektpunktID = this.DBProjektpunkt.CurrentProjektpunkt._id;
+
+          this.Pool.ProgressMessage  = 'Emaildaten werden gespeichert.';
+
+          this.DBEmail.CurrentEmail = await this.DBEmail.UpdateEmail();
+
+          this.Pool.CurrentProgressValue++;
+
+          this.Dialoghoehe            = this.Basics.InnerContenthoehe - 100;
+          this.Dialogbreite           = 900;
+          this.ShowProjektpunktEditor = true;
+          this.Pool.ShowProgress      = false;
+        }
       }
       catch (errora) {
 
@@ -728,8 +767,6 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
 
         this.Tools.ShowHinweisDialog(errora.message);
       }
-
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Emailliste', 'CreateAufgabeClicked', this.Debug.Typen.Page);
@@ -737,8 +774,6 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
   }
 
   FachbereichClickedHandler() {
-
-
 
     this.Auswahltitel = 'Stataus festlegen';
     this.Auswahlliste = [];
@@ -785,6 +820,12 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
     try {
 
       switch (this.Auswahldialogorigin) {
+
+        case this.Auswahlservice.Auswahloriginvarianten.Emailliste_Beteiligteneditor_Projektauswahl:
+
+          this.Projekt = data;
+
+          break;
 
         case this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachfirma:
 
@@ -1128,7 +1169,7 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
       Vorname.trimStart();
 
       this.DBBeteiligte.CurrentBeteiligte          = this.DBBeteiligte.GetEmptyProjektbeteiligte();
-      this.DBBeteiligte.CurrentBeteiligte.Email    = emailAddress.address;
+      this.DBBeteiligte.CurrentBeteiligte.Email    = emailAddress.address.toLowerCase();
       this.DBBeteiligte.CurrentBeteiligte.Name     = Name;
       this.DBBeteiligte.CurrentBeteiligte.Vorname  = Vorname;
       this.ShowBeteiligteneditor                   = true;
@@ -1148,6 +1189,36 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Emailliste', 'EmaillisteProjektClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  BeteiligtenEditorProjektClickedEventHandler() {
+
+    try {
+
+      let Index: number = 0;
+
+      this.Auswahltitel = 'Projekt zuweisen';
+      this.Auswahlliste = [];
+      this.Auswahlhoehe = 200;
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Emailliste_Beteiligteneditor_Projektauswahl;
+
+      this.Auswahlliste  = [];
+
+      for(let CurrentProjekt of this.DBProjekte.Projektliste) {
+
+        this.Auswahlliste.push({ Index: Index, FirstColumn: CurrentProjekt.Projektname,  SecoundColumn:  '',  Data: CurrentProjekt });
+
+        Index++;
+      }
+
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.Projekt});
+      this.ShowAuswahl  = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Emailliste', 'BeteiligtenEditorProjektClickedEventHandler', this.Debug.Typen.Page);
     }
   }
 }

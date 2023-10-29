@@ -16,7 +16,6 @@ import {DatabaseProjekteService} from "../../services/database-projekte/database
 import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
 import {DatabaseAuthenticationService} from "../../services/database-authentication/database-authentication.service";
 import {HttpErrorResponse} from "@angular/common/http";
-// import {LocalstorageService} from "../../services/localstorage/localstorage";
 import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
 import moment, {Moment} from "moment";
 import {
@@ -310,6 +309,19 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     try {
 
       this.Menuservice.ProjekteMenuebereich = projektmenubereich;
+
+      switch (this.Menuservice.ProjekteMenuebereich) {
+
+        case this.Menuservice.ProjekteMenuebereiche.Aufgabenliste:
+
+          this.Menuservice.Aufgabenlisteansicht = this.Menuservice.Aufgabenlisteansichten.Projekt;
+
+          break;
+
+        default:
+
+          break;
+      }
 
       this.Menuservice.SetCurrentPage();
 
@@ -638,6 +650,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     try {
 
+      this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Aufgabenliste;
       this.Menuservice.Aufgabenlisteansicht = this.Menuservice.Aufgabenlisteansichten.Mein_Tag;
 
     } catch (error) {
@@ -646,10 +659,25 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+
+  MeineWocheClicked() {
+
+    try {
+
+      this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Aufgabenliste;
+      this.Menuservice.Aufgabenlisteansicht = this.Menuservice.Aufgabenlisteansichten.Meine_Woche;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'MeineWocheClicked', this.Debug.Typen.Component);
+    }
+  }
+
   MeilensteineClicked() {
 
     try {
 
+      this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Aufgabenliste;
       this.Menuservice.Aufgabenlisteansicht = this.Menuservice.Aufgabenlisteansichten.Meilensteine;
 
     } catch (error) {
@@ -673,18 +701,6 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ProjektClicked', this.Debug.Typen.Component);
-    }
-  }
-
-  MeineWocheClicked() {
-
-    try {
-
-      this.Menuservice.Aufgabenlisteansicht = this.Menuservice.Aufgabenlisteansichten.Meine_Woche;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'MeineWocheClicked', this.Debug.Typen.Component);
     }
   }
 

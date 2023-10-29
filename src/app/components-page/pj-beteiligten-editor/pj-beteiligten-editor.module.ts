@@ -8,6 +8,8 @@ import {PjBeteiligtenEditorComponent} from "./pj-beteiligten-editor.component";
 import {PageHeaderModule} from "../../components/page-header/page-header.module";
 import {PageFooterModule} from "../../components/page-footer/page-footer.module";
 import {CheckboxClonModule} from "../../components/checkbox-clon/checkbox-clon.module";
+import {EditorComponent} from "@tinymce/tinymce-angular";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -18,17 +20,19 @@ import {CheckboxClonModule} from "../../components/checkbox-clon/checkbox-clon.m
 
     PjBeteiligtenEditorComponent
   ],
-  imports: [
+    imports: [
 
-    CommonModule,
-    IonicModule,
-    InputCloneModule,
-    InputCloneKeeperModule,
-    AbstandElementFixedModule,
-    PageHeaderModule,
-    PageFooterModule,
-    CheckboxClonModule,
-  ],
+        CommonModule,
+        IonicModule,
+        InputCloneModule,
+        InputCloneKeeperModule,
+        AbstandElementFixedModule,
+        PageHeaderModule,
+        PageFooterModule,
+        FormsModule,
+        CheckboxClonModule,
+        EditorComponent,
+    ],
   providers: [
 
   ]

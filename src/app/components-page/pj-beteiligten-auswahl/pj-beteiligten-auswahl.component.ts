@@ -33,8 +33,6 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
   @Input() AuswahlIDliste: string[];
   @Input() Multiselect: boolean;
   @Input() Dialogbreite: number;
-  @Input() Dialoghoehe: number;
-  @Input() PositionY: number;
   @Input() ZIndex: number;
 
   @Output() OkClickedEvent     = new EventEmitter<string[]>();
@@ -49,6 +47,7 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
   public Lastletter: string;
   public Beteiligtefiltertext: string;
   public Beteiligteliste: Projektbeteiligtestruktur[];
+  public PositionY: number;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -71,8 +70,7 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
       this.Multiselect                 = false;
       this.Titel                       = this.Const.NONE;
       this.Iconname                    = 'help-circle-outline';
-      this.Dialogbreite                = 400;
-      this.Dialoghoehe                 = 300;
+      this.Dialogbreite                = 600;
       this.PositionY                   = 100;
       this.ZIndex                      = 3000;
       this.Beteiligteliste            = [];

@@ -15,7 +15,6 @@ import {DatabaseMitarbeiterService} from "./services/database-mitarbeiter/databa
 import {DatabaseStandorteService} from "./services/database-standorte/database-standorte.service";
 import {DatabaseProjekteService} from "./services/database-projekte/database-projekte.service";
 import {DatabaseMitarbeitersettingsService} from "./services/database-mitarbeitersettings/database-mitarbeitersettings.service";
-import {LocalstorageService} from "./services/localstorage/localstorage";
 import * as lodash from "lodash-es";
 import {Graphservice} from "./services/graph/graph";
 import {Mitarbeiterstruktur} from "./dataclasses/mitarbeiterstruktur";
@@ -51,7 +50,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
               private MitarbeitersettingsDB: DatabaseMitarbeitersettingsService,
               private StandortDB: DatabaseStandorteService,
               private ProjekteDB: DatabaseProjekteService,
-              private StorageService: LocalstorageService,
               public GraphService: Graphservice,
               private Debug: DebugProvider) {
 
@@ -314,7 +312,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           }
           else {
 
-            Page = this.Const.Pages.PjFestlegungslistePage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
+            Page = this.Const.Pages.EmaillistePage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
 
             this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
             await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste);                 // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
@@ -354,6 +352,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
           this.Menuservice.MainMenuebereich     = this.Menuservice.MainMenuebereiche.Home;
           this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Aufgabenliste;
+
+          break;
+
+        case this.Const.Pages.EmaillistePage:
+
+          this.Menuservice.MainMenuebereich = this.Menuservice.MainMenuebereiche.Email;
+
 
           break;
 

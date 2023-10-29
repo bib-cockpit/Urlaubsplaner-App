@@ -116,8 +116,6 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
 
       this.FavoritenProjektSubcription = this.DBProjekte.CurrentFavoritenProjektChanged.subscribe(() => {
 
-        debugger;
-
         this.PrepareDaten();
       });
 
@@ -303,8 +301,6 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
           }
         }
       }
-
-      debugger;
 
     } catch (error) {
 
@@ -521,8 +517,6 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
           New.push(Senkepunkt);
         }
       }
-
-      debugger;
 
       if(New.length > 0) {
 

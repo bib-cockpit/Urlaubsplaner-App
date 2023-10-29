@@ -22,9 +22,7 @@ export class DatabaseProjektbeteiligteService {
 
   constructor(private Debug: DebugProvider,
               private Const: ConstProvider,
-              private Pool: DatabasePoolService,
-              private DBMitarbeiter: DatabaseMitarbeiterService,
-              private DBProjekt: DatabaseProjekteService) {
+              private Pool: DatabasePoolService) {
 
     try {
 

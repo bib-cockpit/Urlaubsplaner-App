@@ -143,7 +143,8 @@
                     (ImportOutlookKontakteEvent)="ShowOutlookkontakteAuswahl = true">
 </pj-projekt-editor>
 
-<pj-beteiligten-editor *ngIf="ShowBeteiligteneditor" [Dialogbreite]="600" [Dialoghoehe]="720" [PositionY]="200" [Titel]="GetBerteiligteeditorTitel()" Iconname="color-filter-outline"
+<pj-beteiligten-editor *ngIf="ShowBeteiligteneditor" [Dialogbreite]="600" [Titel]="GetBerteiligteeditorTitel()" Iconname="color-filter-outline"
+                       [Projekt]="DB.CurrentProjekt"
                        (CancelClickedEvent)="ShowBeteiligteneditor = false"
                        (OkClickedEvent)="ShowBeteiligteneditor = false"
                        (DeleteClickedEvent)="ShowBeteiligteneditor = false"
@@ -169,7 +170,7 @@
 
 <fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
                         [Titel]="MitarbeiterauswahlTitel"
-                        [Dialogbreite]="600" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+                        [Dialogbreite]="600"
                         [Multiselect]="Multiselect"
                         [AuswahlIDliste]="AuswahlIDliste"
                         (CancelClickedEvent)="ShowMitarbeiterauswahl = false"

@@ -21,6 +21,9 @@ import { v4 as uuidv4 } from 'uuid';
 import * as Joi from "joi";
 import {ObjectSchema} from "joi";
 import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
+import {EventObj} from "@tinymce/tinymce-angular/editor/Events";
+import {navigate} from "ionicons/icons";
+import {Projektestruktur} from "../../dataclasses/projektestruktur";
 
 @Component({
   selector: 'pj-beteiligten-editor',
@@ -34,18 +37,21 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
   @Output() DeleteClickedEvent         = new EventEmitter<any>();
   @Output() FachbereichClickedEvent    = new EventEmitter<any>();
   @Output() FachfirmaClickedEvent      = new EventEmitter<any>();
+  @Output() ProjektClickedEvent        = new EventEmitter<any>();
 
   @Input() Titel: string;
   @Input() Iconname: string;
   @Input() Dialogbreite: number;
-  @Input() Dialoghoehe: number;
   @Input() PositionY: number;
   @Input() ZIndex: number;
+  @Input() Projekt: Projektestruktur;
 
   private JoiShema: ObjectSchema;
   public Valid: boolean;
   public DeleteEnabled: boolean;
   public CanDelete: boolean;
+  public Editorconfig: any;
+  public Ablage: string;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -64,14 +70,45 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
       this.Titel             = this.Const.NONE;
       this.Iconname          = 'help-circle-outline';
       this.Dialogbreite      = 400;
-      this.Dialoghoehe       = 300;
       this.PositionY         = 100;
       this.ZIndex            = 3000;
       this.CanDelete         = false;
+      this.Ablage            = '';
+      this.Projekt           = null;
+
+      this.Editorconfig = {
+
+        menubar:   false,
+        statusbar: false,
+        content_style: 'body { color: black; margin: 0; line-height: 0.9; }, ',
+        language: 'de',
+        browser_spellcheck: true,
+        height: '600px',
+        auto_focus : true,
+        toolbar: [
+          // { name: 'history', items: [ 'undo', 'redo' ] },
+          { name: 'styles',      items: [ 'forecolor', 'backcolor' ] }, // , 'fontfamily', 'fontsize'
+          { name: 'formatting',  items: [ 'bold', 'italic', 'underline', 'strikethrough' ] },
+          { name: 'alignment',   items: [ 'alignleft', 'aligncenter', 'alignright', 'alignjustify' ] },
+          { name: 'indentation', items: [ 'outdent', 'indent' ] }
+        ],
+      };
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'constructor', this.Debug.Typen.Component);
+    }
+  }
+
+  NotizTextChangedHandler(event: EventObj<any>) {
+
+    try {
+
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'NotizTextChangedHandler', this.Debug.Typen.Component);
     }
   }
 
@@ -137,9 +174,21 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
     }
   }
 
-  private PrepareData() {
+  private async PrepareData() {
 
     try {
+
+      this.Ablage = await navigator.clipboard.readText();
+
+      if(this.Ablage !== '' && this.DBBeteiligte.CurrentBeteiligte.BeteiligtenID === null) {
+
+        this.Dialogbreite = this.Dialogbreite * 2;
+        this.Ablage       = this.Tools.FormatLinebreaks(this.Ablage);
+      }
+      else {
+
+        this.Ablage = '';
+      }
 
       this.CanDelete = false;
 
@@ -173,6 +222,8 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
       if(Result.error) this.Valid = false;
       else             this.Valid = true;
+
+      if(this.Projekt === null) this.Valid = false;
 
 
     } catch (error) {
@@ -208,31 +259,38 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
     }
   }
 
-  OkButtonClicked() {
+  async OkButtonClicked() {
 
     let Index: number;
 
     try {
 
-      if(this.DBBeteiligte.CurrentBeteiligte.BeteiligtenID === null) {
+      this.DBBeteiligte.CurrentBeteiligte.Email = this.DBBeteiligte.CurrentBeteiligte.Email.toLowerCase();
 
-        this.DBBeteiligte.CurrentBeteiligte.BeteiligtenID = uuidv4();
+      if(this.Projekt !== null) {
 
-        this.DBProjekt.CurrentProjekt.Beteiligtenliste.push(this.DBBeteiligte.CurrentBeteiligte);
-      }
-      else {
+        if(this.DBBeteiligte.CurrentBeteiligte.BeteiligtenID === null) {
 
-        Index = lodash.findIndex(this.DBProjekt.CurrentProjekt.Beteiligtenliste, { BeteiligtenID: this.DBBeteiligte.CurrentBeteiligte.BeteiligtenID });
+          this.DBBeteiligte.CurrentBeteiligte.BeteiligtenID = uuidv4();
 
-        if(Index !== -1) {
-
-          this.DBProjekt.CurrentProjekt.Beteiligtenliste[Index] = this.DBBeteiligte.CurrentBeteiligte;
+          this.Projekt.Beteiligtenliste.push(this.DBBeteiligte.CurrentBeteiligte);
         }
+        else {
+
+          Index = lodash.findIndex(this.Projekt.Beteiligtenliste, { BeteiligtenID: this.DBBeteiligte.CurrentBeteiligte.BeteiligtenID });
+
+          if(Index !== -1) {
+
+            this.Projekt.Beteiligtenliste[Index] = this.DBBeteiligte.CurrentBeteiligte;
+          }
+        }
+
+        await this.DBProjekt.UpdateProjekt(this.Projekt);
+
+        this.DBBeteiligte.BeteiligtenlisteChanged.emit();
+
+        this.OkClickedEvent.emit();
       }
-
-      this.DBBeteiligte.BeteiligtenlisteChanged.emit();
-
-      this.OkClickedEvent.emit();
 
     } catch (error) {
 
@@ -309,9 +367,9 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     try {
 
-      if(this.CanDelete) {
+      if(this.CanDelete && this.Projekt !== null) {
 
-        this.DBProjekt.CurrentProjekt.Beteiligtenliste = lodash.filter(this.DBProjekt.CurrentProjekt.Beteiligtenliste, (eintrag: Projektbeteiligtestruktur) => {
+        this.Projekt.Beteiligtenliste = lodash.filter(this.Projekt.Beteiligtenliste, (eintrag: Projektbeteiligtestruktur) => {
 
           return eintrag.BeteiligtenID !== this.DBBeteiligte.CurrentBeteiligte.BeteiligtenID;
         });

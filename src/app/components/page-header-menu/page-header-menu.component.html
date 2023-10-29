@@ -159,9 +159,7 @@
                         <table class="paddingsmalltable">
                           <tr>
                             <td>
-                              <div class="planungheaderdiv">
-                                <ion-icon  name="list" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.LOPListe)"></ion-icon>
-                              </div>
+                              <ion-icon  name="list" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.LOPListe)"></ion-icon>
                             </td>
                             <td style="white-space: nowrap;" [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.LOPListe)">Baustellenbericht</td>
                           </tr>
@@ -244,7 +242,10 @@
 
               <td align="center" class="trennertdclass"><div class="trennerbigdivclass"></div></td>
             </ng-container>
-            <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte || Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Email">
+            <!--
+             || Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Email
+             -->
+            <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte">
                 <td *ngIf="DBProjekte.CurrentProjekt !== null">
                   <table class="paddingtable">
                     <tr>
@@ -293,31 +294,37 @@
                           <ion-icon name="arrow-forward-circle" style="font-size: 22px"></ion-icon>
                         </ion-button>
                       </td>
-                      <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Email">
-                        <td style="width: 300px;">
-                          <button-value-date [Buttontext]="'Ab dem '"
-                                             [ElementID]="'terminspanneende'"
-                                             [Datum]="GetMailDatum()"
-                                             (TimeChanged)="EmailDatumChangedHandler($event)">
-                          </button-value-date>
-                        </td>
-                        <td>
-                          <checkbox-clon [Checked]="DBEmail.ShowUngelesenOnly" (CheckChanged)="ShowUngelesenCheckChanged($event)"></checkbox-clon>
-                        </td>
-                        <td>
-                          Nur ungelesene Emails anzeigen
-                        </td>
-                        <td>
-                          <checkbox-clon [Checked]="DBEmail.Projektsortierung" (CheckChanged)="ProjektsortierungChangedHandler($event)"></checkbox-clon>
-                        </td>
-                        <td>
-                          Sortieren nach Projekten
-                        </td>
-                      </ng-container>
                     </tr>
                   </table>
                 </td>
 
+            </ng-container>
+            <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Email">
+              <td>
+                <table class="paddingtable">
+                  <tr>
+                    <td style="width: 300px;">
+                      <button-value-date [Buttontext]="'Ab dem '"
+                                         [ElementID]="'terminspanneende'"
+                                         [Datum]="GetMailDatum()"
+                                         (TimeChanged)="EmailDatumChangedHandler($event)">
+                      </button-value-date>
+                    </td>
+                    <td>
+                      <checkbox-clon [Checked]="DBEmail.ShowUngelesenOnly" (CheckChanged)="ShowUngelesenCheckChanged($event)"></checkbox-clon>
+                    </td>
+                    <td>
+                      Nur ungelesene Emails anzeigen
+                    </td>
+                    <td>
+                      <checkbox-clon [Checked]="DBEmail.Projektsortierung" (CheckChanged)="ProjektsortierungChangedHandler($event)"></checkbox-clon>
+                    </td>
+                    <td>
+                      Sortieren nach Projekten
+                    </td>
+                  </tr>
+                </table>
+              </td>
             </ng-container>
 
               <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte &&
@@ -351,7 +358,7 @@
                   <div (click)="MeilensteineClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meilensteine ? 'black' : 'white'"  class="buttonclass">
                     <table>
                       <tr>
-                        <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meilensteine ? 'white' : 'white'">
+                        <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meilensteine ? 'black' : 'white'">
                           Meilensteine
                         </td>
                       </tr>

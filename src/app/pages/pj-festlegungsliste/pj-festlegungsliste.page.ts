@@ -17,7 +17,6 @@ import {DatabasePoolService} from "../../services/database-pool/database-pool.se
 import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
 import {Subscription} from "rxjs";
 import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
-import {LocalstorageService} from "../../services/localstorage/localstorage";
 import {Protokollstruktur} from "../../dataclasses/protokollstruktur";
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
 import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";

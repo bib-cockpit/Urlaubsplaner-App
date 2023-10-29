@@ -364,15 +364,20 @@ export class DatabaseProjekteService {
 
     try {
 
+      let Index: number;
+
       if(this.Pool.Mitarbeiterdaten !== null) {
 
-        if(email !== this.Pool.Mitarbeiterdaten.Email) {
+        email = email.toLowerCase();
+        Index = email.indexOf('@b-a-e.eu');
+
+        if(email !== this.Pool.Mitarbeiterdaten.Email && Index === -1) {
 
           for(let Projekt of this.Gesamtprojektliste) {
 
             let Beteiligter = lodash.find(Projekt.Beteiligtenliste, (eintrag: Projektbeteiligtestruktur) => {
 
-              return eintrag.Email === email;
+              return eintrag.Email.toLowerCase() === email;
 
             });
 

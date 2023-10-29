@@ -494,4 +494,25 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
       this.Debug.ShowErrorMessage(error, 'Bautagebuch Editor', 'DatumChangedHandler', this.Debug.Typen.Component);
     }
   }
+
+  GetInterneTeilnehmerliste(): string {
+
+    try {
+
+      let Liste: string[] = this.DB.GetInterneTeilnehmerliste();
+      let html: string = '';
+
+      for(let eintrag of Liste) {
+
+        html += eintrag + '<br>';
+      }
+
+      return html;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Bautagebuch Editor', 'GetInterneTeilnehmerliste', this.Debug.Typen.Component);
+    }
+
+  }
 }

@@ -4,9 +4,7 @@ import {DebugProvider} from "../../services/debug/debug";
 import {ToolsProvider} from "../../services/tools/tools";
 import {ConstProvider} from "../../services/const/const";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {LoadingAnimationService} from "../../services/loadinganimation/loadinganimation";
 import {DatabaseAuthenticationService} from "../../services/database-authentication/database-authentication.service";
-import {LocalstorageService} from "../../services/localstorage/localstorage";
 import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
@@ -34,7 +32,6 @@ export class CommonDebugPage implements OnInit, OnDestroy {
               public DBProjekte: DatabaseProjekteService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public AuthService: DatabaseAuthenticationService,
-              private StorageService: LocalstorageService
 
   ) {
     try
