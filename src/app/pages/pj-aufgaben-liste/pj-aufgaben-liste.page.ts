@@ -1342,10 +1342,16 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
         if(this.DBProjekte.CurrentProjekt !== null && this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
 
-
           for(Projektpunkt of this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
 
-            if(this.DBProjektpunkte.CheckFilter(Projektpunkt, false)) this.FavoritenProjektpunkteliste.push(Projektpunkt);
+            this.FavoritenProjektpunkteliste.push(Projektpunkt);
+
+            /* Wird im Punkleliste Objekt gefiltert hier unnötig??
+            if(this.DBProjektpunkte.CheckFilter(Projektpunkt, false)) {
+
+            }
+
+             */
           }
         }
 

@@ -1459,12 +1459,13 @@ export class DatabaseProjektpunkteService {
       let Stichtag: Moment = MyMoment(Projektpunkt.Endezeitstempel).locale('de');
       let Tageanzahl: number;
 
-      if(Projektpunkt.Status === this.Const.Projektpunktstatustypen.Geschlossen.Name) {
+      if(Projektpunkt.Status === this.Const.Projektpunktstatustypen.Geschlossen.Name || Projektpunkt.Endezeitstempel === null) {
 
         return '';
       }
       else {
 
+        Stichtag   = MyMoment(Projektpunkt.Endezeitstempel).locale('de');
         Tageanzahl = this.BerechneArbeitstage(Heute, Stichtag);
 
         switch(Tageanzahl) {
@@ -1664,7 +1665,10 @@ export class DatabaseProjektpunkteService {
 
       Ansichtensetup = this.Pool.GetAufgabenansichten(Projektpunkt.ProjektID);
 
-      if(Projektpunkt.PlanungsmatrixID !== null) GoOn = false;
+      if(Projektpunkt.PlanungsmatrixID !== null) {
+
+        GoOn = Ansichtensetup.AufgabenShowPlanungsmatrix;
+      }
 
       if(GoOn === true) {
 
@@ -1957,7 +1961,8 @@ export class DatabaseProjektpunkteService {
 
       if(Projektpunkt.EndeKalenderwoche === null) {
 
-        return moment(Projektpunkt.Endezeitstempel).format('DD.MM.YY');
+        if(Projektpunkt.Endezeitstempel !== null ) return moment(Projektpunkt.Endezeitstempel).format('DD.MM.YY');
+        else return 'kein Termin';
       }
       else {
 

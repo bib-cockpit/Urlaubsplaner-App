@@ -9,6 +9,7 @@ export type Aufgabenansichtstruktur = {
   AufgabenShowMeilensteinOnly: boolean;
   AufgabenShowPlanung:         boolean;
   AufgabenShowAusfuehrung:     boolean;
+  AufgabenShowPlanungsmatrix:  boolean;
   AufgabenShowMeilensteine:    boolean;
 
 };

@@ -236,6 +236,7 @@ export class DatabasePoolService {
           AufgabenShowPlanung: true,
           AufgabenShowRuecklauf: true,
           AufgabenShowMeilensteine: true,
+          AufgabenShowPlanungsmatrix: false
         };
       }
 

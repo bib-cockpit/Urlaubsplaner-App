@@ -37,6 +37,14 @@
         </tr>
       </table>
     </td>
+    <td style="width: 50px;">
+      <table  class="nobordertable">
+        <tr>
+          <td><ion-icon name="apps-outline" style="font-size: 22px"></ion-icon></td>
+          <td><checkbox-clon [Checked]="Aufgabenansicht.AufgabenShowPlanungsmatrix" (CheckChanged)="PlanungsmatrixCheckedChanged($event)"></checkbox-clon></td>
+        </tr>
+      </table>
+    </td>
     <td *ngIf="Settings.AufgabenShowAufgabe" style="min-width: 300px;"><b>Aufgabe</b></td>
     <td *ngIf="Settings.AufgabenShowBemerkung" style="min-width: 334px"><b>Anmerkungen</b></td>
     <td *ngIf="Settings.AufgabenShowFortschritt" style="min-width: 40px; text-align: center"><b>Fortschritt</b></td>
@@ -94,10 +102,13 @@
         </div>
       </td>
       <td  style="height: inherit" align="center">
-        <div *ngIf="Projektpunkt.LOPListeID === null" style="width: 8px; height: 8px; border-radius: 50%; background: #7b6a58;"></div>
+        <div *ngIf="Projektpunkt.LOPListeID === null && Projektpunkt.Leistungsphase !== Const.Leistungsphasenvarianten.LPH8 && Projektpunkt.PlanungsmatrixID === null" style="width: 8px; height: 8px; border-radius: 50%; background: #7b6a58;"></div>
       </td>
       <td  style="height: inherit" align="center">
-        <div *ngIf="Projektpunkt.LOPListeID !== null" style="width: 8px; height: 8px; border-radius: 50%; background: #c7d304;"></div>
+        <div *ngIf="Projektpunkt.LOPListeID !== null || Projektpunkt.Leistungsphase === Const.Leistungsphasenvarianten.LPH8" style="width: 8px; height: 8px; border-radius: 50%; background: #c7d304;"></div>
+      </td>
+      <td  style="height: inherit" align="center">
+        <div *ngIf="Projektpunkt.PlanungsmatrixID !== null" style="width: 8px; height: 8px; border-radius: 50%; background: #307ac1;"></div>
       </td>
 
       <td *ngIf="Settings !== null && Settings.AufgabenShowAufgabe" style="height: inherit">

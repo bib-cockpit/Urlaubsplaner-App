@@ -307,7 +307,6 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
       let File: Teamsfilesstruktur;
       let GoOn: boolean = false;
 
-
       this.Thumbnailliste = [];
       this.Thumbbreite    = 100;
       this.Spaltenanzahl  = 4;
@@ -398,6 +397,8 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
       this.SettingsSubscription = this.Pool.MitarbeitersettingsChanged.subscribe(() => {
 
         this.Settings = this.Pool.Mitarbeitersettings;
+
+
       });
 
       if(this.Pool.Mitarbeitersettings !== null) {
@@ -1057,6 +1058,22 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'AusfuehrungCheckedChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  async PlanungsmatrixCheckedChanged(event: { status: boolean; index: number; event: any }) {
+
+    try {
+
+      this.Aufgabenansicht.AufgabenShowPlanungsmatrix = event.status;
+
+      await this.MitarbeitersettingsDB.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, this.Aufgabenansicht);
+
+      this.Pool.MitarbeitersettingsChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'PlanungsmatrixCheckedChanged', this.Debug.Typen.Component);
     }
   }
 
