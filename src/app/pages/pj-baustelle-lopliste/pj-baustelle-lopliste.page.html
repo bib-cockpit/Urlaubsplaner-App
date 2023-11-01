@@ -36,13 +36,6 @@
             <td style="width: 180px;"><b>Datum</b></td>
             <td style="min-width: 800px"><b>Beschreibung</b></td>
           </tr>
-        </table>
-      </div>
-
-      <div style="width: 100%; padding-left: 8px; padding-right: 8px">
-
-        <table class="docinnertablespezial">
-
           <tr style="cursor: pointer" *ngFor="let Info of DB.CurrentInfoliste" (click)="LOPListepunktClickedHandler(Info, null)">
 
             <td style="width: 30px; text-align: center; color: white; background: #307ac1">{{Info.Nummer}}</td>
@@ -82,7 +75,7 @@
           <td style="width: 90px; text-align: center;"><b>Termin</b></td>
           <td style="width: 120px; text-align: center;"><b>Status</b></td>
           <td style="width: 100px; text-align: center;"><b>Priorität</b></td>
-          <td style="width: 100px; text-align: center"><b>Zuständig</b></td>
+          <td style="width: 160px; text-align: center"><b>Zuständig</b></td>
           <td style="width: 120px; text-align: center"><b>Versand</b></td>
         </tr>
 
@@ -294,9 +287,6 @@
                   <td style="text-align: center; color: #307ac1; font-size: 90%">
                     {{DB.GetZustaendigInternName(ZustaendigID)}}
                   </td>
-                </tr>
-                <tr *ngIf="Punkt.ZustaendigeExternIDListe.length > 0 && Punkt.ZustaendigeInternIDListe.length > 0">
-                  <td align="center"><div style="border-radius: 50%; width: 6px; height: 6px; background: black;"></div></td>
                 </tr>
                 <tr *ngFor="let ZustaendigID of Punkt.ZustaendigeExternIDListe">
                   <td style="text-align: center; color: black; font-size: 90%">

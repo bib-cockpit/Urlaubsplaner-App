@@ -22,6 +22,7 @@ import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 import {Protokollstruktur} from "../../dataclasses/protokollstruktur";
 import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
 import {FIMitarbeiterlistePageModule} from "../../pages/fi-mitarbeiterliste/fi-mitarbeiterliste.module";
+import {DatabaseProjektpunkteService} from "../database-projektpunkte/database-projektpunkte.service";
 
 @Injectable({
   providedIn: 'root'
@@ -1052,10 +1053,10 @@ export class DatabaseLoplisteService {
     }
   }
 
+
   public GetZustaendigExternName(ZustaendigID: string): string {
 
     try {
-
 
       let Firma: Projektfirmenstruktur = lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, { FirmenID: ZustaendigID});
 

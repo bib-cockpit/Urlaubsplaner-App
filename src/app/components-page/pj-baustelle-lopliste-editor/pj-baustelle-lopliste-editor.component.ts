@@ -917,7 +917,7 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
         }
         else {
 
-          this.DB.CurrentLOPListe.EmpfaengerExternIDListe = lodash.filter(this.DB.CurrentLOPListe.EmpfaengerInternIDListe, (id: any) => {
+          this.DB.CurrentLOPListe.EmpfaengerInternIDListe = lodash.filter(this.DB.CurrentLOPListe.EmpfaengerInternIDListe, (id: any) => {
 
             return id !== event.value;
           });

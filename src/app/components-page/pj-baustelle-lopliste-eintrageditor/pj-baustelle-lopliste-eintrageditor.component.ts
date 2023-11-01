@@ -40,6 +40,7 @@ import {Outlookemailattachmentstruktur} from "../../dataclasses/outlookemailatta
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Graphservice} from "../../services/graph/graph";
 import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
+import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
 
 @Component({
   selector: 'pj-baustelle-lopliste-eintrageditor',
@@ -241,6 +242,26 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
     }
   }
 
+  public CleanExternZustaendigLOPEintrag() {
+
+    let Liste: string[] = [];
+
+    if(this.DBLOPListe.CurrentLOPListe !== null && this.DB.CurrentProjektpunkt !== null && this.DBProjekt.CurrentProjekt !== null) {
+
+      debugger;
+
+      for(let FirmenID of this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe) {
+
+        let Firma: Projektfirmenstruktur= lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, {FirmenID: FirmenID});
+
+        if(!lodash.isUndefined(Firma)) Liste.push(FirmenID);
+      }
+    }
+
+    this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe = Liste;
+  }
+
+
   private async PrepareData() {
 
     try {
@@ -251,6 +272,8 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
       let Liste: Thumbnailstruktur[] = [];
       let Imageliste: Teamsfilesstruktur[] = [];
       let File: Teamsfilesstruktur;
+
+      this.CleanExternZustaendigLOPEintrag();
 
       // Bilder
 
