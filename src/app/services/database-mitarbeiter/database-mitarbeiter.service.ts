@@ -506,12 +506,27 @@ export class DatabaseMitarbeiterService {
 
       return lodash.isUndefined(Mitarbeiter) ? null : Mitarbeiter;
 
-  }
-  catch(error) {
+    }
+    catch(error) {
 
-    this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'GetMitarbeiterByEmail', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'GetMitarbeiterByEmail', this.Debug.Typen.Service);
+    }
   }
 
+
+  public GetMitarbeiterByID(id: string): Mitarbeiterstruktur {
+
+    try {
+
+      let Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: id });
+
+      return lodash.isUndefined(Mitarbeiter) ? null : Mitarbeiter;
+
+    }
+    catch(error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'GetMitarbeiterByEmail', this.Debug.Typen.Service);
+    }
   }
 
   public GetMitarbeiterByGraph(email: string): Promise<any> {

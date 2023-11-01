@@ -494,14 +494,14 @@
                         (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
                         (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
 
-<pj-beteiligten-auswahl *ngIf="ShowBeteiligteauswahl"
+<pj-firmen-auswahl *ngIf="ShowBeteiligteauswahl"
                         [Titel]="GetBeteiligtenauswahlTitel()"
                         [Dialogbreite]="600" [ZIndex]="4000"
                         [Multiselect]="true"
                         Iconname="people-outline"
                         [AuswahlIDliste]="AuswahlIDliste"
                         (CancelClickedEvent)="ShowBeteiligteauswahl = false"
-                        (OkClickedEvent)="BeteiligteauswahlOkButtonClicked($event)"></pj-beteiligten-auswahl>
+                        (OkClickedEvent)="BeteiligteauswahlOkButtonClicked($event)"></pj-firmen-auswahl>
 
 <projektpunkt-statusdate-picker *ngIf="ShowDateStatusPicker" [Dialogbreite]="600"
                                 [Dialoghoehe]="Dialoghoehe - 200"

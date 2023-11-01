@@ -43,6 +43,7 @@ import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
 import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
+import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
 
 @Component({
   selector: 'pj-projektpunkt-editor',
@@ -801,24 +802,17 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     try {
 
-      let Beteiligte: Projektbeteiligtestruktur;
+      let Firma: Projektfirmenstruktur;
       let Value: string = '';
 
       for(let id of this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe) {
 
-        Beteiligte = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, { BeteiligtenID: id });
+        Firma = lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, { FirmenID: id });
 
 
-        if(!lodash.isUndefined(Beteiligte)) {
+        if(!lodash.isUndefined(Firma)) {
 
-          if(Beteiligte.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person) {
-
-            Value += this.DBBeteiligte.GetBeteiligtenvorname(Beteiligte) + ' ' + Beteiligte.Name + '\n';
-          }
-          else {
-
-            Value += Beteiligte.Firma + '\n';
-          }
+          Value += Firma.Firma + '\n';
         }
       }
 
@@ -1081,7 +1075,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
       if(this.DBProjekt.CurrentProjekt !== null && this.DB.CurrentProjektpunkt !== null) {
 
-        Kategorie = lodash.find(this.Pool.Festlegungskategorienliste[this.DBProjekt.CurrentProjekt.Projektkey], {_id : this.DB.CurrentProjektpunkt.FestlegungskategorieID})
+        Kategorie = lodash.find(this.Pool.Festlegungskategorienliste[this.DBProjekt.CurrentProjekt.Projektkey], {_id : this.DB.CurrentProjektpunkt.FestlegungskategorieID});
 
         if(!lodash.isUndefined(Kategorie)) {
 

@@ -232,6 +232,8 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
         case this.Pool.Emailcontentvarinaten.LOPListe:
 
+          this.DBLOPListe.PrepareLOPListeEmaildata();
+
           AnzahlExtern   = this.DBLOPListe.CurrentLOPListe.EmpfaengerExternIDListe.length;
           AnzahlBurnickl = this.DBLOPListe.CurrentLOPListe.EmpfaengerInternIDListe.length;
 
@@ -567,14 +569,18 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if(!lodash.isUndefined(Beteiligte)) {
 
+          Value += this.DBBeteiligte.GetBeteiligtenvorname(Beteiligte) + ' ' + Beteiligte.Name + '\n';
+
+          /*
           if(Beteiligte.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person) {
 
             Value += this.DBBeteiligte.GetBeteiligtenvorname(Beteiligte) + ' ' + Beteiligte.Name + '\n';
           }
           else {
-
             Value += Beteiligte.Firma + '\n';
           }
+
+           */
         }
       }
 

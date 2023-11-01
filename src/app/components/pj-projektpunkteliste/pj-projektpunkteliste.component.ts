@@ -40,6 +40,7 @@ import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Graphservice} from "../../services/graph/graph";
 import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
+import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
 
 @Component({
   selector: 'pj-projektpunkteliste',
@@ -743,7 +744,7 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
 
       if(lodash.isUndefined(Mitarbeiter) === false) {
 
-        return Mitarbeiter.Kuerzel;
+        return Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
       }
       else {
 
@@ -832,23 +833,12 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
     try {
 
 
-      let Beteiligter: Projektbeteiligtestruktur = lodash.find(this.Projekt.Beteiligtenliste, {BeteiligtenID: BeteiligtenID} );
+      let Firma: Projektfirmenstruktur = lodash.find(this.Projekt.Firmenliste, {FirmenID : BeteiligtenID} );
 
-      if(lodash.isUndefined(Beteiligter) === false) {
+      if(lodash.isUndefined(Firma) === false) {
 
-        if(Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person) {
-
-          return Beteiligter.Name;
-        }
-        else {
-
-          return Beteiligter.Firma;
-        }
+        return Firma.Firma;
       }
-      else {
-
-      }
-
 
       return 'unbekannt';
 

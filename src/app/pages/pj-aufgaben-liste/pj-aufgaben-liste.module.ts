@@ -27,6 +27,7 @@ import {
     PjBaustelleLoplisteEditorModule
 } from "../../components-page/pj-baustelle-lopliste-editor/pj-baustelle-lopliste-editor.module";
 import {PjEmailSendModule} from "../../components-page/pj-email-send/pj-email-send.module";
+import {PjFirmenAuswahlModule} from "../../components-page/pj-firmen-auswahl/pj-firmen-auswahl.module";
 // import {AngularImageViewerModule} from "@hreimer/angular-image-viewer";
 
 
@@ -64,6 +65,7 @@ const routes: Routes = [
         PjProjekteSchnellauswahlModule,
         PjBaustelleLoplisteEditorModule,
         PjEmailSendModule,
+        PjFirmenAuswahlModule,
         // AngularImageViewerModule,
 
 

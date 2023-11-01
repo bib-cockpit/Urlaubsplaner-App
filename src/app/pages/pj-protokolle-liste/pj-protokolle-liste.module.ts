@@ -31,6 +31,7 @@ import {
 import {
   PjProjekteSelectimagesModule
 } from "../../components-page/pj-projekte-selectimages/pj-projekte-selectimages.module";
+import {PjFirmenAuswahlModule} from "../../components-page/pj-firmen-auswahl/pj-firmen-auswahl.module";
 
 
 const routes: Routes = [
@@ -41,31 +42,32 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    IonicModule,
-    PageHeaderModule,
-    RouterModule.forChild(routes),
-    PageHeaderMenuModule,
-    PageFooterModule,
-    AuswahlDialogModule,
-    FiMitarbeiterAuswahlModule,
-    PjBeteiligtenAuswahlModule,
-    PjProtokollEditorModule,
-    PjProjektpunktEditorModule,
-    PjKostengruppenAuswahlModule,
-    PjGebaeudeRaumauswahlModule,
-    PjProtokollListefilterModule,
-    PjProjektpunktDateKwPickerModule,
-    PjEmailSendModule,
-    PjProjekteSchnellauswahlModule,
-    PjSitesFilebrowserViewerModule,
-    PjSitesFilebrowserModule,
-    PjProjekteSelectfilefolderModule,
-    PjProjekteSelectimagesModule,
+    imports: [
+        CommonModule,
+        IonicModule,
+        PageHeaderModule,
+        RouterModule.forChild(routes),
+        PageHeaderMenuModule,
+        PageFooterModule,
+        AuswahlDialogModule,
+        FiMitarbeiterAuswahlModule,
+        PjBeteiligtenAuswahlModule,
+        PjProtokollEditorModule,
+        PjProjektpunktEditorModule,
+        PjKostengruppenAuswahlModule,
+        PjGebaeudeRaumauswahlModule,
+        PjProtokollListefilterModule,
+        PjProjektpunktDateKwPickerModule,
+        PjEmailSendModule,
+        PjProjekteSchnellauswahlModule,
+        PjSitesFilebrowserViewerModule,
+        PjSitesFilebrowserModule,
+        PjProjekteSelectfilefolderModule,
+        PjProjekteSelectimagesModule,
+        PjFirmenAuswahlModule,
 
 
-  ],
+    ],
   declarations: [PjProtokolleListePage],
   exports: [
     PjProtokolleListePage

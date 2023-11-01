@@ -827,17 +827,23 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
 
           break;
 
+          /*
         case this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachfirma:
 
-          this.DBBeteiligte.CurrentBeteiligte.Fachfirmentyp = data.Typnummer;
+          this.DBBeteiligte.CurrentBeteiligte.FirmaID = data;
 
           break;
 
+           */
+
+          /*
         case this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachbereich:
 
           this.DBBeteiligte.CurrentBeteiligte.Beteiligtentyp = data.Typnummer;
 
           break;
+
+           */
 
 
         default:
@@ -859,6 +865,8 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
 
       let Index: number = 0;
 
+      /*
+
       this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachfirma;
 
       this.Auswahltitel  = 'Fachfirmentypen festlegen';
@@ -874,8 +882,11 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
         Index++;
       }
 
-      this.Auswahlindex = lodash.findIndex(this.DBBeteiligte.Fachfirmentypenliste, { Typnummer: this.DBBeteiligte.CurrentBeteiligte.Fachfirmentyp } );
+      this.Auswahlindex = -1; // lodash.findIndex(this.DBBeteiligte.Fachfirmentypenliste, { Typnummer: this.DBBeteiligte.CurrentBeteiligte.Fachfirmentyp } );
       this.ShowAuswahl  = true;
+
+
+       */
 
     } catch (error) {
 
@@ -1107,6 +1118,8 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
 
       let Index: number = 0;
 
+      /*
+
       this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachbereich;
 
 
@@ -1124,6 +1137,8 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
 
       this.Auswahlindex = lodash.findIndex(this.DBBeteiligte.Beteiligtentypenliste, { Typnummer: this.DBBeteiligte.CurrentBeteiligte.Beteiligtentyp } );
       this.ShowAuswahl  = true;
+
+       */
 
     } catch (error) {
 

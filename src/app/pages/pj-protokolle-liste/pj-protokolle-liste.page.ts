@@ -217,7 +217,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
       this.DB.CurrentProtokoll = this.DB.GetEmptyProtokoll();
       this.ShowProtokollEditor = true;
-      this.Dialogbreite        = 950;
+      this.Dialogbreite        = 1400;
 
     } catch (error) {
 
@@ -771,7 +771,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
       this.DB.CurrentProtokoll = lodash.cloneDeep(Protokoll);
       this.ShowProtokollEditor = true;
-      this.Dialogbreite        = 950;
+      this.Dialogbreite        = 1400;
 
     } catch (error) {
 

@@ -130,8 +130,14 @@ export class PjBeteiligtenAuswahlComponent implements OnInit, OnDestroy {
 
         for(Beteiligte of Liste) {
 
+          Beteiligte.Sortvalue = Beteiligte.Name;
+
+          /*
+
           if(Beteiligte.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person) Beteiligte.Sortvalue = Beteiligte.Name;
           else                                                                               Beteiligte.Sortvalue = Beteiligte.Firma;
+
+           */
         }
 
         Liste.sort( (a: Projektbeteiligtestruktur, b: Projektbeteiligtestruktur) => {

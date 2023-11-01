@@ -24,6 +24,7 @@ import { PjProjekteSelectfilefolderModule
 import {
   FiOutlookkontakteAuswahlModule
 } from "../../components-page/fi-outlookkontakte-auswahl/fi-outlookkontakte-auswahl.module";
+import {PjFirmenEditorModule} from "../../components-page/pj-firmen-editor/pj-firmen-editor.module";
 
 const routes: Routes = [
   {
@@ -58,7 +59,8 @@ const routes: Routes = [
         PjGebaeudeRaumeditorModule,
         PjProtokollListefilterModule,
         PjProjekteSelectfilefolderModule,
-        FiOutlookkontakteAuswahlModule
+        FiOutlookkontakteAuswahlModule,
+        PjFirmenEditorModule
     ],
   exports: [
     PjProjektListePage

@@ -22,7 +22,7 @@
     </tr>
     <tr *ngIf="Lines !== 1">
       <td class="lowercellclass" colspan="2">
-        <ion-textarea *ngIf="Enabled === true"  [debounce]="Debouncetime" [value]="Value" [rows]="Lines" (ionChange)="TextChangedHandler($event)"></ion-textarea>
+        <ion-textarea  *ngIf="Enabled === true" [label]="Titel" labelPlacement="stacked"  [debounce]="Debouncetime" [value]="Value" [rows]="Lines" (ionChange)="TextChangedHandler($event)"></ion-textarea>
         <div *ngIf="Enabled === false" [style.height.px]="Lines * 18" [innerHTML]="Tools.FormatLinebreaks(Value)"></div>
       </td>
     </tr>

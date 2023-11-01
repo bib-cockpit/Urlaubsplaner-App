@@ -1,7 +1,5 @@
 import {Verfasserstruktur} from "./verfasserstruktur";
 import {Projektpunktestruktur} from "./projektpunktestruktur";
-import {Projektbeteiligtestruktur} from "./projektbeteiligtestruktur";
-import {Mitarbeiterstruktur} from "./mitarbeiterstruktur";
 
 export type Protokollstruktur = {
 

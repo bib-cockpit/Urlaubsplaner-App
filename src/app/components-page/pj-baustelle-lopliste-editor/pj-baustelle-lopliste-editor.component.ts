@@ -94,6 +94,9 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
   public Listeheaderhoehe: number;
   public Listehoehe: number;
   public LinesanzahlTeilnehmer: number;
+  private ComponentLoaded: boolean;
+  public  Beteiligtenliste: Projektbeteiligtestruktur[][];
+  public Mitarbeiterliste: Mitarbeiterstruktur[];
   private MitarbeiterSubscription: Subscription;
   private BeteiligteSubscription: Subscription;
 
@@ -134,18 +137,20 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
       this.ShowDatumStatusDialog    = false;
       this.CanDelete                = false;
       this.CreatePDFRunning         = false;
-      this.PageLoaded               = false;
+      this.ComponentLoaded               = false;
       this.ShowUpload               = false;
       this.LOPListeSubscription     = null;
       this.ProjektpunktSubscription = null;
       this.MitarbeiterSubscription  = null;
       this.BeteiligteSubscription   = null;
+      this.Beteiligtenliste         = [];
       this.Titel = this.Const.NONE;
       this.Iconname = 'help-circle-outline';
       this.Dialogbreite = 400;
       this.Dialoghoehe = 300;
       this.PositionY = 100;
       this.ZIndex = 2000;
+      this.Mitarbeiterliste = [];
     }
     catch (error) {
 
@@ -167,7 +172,7 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
       this.Listehoehe       = this.Gesamthoehe - this.Titelhoehe - this.Listeheaderhoehe;
       this.CanDelete        = false;
       this.CreatePDFRunning = false;
-      this.PageLoaded       = false;
+      this.ComponentLoaded       = false;
       this.Bereich          = this.DB.LOPListeEditorViewModus;
 
       this.MitarbeiterSubscription = this.Pool.MitarbeiterAuswahlChanged.subscribe(() => {
@@ -218,7 +223,7 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
 
       this.Displayservice.RemoveDialog(this.Displayservice.Dialognamen.LOPListeEditor);
 
-      this.PageLoaded = false;
+      this.ComponentLoaded = false;
 
       if(this.LOPListeSubscription !== null) {
 
@@ -256,7 +261,7 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
 
     try {
 
-      this.PageLoaded = true;
+      this.ComponentLoaded = true;
 
       this.PrepareData();
 
@@ -271,7 +276,7 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
 
     try {
 
-      this.PageLoaded = false;
+      this.ComponentLoaded = false;
     }
     catch (error) {
 
@@ -284,8 +289,55 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
     try {
 
       let Projektpunkt: Projektpunktestruktur;
+      let Index: number = 0;
+      let Liste: Projektbeteiligtestruktur[];
+      let Mitarbeiter: Mitarbeiterstruktur;
+
+      this.Beteiligtenliste = [];
+      this.Mitarbeiterliste = [];
 
       if(this.DB.CurrentLOPListe !== null) {
+
+        if(this.DBProjekte.CurrentProjekt !== null) {
+
+          for(let Firma of this.DBProjekte.CurrentProjekt.Firmenliste) {
+
+            this.Beteiligtenliste[Index] = [];
+
+            Liste = lodash.filter(this.DBProjekte.CurrentProjekt.Beteiligtenliste, {FirmaID: Firma.FirmenID});
+
+            Liste.sort((a: Projektbeteiligtestruktur, b: Projektbeteiligtestruktur) => {
+
+              if (a.Name > b.Name) return -1;
+              if (a.Name < b.Name) return 1;
+              return 0;
+            });
+
+            this.Beteiligtenliste[Index] = Liste;
+
+            Index++;
+          }
+        }
+
+        if(this.DBProjekte.CurrentProjekt !== null) {
+
+          for(let MitarbeiterID of this.DBProjekte.CurrentProjekt.MitarbeiterIDListe) {
+
+            Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: MitarbeiterID});
+
+            if(!lodash.isUndefined(Mitarbeiter)) {
+
+              this.Mitarbeiterliste.push(Mitarbeiter);
+            }
+          }
+
+          this.Mitarbeiterliste.sort((a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
+
+            if (a.Name > b.Name) return -1;
+            if (a.Name < b.Name) return 1;
+            return 0;
+          });
+        }
 
         let AnzahlExtern   = this.DB.CurrentLOPListe.BeteiligExternIDListe.length;
         let AnzahlBurnickl = this.DB.CurrentLOPListe.BeteiligtInternIDListe.length;
@@ -555,7 +607,7 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
     try {
 
 
-      if(this.PageLoaded === true) {
+      if(this.ComponentLoaded === true) {
 
         this.LOPListeSaved = false;
 
@@ -578,7 +630,7 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
     try {
 
 
-      if(this.PageLoaded === true) {
+      if(this.ComponentLoaded === true) {
 
         this.SaveTimer = window.setTimeout(() => {
 
@@ -752,7 +804,7 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Editor', 'GetBauteilnamen', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Editor', 'GetBauteilnamen', this.Debug.Typen.Component);
     }
   }
 
@@ -765,7 +817,151 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'LOP Liste Editor', 'CanDeleteCheckedChanged', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Editor', 'CanDeleteCheckedChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  TeilnehmerExternCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      if(this.DB.CurrentLOPListe !== null) {
+
+        if(event.status === true) {
+
+          this.DB.CurrentLOPListe.BeteiligExternIDListe.push(event.value);
+        }
+        else {
+
+          this.DB.CurrentLOPListe.BeteiligExternIDListe = lodash.filter(this.DB.CurrentLOPListe.BeteiligExternIDListe, (id: any) => {
+
+            return id !== event.value;
+          });
+        }
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Editor', 'TeilnehmerExternCheckedChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  EmpfaengerExternCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      if(this.DB.CurrentLOPListe !== null) {
+
+        if(event.status === true) {
+
+          this.DB.CurrentLOPListe.EmpfaengerExternIDListe.push(event.value);
+        }
+        else {
+
+          this.DB.CurrentLOPListe.EmpfaengerExternIDListe = lodash.filter(this.DB.CurrentLOPListe.EmpfaengerExternIDListe, (id: any) => {
+
+            return id !== event.value;
+          });
+        }
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Editor', 'EmpfaengerExternCheckedChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  GetTeilnehmerExternChecked(FirmenID: string): boolean {
+
+    try {
+
+      return lodash.indexOf(this.DB.CurrentLOPListe.BeteiligExternIDListe, FirmenID) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Editor', 'GetTeilnehmerExternChecked', this.Debug.Typen.Component);
+    }
+  }
+
+  GetTeilnehmerInternChecked(FirmenID: string): boolean {
+
+    try {
+
+      return lodash.indexOf(this.DB.CurrentLOPListe.BeteiligtInternIDListe, FirmenID) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Editor', 'GetTeilnehmerInternChecked', this.Debug.Typen.Component);
+    }
+  }
+
+  GetEmpfaengerExternChecked(FirmenID: string): boolean {
+
+    try {
+
+      return lodash.indexOf(this.DB.CurrentLOPListe.EmpfaengerExternIDListe, FirmenID) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Editor', 'GetEmpfaengerExternChecked', this.Debug.Typen.Component);
+    }
+  }
+
+  EmpfaengerInternCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      if(this.DB.CurrentLOPListe !== null) {
+
+        if(event.status === true) {
+
+          this.DB.CurrentLOPListe.EmpfaengerInternIDListe.push(event.value);
+        }
+        else {
+
+          this.DB.CurrentLOPListe.EmpfaengerExternIDListe = lodash.filter(this.DB.CurrentLOPListe.EmpfaengerInternIDListe, (id: any) => {
+
+            return id !== event.value;
+          });
+        }
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Editor', 'EmpfaengerInternCheckedChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  TeilnehmerInternCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      if(this.DB.CurrentLOPListe !== null) {
+
+        if(event.status === true) {
+
+          this.DB.CurrentLOPListe.BeteiligtInternIDListe.push(event.value);
+        }
+        else {
+
+          this.DB.CurrentLOPListe.BeteiligtInternIDListe = lodash.filter(this.DB.CurrentLOPListe.BeteiligtInternIDListe, (id: any) => {
+
+            return id !== event.value;
+          });
+        }
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Editor', 'TeilnehmerInternCheckedChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  GetEmpfaengerInternChecked(id: string) {
+
+    try {
+
+      return lodash.indexOf(this.DB.CurrentLOPListe.EmpfaengerInternIDListe, id) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Editor', 'GetEmpfaengerInternChecked', this.Debug.Typen.Component);
     }
   }
 }

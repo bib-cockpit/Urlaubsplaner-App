@@ -27,6 +27,8 @@ import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import { Outlookkategoriesstruktur } from 'src/app/dataclasses/outlookkategoriesstruktur';
 import {Outlookpresetcolorsstruktur} from "../../dataclasses/outlookpresetcolorsstruktur";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
+import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
+import {DatabaseProjektfirmenService} from "../../services/database-projektfirmen/database-projektfirmen.service";
 
 @Component({
   selector: 'pj-projekt-editor',
@@ -39,6 +41,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
   @Output() StandortClickedEvent       = new EventEmitter<any>();
   @Output() ValidChangedEvent          = new EventEmitter<boolean>();
   @Output() AddBeteiligteClickedEvent  = new EventEmitter<any>();
+  @Output() AddFirmaClickedEvent       = new EventEmitter<any>();
   @Output() BeteiligteClickedEvend     = new EventEmitter<Projektbeteiligtestruktur>();
 
   @Output() CancelClickedEvent         = new EventEmitter<any>();
@@ -60,6 +63,8 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
   @Output() SelectProjektfolderEvent           = new EventEmitter<any>();
   @Output() LeistungsphaseClickedEvent         = new EventEmitter<any>();
   @Output() EditMitarbeiterEvent               = new EventEmitter<any>();
+  @Output() FirmaClickedEvend                  = new EventEmitter<Projektfirmenstruktur>();
+
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -72,6 +77,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
     Allgemein:        'Allgemein',
     Beteiligte:       'Beteiligte',
+    Firmen:           'Firmen',
     Gebaeudestruktur: 'Gebaeudestruktur'
   };
 
@@ -79,6 +85,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
   public Valid: boolean;
   public DeleteEnabled: boolean;
   public Beteiligtenliste: Projektbeteiligtestruktur[];
+  public Firmenliste: Projektfirmenstruktur[];
   public ShowRaumVerschieber: boolean;
   private PositionChanged: boolean;
   private BeteiligtenSubscription: Subscription;
@@ -92,6 +99,8 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
   public BaustelleLOPListefolder:string;
   public Listentrennerhoehe: number;
   private MitarbeiterSubscription: Subscription;
+  private FirmenSubscription: Subscription;
+
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -100,6 +109,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
               public DBMitarbeiter: DatabaseMitarbeiterService,
               public DBStandort: DatabaseStandorteService,
               public DBBeteiligte: DatabaseProjektbeteiligteService,
+              public DBFirmen: DatabaseProjektfirmenService,
               public Displayservice: DisplayService,
               public Pool: DatabasePoolService,
               private GraphService: Graphservice,
@@ -116,6 +126,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       this.PositionY           = 100;
       this.ZIndex              = 2000;
       this.Beteiligtenliste    = [];
+      this.Firmenliste         = [];
       this.Bereich             = this.Bereiche.Allgemein;
       this.ShowRaumVerschieber = false;
       this.PositionChanged     = false;
@@ -130,6 +141,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
       this.BeteiligtenSubscription = null;
       this.MitarbeiterSubscription = null;
+      this.FirmenSubscription      = null;
 
     } catch (error) {
 
@@ -145,6 +157,9 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
       this.BeteiligtenSubscription.unsubscribe();
       this.BeteiligtenSubscription = null;
+
+      this.FirmenSubscription.unsubscribe();
+      this.FirmenSubscription = null;
 
       this.PathesSubscription.unsubscribe();
       this.PathesSubscription = null;
@@ -168,6 +183,11 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       });
 
       this.BeteiligtenSubscription = this.DBBeteiligte.BeteiligtenlisteChanged.subscribe(() => {
+
+        this.PrepareData();
+      });
+
+      this.FirmenSubscription = this.DBFirmen.FirmenlisteChanged.subscribe(() => {
 
         this.PrepareData();
       });
@@ -328,6 +348,16 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
 
         if (a.Name < b.Name) return -1;
         if (a.Name > b.Name) return 1;
+
+        return 0;
+      });
+
+      this.Firmenliste  = lodash.cloneDeep(this.DB.CurrentProjekt.Firmenliste);
+
+      this.Firmenliste.sort( (a: Projektfirmenstruktur, b: Projektfirmenstruktur) => {
+
+        if (a.Firma < b.Firma) return -1;
+        if (a.Firma > b.Firma) return 1;
 
         return 0;
       });
@@ -606,6 +636,19 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
     }
   }
 
+  FirmaButtonClicked(Beteiligt: Projektfirmenstruktur) {
+
+    try {
+
+      this.FirmaClickedEvend.emit(Beteiligt);
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'FirmaButtonClicked', this.Debug.Typen.Component);
+    }
+  }
+
   AddBeteiligteButtonClicked() {
 
     try {
@@ -618,6 +661,18 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
     }
   }
 
+  AddFirmaButtonClicked() {
+
+    try {
+
+      this.AddFirmaClickedEvent.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'AddFirmaButtonClicked', this.Debug.Typen.Component);
+    }
+  }
+
   AllgemeinMenuButtonClicked() {
 
     try {
@@ -627,6 +682,18 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'AllgemeinMenuButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  FirmenMenuButtonClicked() {
+
+    try {
+
+      this.Bereich = this.Bereiche.Firmen;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Editor', 'FirmenMenuButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -936,6 +1003,28 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'MitarbeiterButtonClcicked', this.Debug.Typen.Component);
+    }
+  }
+
+  GetFirmanameByFirmaID(firmaid: string): string {
+
+    try {
+
+      let Firma: Projektfirmenstruktur;
+
+      if(this.DB.CurrentProjekt !== null) {
+
+        Firma = lodash.find(this.DB.CurrentProjekt.Firmenliste, {FirmenID: firmaid});
+
+        if(lodash.isUndefined(Firma)) return 'unbekannt';
+        else return Firma.Firma;
+      }
+      else return 'unbekannt';
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'GetFirmanameByFirmaID', this.Debug.Typen.Service);
     }
   }
 }

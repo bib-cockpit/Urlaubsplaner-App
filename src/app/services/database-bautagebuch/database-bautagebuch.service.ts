@@ -576,7 +576,7 @@ export class DatabaseBautagebuchService {
 
         if(!lodash.isUndefined(Beteiligter)) {
 
-          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+          Name = Beteiligter.Vorname + ' ' + Beteiligter.Name;
 
           Empfaengerliste.push({
 
@@ -603,7 +603,7 @@ export class DatabaseBautagebuchService {
 
         if(!lodash.isUndefined(Beteiligter)) {
 
-          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+          Name = Beteiligter.Vorname + ' ' + Beteiligter.Name;
 
           CcEmpfaengerliste.push({
 

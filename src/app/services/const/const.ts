@@ -466,84 +466,177 @@ const  _Beteiligtentypen: any = {
 
     Typnummer: 0,
     Name: 'Unbekannt',
+    Kurzname: 'Unbekannt',
     Color: '#ff6600'
   },
   Architekt:  {
 
     Typnummer: 1,
     Name: 'Architekt',
+    Kurzname: 'Archtiekt',
     Color: '#ff6600'
   },
   Elektroplaner:  {
 
     Typnummer: 2,
-    Name: 'ELT Planer',
+    Name: 'ELT Planungsbüro',
+    Kurzname: 'ELT Planungsbüro',
     Color: '#3771c8'
   },
   HLSplaner:  {
 
     Typnummer: 3,
-    Name: 'HLS Planer',
+    Name: 'HLS Planungsbüro',
+    Kurzname: 'HLS Planungsbüro',
     Color: '#3771c8'
   },
   Fachplaner:  {
 
     Typnummer: 4,
     Name: 'Fachplaner',
+    Kurzname: 'Fachplaner',
     Color: '#3771c8'
   },
   Tragwerksplaner:  {
 
     Typnummer: 5,
     Name: 'Tragwerksplaner',
+    Kurzname: 'Tragwerksplaner',
     Color: '#3771c8'
   },
   Aussenanlagenarchitekt:  {
 
     Typnummer: 6,
     Name: 'Außenanlagenarchitekt',
+    Kurzname: 'Außenanlagenarchitekt',
     Color: '#3771c8'
   },
   Bauherr: {
 
     Typnummer: 7,
     Name: 'Bauherr',
+    Kurzname: 'Bauherr',
     Color: '#008000',
   },
   Nutzer: {
 
     Typnummer: 8,
     Name: 'Nutzer',
+    Kurzname: 'Nutzer',
     Color: '#008000',
   },
   Pruefsachverstaendiger: {
 
     Typnummer: 9,
     Name: 'Prüfsachverständiger',
+    Kurzname: 'Prüfsachverständiger',
     Color: '#008000',
   },
   Projektsteurer: {
 
     Typnummer: 10,
     Name: 'Projektsteurer',
+    Kurzname: 'Projektsteurer',
     Color: '#008000',
   },
   Ausfuehrungsfirma: {
 
     Typnummer: 11,
     Name: 'Ausführende Firma',
+    Kurzname: 'Ausführende Firma',
     Color: '#008000',
   },
   Objektueberwacher: {
 
     Typnummer: 12,
     Name: 'Objektüberwacher',
+    Kurzname: 'OÜ',
     Color: '#008000',
   },
   ITAbteilung: {
 
     Typnummer: 13,
     Name: 'IT - Abteilung',
+    Kurzname: 'IT',
+    Color: '#008000',
+  },
+  Ausfuehrungsfirma_HLS: {
+
+    Typnummer: 14,
+    Name: 'Ausführende Firma HLS',
+    Kurzname: 'HLS',
+    Color: '#008000',
+  },
+  Ausfuehrungsfirma_ELT: {
+
+    Typnummer: 15,
+    Name: 'Elektroinstallation',
+    Kurzname: 'ELZ',
+    Color: '#008000',
+  },
+  Ausfuehrungsfirma_BMA: {
+
+    Typnummer: 16,
+    Name: 'BMA Installation',
+    Kurzname: 'BMA',
+    Color: '#008000',
+  },
+  Ausfuehrungsfirma_Blitzschutz: {
+
+    Typnummer: 17,
+    Name: 'Blitzschutzbauer',
+    Kurzname: 'Blitzschutzbaur',
+    Color: '#008000',
+  },
+
+  Ausfuehrungsfirma_H: {
+
+    Typnummer: 18,
+    Name: 'Heizungsfirma',
+    Kurzname: 'Heizungsfirma',
+    Color: '#008000',
+  },
+  Ausfuehrungsfirma_L: {
+
+    Typnummer: 19,
+    Name: 'Lüftungsinstallation',
+    Kurzname: 'Lüftung',
+    Color: '#008000',
+  },
+  Ausfuehrungsfirma_S: {
+
+    Typnummer: 20,
+    Name: 'Sanitärinstallation',
+    Kurzname: 'Sanitär',
+    Color: '#008000',
+  },
+  Ausfuehrungsfirma_Rohbau: {
+
+    Typnummer: 21,
+    Name: 'Rohbaufirma',
+    Kurzname: 'Rohbaufirma',
+    Color: '#008000',
+  },
+  Ausfuehrungsfirma_Tiefbau: {
+
+    Typnummer: 22,
+    Name: 'Tiefbaufirma',
+    Kurzname: 'Tiefbaufirma',
+    Color: '#008000',
+  },
+  Ausfuehrungsfirma_GALA: {
+
+    Typnummer: 23,
+    Name: 'GALA Baufirma',
+    Kurzname: 'GALA Baufirma',
+    Color: '#008000',
+  },
+
+  Ausfuehrungsfirma_Aufzug: {
+
+    Typnummer: 24,
+    Name: 'Aufzugsfirma',
+    Kurzname: 'Aufzugsfirma',
     Color: '#008000',
   },
 

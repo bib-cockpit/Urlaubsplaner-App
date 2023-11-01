@@ -3,14 +3,11 @@ import {Verfasserstruktur} from "./verfasserstruktur";
 export type Projektbeteiligtestruktur = {
 
     BeteiligtenID: string;
-    Beteiligtentyp: number;
-    Fachfirmentyp: number;
-    Beteiligteneintragtyp: string;
     Name: string;
     Anrede: string;
     Vorname: string;
-    Firma: string;
-    Kuerzel: string;
+    Possition: string;
+    FirmaID: string;
     Strasse: string;
     PLZ: string;
     Ort: string;

@@ -39,32 +39,17 @@
                               <table cellspacing="0" cellpadding="0">
                                 <tr>
                                   <td style="width: 30px"><checkbox-clon [Enabled]="Beteiligte.Email !== ''" [Index]="i" (CheckChanged)="CheckedChanged($event)" [Checked]="Beteiligte.Selected"></checkbox-clon></td>
-                                  <td *ngIf="Beteiligte.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Person">
-                                    {{Beteiligte.Name}} {{Beteiligte.Vorname}} <span *ngIf="Beteiligte.Kuerzel !== ''">/ {{Beteiligte.Kuerzel}}</span>
+                                  <td>
+                                    {{Beteiligte.Name}} {{Beteiligte.Vorname}}
                                     <br>
                                     <span *ngIf="Beteiligte.Email === ''" style="color: red; font-size: 80%">Keine Emailadresse hinterlegt</span>
-                                  </td>
-                                  <td *ngIf="Beteiligte.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Firma">
-                                    {{Beteiligte.Firma}}
-                                    <span *ngIf="Beteiligte.Email === ''" style="color: red; font-size: 80%">Keine Emailadresse hinterlegt</span>
-                                    <br>
                                   </td>
                                 </tr>
                                 <tr>
                                   <td colspan="10">
                                     <table class="infotable" style="white-space:nowrap;">
                                       <tr>
-                                        <td *ngIf="Beteiligte.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Person && Beteiligte.Firma !== ''">
-                                          {{Beteiligte.Firma}}
-                                        </td>
-                                        <ng-container *ngIf="Beteiligte.Beteiligtentyp !== 0">
-                                          <td *ngIf="Beteiligte.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Person" style="padding: 4px"><div class="bullclass"></div></td>
-                                          <td>{{DB.GetBeteiligtenFachbereichname(Beteiligte.Beteiligtentyp)}}</td>
-                                        </ng-container>
-                                        <ng-container *ngIf="Beteiligte.Email !== ''">
-                                          <td *ngIf="Beteiligte.Beteiligtentyp !== 0" style="padding: 4px"><div class="bullclass"></div></td>
-                                          <td>{{Beteiligte.Email}}</td>
-                                        </ng-container>
+                                        <td>{{Beteiligte.Email}}</td>
                                       </tr>
                                     </table>
                                   </td>

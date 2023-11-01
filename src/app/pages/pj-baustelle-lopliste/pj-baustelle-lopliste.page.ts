@@ -918,15 +918,23 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
             Eintrag.Bauteilname = 'Gesamtes Gebäude';
           }
 
+          for(let Anmerkung of Eintrag.Anmerkungenliste) {
+
+            Anmerkung.Verfasser.Kuerzel = this.DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email).Kuerzel;
+
+          }
+
           Punkteliste.push(Eintrag);
         }
       }
 
-      this.DB.CurrentLOPListe.Infopunkteliste    = this.DB.CurrentInfoliste;
-      this.DB.CurrentLOPListe.Projektpunkteliste = Punkteliste;
-
+      this.DB.CurrentLOPListe.Infopunkteliste           = this.DB.CurrentInfoliste;
+      this.DB.CurrentLOPListe.Projektpunkteliste        = Punkteliste;
+      /*
       this.DB.CurrentLOPListe.EmpfaengerExternIDListe   = this.DB.CurrentLOPListe.BeteiligExternIDListe;
       this.DB.CurrentLOPListe.CcEmpfaengerInternIDListe = this.DB.CurrentLOPListe.BeteiligtInternIDListe;
+
+       */
       this.DB.CurrentLOPListe.Betreff                   = Betreff;
       this.DB.CurrentLOPListe.Nachricht                 = Nachricht;
       this.DB.CurrentLOPListe.Filename                  = Filename;
@@ -1250,7 +1258,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.DB.CurrentLOPListe         = lodash.cloneDeep(lopliste);
       this.DB.LOPListeEditorViewModus = this.DB.LOPListeEditorViewModusvarianten.Allgemein;
       this.ShowLOPListeEditor         = true;
-      this.Dialogbreite               = 1300;
+      this.Dialogbreite               = 1500;
       this.Dialoghoehe                = this.Basics.InnerContenthoehe - this.DialogPosY * 2;
 
     } catch (error) {

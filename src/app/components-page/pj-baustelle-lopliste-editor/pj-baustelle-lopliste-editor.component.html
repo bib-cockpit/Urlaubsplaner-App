@@ -46,57 +46,147 @@
 
             <ng-container *ngSwitchCase="DB.LOPListeEditorViewModusvarianten.Allgemein">
 
+              <table style="width: 100%">
+                <tr>
+                  <td>
+                    <ion-grid>
+                      <ion-row>
+                        <ion-col>
+                          <ion-text color="baeblau"><b>Allgemein</b></ion-text>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </td>
+                  <td>
+                    <ion-grid>
+                      <ion-row>
+                        <ion-col>
+                          <ion-text color="baeblau"><b>Teilnehmer</b></ion-text>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 50%" valign="top">
+                      <ion-grid>
+                        <ion-row>
+                          <ion-col [size]="12">
+                            <input-clone [(Value)]="DB.CurrentLOPListe.Titel" [Titel]="'Titel'" [Required]="true" [MaxLength]="150" (TextChanged)="TextChangedHandler()"></input-clone>
+                          </ion-col>
+                          <ion-col [size]="12">
+
+                          </ion-col>
+                        </ion-row>
+                        <ion-row>
+                          <ion-col [size]="12">
+                            <input-clone [(Value)]="DB.CurrentLOPListe.LOPListenummer" [Titel]="'Listennummer'" [Required]="true" [MaxLength]="150" (TextChanged)="TextChangedHandler()"></input-clone>
+                          </ion-col>
+                        </ion-row>
+                        <ion-row>
+                          <ion-col [size]="12">
+                            <input-clone [(Value)]="DB.CurrentLOPListe.Besprechungsort" [Titel]="'Besprechungsort'" [Required]="true" [MaxLength]="20" (TextChanged)="TextChangedHandler()"></input-clone>
+                          </ion-col>
+                        </ion-row>
+                        <ion-row>
+                          <ion-col [size]="12">
+                            <span *ngIf="DB.CurrentLOPListe.LOPListenummer === ''" style="font-size: 90%; color: gray;">Letzte LOPListenummer {{DB.GetLetzteLOPListenummer()}}</span>
+                          </ion-col>
+                        </ion-row>
+                        <ion-row>
+                          <ion-col [size]="12">
+                            <button-value-date [Datum]="GetDatum()" [Buttontext]="'Datum'" [ElementID]="'datum'" (TimeChanged)="DatumChanged($event)" [ShowKW]="true"></button-value-date>
+                          </ion-col>
+                        </ion-row>
+                        <ion-row>
+                          <ion-col [size]="12">
+                            <input-clone [(Value)]="DB.CurrentLOPListe.Notizen"  [Titel]="'Notizen'" [Lines]="6" (TextChanged)="TextChangedHandler()"></input-clone>
+                          </ion-col>
+                        </ion-row>
+                        <!--
+                        <ion-row>
+                          <ion-col size="6">
+                            <input-clone [MinHeight]="44" [Lines]="LinesanzahlTeilnehmer"
+                                         [Clickable]="true" [Enabled]="false" Titel="Teilnehmer Intern" [Value]="DB.GetInterneTeilnehmerliste(false)" (click)="TeamteilnehmerClicked.emit()"></input-clone>
+                          </ion-col>
+                          <ion-col size="6">
+                            <input-clone [MinHeight]="44" [Lines]="LinesanzahlTeilnehmer"
+                                         [Clickable]="true" [Enabled]="false" Titel="Teilnehmer Extern" [Value]="DB.GetExterneTeilnehmerliste(false)"
+                                         (click)="BeteiligteteilnehmerClicked.emit()"></input-clone>
+                          </ion-col>
+                        </ion-row>
+                        -->
+                      </ion-grid>
+
+                  </td>
+                  <td style="width: 50%" valign="top">
+
+                    <ion-grid>
+                      <ion-row *ngIf="DBProjekte.CurrentProjekt !== null">
+                        <ion-col size="12">
+                          <table class="docinnertable" style="width: 100%">
+                            <tr style="font-weight: bold;">
+                              <td>Firma</td>
+                              <td>Name</td>
+                              <td style="text-align: center">T</td>
+                              <td style="text-align: center">E</td>
+                              <td>Emailadresse</td>
+                            </tr>
+                            <ng-container *ngFor="let Firma of this.DBProjekte.CurrentProjekt.Firmenliste; let Fimenindex = index">
+                              <tr>
+                                <td style="font-weight: bold; color: #c7d304;">{{Firma.Firma}}</td>
+                                <td></td>
+                                <td></td>
+                                <!--
+                                <checkbox-clon [Value]="Firma.FirmenID"                                [Checked]="GetTeilnehmerExternChecked(Firma.FirmenID)" (CheckChanged)="TeilnehmerExternCheckedChanged($event)"></checkbox-clon>
+                                -->
+                                <td><checkbox-clon [Value]="Firma.FirmenID" [Enabled]="Firma.Email !== ''" [Checked]="GetEmpfaengerExternChecked(Firma.FirmenID)" (CheckChanged)="EmpfaengerExternCheckedChanged($event)"></checkbox-clon></td>
+                                <td>{{Firma.Email}}</td>
+                              </tr>
+                              <tr *ngFor="let Beteiligter of Beteiligtenliste[Fimenindex]">
+                                <td></td>
+                                <td>{{Beteiligter.Name}} {{Beteiligter.Vorname}}</td>
+                                <td><checkbox-clon [Value]="Beteiligter.BeteiligtenID"                                      [Checked]="GetTeilnehmerExternChecked(Beteiligter.BeteiligtenID)" (CheckChanged)="TeilnehmerExternCheckedChanged($event)"></checkbox-clon></td>
+                                <td><checkbox-clon [Value]="Beteiligter.BeteiligtenID" [Enabled]="Beteiligter.Email !== ''" [Checked]="GetEmpfaengerExternChecked(Beteiligter.BeteiligtenID)" (CheckChanged)="EmpfaengerExternCheckedChanged($event)"></checkbox-clon></td>
+                                <td>{{Beteiligter.Email}}</td>
+                              </tr>
+                            </ng-container>
+                              <tr>
+                                <td style="font-weight: bold; color: #307ac1;">BAE</td>
+                                <td></td>
+                                <td></td>
+                                <td><checkbox-clon [Value]="DBProjekte.CurrentProjekt._id" [Enabled]="DBProjekte.CurrentProjekt.Projektmailadresse !== ''" [Checked]="GetEmpfaengerInternChecked(DBProjekte.CurrentProjekt._id)" (CheckChanged)="EmpfaengerInternCheckedChanged($event)"></checkbox-clon></td>
+                                <td>{{DBProjekte.CurrentProjekt.Projektmailadresse}}</td>
+                              </tr>
+                            <tr *ngFor="let Mitarbeiter of Mitarbeiterliste">
+                              <td></td>
+                              <td>{{Mitarbeiter.Name}} {{Mitarbeiter.Vorname}}</td>
+                              <td><checkbox-clon [Value]="Mitarbeiter._id"                                      [Checked]="GetTeilnehmerInternChecked(Mitarbeiter._id)" (CheckChanged)="TeilnehmerInternCheckedChanged($event)"></checkbox-clon></td>
+                              <td><checkbox-clon [Value]="Mitarbeiter._id" [Enabled]="Mitarbeiter.Email !== ''" [Checked]="GetEmpfaengerInternChecked(Mitarbeiter._id)" (CheckChanged)="EmpfaengerInternCheckedChanged($event)"></checkbox-clon></td>
+                              <td>{{Mitarbeiter.Email}}</td>
+                            </tr>
+                          </table>
+
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                    <ion-grid>
+                      <ion-row>
+                        <ion-col>
+                          <table>
+                            <tr>
+                              <td style="font-size: 80%"><b>T</b> = Teilnehmer  <b>E</b> = Protokoll Empfänger</td>
+                            </tr>
+                          </table>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+
+                  </td>
+                </tr>
+              </table>
+
               <ion-grid>
-                <ion-row>
-                  <ion-col size="3">
-                    <ion-text color="burnicklgruen"><b>{{DBProjekte.CurrentProjekt !== null ? DBProjekte.CurrentProjekt.Projektname : 'Projekt unbekannt' }}</b></ion-text>
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col [size]="Tools.GetButtonvalueSize()">
-                    <input-clone [(Value)]="DB.CurrentLOPListe.Titel" [Titel]="'Titel'" [Required]="true" [MaxLength]="150" (TextChanged)="TextChangedHandler()"></input-clone>
-                  </ion-col>
-                  <ion-col [size]="Tools.GetButtonvalueSize()">
-
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col [size]="Tools.GetButtonvalueSize()">
-                    <input-clone [(Value)]="DB.CurrentLOPListe.LOPListenummer" [Titel]="'Listennummer'" [Required]="true" [MaxLength]="150" (TextChanged)="TextChangedHandler()"></input-clone>
-                  </ion-col>
-                  <ion-col [size]="Tools.GetButtonvalueSize()">
-                    <input-clone [(Value)]="DB.CurrentLOPListe.Besprechungsort" [Titel]="'Besprechungsort'" [Required]="true" [MaxLength]="20" (TextChanged)="TextChangedHandler()"></input-clone>
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col>
-                    <span *ngIf="DB.CurrentLOPListe.LOPListenummer === ''" style="font-size: 90%; color: gray;">Letzte LOPListenummer {{DB.GetLetzteLOPListenummer()}}</span>
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col [size]="Tools.GetButtonvalueSize()">
-                    <button-value-date [Datum]="GetDatum()" [Buttontext]="'Datum'" [ElementID]="'datum'" (TimeChanged)="DatumChanged($event)" [ShowKW]="true"></button-value-date>
-                  </ion-col>
-                  <ion-col [size]="Tools.GetButtonvalueSize()">
-
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col size="6">
-                    <input-clone [MinHeight]="44" [Lines]="LinesanzahlTeilnehmer"
-                                 [Clickable]="true" [Enabled]="false" Titel="Teilnehmer Intern" [Value]="DB.GetInterneTeilnehmerliste(false)" (click)="TeamteilnehmerClicked.emit()"></input-clone>
-                  </ion-col>
-                  <ion-col size="6">
-                    <input-clone [MinHeight]="44" [Lines]="LinesanzahlTeilnehmer"
-                                 [Clickable]="true" [Enabled]="false" Titel="Teilnehmer Extern" [Value]="DB.GetExterneTeilnehmerliste(false)"
-                                 (click)="BeteiligteteilnehmerClicked.emit()"></input-clone>
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col [size]="12">
-                    <input-clone [(Value)]="DB.CurrentLOPListe.Notizen" [Titel]="'Notizen'" [Lines]="6" (TextChanged)="TextChangedHandler()"></input-clone>
-                  </ion-col>
-                </ion-row>
                 <ion-row>
                   <ion-col>
                     <abstand-element-fixed></abstand-element-fixed>

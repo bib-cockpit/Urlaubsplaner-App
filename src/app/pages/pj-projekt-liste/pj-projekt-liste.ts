@@ -32,6 +32,8 @@ import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {DatabaseProtokolleService} from "../../services/database-protokolle/database-protokolle.service";
+import {DatabaseProjektfirmenService} from "../../services/database-projektfirmen/database-projektfirmen.service";
+import { Projektfirmenstruktur } from 'src/app/dataclasses/projektfirmenstruktur';
 
 
 @Component({
@@ -91,6 +93,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     Projekt:           'Projekt'
   };
   public Multiselect: boolean;
+  public ShowFirmeneditor: boolean;
 
   constructor(public  Basics: BasicsProvider,
               public  Debug: DebugProvider,
@@ -103,10 +106,9 @@ export class PjProjektListePage implements OnInit, OnDestroy {
               public  Const: ConstProvider,
               public Auswahlservice: AuswahlDialogService,
               public Displayservice: DisplayService,
-              private GraphService: Graphservice,
-              private LoadingAnimation: LoadingAnimationService,
+
               public DBGebaeude: DatabaseGebaeudestrukturService,
-              public DBProtokolle: DatabaseProtokolleService,
+              public DBFirma: DatabaseProjektfirmenService,
               public  Pool: DatabasePoolService) {
 
     try {
@@ -134,6 +136,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
       this.Auswahldialogorigin     = this.Const.NONE;
       this.MitarbeiterauswahlTitel = this.Const.NONE;
       this.ShowBeteiligteneditor = false;
+      this.ShowFirmeneditor      = false;
       this.ShowBauteilEditor     = false;
       this.ShowGeschossEditor    = false;
       this.ShowRaumEditor        = false;
@@ -732,18 +735,17 @@ export class PjProjektListePage implements OnInit, OnDestroy {
 
           this.DB.CurrentProjekt.StandortID = data._id;
 
-
           break;
 
-        case this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachbereich:
+        case this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Firmeneditor_Fachbereich:
 
-          this.DBBeteiligte.CurrentBeteiligte.Beteiligtentyp = data.Typnummer;
+          this.DBFirma.CurrentFirma.Fachfirmentyp = data.Typnummer;
 
           break;
 
         case this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachfirma:
 
-          this.DBBeteiligte.CurrentBeteiligte.Fachfirmentyp = data.Typnummer;
+          this.DBBeteiligte.CurrentBeteiligte.FirmaID = data;
 
           break;
 
@@ -935,13 +937,13 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     }
   }
 
-  BeteiligteFachbereichClickedEventHandler() {
+  FirmaFachbereichClickedEventHandler() {
 
     try {
 
       let Index: number = 0;
 
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachbereich;
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Firmeneditor_Fachbereich;
 
 
       this.Auswahltitel  = 'Fachbereich festlegen';
@@ -956,12 +958,12 @@ export class PjProjektListePage implements OnInit, OnDestroy {
         Index++;
       }
 
-      this.Auswahlindex = lodash.findIndex(this.DBBeteiligte.Beteiligtentypenliste, { Typnummer: this.DBBeteiligte.CurrentBeteiligte.Beteiligtentyp } );
+      this.Auswahlindex = lodash.findIndex(this.DBFirma.Beteiligtentypenliste, { Typnummer: this.DBFirma.CurrentFirma.Fachfirmentyp } );
       this.ShowAuswahl  = true;
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'BeteiligteFachbereichClickedEventHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'FirmaFachbereichClickedEventHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -1115,7 +1117,7 @@ export class PjProjektListePage implements OnInit, OnDestroy {
         Index++;
       }
 
-      this.Auswahlindex = lodash.findIndex(this.DBBeteiligte.Fachfirmentypenliste, { Typnummer: this.DBBeteiligte.CurrentBeteiligte.Fachfirmentyp } );
+      this.Auswahlindex = -1; //  lodash.findIndex(this.DBBeteiligte.Fachfirmentypenliste, { Typnummer: this.DBBeteiligte.CurrentBeteiligte.Fachfirmentyp } );
       this.ShowAuswahl  = true;
 
     } catch (error) {
@@ -1284,6 +1286,78 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'SelectProjektfolderHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  AddFirmaClickedEventHandler() {
+
+    try {
+
+      this.DBFirma.CurrentFirma = this.DBFirma.GetEmptyProjektfirma();
+      this.ShowFirmeneditor     = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'AddFirmaClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  GetFirmaeditorTitel(): string {
+
+    try {
+
+      if(this.DBFirma.CurrentFirma !== null) {
+
+        if(this.DBFirma.CurrentFirma.FirmenID === null) return 'Neue Firma erfassen';
+        else return 'Firma bearbeiten';
+      }
+      else return '';
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'GetFirmaeditorTitel', this.Debug.Typen.Page);
+    }
+  }
+
+  FirmaClickedEventHandler(firma: Projektfirmenstruktur) {
+
+    try {
+
+      this.DBFirma.CurrentFirma =  lodash.cloneDeep(firma);
+      this.ShowFirmeneditor     = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'FirmaClickedEventHandler', this.Debug.Typen.Page);
+    }
+
+  }
+
+  BeteiligteFirmaClickedEventHandler() {
+
+    try {
+
+      let Index = 0;
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachfirma;
+
+      this.ShowAuswahl   = true;
+      this.Auswahltitel  = 'Firma festlegen';
+      this.Auswahlliste  = [];
+
+
+      for(let Eintrag of this.DB.CurrentProjekt.Firmenliste) {
+
+        this.Auswahlliste.push({ Index: Index, FirstColumn: Eintrag.Firma, SecoundColumn: '', Data: Eintrag.FirmenID });
+        Index++;
+      }
+
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.DBBeteiligte.CurrentBeteiligte.FirmaID});
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'BeteiligteFirmaClickedEventHandler', this.Debug.Typen.Page);
     }
   }
 }

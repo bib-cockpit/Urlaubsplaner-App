@@ -1,6 +1,7 @@
 import {Projektbeteiligtestruktur} from "./projektbeteiligtestruktur";
 import {Verfasserstruktur} from "./verfasserstruktur";
 import {Bauteilstruktur} from "./bauteilstruktur";
+import {Projektfirmenstruktur} from "./projektfirmenstruktur";
 
 export type Projektestruktur = {
 
@@ -17,11 +18,13 @@ export type Projektestruktur = {
   Projektname:          string;
   OutlookkategorieID:   string;
   Projektkurzname:      string;
+  Projektmailadresse:   string;
   Projektnummer:        string;
   Leistungsphase:       string;
   Status:               string;
   Deleted:              boolean;
   Beteiligtenliste:     Projektbeteiligtestruktur[];
+  Firmenliste:          Projektfirmenstruktur[];
   MitarbeiterIDListe:   string[];
   Verfasser:            Verfasserstruktur;
   Bauteilliste:         Bauteilstruktur[];

@@ -580,14 +580,7 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
 
         if(!lodash.isUndefined(Beteiligte)) {
 
-          if(Beteiligte.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person) {
-
-            Value += this.DBBeteiligte.GetBeteiligtenvorname(Beteiligte) + ' ' + Beteiligte.Name + '\n';
-          }
-          else {
-
-            Value += Beteiligte.Firma + '\n';
-          }
+          Value += this.DBBeteiligte.GetBeteiligtenvorname(Beteiligte) + ' ' + Beteiligte.Name + '\n';
         }
       }
 
@@ -809,6 +802,109 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'GeschlossenDatumChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  AnmerkungTimeChanged(datum: moment.Moment, i: number) {
+
+    try {
+
+      this.DB.CurrentProjektpunkt.Anmerkungenliste[i].Zeitstempel = datum.valueOf();
+      this.DB.CurrentProjektpunkt.Anmerkungenliste[i].Zeitstring  = datum.format('DD.MM.YY');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'AnmerkungTimeChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  GetAnmerkungDatum(Eintrag: Projektpunktanmerkungstruktur): Moment {
+
+    try {
+
+      return moment(Eintrag.Zeitstempel);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'GetAnmerkungDatum', this.Debug.Typen.Component);
+    }
+  }
+
+  GetMitarbeiterName(MitarbeiterID: string): string {
+
+    try {
+
+      let Mitarbeiter: Mitarbeiterstruktur = this.DBMitarbeiter.GetMitarbeiterByID(MitarbeiterID);
+
+      if(!lodash.isUndefined(Mitarbeiter)) {
+
+        return Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' / ' + Mitarbeiter.Kuerzel;
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'GetMitarbeiterName', this.Debug.Typen.Component);
+    }
+  }
+
+  FirmaIsChecked(firmaid: string) {
+
+    try {
+
+      return this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe.indexOf(firmaid) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'FirmaIsChecked', this.Debug.Typen.Component);
+    }
+  }
+
+  MitarbeiterIsChecked(mitrabeiterid: string) {
+
+    try {
+
+      return this.DB.CurrentProjektpunkt.ZustaendigeInternIDListe.indexOf(mitrabeiterid) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'MitarbeiterIsChecked', this.Debug.Typen.Component);
+    }
+  }
+
+  MitarbeiterCheckChanged(event: { status: boolean; index: number; event: any }, MitarbeiterID: string) {
+
+    try {
+
+      if(event.status === true) this.DB.CurrentProjektpunkt.ZustaendigeInternIDListe.push(MitarbeiterID);
+      else {
+
+        this.DB.CurrentProjektpunkt.ZustaendigeInternIDListe = lodash.filter(this.DB.CurrentProjektpunkt.ZustaendigeInternIDListe, (id: string) => {
+
+          return id !== MitarbeiterID;
+        });
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'MitarbeiterCheckChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  FirmaCheckChanged(event: { status: boolean; index: number; event: any }, FirmenID: string) {
+
+    try {
+
+      if(event.status === true) this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe.push(FirmenID);
+      else {
+
+        this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe = lodash.filter(this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe, (id: string) => {
+
+          return id !== FirmenID;
+        });
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'FirmaCheckChanged', this.Debug.Typen.Component);
     }
   }
 }

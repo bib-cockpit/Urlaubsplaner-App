@@ -29,55 +29,10 @@
                       <input-clone [DisabledColor]="'#444444'"
                                    [Value]="Projekt !== null ? Projekt.Projektname : 'Unbekannt'" Titel="Projekt"
                                    [Enabled]="false"
-                                   [Clickable]="true" (click)="ProjektClickedEvent.emit()"></input-clone>
-
-                      <!--
-
-                      <input-clone [MinHeight]="46" [Value]="DBProjekt.CurrentProjekt.Projektname" Titel="Projekt" [DisabledColor]="'#444444'" [Enabled]="false"></input-clone>
-
-                      -->
-
-                    </ion-col>
-                    <ion-col size="6">
-
+                                   [Clickable]="false"></input-clone>
                     </ion-col>
                   </ion-row>
                   <ion-row>
-                    <ion-col size="6">
-                      <input-clone [DisabledColor]="'#444444'"
-                                   [Value]="DBBeteiligte.GetBeteiligtenFachbereichname(DBBeteiligte.CurrentBeteiligte.Beteiligtentyp)" Titel="Bereich"
-                                   [Enabled]="false"
-                                   [Clickable]="true" (click)="FachbereichClickedEvent.emit()"></input-clone>
-                    </ion-col>
-                    <ion-col  size="6" *ngIf="DBBeteiligte.CurrentBeteiligte.Beteiligtentyp === Const.Beteiligtentypen.Ausfuehrungsfirma.Typnummer">
-                      <input-clone [DisabledColor]="'#444444'"
-                                   [Value]="DBBeteiligte.GetBeteiligtenFachfirmaname(DBBeteiligte.CurrentBeteiligte.Fachfirmentyp)" Titel="Gewerk"
-                                   [Enabled]="false"
-                                   [Clickable]="true" (click)="FachfirmaClickedEvent.emit()"></input-clone>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col>
-                      <ion-text color="primary"><b>EIntragtyp</b></ion-text>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col size="6">
-                      <ion-radio-group [value]="DBBeteiligte.CurrentBeteiligte.Beteiligteneintragtyp" (ionChange)="BeteiligtetypChanged($event)">
-                        <table class="paddingtable">
-                          <tr>
-                            <td><ion-radio [value]="Const.Beteiligteneintragtypen.Person" mode="md"></ion-radio></td>
-                            <td>Person</td>
-                            <td style="width: 20px"></td>
-                            <td><ion-radio [value]="Const.Beteiligteneintragtypen.Firma" mode="md"></ion-radio></td>
-                            <td>Firma / Projektmail</td>
-                          </tr>
-                        </table>
-                      </ion-radio-group>
-                    </ion-col>
-                  </ion-row>
-                  <ng-container *ngIf="DBBeteiligte.CurrentBeteiligte.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person">
-                    <ion-row>
                       <ion-col>
                         <ion-text color="primary"><b>Anrede</b></ion-text>
                       </ion-col>
@@ -101,14 +56,13 @@
                       </ion-col>
                     </ion-row>
 
-                  </ng-container>
 
                   <ion-row>
                     <ion-col>
-                      <ion-text color="primary"><b>{{DBBeteiligte.CurrentBeteiligte.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Person ? 'Person' : 'Firma'}}</b></ion-text>
+                      <ion-text color="primary"><b>Person</b></ion-text>
                     </ion-col>
                   </ion-row>
-                  <ion-row [hidden]="DBBeteiligte.CurrentBeteiligte.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Firma">
+                  <ion-row>
                     <ion-col [size]="Tools.GetButtonvalueSize()">
                       <input-clone [(Value)]="DBBeteiligte.CurrentBeteiligte.Vorname" Titel="Vorname" (TextChanged)="TextChanged($event)"></input-clone>
                     </ion-col>
@@ -117,13 +71,16 @@
                     </ion-col>
                   </ion-row>
                   <ion-row>
-                    <ion-col [size]="Tools.GetButtonvalueSize()">
-                      <input-clone [Required]="true" [MaxLength]="100" [(Value)]="DBBeteiligte.CurrentBeteiligte.Firma" [Titel]="'Firma'" (TextChanged)="TextChanged($event)"></input-clone>
+                    <ion-col size="6">
+                      <input-clone [DisabledColor]="'#444444'"
+                                   [Value]="GetFirmanameByFirmaID(DBBeteiligte.CurrentBeteiligte.FirmaID)" Titel="Firma"
+                                   [Enabled]="false"
+                                   [Clickable]="true" (click)="FirmaClickedEvent.emit()"></input-clone>
                     </ion-col>
                   </ion-row>
-                  <ion-row [hidden]="DBBeteiligte.CurrentBeteiligte.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Person">
+                  <ion-row>
                     <ion-col [size]="Tools.GetButtonvalueSize()">
-                      <input-clone  [(Value)]="DBBeteiligte.CurrentBeteiligte.Kuerzel" Titel="Kürzel" (TextChanged)="TextChanged($event)"></input-clone>
+                      <input-clone  [(Value)]="DBBeteiligte.CurrentBeteiligte.Possition" Titel="Possition" (TextChanged)="TextChanged($event)"></input-clone>
                     </ion-col>
                   </ion-row>
 
@@ -139,7 +96,7 @@
                   </ion-row>
                   <ion-row>
                     <ion-col [size]="Tools.GetButtonvalueSize()">
-                      <input-clone [Inputtype]="'email'" [MaxLength]="255" [(Value)]="DBBeteiligte.CurrentBeteiligte.Email" Titel="Email" (TextChanged)="TextChanged($event)"></input-clone>
+                      <input-clone [Inputtype]="'email'" [Required]="true" [MaxLength]="250" [(Value)]="DBBeteiligte.CurrentBeteiligte.Email" Titel="Email" (TextChanged)="TextChanged($event)"></input-clone>
                     </ion-col>
                   </ion-row>
 
@@ -193,6 +150,10 @@
                   (onCut)="NotizTextChangedHandler($event)"
                   (onKeyPress)="NotizTextChangedHandler($event)">
                 </editor>
+                <ion-button size="small" color="rot"  (click)="AblageLoeschenButtonClicked()">
+                  <ion-icon name="trash-outline" style="font-size: 20px"></ion-icon>
+                  <ion-text>Ablage löschen</ion-text>
+                </ion-button>
               </td>
             </tr>
           </table>

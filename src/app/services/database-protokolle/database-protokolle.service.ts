@@ -19,6 +19,7 @@ import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestru
 import {DatabaseProjektbeteiligteService} from "../database-projektbeteiligte/database-projektbeteiligte.service";
 import {BasicsProvider} from "../basics/basics";
 import {KostengruppenService} from "../kostengruppen/kostengruppen.service";
+import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -631,7 +632,7 @@ export class DatabaseProtokolleService {
 
         if(!lodash.isUndefined(Beteiligter)) {
 
-          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+          // Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
 
           Empfaengerliste.push({
 
@@ -658,7 +659,7 @@ export class DatabaseProtokolleService {
 
         if(!lodash.isUndefined(Beteiligter)) {
 
-          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+          // Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
 
           CcEmpfaengerliste.push({
 
@@ -729,7 +730,7 @@ export class DatabaseProtokolleService {
 
       if(lodash.isUndefined(Mitarbeiter) === false) {
 
-        return Mitarbeiter.Kuerzel;
+        return Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
       }
       else {
 
@@ -749,18 +750,11 @@ export class DatabaseProtokolleService {
     try {
 
 
-      let Beteiligter: Projektbeteiligtestruktur = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, { BeteiligtenID: ZustaendigID});
+      let Firma: Projektfirmenstruktur = lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, { FirmenID: ZustaendigID});
 
-      if(lodash.isUndefined(Beteiligter) === false) {
+      if(lodash.isUndefined(Firma) === false) {
 
-        if(Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person) {
-
-          return Beteiligter.Name;
-        }
-        else {
-
-          return Beteiligter.Firma;
-        }
+        return Firma.Firma;
       }
       else {
 
@@ -857,27 +851,19 @@ export class DatabaseProtokolleService {
 
     try {
 
-      let Beteiligte: Projektbeteiligtestruktur;
+      let Firma: Projektfirmenstruktur;
       let Value: string = '';
       let Eintrag;
       let Liste: string[] = [];
 
       for(let id of this.CurrentProtokoll.BeteiligExternIDListe) {
 
-        Beteiligte = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: id});
+        Firma = lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, {FirmenID: id});
 
-        if(!lodash.isUndefined(Beteiligte)) {
+        if(!lodash.isUndefined(Firma)) {
 
-          if(Beteiligte.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person) {
-
-            Eintrag = this.DBBeteiligte.GetBeteiligtenvorname(Beteiligte) + ' ' + Beteiligte.Name;
-            Value +=  Eintrag + '\n';
-          }
-          else {
-
-            Eintrag = Beteiligte.Firma;
+            Eintrag = Firma.Firma;
             Value  += Eintrag + '\n';
-          }
 
           Liste.push(Eintrag);
         }

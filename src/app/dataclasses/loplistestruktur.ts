@@ -1,7 +1,5 @@
 import {Verfasserstruktur} from "./verfasserstruktur";
 import {Projektpunktestruktur} from "./projektpunktestruktur";
-import {Projektbeteiligtestruktur} from "./projektbeteiligtestruktur";
-import {Mitarbeiterstruktur} from "./mitarbeiterstruktur";
 
 export type LOPListestruktur = {
 
@@ -44,10 +42,12 @@ export type LOPListestruktur = {
   InterneTeilnehmerliste?: string[];
   CcEmpfaengerliste?: {
     Name:  string;
+    Firma: string;
     Email: string;
   }[];
   Empfaengerliste?: {
     Name:  string;
+    Firma: string;
     Email: string;
   }[];
 };

@@ -24,6 +24,7 @@ import {Protokollstruktur} from "../../dataclasses/protokollstruktur";
 import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
 import {Outlookpresetcolorsstruktur} from "../../dataclasses/outlookpresetcolorsstruktur";
 import {Outlookkategoriesstruktur} from "../../dataclasses/outlookkategoriesstruktur";
+import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +53,7 @@ export class DatabaseProjekteService {
   public  FavoritenCellbreite: number;
   public Projektfarbenliste: Projektfarbenstruktur[];
   public Gesamtprojektliste:      Projektestruktur[];
+
 
   constructor(private Debug: DebugProvider,
               private Basics: BasicsProvider,
@@ -139,8 +141,10 @@ export class DatabaseProjekteService {
         ProjektFolderID:       this.Const.NONE,
         Bauteilliste: [],
         Beteiligtenliste: [],
+        Firmenliste: [],
         Deleted: false,
         Leistungsphase: "",
+        Projektmailadresse: "",
         MitarbeiterIDListe: [],
         Ort: "",
         OutlookkategorieID: "",
@@ -270,10 +274,18 @@ export class DatabaseProjekteService {
               if(lodash.isUndefined(Projekt.DisplayBeschreibungen)) Projekt.DisplayBeschreibungen = true;
               if(lodash.isUndefined(Projekt.DisplayUngenutzte))     Projekt.DisplayUngenutzte     = false;
               if(lodash.isUndefined(Projekt.LastLOPEintragnummer))  Projekt.LastLOPEintragnummer  = 0;
+              if(lodash.isUndefined(Projekt.Firmenliste))           Projekt.Firmenliste           = [];
+              if(lodash.isUndefined(Projekt.Projektmailadresse))    Projekt.Projektmailadresse    = "";
 
               for(let Beteiligter of Projekt.Beteiligtenliste) {
 
-                if(lodash.isUndefined(Beteiligter.Fachfirmentyp)) Beteiligter.Fachfirmentyp = 0;
+                if(lodash.isUndefined(Beteiligter.FirmaID))   Beteiligter.FirmaID   = null;
+                if(lodash.isUndefined(Beteiligter.Possition)) Beteiligter.Possition = "";
+              }
+
+              for(let Firma of Projekt.Firmenliste) {
+
+
               }
             }
 
@@ -557,6 +569,7 @@ export class DatabaseProjekteService {
         ProjektleiterID:  this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten._id : this.Const.NONE,
         StellvertreterID: this.Const.NONE,
         Projektkey:       this.Const.NONE,
+        Projektmailadresse: "",
         Projektname:      "",
         Projektkurzname:  "",
         Projektnummer:    "",
@@ -575,6 +588,7 @@ export class DatabaseProjekteService {
         Deleted: false,
         OutlookkategorieID: this.Const.NONE,
         Beteiligtenliste: [],
+        Firmenliste: [],
         MitarbeiterIDListe: [],
         Bauteilliste: [],
         ProjektIsReal: true,
@@ -692,6 +706,13 @@ export class DatabaseProjekteService {
       Params.set('id', projekt._id);
 
       delete projekt.__v;
+
+      projekt.Firmenliste.sort((a: Projektfirmenstruktur, b: Projektfirmenstruktur) => {
+
+        if (a.Firma < b.Firma) return -1;
+        if (a.Firma > b.Firma) return 1;
+        return 0;
+      });
 
       return new Promise<any>((resove, reject) => {
 

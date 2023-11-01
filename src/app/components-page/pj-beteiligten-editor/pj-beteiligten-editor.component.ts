@@ -24,6 +24,8 @@ import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestru
 import {EventObj} from "@tinymce/tinymce-angular/editor/Events";
 import {navigate} from "ionicons/icons";
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
+import {DatabaseProjektfirmenService} from "../../services/database-projektfirmen/database-projektfirmen.service";
+import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
 
 @Component({
   selector: 'pj-beteiligten-editor',
@@ -35,8 +37,12 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
   @Output() CancelClickedEvent         = new EventEmitter<any>();
   @Output() OkClickedEvent             = new EventEmitter<any>();
   @Output() DeleteClickedEvent         = new EventEmitter<any>();
+  @Output() FirmaClickedEvent          = new EventEmitter<any>();
+  /*
   @Output() FachbereichClickedEvent    = new EventEmitter<any>();
   @Output() FachfirmaClickedEvent      = new EventEmitter<any>();
+
+   */
   @Output() ProjektClickedEvent        = new EventEmitter<any>();
 
   @Input() Titel: string;
@@ -52,6 +58,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
   public CanDelete: boolean;
   public Editorconfig: any;
   public Ablage: string;
+  private DialogbreiteMerker: number;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -59,6 +66,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
               public DBProjekt: DatabaseProjekteService,
               public DBStandort: DatabaseStandorteService,
               public DBBeteiligte: DatabaseProjektbeteiligteService,
+              public DBFirma: DatabaseProjektfirmenService,
               public Displayservice: DisplayService,
               public Pool: DatabasePoolService,
               public Const: ConstProvider) {
@@ -70,6 +78,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
       this.Titel             = this.Const.NONE;
       this.Iconname          = 'help-circle-outline';
       this.Dialogbreite      = 400;
+      this.DialogbreiteMerker = this.Dialogbreite;
       this.PositionY         = 100;
       this.ZIndex            = 3000;
       this.CanDelete         = false;
@@ -116,30 +125,12 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     try {
 
-      switch (this.DBBeteiligte.CurrentBeteiligte.Beteiligteneintragtyp) {
+      this.JoiShema = Joi.object({
 
-        case this.Const.Beteiligteneintragtypen.Person:
+        Name:  Joi.string().required().max(100),
+        Email: Joi.string().required().max(250),
 
-          this.JoiShema = Joi.object({
-
-            Name:  Joi.string().required().max(100),
-            Firma: Joi.string().required().max(100),
-
-          }).options({ stripUnknown: true });
-
-          break;
-
-        case this.Const.Beteiligteneintragtypen.Firma:
-
-          this.JoiShema = Joi.object({
-
-            Firma: Joi.string().required().max(100),
-
-          }).options({ stripUnknown: true });
-
-          break;
-      }
-
+      }).options({ stripUnknown: true });
 
     } catch (error) {
 
@@ -152,6 +143,8 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
     try {
 
       this.Displayservice.AddDialog(this.Displayservice.Dialognamen.Beteiligteneditor, this.ZIndex);
+
+      this.DialogbreiteMerker = this.Dialogbreite;
 
       this.SetupValidation();
       this.PrepareData();
@@ -187,7 +180,8 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
       }
       else {
 
-        this.Ablage = '';
+        this.Ablage       = '';
+        this.Dialogbreite = this.DialogbreiteMerker;
       }
 
       this.CanDelete = false;
@@ -316,7 +310,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
     try {
 
-      this.DBBeteiligte.CurrentBeteiligte.Beteiligteneintragtyp = event.detail.value;
+      // this.DBBeteiligte.CurrentBeteiligte.Beteiligteneintragtyp = event.detail.value;
 
       this.SetupValidation();
 
@@ -381,6 +375,42 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Beteiligten Editor', 'DeleteButtonClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  GetFirmanameByFirmaID(firmaid: string): string {
+
+    try {
+
+      let Firma: Projektfirmenstruktur;
+
+      if(this.Projekt !== null) {
+
+        Firma = lodash.find(this.Projekt.Firmenliste, {FirmenID: firmaid});
+
+        if(lodash.isUndefined(Firma)) return 'unbekannt';
+        else return Firma.Firma;
+      }
+      else return 'unbekannt';
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'GetFirmanameByFirmaID', this.Debug.Typen.Component);
+    }
+  }
+
+  async AblageLoeschenButtonClicked() {
+
+    try {
+
+      await navigator.clipboard.writeText('');
+
+      this.PrepareData();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Beteiligten Editor', 'AblageLoeschenButtonClicked', this.Debug.Typen.Component);
     }
   }
 }

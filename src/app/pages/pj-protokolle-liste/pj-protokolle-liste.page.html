@@ -165,14 +165,14 @@
                         (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
                         (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
 
-<pj-beteiligten-auswahl *ngIf="ShowBeteiligteauswahl"
+<pj-firmen-auswahl *ngIf="ShowBeteiligteauswahl"
                         [Titel]="GetBeteiligtenauswahlTitel()"
                         [ZIndex]="4000"
                         [Multiselect]="true"
                         Iconname="people-outline"
                         [AuswahlIDliste]="AuswahlIDliste"
                         (CancelClickedEvent)="ShowBeteiligteauswahl = false"
-                        (OkClickedEvent)="BeteiligteauswahlOkButtonClicked($event)"></pj-beteiligten-auswahl>
+                        (OkClickedEvent)="BeteiligteauswahlOkButtonClicked($event)"></pj-firmen-auswahl>
 
 <pj-gebaeude-raumauswahl *ngIf="ShowRaumauswahl" [Titel]="'Gebäudeteil auswählen'" [Dialogbreite]="StrukturDialogbreite" [Dialoghoehe]="StrukturDialoghoehe"
                          [PositionY]="DialogPosY" [ZIndex]="4000"

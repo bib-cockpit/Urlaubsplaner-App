@@ -36,6 +36,8 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
   @Input() Multiselect: boolean;
   @Input() Dialogbreite: number;
   @Input() ZIndex: number;
+  @Input() OnlyProjektmitarbeiter: boolean;
+
 
   @Output() OkClickedEvent     = new EventEmitter<string[]>();
   @Output() CancelClickedEvent = new EventEmitter();
@@ -79,6 +81,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
       this.ZIndex                      = 3000;
       this.Mitarbeiterliste            = [];
       this.FilterSubscription          = null;
+      this.OnlyProjektmitarbeiter      = true;
 
     } catch (error) {
 
@@ -152,13 +155,29 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
       if(this.Pool.Mitarbeiterliste !== null) {
 
-        this.Lastletter = '';
+        this.Lastletter       = '';
+        this.Mitarbeiterliste = [];
 
         // Nach Namen sortieren
 
-        this.Mitarbeiterliste = lodash.cloneDeep(this.Pool.Mitarbeiterliste);
+        if(this.OnlyProjektmitarbeiter) {
 
-        Liste = lodash.cloneDeep(this.Pool.Mitarbeiterliste);
+          if(this.DB.CurrentProjekt !== null) {
+
+            for(let id of this.DB.CurrentProjekt.MitarbeiterIDListe) {
+
+              Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: id});
+
+              if(!lodash.isUndefined(Mitarbeiter)) this.Mitarbeiterliste.push(Mitarbeiter);
+            }
+          }
+        }
+        else {
+
+          this.Mitarbeiterliste = lodash.cloneDeep(this.Pool.Mitarbeiterliste);
+        }
+
+        Liste = lodash.cloneDeep(this.Mitarbeiterliste);
         Liste = lodash.filter(Liste, (currentmit: Mitarbeiterstruktur) => {
 
           return currentmit.Archiviert === false;

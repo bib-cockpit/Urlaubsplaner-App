@@ -15,8 +15,9 @@ export class CheckboxClonComponent implements OnInit {
   @Input() CanUnselect: boolean = true;
   @Input() Index:   number      = -1;
   @Input() Background:   string = 'white';
+  @Input() Value:        string = null;
 
-  @Output() CheckChanged: EventEmitter<{status: boolean; index: number; event: any}> = new EventEmitter<{status: boolean; index: number; event: any}>();
+  @Output() CheckChanged: EventEmitter<{status: boolean; index: number; event: any; value: string}> = new EventEmitter<{status: boolean; index: number; event: any; value: string}>();
 
   public ImgSource: string;
 
@@ -58,7 +59,7 @@ export class CheckboxClonComponent implements OnInit {
 
       if(this.Enabled && this.CanUnselect === true || this.Enabled && this.CanUnselect === false && this.Checked === false) {
 
-        this.CheckChanged.emit({status: !this.Checked, index: this.Index, event: event});
+        this.CheckChanged.emit({status: !this.Checked, index: this.Index, event: event, value: this.Value});
 
       }
     } catch (error) {

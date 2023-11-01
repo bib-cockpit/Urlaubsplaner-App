@@ -140,16 +140,25 @@
                     (SelectProjektfolderEvent)="SelectProjektfolderHandler()"
                     (EditRaumClickedEvent)="EditRaumClickedHandler($event)"
                     (EditMitarbeiterEvent)="EditMitarbeiterauswahl()"
-                    (ImportOutlookKontakteEvent)="ShowOutlookkontakteAuswahl = true">
+                    (ImportOutlookKontakteEvent)="ShowOutlookkontakteAuswahl = true"
+                   (FirmaClickedEvend)="FirmaClickedEventHandler($event)"
+                   (AddFirmaClickedEvent)="AddFirmaClickedEventHandler()">
 </pj-projekt-editor>
 
 <pj-beteiligten-editor *ngIf="ShowBeteiligteneditor" [Dialogbreite]="600" [Titel]="GetBerteiligteeditorTitel()" Iconname="color-filter-outline"
                        [Projekt]="DB.CurrentProjekt"
                        (CancelClickedEvent)="ShowBeteiligteneditor = false"
                        (OkClickedEvent)="ShowBeteiligteneditor = false"
-                       (DeleteClickedEvent)="ShowBeteiligteneditor = false"
-                       (FachbereichClickedEvent)="BeteiligteFachbereichClickedEventHandler()" (FachfirmaClickedEvent)="BeteiligteFachfirmaClickedEventHandler()">
+                       (FirmaClickedEvent)="BeteiligteFirmaClickedEventHandler()"
+                       (DeleteClickedEvent)="ShowBeteiligteneditor = false">
 </pj-beteiligten-editor>
+
+<pj-firmen-editor *ngIf="ShowFirmeneditor" [Dialogbreite]="600" [Titel]="GetFirmaeditorTitel()" Iconname="color-filter-outline"
+                       [Projekt]="DB.CurrentProjekt"
+                       (CancelClickedEvent)="ShowFirmeneditor = false"
+                       (OkClickedEvent)="ShowFirmeneditor = false"
+                       (DeleteClickedEvent)="ShowFirmeneditor = false" (FachbereichClickedEvent)="FirmaFachbereichClickedEventHandler()">
+</pj-firmen-editor>
 
 <pj-gebaeude-bauteileditor *ngIf="ShowBauteilEditor" [PositionY]="200" [Dialoghoehe]="200" [Dialogbreite]="300" Iconname="hammer-outline" [Titel]="GetBauteileditorTitel()"
                        (CancelClickedEvent)="ShowBauteilEditor = false"
@@ -173,6 +182,7 @@
                         [Dialogbreite]="600"
                         [Multiselect]="Multiselect"
                         [AuswahlIDliste]="AuswahlIDliste"
+                        [OnlyProjektmitarbeiter]="false"
                         (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
                         (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
                         (StandortfilterClickedEvent)="MitarbeiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>

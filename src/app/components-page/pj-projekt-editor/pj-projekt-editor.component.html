@@ -24,6 +24,18 @@
               </td>
               <td style="width: 20px"></td>
               <td>
+                <div class="menubuttonclass" (click)="FirmenMenuButtonClicked()">
+                  <table class="paddingsmalltable">
+                    <tr>
+                      <td><ion-icon name="business-outline" [color]="Bereich === Bereiche.Firmen ? 'schwarz' : 'weiss'"></ion-icon></td>
+                      <td [style.color]="Bereich === Bereiche.Firmen ? '#000000' : 'white'">Firmen</td>
+                      <td [style.color]="Bereich === Bereiche.Firmen ? '#000000' : 'white'">[{{DB.CurrentProjekt.Firmenliste.length}}]</td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+              <td style="width: 20px"></td>
+              <td>
                 <div class="menubuttonclass" (click)="BeteiligteMenuButtonClicked()">
                   <table class="paddingsmalltable">
                     <tr>
@@ -131,7 +143,10 @@
                           </ion-row>
                           <ion-row>
                             <ion-col [size]="Tools.GetButtonvalueSize()">
-                              <input-clone (TextChanged)="TextChanged($event)"  [Required]="true" [MinLength]="3" [MaxLength]="20" Titel="Projektkurzname" [(Value)]="DB.CurrentProjekt.Projektkurzname"></input-clone>
+                              <input-clone (TextChanged)="TextChanged($event)" [Required]="true" [MinLength]="3" [MaxLength]="20" Titel="Projektkurzname" [(Value)]="DB.CurrentProjekt.Projektkurzname"></input-clone>
+                            </ion-col>
+                            <ion-col [size]="Tools.GetButtonvalueSize()">
+                              <input-clone (TextChanged)="TextChanged($event)" [MinLength]="3" [MaxLength]="250" Titel="Projektmailadresse" [(Value)]="DB.CurrentProjekt.Projektmailadresse"></input-clone>
                             </ion-col>
                           </ion-row>
                           <ion-row>
@@ -413,6 +428,62 @@
 
             </ng-container>
 
+            <div *ngSwitchCase="Bereiche.Firmen" class="contentrightinnerclass">
+              <!-- Firmenliste -->
+              <table  *ngIf="DB.CurrentProjekt" style="width: 100%">
+                <tr>
+                  <td style="height: 42px; font-size: 120%; font-weight: bold"><b>Firmen</b></td>
+                </tr>
+              </table>
+
+              <ion-list class="ion-no-padding">
+                <ion-item class="ion-text-wrap" class="ion-no-padding" *ngFor="let Firma of Firmenliste, let i = index" (click)="FirmaButtonClicked(Firma)">
+                  <table class="paddingsmalltable" width="100%">
+                    <tr>
+                      <td>
+                        <table>
+                          <tr>
+                            <td style="padding-top: 3px;font-size: 90%">
+                              {{Firma.Firma}}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="padding-top: 3px;font-size: 90%">
+                              {{DBFirmen.GetFirmaFachbereichname(Firma.Fachfirmentyp)}}
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </ion-item>
+
+              </ion-list>
+
+              <table *ngIf="Firmenliste.length === 0" class="paddingtable" width="100%">
+                <tr>
+                  <td style="height: 60px; text-align: center; vertical-align: center">
+                    keine Einträge vorhanden
+                  </td>
+                </tr>
+              </table>
+
+              <table class="paddingtable">
+                <tr>
+                  <td>
+                    <div class="importoutlookbutton" (click)="AddFirmaButtonClicked()">
+                      <table class="paddingtable">
+                        <tr>
+                          <td><ion-icon name="add-circle-outline" color="weiss"></ion-icon></td>
+                          <td style="color: white; font-size: 100%">NEUER EINTRAG</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
             <div *ngSwitchCase="Bereiche.Beteiligte" class="contentrightinnerclass">
             <!-- Projektbeteiligtenliste -->
                 <table  *ngIf="DB.CurrentProjekt" style="width: 100%">
@@ -435,44 +506,27 @@
                           <table class="paddingsmalltable" width="100%">
                             <tr>
                               <td>
-                                <table>
+                                <table class="paddingsmalltable" style="font-size: 90%;">
                                   <tr>
-                                    <td style="padding-top: 3px;font-size: 90%">
-                                      <ng-container *ngIf="Beteiligt.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Person">
-                                        {{DBBeteiligte.GetBeteiligtenvorname(Beteiligt)}} {{Beteiligt.Name}}
-                                      </ng-container>
-                                      <ng-container *ngIf="Beteiligt.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Firma">
-                                        {{Beteiligt.Firma}}
-                                      </ng-container>
+                                    <td colspan="10" style="padding-top: 3px; font-weight: bold;">
+                                        {{Beteiligt.Name}} {{Beteiligt.Vorname}}
                                     </td>
                                   </tr>
-                                </table>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style="height: 3px"></td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <table class="infotable" style="white-space:nowrap;">
                                   <tr>
-                                    <td *ngIf="Beteiligt.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Person && Beteiligt.Firma !== ''">
-                                      {{Beteiligt.Firma}}
+                                    <td colspan="10" [style.color]="GetFirmanameByFirmaID(Beteiligt.FirmaID) === 'unbekannt' ? 'red' : 'black'">
+                                      {{GetFirmanameByFirmaID(Beteiligt.FirmaID)}}
                                     </td>
-                                    <ng-container *ngIf="Beteiligt.Beteiligtentyp !== 0">
-                                      <td *ngIf="Beteiligt.Beteiligteneintragtyp === Const.Beteiligteneintragtypen.Person" style="padding: 4px"><div class="bullclass"></div></td>
-                                      <td>{{DBBeteiligte.GetBeteiligtenFachbereichname(Beteiligt.Beteiligtentyp)}}</td>
-                                    </ng-container>
-                                    <ng-container *ngIf="Beteiligt.Email !== ''">
-                                      <td *ngIf="Beteiligt.Beteiligtentyp !== 0" style="padding: 4px"><div class="bullclass"></div></td>
-                                      <td>{{Beteiligt.Email}}</td>
-                                    </ng-container>
                                   </tr>
+                                  <tr>
+                                    <td>
+                                      {{Beteiligt.Possition}}
+                                    </td>
+                                    <td style="font-size: 140%">&bull;</td>
+                                    <td>{{Beteiligt.Email}}</td>
+                                  </tr>
+
                                 </table>
                               </td>
-                            </tr>
-                            <tr>
-                              <td style="height: 4px"></td>
                             </tr>
                           </table>
                         </ion-item>

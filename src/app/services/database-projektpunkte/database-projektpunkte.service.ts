@@ -154,7 +154,7 @@ export class DatabaseProjektpunkteService {
 
         if(!lodash.isUndefined(Beteiligter)) {
 
-          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+          Name =Beteiligter.Vorname + ' ' + Beteiligter.Name;
 
           Empfaengerliste.push({
 
@@ -1030,7 +1030,7 @@ export class DatabaseProjektpunkteService {
 
         if(!lodash.isUndefined(Beteiligter)) {
 
-          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+          Name = Beteiligter.Vorname + ' ' + Beteiligter.Name;
 
           this.DBFestlegungen.Empfaengerliste.push({
 
@@ -1057,7 +1057,7 @@ export class DatabaseProjektpunkteService {
 
         if(!lodash.isUndefined(Beteiligter)) {
 
-          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+          Name = Beteiligter.Vorname + ' ' + Beteiligter.Name;
 
           this.DBFestlegungen.CcEmpfaengerliste.push({
 

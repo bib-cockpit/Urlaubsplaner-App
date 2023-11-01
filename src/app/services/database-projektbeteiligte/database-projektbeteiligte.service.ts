@@ -107,22 +107,6 @@ export class DatabaseProjektbeteiligteService {
     }
   }
 
-
-  GetBeteiligtenFachbereichname(typnummer: number): string {
-
-    try {
-
-      let Typ = lodash.find(this.Beteiligtentypenliste, {Typnummer: typnummer });
-
-      if(lodash.isUndefined(Typ) === false) return Typ.Name;
-      else return 'Unbekannt';
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Projektbeteiligte', 'GetBeteiligtenFachbereichname', this.Debug.Typen.Service);
-    }
-  }
-
   GetEmptyProjektbeteiligte(): Projektbeteiligtestruktur {
 
     try {
@@ -130,15 +114,12 @@ export class DatabaseProjektbeteiligteService {
       return {
 
         BeteiligtenID: null,
-        Beteiligteneintragtyp: this.Const.Beteiligteneintragtypen.Person,
-        Beteiligtentyp: 0,
-        Fachfirmentyp: 0,
         Email: "",
-        Firma: "",
+        FirmaID: null,
         Anrede: this.Const.Anredevariante.Frau,
-        Kuerzel: "",
         Mobil: "",
         Name: "",
+        Possition: "",
         Ort: "",
         PLZ: "",
         Strasse: "",
@@ -158,18 +139,4 @@ export class DatabaseProjektbeteiligteService {
     }
   }
 
-  GetBeteiligtenFachfirmaname(fachfirmentypnummer: number): string {
-
-    try {
-
-      let Typ: Fachfirmenypenstruktur = lodash.find(this.Fachfirmentypenliste, {Typnummer: fachfirmentypnummer });
-
-      if(lodash.isUndefined(Typ) === false) return Typ.Name;
-      else return 'Unbekannt';
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Projektbeteiligte', 'GetBeteiligtenFachfirmaname', this.Debug.Typen.Service);
-    }
-  }
 }

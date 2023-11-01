@@ -21,10 +21,53 @@
         <div class="innerkeeperclass">
           <ion-grid *ngIf="DataReady()">
             <ion-row>
-              <ion-col size="3">
+              <ion-col size="6">
                 <ion-text color="baeblau"><b>Empfänger</b></ion-text>
               </ion-col>
+              <ion-col size="6">
+                <ion-text color="baeblau"><b>Kopienempfänger</b></ion-text>
+              </ion-col>
             </ion-row>
+            <ion-row>
+              <ion-col size="6">
+                <div style="border: 1px solid black; width: 100%; padding: 2px; height: 100%">
+
+                  <table class="paddingsmalltable">
+                    <tr style="font-weight: bold; font-size: 90%;">
+                      <td>Name</td>
+                      <td>Firma</td>
+                      <td>Email</td>
+                    </tr>
+                    <tr *ngFor="let Empfaenger of DBLOPListe.CurrentLOPListe.Empfaengerliste" style="font-size: 90%;">
+                      <td>{{Empfaenger.Name}}</td>
+                      <td>{{Empfaenger.Firma}}</td>
+                      <td>{{Empfaenger.Email}}</td>
+                    </tr>
+                  </table>
+
+                </div>
+              </ion-col>
+              <ion-col size="6">
+                <div style="border: 1px solid black; width: 100%; padding: 2px; height: 100%">
+
+                  <table class="paddingsmalltable">
+                    <tr style="font-weight: bold; font-size: 90%;">
+                      <td>Name</td>
+                      <td>Firma</td>
+                      <td>Email</td>
+                    </tr>
+                    <tr *ngFor="let CcEmpfaenger of DBLOPListe.CurrentLOPListe.CcEmpfaengerliste" style="font-size: 90%;">
+                      <td>{{CcEmpfaenger.Name}}</td>
+                      <td>{{CcEmpfaenger.Firma}}</td>
+                      <td>{{CcEmpfaenger.Email}}</td>
+                    </tr>
+                  </table>
+
+                </div>
+              </ion-col>
+            </ion-row>
+
+            <!--
             <ion-row>
               <ion-col size="6">
                 <input-clone [MinHeight]="44" [Lines]="LinesanzahlEmpfaenger"
@@ -43,11 +86,8 @@
                 </input-clone>
               </ion-col>
             </ion-row>
-            <ion-row>
-              <ion-col size="3">
-                <ion-text color="baeblau"><b>Kopienempfänger</b></ion-text>
-              </ion-col>
-            </ion-row>
+            -->
+            <!--
             <ion-row>
               <ion-col *ngIf="ShowCcEmpfaengerExtern === true" size="6">
                 <input-clone [MinHeight]="44" [Lines]="LinesanzahlCcEmpfaenger"
@@ -66,6 +106,7 @@
                 </input-clone>
               </ion-col>
             </ion-row>
+            -->
             <ion-row>
               <ion-col size="3">
                 <ion-text color="baeblau"><b>Betreff</b></ion-text>

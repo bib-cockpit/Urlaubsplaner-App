@@ -113,18 +113,56 @@
 
             <ion-row>
               <ion-col size="3">
+
+                <table class="paddingsmalltable">
+                  <tr>
+                    <td colspan="2">
+                      <ion-text color="baeblau"><b>Zuständige Firma</b></ion-text>
+                    </td>
+                  </tr>
+                  <tr *ngFor="let Firma of DBProjekt.CurrentProjekt.Firmenliste">
+                    <td>
+                      <checkbox-clon [Checked]="FirmaIsChecked(Firma.FirmenID)" (CheckChanged)="FirmaCheckChanged($event, Firma.FirmenID)"></checkbox-clon>
+                    </td>
+                    <td>
+                      {{Firma.Firma}}
+                    </td>
+                  </tr>
+                </table>
+
+                <!--
+
                 <input-clone [MinHeight]="44" [Lines]="GetLinienanzahl()"
                              [Clickable]="true" [Enabled]="false" Titel="Zuständig Extern" [Value]="GetZustaendigExternListe()" (click)="ZustaendigExternClicked.emit()"></input-clone>
+                             -->
               </ion-col>
+
               <ion-col size="3">
+                <table class="paddingsmalltable">
+                  <tr>
+                    <td colspan="2">
+                      <ion-text color="baeblau"><b>Zuständig bei BAE</b></ion-text>
+                    </td>
+                  </tr>
+                  <tr *ngFor="let MitarbeiterID of DBProjekt.CurrentProjekt.MitarbeiterIDListe">
+                    <td>
+                      <checkbox-clon [Checked]="MitarbeiterIsChecked(MitarbeiterID)" (CheckChanged)="MitarbeiterCheckChanged($event, MitarbeiterID)"></checkbox-clon>
+                    </td>
+                    <td>
+                      {{GetMitarbeiterName(MitarbeiterID)}}
+                    </td>
+                  </tr>
+                </table>
+                <!--
                 <input-clone [MinHeight]="44" [Lines]="GetLinienanzahl()"
                              [Clickable]="true" [Enabled]="false" Titel="Zuständig Intern" [Value]="GetZustaendigInternListe()"
                              (click)="ZustaendigInternClicked.emit()"></input-clone>
+                             -->
               </ion-col>
             </ion-row>
             <ion-row>
               <ion-col>
-                <ion-text color="burnicklgruen"><b>Thematik</b></ion-text>
+                <ion-text color="baeblau"><b>Thematik</b></ion-text>
               </ion-col>
             </ion-row>
             <ion-row>
@@ -134,7 +172,7 @@
             </ion-row>
             <ion-row>
               <ion-col>
-                <ion-text color="burnicklgruen"><b>Beschreibung</b></ion-text>
+                <ion-text color="baeblau"><b>Beschreibung</b></ion-text>
               </ion-col>
             </ion-row>
             <ion-row>
@@ -150,7 +188,7 @@
           <ion-grid>
             <ion-row>
               <ion-col>
-                <ion-text color="burnicklgruen"><b>{{DB.CurrentProjektpunkt.Anmerkungenliste.length > 1 ? 'Anmerkungen' : 'Anmerkung'}}</b></ion-text>
+                <ion-text color="baeblau"><b>{{DB.CurrentProjektpunkt.Anmerkungenliste.length > 1 ? 'Anmerkungen' : 'Anmerkung'}}</b></ion-text>
               </ion-col>
             </ion-row>
             <ion-row>
@@ -160,7 +198,8 @@
                   <tr *ngFor="let Eintrag of DB.CurrentProjektpunkt.Anmerkungenliste; let i = index">
                     <td style="width: 120px">
                       <button-value-date-small
-                        [Buttontext]="GetAnmerkungdatum(Eintrag.Zeitstempel, i)" [ElementID]="'anmerkungdatum_' + i.toString()"></button-value-date-small>
+                        [Buttontext]="GetAnmerkungdatum(Eintrag.Zeitstempel, i)" [Datum]="GetAnmerkungDatum(Eintrag)" [ElementID]="'anmerkungdatum_' + i.toString()" (TimeChanged)="AnmerkungTimeChanged($event, i)">
+                      </button-value-date-small>
                     </td>
                     <td style="width: auto">
                       <ion-textarea  [autoGrow]="true" style="border: 1px solid black; border-radius: 4px; margin: 0px" (ionChange)="AnmerkungTextChangedHandler($event, i)" [value]="Eintrag.Anmerkung"></ion-textarea>
@@ -182,7 +221,7 @@
             </ion-row>
             <ion-row>
               <ion-col>
-                <ion-text color="burnicklgruen"><b>{{DB.CurrentProjektpunkt.Bilderliste.length > 1 ? 'Bilder' : 'Bild'}}</b></ion-text>
+                <ion-text color="baeblau"><b>{{DB.CurrentProjektpunkt.Bilderliste.length > 1 ? 'Bilder' : 'Bild'}}</b></ion-text>
               </ion-col>
             </ion-row>
             <ion-row>

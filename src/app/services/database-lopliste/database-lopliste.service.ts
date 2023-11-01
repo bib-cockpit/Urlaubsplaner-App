@@ -20,6 +20,8 @@ import {BasicsProvider} from "../basics/basics";
 import {KostengruppenService} from "../kostengruppen/kostengruppen.service";
 import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 import {Protokollstruktur} from "../../dataclasses/protokollstruktur";
+import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
+import {FIMitarbeiterlistePageModule} from "../../pages/fi-mitarbeiterliste/fi-mitarbeiterliste.module";
 
 @Injectable({
   providedIn: 'root'
@@ -108,6 +110,105 @@ export class DatabaseLoplisteService {
     }
   }
 
+  public PrepareLOPListeEmaildata() {
+
+    try {
+
+      let Beteiligter: Projektbeteiligtestruktur;
+      let Mitarbeiter: Mitarbeiterstruktur;
+      let Name: string;
+      let Firma: Projektfirmenstruktur;
+      let CcEmpfaengerliste: {
+        Name:  string;
+        Firma: string;
+        Email: string;
+      }[];
+      let Empfaengerliste: {
+        Name:  string;
+        Firma: string;
+        Email: string;
+      }[];
+
+      // Teilnehmer bestimmen
+
+      this.CurrentLOPListe.ExterneTeilnehmerliste = this.GetExterneTeilnehmerliste(true, true);
+      this.CurrentLOPListe.InterneTeilnehmerliste = this.GetInterneTeilnehmerliste(true, true);
+
+      // Empfaenger bestimmen
+
+      Empfaengerliste   = [];
+      CcEmpfaengerliste = [];
+
+      // Externe Teilnehmer der Firmen hinzufügen
+
+      for(let ExternEmpfaengerID of this.CurrentLOPListe.EmpfaengerExternIDListe) {
+
+        Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: ExternEmpfaengerID});
+
+        if(!lodash.isUndefined(Beteiligter)) {
+
+          Name  = Beteiligter.Vorname + ' ' + Beteiligter.Name;
+          Firma = lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, {FirmenID: Beteiligter.FirmaID });
+
+          Empfaengerliste.push({
+
+            Name: Name,
+            Email: Beteiligter.Email,
+            Firma: lodash.isUndefined(Firma) ? '' : Firma.Firma
+          });
+        }
+      }
+
+      // Projektemailadressen der Externen r Firmen hinzufügen
+
+      for(Firma of this.DBProjekt.CurrentProjekt.Firmenliste) {
+
+        if(lodash.indexOf(this.CurrentLOPListe.EmpfaengerExternIDListe, Firma.FirmenID) !== -1) {
+
+          Empfaengerliste.push({
+
+            Name: 'Projektemailadresse',
+            Email: Firma.Email,
+            Firma: Firma.Firma
+          });
+        }
+      }
+
+      // Mitarbeiter zu Cc Liste hinzufügen
+
+      for(let InternEmpfaengerID of this.CurrentLOPListe.EmpfaengerInternIDListe) {
+
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: InternEmpfaengerID});
+
+        if(!lodash.isUndefined(Mitarbeiter)) CcEmpfaengerliste.push({
+
+          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
+          Email: Mitarbeiter.Email,
+          Firma: 'BAE'
+        });
+      }
+
+      // Projektemailadresse zu Cc Liste hinzufügen
+
+      if(this.DBProjekt.CurrentProjekt.Projektmailadresse !== '' && lodash.indexOf(this.CurrentLOPListe.EmpfaengerInternIDListe, this.DBProjekt.CurrentProjekt._id) !== -1) {
+
+        CcEmpfaengerliste.push({
+
+          Name: 'Projektemailadresse',
+          Email: this.DBProjekt.CurrentProjekt.Projektmailadresse,
+          Firma: 'BAE'
+        });
+      }
+
+      this.CurrentLOPListe.Empfaengerliste   = Empfaengerliste;
+      this.CurrentLOPListe.CcEmpfaengerliste = CcEmpfaengerliste;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
+    }
+  }
+
   public SaveLOPListeInSites(
 
     filename: string,
@@ -124,18 +225,7 @@ export class DatabaseLoplisteService {
       let Punkteindex: number;
       let ExternZustaendigListe: string[][] = [];
       let InternZustaendigListe: string[][] = [];
-      let Kostengruppenliste: string[];
-      let Beteiligter: Projektbeteiligtestruktur;
-      let Mitarbeiter: Mitarbeiterstruktur;
-      let Name: string;
-      let CcEmpfaengerliste: {
-        Name:  string;
-        Email: string;
-      }[];
-      let Empfaengerliste: {
-        Name:  string;
-        Email: string;
-      }[];
+
       let Daten: {
 
         DirectoryID: string;
@@ -160,7 +250,6 @@ export class DatabaseLoplisteService {
 
       ExternZustaendigListe = [];
       InternZustaendigListe = [];
-      Kostengruppenliste    = [];
       Punkteindex           = 0;
 
       for(Projektpunkt of Punkteliste) {
@@ -181,77 +270,8 @@ export class DatabaseLoplisteService {
         Punkteindex++;
       }
 
-      debugger;
-
       Daten.LOPListe.ExternZustaendigListe = ExternZustaendigListe;
       Daten.LOPListe.InternZustaendigListe = InternZustaendigListe;
-
-      // Teilnehmer bestimmen
-
-      Daten.LOPListe.ExterneTeilnehmerliste = this.GetExterneTeilnehmerliste(true);
-      Daten.LOPListe.InterneTeilnehmerliste = this.GetInterneTeilnehmerliste(true);
-
-      // Empfaenger bestimmen
-
-      Empfaengerliste   = [];
-      CcEmpfaengerliste = [];
-
-      for(let ExternEmpfaengerID of Daten.LOPListe.EmpfaengerExternIDListe) {
-
-        Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: ExternEmpfaengerID});
-
-        if(!lodash.isUndefined(Beteiligter)) {
-
-          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
-
-          Empfaengerliste.push({
-
-            Name: Name,
-            Email: Beteiligter.Email
-          });
-        }
-      }
-
-      for(let InternEmpfaengerID of Daten.LOPListe.EmpfaengerInternIDListe) {
-
-        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: InternEmpfaengerID});
-
-        if(!lodash.isUndefined(Mitarbeiter)) Empfaengerliste.push({
-
-          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
-          Email: Mitarbeiter.Email
-        });
-      }
-
-      for(let CcExternEmpfaengerID of Daten.LOPListe.CcEmpfaengerExternIDListe) {
-
-        Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: CcExternEmpfaengerID});
-
-        if(!lodash.isUndefined(Beteiligter)) {
-
-          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
-
-          CcEmpfaengerliste.push({
-
-            Name: Name,
-            Email: Beteiligter.Email
-          });
-        }
-      }
-
-      for(let CcInternEmpfaengerID of Daten.LOPListe.CcEmpfaengerInternIDListe) {
-
-        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: CcInternEmpfaengerID});
-
-        if(!lodash.isUndefined(Mitarbeiter)) CcEmpfaengerliste.push({
-
-          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
-          Email: Mitarbeiter.Email
-        });
-      }
-
-      Daten.LOPListe.Empfaengerliste   = Empfaengerliste;
-      Daten.LOPListe.CcEmpfaengerliste = CcEmpfaengerliste;
 
       // LOP Liste versenden
 
@@ -675,7 +695,8 @@ export class DatabaseLoplisteService {
 
           protokoll.Empfaengerliste.push({
             Email: 'p.hornburger@gmail.com',
-            Name:  'Peter Hornburger'
+            Name:  'Peter Hornburger',
+            Firma: 'BAE'
           });
         }
       }
@@ -726,7 +747,7 @@ export class DatabaseLoplisteService {
 
 
 
-  public async SendLOPListeFromSite(protokoll: LOPListestruktur): Promise<any> {
+  public async SendLOPListeFromSite(lopliste: LOPListestruktur): Promise<any> {
 
     try {
 
@@ -749,29 +770,30 @@ export class DatabaseLoplisteService {
 
       if(this.Basics.DebugNoExternalEmail) {
 
-        protokoll.Empfaengerliste   = lodash.filter(protokoll.Empfaengerliste,   { Email : 'p.hornburger@gmail.com' });
-        protokoll.CcEmpfaengerliste = lodash.filter(protokoll.CcEmpfaengerliste, { Email : 'p.hornburger@gmail.com' });
+        lopliste.Empfaengerliste   = lodash.filter(lopliste.Empfaengerliste,   { Email : 'p.hornburger@gmail.com' });
+        lopliste.CcEmpfaengerliste = lodash.filter(lopliste.CcEmpfaengerliste, { Email : 'p.hornburger@gmail.com' });
 
-        if(protokoll.Empfaengerliste.length === 0) {
+        if(lopliste.Empfaengerliste.length === 0) {
 
-          protokoll.Empfaengerliste.push({
+          lopliste.Empfaengerliste.push({
             Email: 'p.hornburger@gmail.com',
-            Name:  'Peter Hornburger'
+            Name:  'Peter Hornburger',
+            Firma: 'BAE'
           });
         }
       }
 
       Daten = {
 
-        Betreff:     protokoll.Betreff,
-        Nachricht:   protokoll.Nachricht,
+        Betreff:     lopliste.Betreff,
+        Nachricht:   lopliste.Nachricht,
         Signatur:    this.Pool.GetFilledSignatur(false),
         UserID:      this.GraphService.Graphuser.id,
-        FileID:      protokoll.FileID,
-        Filename:    protokoll.Filename,
+        FileID:      lopliste.FileID,
+        Filename:    lopliste.Filename,
         Token:       token,
-        Empfaengerliste:   protokoll.Empfaengerliste,
-        CcEmpfaengerliste: protokoll.CcEmpfaengerliste
+        Empfaengerliste:   lopliste.Empfaengerliste,
+        CcEmpfaengerliste: lopliste.CcEmpfaengerliste
       };
 
       return new Promise((resolve, reject) => {
@@ -818,7 +840,6 @@ export class DatabaseLoplisteService {
 
       let Observer: Observable<any>;
       let Teamsfile: Teamsfilesstruktur;
-      let Punkteliste: Projektpunktestruktur[];
       let Projektpunkt: Projektpunktestruktur;
       let Punkteindex: number;
       let ExternZustaendigListe: string[][];
@@ -829,10 +850,12 @@ export class DatabaseLoplisteService {
       let Name: string;
       let CcEmpfaengerliste: {
         Name:  string;
+        Firma: string;
         Email: string;
       }[];
       let Empfaengerliste: {
         Name:  string;
+        Firma: string;
         Email: string;
       }[];
       let Daten: {
@@ -857,36 +880,6 @@ export class DatabaseLoplisteService {
         ShowMailinformations: showmailinformations
       };
 
-      // LOPListepunkte eintragen
-
-      Punkteliste = [];
-
-      /*
-
-      for(let id of lopliste.ProjektpunkteIDListe) {
-
-        Projektpunkt = lodash.find(this.Pool.Projektpunkteliste[lopliste.Projektkey], (punkt: Projektpunktestruktur) => {
-
-          return punkt._id === id && punkt.LOPListeID === lopliste._id;
-        });
-
-        if(lodash.isUndefined(Projektpunkt) === false) {
-
-          Punkteliste.push(Projektpunkt);
-        }
-      }
-
-      Punkteliste.sort((a: Projektpunktestruktur, b: Projektpunktestruktur) => {
-
-        if (a.Startzeitsptempel < b.Startzeitsptempel) return -1;
-        if (a.Startzeitsptempel > b.Startzeitsptempel) return 1;
-        return 0;
-      });
-
-       */
-
-      Daten.LOPListe.Projektpunkteliste = Punkteliste;
-
       // Zuständige Personen eintragen
 
       ExternZustaendigListe = [];
@@ -894,7 +887,7 @@ export class DatabaseLoplisteService {
       Kostengruppenliste    = [];
       Punkteindex           = 0;
 
-      for(Projektpunkt of Punkteliste) {
+      for(Projektpunkt of Daten.LOPListe.Projektpunkteliste) {
 
         ExternZustaendigListe[Punkteindex] = [];
         InternZustaendigListe[Punkteindex] = [];
@@ -926,8 +919,8 @@ export class DatabaseLoplisteService {
 
       // Teilnehmer bestimmen
 
-      Daten.LOPListe.ExterneTeilnehmerliste = this.GetExterneTeilnehmerliste(true);
-      Daten.LOPListe.InterneTeilnehmerliste = this.GetInterneTeilnehmerliste(true);
+      Daten.LOPListe.ExterneTeilnehmerliste = this.GetExterneTeilnehmerliste(true, true);
+      Daten.LOPListe.InterneTeilnehmerliste = this.GetInterneTeilnehmerliste(true, true);
 
       // Empfaenger bestimmen
 
@@ -940,12 +933,13 @@ export class DatabaseLoplisteService {
 
         if(!lodash.isUndefined(Beteiligter)) {
 
-          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+          Name = Beteiligter.Vorname + ' ' + Beteiligter.Name;
 
           Empfaengerliste.push({
 
             Name: Name,
-            Email: Beteiligter.Email
+            Email: Beteiligter.Email,
+            Firma: '',
           });
         }
       }
@@ -957,7 +951,8 @@ export class DatabaseLoplisteService {
         if(!lodash.isUndefined(Mitarbeiter)) Empfaengerliste.push({
 
           Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
-          Email: Mitarbeiter.Email
+          Email: Mitarbeiter.Email,
+          Firma: ''
         });
       }
 
@@ -967,12 +962,13 @@ export class DatabaseLoplisteService {
 
         if(!lodash.isUndefined(Beteiligter)) {
 
-          Name = Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person ? Beteiligter.Vorname + ' ' + Beteiligter.Name : Beteiligter.Firma;
+          Name = Beteiligter.Vorname + ' ' + Beteiligter.Name;
 
           CcEmpfaengerliste.push({
 
             Name: Name,
-            Email: Beteiligter.Email
+            Email: Beteiligter.Email,
+            Firma: ''
           });
         }
       }
@@ -984,12 +980,16 @@ export class DatabaseLoplisteService {
         if(!lodash.isUndefined(Mitarbeiter)) CcEmpfaengerliste.push({
 
           Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
-          Email: Mitarbeiter.Email
+          Email: Mitarbeiter.Email,
+          Firma: ''
         });
       }
 
       Daten.LOPListe.Empfaengerliste   = Empfaengerliste;
       Daten.LOPListe.CcEmpfaengerliste = CcEmpfaengerliste;
+
+      this.CurrentLOPListe.Empfaengerliste   = Empfaengerliste;
+      this.CurrentLOPListe.CcEmpfaengerliste = CcEmpfaengerliste;
 
       // LOPListe versenden
 
@@ -1037,7 +1037,7 @@ export class DatabaseLoplisteService {
 
       if(lodash.isUndefined(Mitarbeiter) === false) {
 
-        return Mitarbeiter.Kuerzel;
+        return Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
       }
       else {
 
@@ -1057,18 +1057,11 @@ export class DatabaseLoplisteService {
     try {
 
 
-      let Beteiligter: Projektbeteiligtestruktur = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, { BeteiligtenID: ZustaendigID});
+      let Firma: Projektfirmenstruktur = lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, { FirmenID: ZustaendigID});
 
-      if(lodash.isUndefined(Beteiligter) === false) {
+      if(lodash.isUndefined(Firma) === false) {
 
-        if(Beteiligter.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person) {
-
-          return Beteiligter.Name;
-        }
-        else {
-
-          return Beteiligter.Firma;
-        }
+        return Firma.Firma;
       }
       else {
 
@@ -1162,7 +1155,7 @@ export class DatabaseLoplisteService {
     }
   }
 
-  public GetExterneTeilnehmerliste(getliste: boolean): any {
+  public GetExterneTeilnehmerliste(getliste: boolean, addfirma: boolean): any {
 
     try {
 
@@ -1170,6 +1163,8 @@ export class DatabaseLoplisteService {
       let Value: string = '';
       let Eintrag;
       let Liste: string[] = [];
+      let Firma: Projektfirmenstruktur;
+
 
       for(let id of this.CurrentLOPListe.BeteiligExternIDListe) {
 
@@ -1177,16 +1172,18 @@ export class DatabaseLoplisteService {
 
         if(!lodash.isUndefined(Beteiligte)) {
 
-          if(Beteiligte.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person) {
+          Eintrag = this.DBBeteiligte.GetBeteiligtenvorname(Beteiligte) + ' ' + Beteiligte.Name;
 
-            Eintrag = this.DBBeteiligte.GetBeteiligtenvorname(Beteiligte) + ' ' + Beteiligte.Name;
-            Value +=  Eintrag + '\n';
-          }
-          else {
+          if(addfirma && this.DBProjekt.CurrentProjekt !== null) {
 
-            Eintrag = Beteiligte.Firma;
-            Value  += Eintrag + '\n';
+            Firma = lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, {FirmenID: Beteiligte.FirmaID });
+
+            if(lodash.isUndefined(Firma)) Firma = null;
           }
+
+          if(Firma !== null) Eintrag += ' (' + Firma.Firma + ')';
+
+          Value +=  Eintrag + '\n';
 
           Liste.push(Eintrag);
         }
@@ -1200,7 +1197,7 @@ export class DatabaseLoplisteService {
     }
   }
 
-  public GetInterneTeilnehmerliste(getliste: boolean): any {
+  public GetInterneTeilnehmerliste(getliste: boolean, addfirma: boolean): any {
 
     try {
 
@@ -1215,7 +1212,10 @@ export class DatabaseLoplisteService {
 
         if(!lodash.isUndefined(Teammitglied)) {
 
-          Eintrag = Teammitglied.Vorname + ' ' + Teammitglied.Name + ' / ' + Teammitglied.Kuerzel;
+          Eintrag = Teammitglied.Vorname + ' ' + Teammitglied.Name;
+
+          if(addfirma) Eintrag += ' (BAE)';
+
           Value +=  Eintrag + '\n';
 
           Liste.push(Eintrag);

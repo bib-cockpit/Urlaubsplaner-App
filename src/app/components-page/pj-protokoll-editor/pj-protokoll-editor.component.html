@@ -110,7 +110,7 @@
             </ng-container>
             <ng-container *ngSwitchCase="Bereiche.Themenliste">
 
-              <div style="width: 100%; overflow: hidden" [style.height.px]="Gesamthoehe">
+              <div style="padding: 4px">
 
                 <div style="width: 100%;" [style.height.px]="Titelhoehe">
                   <ion-grid>
@@ -130,205 +130,184 @@
                     </ion-row>
                   </ion-grid>
                 </div>
-                <div style="width: 100%; display: flex; justify-content: center; align-items: flex-end;" [style.height.px]="Listeheaderhoehe">
-                  <table class="listeheaderclass" style="color: black">
+
+                  <table class="listeheaderclass" style="color: black; width: 100%">
                     <tr>
                       <td style="width: 30px; text-align: center"><b>Nr.</b></td>
                       <td style="width: 600px"><b>Beschreibung</b></td>
                       <td style="width: 90px"><b>Termin</b></td>
                       <td style="width: 110px"><b>Status</b></td>
-                      <td style="width: 100px; text-align: center"><b>Zuständig</b></td>
+                      <td style="width: 160px; text-align: center"><b>Zuständig</b></td>
                     </tr>
-                  </table>
-                </div>
-
-                <div style="width: 100%; display: flex; justify-content: center; align-items: flex-start; overflow: auto" [style.height.px]="Listehoehe">
-
-                  <table  style="width: 100%">
                     <tr *ngFor="let Projektpunkt of Punkteliste; let Punkteindex = index">
-                      <td>
-                        <div  style="width: 100%; display: flex; justify-content: center; align-items: flex-start;">
 
-                          <table class="docinnertablespezial">
+                        <td align="center" valign="middle">
+
+                          <!-- Nummer -->
+
+                          <table class="nobordersmalltable">
                             <tr>
-                              <td style="width: 30px" align="center" valign="middle">
+                              <td style="text-align: center; font-size: 90%">{{Projektpunkt.Nummer}}</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td valign="top" style="height: inherit;">
 
-                                <!-- Nummer -->
+                          <!-- Aufgabe --->
 
-                                <table class="nobordersmalltable">
-                                  <tr>
-                                    <td style="text-align: center; font-size: 90%">{{Projektpunkt.Nummer}}</td>
-                                  </tr>
-                                </table>
-                              </td>
-                              <td valign="top" style="height: inherit; width: 600px">
+                          <table class="nobordersmalltable" style="width: 100%;">
+                            <tr>
+                              <td>
+                                <div (click)="ProtokollpunktClicked.emit(Projektpunkt)" class="aufgabedivclass">
 
-                                <!-- Aufgabe --->
-
-                                <table class="nobordersmalltable" style="width: 100%;">
-                                  <tr>
-                                    <td>
-                                      <div (click)="ProtokollpunktClicked.emit(Projektpunkt)" class="aufgabedivclass">
-
-                                        <table style="font-size: 90%">
-                                          <tr *ngIf="Projektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name">
-                                            <td  style="color: #FF9333; font-weight: bold; vertical-align: top; min-width: 20px">{{KostenService.GetKostengruppennameByProjektpunkt(Projektpunkt)}}</td>
-                                          </tr>
-                                          <tr>
-                                            <td [innerHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe: 'html'"></td>
-                                          </tr>
-                                        </table>
-
-
-                                      </div>
-
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-
-                                      <table>
-                                        <tr *ngFor="let Zeilenliste of Thumbnailliste[Punkteindex]; let Zeilenindex = index">
-                                          <ng-container *ngFor="let Thumb of Zeilenliste; let Thumbnailindex = index">
-                                            <td style="cursor: pointer;">
-                                              <ng-container *ngIf="Thumb !== null">
-
-                                                <table *ngIf="Thumb.weburl !== null">
-                                                  <tr>
-                                                    <td style="padding: 2px" (click)="ThumbnailClicked($event, Zeilenliste, Punkteindex)">
-                                                      <div class="imageclass">
-                                                        <img *ngIf="Thumb !== null" [src]="Thumb.largeurl" [style.width.px]="Thumbbreite"/>
-                                                      </div>
-                                                    </td>
-                                                  </tr>
-                                                  <tr>
-                                                    <td style="font-size: 90%">{{Thumb.filename}}</td>
-                                                  </tr>
-                                                </table>
-
-                                                <table *ngIf="Thumb.weburl === null">
-                                                  <tr>
-                                                    <td style="padding: 2px">
-                                                      <div class="imageclass">
-                                                        <div style="border: 1px solid gray; font-size: 80%; min-height: 120px;" [style.width.px]="Thumbbreite">
-                                                          <table width="100%">
-                                                            <tr>
-                                                              <td style="text-align: center">
-                                                                Bild nicht<br>gefunden
-                                                              </td>
-                                                            </tr>
-                                                            <tr>
-                                                              <td align="center">
-                                                                <ion-icon (click)="DeleteThumbnailClicked($event, Projektpunkt, Thumb, Punkteindex, Zeilenindex, Thumbnailindex)" name="trash" color="rot" slot="icon-only"></ion-icon>
-                                                              </td>
-                                                            </tr>
-                                                          </table>
-                                                        </div>
-                                                      </div>
-                                                    </td>
-                                                  </tr>
-                                                </table>
-
-
-
-                                              </ng-container>
-
-                                            </td>
-                                          </ng-container>
-                                        </tr>
-                                      </table>
-
-                                    </td>
-                                  </tr>
-                                </table>
-
-                              </td>
-                              <td style="height: inherit; width: 90px">
-
-                                <!-- Termin -->
-
-                                <div style="height: 100%; padding: 6px;" *ngIf="Projektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name &&
-                                    Projektpunkt.Status !== Const.Projektpunktstatustypen.Festlegung.Name &&
-                                    Projektpunkt.Status !== Const.Projektpunktstatustypen.Geschlossen.Name &&
-                                    Projektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name"
-                                     [style.background]="DBProjektpunkte.GetFaelligBackground(Projektpunkt)">
-
-                                  <table width="100%" class="nobordersmalltable">
+                                  <table style="font-size: 90%">
+                                    <tr *ngIf="Projektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name">
+                                      <td  style="color: #FF9333; font-weight: bold; vertical-align: top; min-width: 20px">{{KostenService.GetKostengruppennameByProjektpunkt(Projektpunkt)}}</td>
+                                    </tr>
                                     <tr>
-                                      <td style="font-size: 90%; text-align: center" [style.color]="DBProjektpunkte.CheckProjektpunktFaellig(Projektpunkt) === Const.Faelligkeitsstatus.Nicht_faellig ? 'black' : 'white'">
-                                        {{GetTermindatum(Projektpunkt)}}
-                                      </td>
+                                      <td [innerHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe: 'html'"></td>
                                     </tr>
                                   </table>
 
+
                                 </div>
 
                               </td>
-                              <td style="width: 110px">
+                            </tr>
+                            <tr>
+                              <td>
 
-                                <!-- Status -->
+                                <table>
+                                  <tr *ngFor="let Zeilenliste of Thumbnailliste[Punkteindex]; let Zeilenindex = index">
+                                    <ng-container *ngFor="let Thumb of Zeilenliste; let Thumbnailindex = index">
+                                      <td style="cursor: pointer;">
+                                        <ng-container *ngIf="Thumb !== null">
 
-                                <div class="statusdivclass"
-                                     [style.background]="DBProjektpunkte.GetProjektpunktstusByName(Projektpunkt.Status).Color"
-                                     (click)="ProjektpunktStatusClicked(Projektpunkt)">
-                                  {{DBProjektpunkte.GetProjektpunktstusByName(Projektpunkt.Status).Displayname}}
-                                </div>
+                                          <table *ngIf="Thumb.weburl !== null">
+                                            <tr>
+                                              <td style="padding: 2px" (click)="ThumbnailClicked($event, Zeilenliste, Punkteindex)">
+                                                <div class="imageclass">
+                                                  <img *ngIf="Thumb !== null" [src]="Thumb.largeurl" [style.width.px]="Thumbbreite"/>
+                                                </div>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td style="font-size: 90%">{{Thumb.filename}}</td>
+                                            </tr>
+                                          </table>
 
-                              </td>
+                                          <table *ngIf="Thumb.weburl === null">
+                                            <tr>
+                                              <td style="padding: 2px">
+                                                <div class="imageclass">
+                                                  <div style="border: 1px solid gray; font-size: 80%; min-height: 120px;" [style.width.px]="Thumbbreite">
+                                                    <table width="100%">
+                                                      <tr>
+                                                        <td style="text-align: center">
+                                                          Bild nicht<br>gefunden
+                                                        </td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td align="center">
+                                                          <ion-icon (click)="DeleteThumbnailClicked($event, Projektpunkt, Thumb, Punkteindex, Zeilenindex, Thumbnailindex)" name="trash" color="rot" slot="icon-only"></ion-icon>
+                                                        </td>
+                                                      </tr>
+                                                    </table>
+                                                  </div>
+                                                </div>
+                                              </td>
+                                            </tr>
+                                          </table>
 
-                              <td style="height: inherit; width: 100px">
 
-                                <!-- Zuständig -->
 
-                                <table class="nobordersmalltable" style="width: 100%">
-                                  <tr  *ngFor="let ZustaendigID of Projektpunkt.ZustaendigeInternIDListe">
-                                    <td style="text-align: center; color: black; font-size: 90%">
-                                      {{DB.GetZustaendigInternName(ZustaendigID)}}
-                                    </td>
-                                  </tr>
-                                  <tr *ngIf="Projektpunkt.ZustaendigeExternIDListe.length > 0 && Projektpunkt.ZustaendigeInternIDListe.length > 0">
-                                    <td style="text-align: center; font-size: 180%; font-weight: bold">&bull;</td>
-                                  </tr>
-                                  <tr *ngFor="let ZustaendigID of Projektpunkt.ZustaendigeExternIDListe">
-                                    <td style="text-align: center; color: black; font-size: 90%">
-                                      {{DB.GetZustaendigExternName(ZustaendigID)}}
-                                    </td>
+                                        </ng-container>
+
+                                      </td>
+                                    </ng-container>
                                   </tr>
                                 </table>
-                              </td>
 
+                              </td>
                             </tr>
                           </table>
 
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                        </td>
+                        <td style="height: inherit;">
 
-                        <ion-grid>
-                          <ion-row>
-                            <ion-col>
-                              <ion-button size="small" [color]="Valid === true ? 'burnicklbraun' : 'grau'"
-                                          (click)="Valid === true ? AddProtokollpunktClicked.emit() : null">
-                                <ion-icon name="add-circle-outline" color="weiss" slot="start"></ion-icon>
-                                <ion-text color="weiss">Neuer Eintrag</ion-text>
-                              </ion-button>
-                            </ion-col>
-                          </ion-row>
-                          <ion-row>
-                            <ion-col>
-                              <div *ngIf="CheckOkButtonEnabled()" class="savestatusdivclass" [style.background]="ProtokollSaved === true ? 'green' : 'red'"></div>
-                            </ion-col>
-                          </ion-row>
-                        </ion-grid>
+                          <!-- Termin -->
 
-                      </td>
-                    </tr>
+                          <div style="height: 100%; padding: 6px;" *ngIf="Projektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name &&
+                              Projektpunkt.Status !== Const.Projektpunktstatustypen.Festlegung.Name &&
+                              Projektpunkt.Status !== Const.Projektpunktstatustypen.Geschlossen.Name &&
+                              Projektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name"
+                               [style.background]="DBProjektpunkte.GetFaelligBackground(Projektpunkt)">
+
+                            <table width="100%" class="nobordersmalltable">
+                              <tr>
+                                <td style="font-size: 90%; text-align: center" [style.color]="DBProjektpunkte.CheckProjektpunktFaellig(Projektpunkt) === Const.Faelligkeitsstatus.Nicht_faellig ? 'black' : 'white'">
+                                  {{GetTermindatum(Projektpunkt)}}
+                                </td>
+                              </tr>
+                            </table>
+
+                          </div>
+
+                        </td>
+                        <td>
+
+                          <!-- Status -->
+
+                          <div class="statusdivclass"
+                               [style.background]="DBProjektpunkte.GetProjektpunktstusByName(Projektpunkt.Status).Color"
+                               (click)="ProjektpunktStatusClicked(Projektpunkt)">
+                            {{DBProjektpunkte.GetProjektpunktstusByName(Projektpunkt.Status).Displayname}}
+                          </div>
+
+                        </td>
+
+                        <td style="height: inherit;">
+
+                          <!-- Zuständig -->
+
+                          <table class="nobordersmalltable" style="width: 100%">
+                            <tr  *ngFor="let ZustaendigID of Projektpunkt.ZustaendigeInternIDListe">
+                              <td style="text-align: center; color: #307ac1; font-size: 90%">
+                                {{DB.GetZustaendigInternName(ZustaendigID)}}
+                              </td>
+                            </tr>
+                            <tr *ngIf="Projektpunkt.ZustaendigeExternIDListe.length > 0 && Projektpunkt.ZustaendigeInternIDListe.length > 0">
+                              <td style="text-align: center; font-size: 180%; font-weight: bold">&bull;</td>
+                            </tr>
+                            <tr *ngFor="let ZustaendigID of Projektpunkt.ZustaendigeExternIDListe">
+                              <td style="text-align: center; color: black; font-size: 90%">
+                                {{DB.GetZustaendigExternName(ZustaendigID)}}
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+
+                      </tr>
                   </table>
 
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col>
+                        <ion-button size="small" [color]="Valid === true ? 'burnicklbraun' : 'grau'"
+                                    (click)="Valid === true ? AddProtokollpunktClicked.emit() : null">
+                          <ion-icon name="add-circle-outline" color="weiss" slot="start"></ion-icon>
+                          <ion-text color="weiss">Neuer Eintrag</ion-text>
+                        </ion-button>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col>
+                        <div *ngIf="CheckOkButtonEnabled()" class="savestatusdivclass" [style.background]="ProtokollSaved === true ? 'green' : 'red'"></div>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
 
-                </div>
+
               </div>
 
             </ng-container>
