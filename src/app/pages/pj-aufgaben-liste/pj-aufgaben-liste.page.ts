@@ -104,7 +104,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   private SettingsSubscription: Subscription;
   private MitarbeiterSubscription: Subscription;
   public Datenursprung: string;
-  public ShowFavoritenauswahl: boolean;
   public ShowProjektschnellauswahl: boolean;
   public ShowMeinewocheEditor: boolean;
   public Listenhoehe: number;
@@ -199,7 +198,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.Datenursprung            = null;
       this.MitarbeiterSubscription  = null;
       this.ProtokollSubscription    = null;
-      this.ShowFavoritenauswahl     = false;
       this.ShowMeinewocheEditor     = false;
       this.Listenhoehe              = 0;
       this.Minutenhoehe             = 0;

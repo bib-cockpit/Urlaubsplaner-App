@@ -126,6 +126,19 @@
   background: white;
 }
 
+.buttonsmallclass {
+
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  border: 2px solid gray;
+  border-radius: 10px;
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+  background: white;
+}
+
 .favlistedivclass {
 
   display: flex;

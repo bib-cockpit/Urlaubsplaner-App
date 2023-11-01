@@ -202,6 +202,8 @@ export class PjFavoritenEditorComponent implements OnInit, OnDestroy, AfterViewI
 
     this.DBProjekte.SaveProjektefavoriten().then(() => {
 
+      this.Pool.ProjektdatenLoaded = false;
+
       this.OkClickedEvent.emit();
 
     }).catch((error) => {

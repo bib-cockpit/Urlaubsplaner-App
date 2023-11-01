@@ -16,7 +16,6 @@ import {PjGebaeudeRaumauswahlModule} from "../../components-page/pj-gebaeude-rau
 import {PjProtokollListefilterModule} from "../../components-page/pj-protokoll-listefilter/pj-protokoll-listefilter.module";
 import {PjProjektpunktelisteModule} from "../../components/pj-projektpunkteliste/pj-projektpunkteliste.module";
 import {PjAufgabenListefilterModule} from "../../components-page/pj-aufgaben-listefilter/pj-aufgaben-listefilter.module";
-import {PjFavoritenAuswahlModule} from "../../components-page/pj-favoriten-auswahl/pj-favoriten-auswahl.module";
 import {PjMeinewocheEditorModule} from "../../components-page/pj-meinewoche-editor/pj-meinewoche-editor.module";
 import {PjProjektpunktStatusdatePickerModule} from "../../components-page/pj-projektpunkt-statusdate-picker/pj-projektpunkt-statusdate-picker.module";
 import {PjProjektpunktDateKwPickerModule} from "../../components-page/pj-projektpunkt-date-kw-picker/pj-projektpunkt-date-kw-picker.module";
@@ -58,7 +57,6 @@ const routes: Routes = [
         PjProjektpunktelisteModule,
         PjProjektpunktStatusdatePickerModule,
         PjAufgabenListefilterModule,
-        PjFavoritenAuswahlModule,
         PjMeinewocheEditorModule,
         PjProjektpunktStatusdatePickerModule,
         PjProjektpunktDateKwPickerModule,

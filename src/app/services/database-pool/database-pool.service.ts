@@ -56,6 +56,7 @@ export class DatabasePoolService {
   public ContacsSubscriptionURl: string;
   public Fachbereich: Fachbereiche;
   public  Festlegungskategorienliste: Festlegungskategoriestruktur[][];
+  public ProjektdatenLoaded: boolean;
   public Emailcontentvarinaten = {
 
     NONE: this.Const.NONE,
@@ -121,6 +122,7 @@ export class DatabasePoolService {
       this.Fachbereich              = new Fachbereiche();
       this.CurrentAufgabenansichten = null;
       this.Festlegungskategorienliste = [];
+      this.ProjektdatenLoaded         = false;
 
       this.Signatur                 =
         `<span style="font-size: 14px;">

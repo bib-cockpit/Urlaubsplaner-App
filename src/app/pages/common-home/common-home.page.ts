@@ -48,6 +48,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
   public ShowChangelogEditor: boolean;
   private ChangelogSubscription: Subscription;
   public ProgressMessage: string;
+  public ReloadMouseOver: boolean;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -78,6 +79,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
       this.ShowChangelogEditor    = false;
       this.ChangelogSubscription  = null;
       this.ProgressMessage        = '';
+      this.ReloadMouseOver        = false;
 
       // Test
     }
@@ -233,11 +235,27 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     try {
 
+      this.Pool.ProjektdatenLoaded = false;
+
       this.AuthService.Logout();
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Home', 'LogoutButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  LoginButtonClicked() {
+
+    try {
+
+      this.Pool.ProjektdatenLoaded = false;
+
+      this.AuthService.Login();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'LoginButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -297,26 +315,30 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
       if(this.DBProjekte.CurrentFavorit !== null && this.DBProjekte.GesamtprojektlisteHasDatenerror === false) {
 
-        this.ProgressMessage = 'Projektdaten werden geladen';
+        if(this.Pool.ProjektdatenLoaded === false) {
+
+          this.ProgressMessage = 'Projektdaten werden geladen';
+
+          this.DBProjekte.SetProjekteliste(this.DBProjekte.CurrentFavorit.Projekteliste);
+
+          await this.Pool.ReadProjektdaten(this.DBProjekte.Projektliste);
+
+          this.DBProjekte.CurrentProjektindex = 0;
+          this.DBProjekte.CurrentProjekt      = this.DBProjekte.Projektliste[this.DBProjekte.CurrentProjektindex];
+
+          this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
+          this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
+
+          Aufgabenansicht = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
+
+          await this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht);
+
+          this.Pool.ProjektdatenLoaded = true;
+        }
 
         this.Menuservice.MainMenuebereich     = this.Menuservice.MainMenuebereiche.Projekte;
         this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Aufgabenliste;
         this.Menuservice.Aufgabenlisteansicht = this.Menuservice.Aufgabenlisteansichten.Projekt;
-
-        this.DBProjekte.SetProjekteliste(this.DBProjekte.CurrentFavorit.Projekteliste);
-
-        await this.Pool.ReadProjektdaten(this.DBProjekte.Projektliste);
-
-        this.DBProjekte.CurrentProjektindex = 0;
-        this.DBProjekte.CurrentProjekt      = this.DBProjekte.Projektliste[this.DBProjekte.CurrentProjektindex];
-
-        this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
-        this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
-
-        Aufgabenansicht = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
-
-
-        await this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, Aufgabenansicht);
 
         this.Tools.SetRootPage(this.Const.Pages.PjAufgabenlistePage);
       }
@@ -565,6 +587,20 @@ debugger;
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Home', 'CountProjekte', this.Debug.Typen.Page);
+    }
+  }
+
+  RelaodButtonClicked() {
+
+    try {
+
+      this.Pool.ProjektdatenLoaded = false;
+
+      this.PlayButtonClicked();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'RelaodButtonClicked', this.Debug.Typen.Page);
     }
   }
 }

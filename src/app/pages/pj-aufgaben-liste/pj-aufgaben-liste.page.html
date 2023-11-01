@@ -526,15 +526,6 @@
                              (CancelClickedEvent)="ShowDateKkPicker = false">
 </projektpunkt-date-kw-picker>
 
-<pj-favoriten-auswahl *ngIf="ShowFavoritenauswahl"
-                      [ZIndex]="5000"
-                      [Dialogbreite]="800"
-                      [Dialoghoehe]="Auswahlhoehe"
-                      [PositionY]="200" [Titel]="'Favoriten auswählen'" [Iconname]="'star-outline'"
-                      (CancelClickedEvent)="ShowFavoritenauswahl = false"
-                      (OkClickedEvent)="ShowFavoritenauswahl = false">
-</pj-favoriten-auswahl>
-
 <pj-projekte-schnellauswahl *ngIf="ShowProjektschnellauswahl"
                             [ZIndex]="5000"
                             [Dialogbreite]="800"
