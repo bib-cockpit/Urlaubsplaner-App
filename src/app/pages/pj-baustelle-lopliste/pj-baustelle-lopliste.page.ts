@@ -34,6 +34,9 @@ import ImageViewer from "awesome-image-viewer";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 import {DatabaseAuthenticationService} from "../../services/database-authentication/database-authentication.service";
 import {codeSharp} from "ionicons/icons";
+import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
+import {Projektpunktanmerkungstruktur} from "../../dataclasses/projektpunktanmerkungstruktur";
+import {Projektauswahlmenuestruktur} from "../../dataclasses/projektauswahlmenuestruktur";
 
 @Component({
   selector: 'pj-baustelle-lopliste',
@@ -779,8 +782,29 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
     try {
 
       let Heute: Moment = moment();
+      let Mitarbeiter: Mitarbeiterstruktur;
 
       switch (this.Auswahldialogorigin) {
+
+        case this.Auswahlservice.Auswahloriginvarianten.LOPListe_Eintrageditor_Verfasser:
+
+          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: data});
+
+          this.DBProjektpunkte.CurrentProjektpunkt.Verfasser.Email   = Mitarbeiter.Email;
+          this.DBProjektpunkte.CurrentProjektpunkt.Verfasser.Name    = Mitarbeiter.Name;
+          this.DBProjektpunkte.CurrentProjektpunkt.Verfasser.Vorname = Mitarbeiter.Vorname;
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.LOPListe_Eintrageditor_AnmerkungVerfasser:
+
+          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: data});
+
+          this.DBProjektpunkte.CurrentAnmerkung.Verfasser.Email   = Mitarbeiter.Email;
+          this.DBProjektpunkte.CurrentAnmerkung.Verfasser.Name    = Mitarbeiter.Name;
+          this.DBProjektpunkte.CurrentAnmerkung.Verfasser.Vorname = Mitarbeiter.Vorname;
+
+          break;
 
         case this.Auswahlservice.Auswahloriginvarianten.LOPListe:
 
@@ -898,8 +922,8 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       Betreff    = this.DB.CurrentLOPListe.Titel + ' vom ' + moment(this.DB.CurrentLOPListe.Zeitstempel).format('DD.MM.YYYY');
 
       Nachricht  = 'Sehr geehrte Damen und Herren,\n\n';
-      Nachricht += 'anbei übersende ich Ihnen das "' + this.DB.CurrentLOPListe.Titel + '" vom ' + moment(this.DB.CurrentLOPListe.Zeitstempel).format('DD.MM.YYYY') + '\n';
-      Nachricht += 'mit der Protokollnummer ' + this.DB.CurrentLOPListe.LOPListenummer + '.\n\n';
+      Nachricht += 'anbei übersende ich Ihnen den "' + this.DB.CurrentLOPListe.Titel + '" vom ' + moment(this.DB.CurrentLOPListe.Zeitstempel).format('DD.MM.YYYY') + '\n';
+      Nachricht += 'mit der Berichtnummer ' + this.DB.CurrentLOPListe.LOPListenummer + '.\n\n';
 
       Punkteliste   = [];
 
@@ -1557,5 +1581,123 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error, 'LOP Liste', 'GetThumbSource', this.Debug.Typen.Page);
     }
+  }
+
+  AnerkungVerfasserClickedHandler(anmerkung: Projektpunktanmerkungstruktur) {
+
+    try {
+
+      this.DBProjektpunkte.CurrentAnmerkung = anmerkung;
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.LOPListe_Eintrageditor_AnmerkungVerfasser;
+
+      let Index = 0;
+      let Mitarbeiter: Mitarbeiterstruktur;
+
+      this.ShowAuswahl         = true;
+      this.Auswahltitel        = 'Verfasser festlegen';
+      this.Auswahlliste        = [];
+
+      for(let id of this.DBProjekte.CurrentProjekt.MitarbeiterIDListe) {
+
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: id});
+
+        if(!lodash.isUndefined(Mitarbeiter)) {
+
+          this.Auswahlliste.push({ Index: Index, FirstColumn: Mitarbeiter.Name + ' ' + Mitarbeiter.Vorname, SecoundColumn: '', Data: Mitarbeiter._id });
+          Index++;
+        }
+      }
+
+      this.Auswahlliste.sort((a: Auswahldialogstruktur, b: Auswahldialogstruktur) => {
+
+        if (a.FirstColumn < b.FirstColumn) return -1;
+        if (a.FirstColumn > b.FirstColumn) return 1;
+        return 0;
+      });
+
+      Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {Email: anmerkung.Verfasser.Email});
+
+      if(!lodash.isUndefined(Mitarbeiter)) this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: Mitarbeiter._id});
+      else this.Auswahlindex = -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'AnerkungVerfasserClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  GetAnmerkungDatum(Anmerkung: Projektpunktanmerkungstruktur): string {
+
+    try {
+
+      return moment(Anmerkung.Zeitstempel).format('DD.MM.YY');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'GetAnmerkungDatum', this.Debug.Typen.Page);
+    }
+  }
+
+  VerfasserButtonClickedHandler() {
+
+    try {
+
+
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.LOPListe_Eintrageditor_Verfasser;
+
+      let Index = 0;
+      let Mitarbeiter: Mitarbeiterstruktur;
+
+      this.ShowAuswahl         = true;
+      this.Auswahltitel        = 'Verfasser festlegen';
+      this.Auswahlliste        = [];
+
+      for(let id of this.DBProjekte.CurrentProjekt.MitarbeiterIDListe) {
+
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: id});
+
+        if(!lodash.isUndefined(Mitarbeiter)) {
+
+          this.Auswahlliste.push({ Index: Index, FirstColumn: Mitarbeiter.Name + ' ' + Mitarbeiter.Vorname, SecoundColumn: '', Data: Mitarbeiter._id });
+          Index++;
+        }
+      }
+
+      this.Auswahlliste.sort((a: Auswahldialogstruktur, b: Auswahldialogstruktur) => {
+
+        if (a.FirstColumn < b.FirstColumn) return -1;
+        if (a.FirstColumn > b.FirstColumn) return 1;
+        return 0;
+      });
+
+      Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {Email: this.DBProjektpunkte.CurrentProjektpunkt.Verfasser.Email});
+
+      if(!lodash.isUndefined(Mitarbeiter)) this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: Mitarbeiter._id});
+      else this.Auswahlindex = -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'AnerkungVerfasserClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  GetAufgabentext(Punkt: Projektpunktestruktur): string {
+
+    try {
+
+      let Text: string = '';
+
+      Text += '<span style="color: #307ac1">' + Punkt.Verfasser.Name + ':&nbsp;</span>';
+      Text += this.Tools.FormatLinebreaks(Punkt.Aufgabe);
+
+      return Text;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'GetAufgabentext', this.Debug.Typen.Page);
+    }
+
   }
 }

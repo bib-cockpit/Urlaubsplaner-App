@@ -155,7 +155,7 @@
               <table class="nobordersmalltable" width="100%">
                 <tr>
                   <td>
-                    <div class="aufgabedivclass" (click)="LOPListepunktClickedHandler(Punkt, LOP)" [innerHTML]="Tools.FormatLinebreaks(Punkt.Aufgabe) | safe: 'html'"></div>
+                    <div class="aufgabedivclass" (click)="LOPListepunktClickedHandler(Punkt, LOP)" [innerHTML]="GetAufgabentext(Punkt) | safe: 'html'"></div>
                   </td>
                 </tr>
                 <tr *ngIf="CheckThumbnailliste(Thumbnailliste, LOP._id, Punktindex) && Punkt.ProtokollShowBilder">
@@ -216,10 +216,10 @@
                       <ng-container *ngIf="Punkt.Anmerkungenliste.length > 0">
                         <tr *ngFor="let Anmerkung of Punkt.Anmerkungenliste">
                           <td style="width: 60px; color: orange">
-                            {{Anmerkung.Zeitstring}}
+                            {{GetAnmerkungDatum(Anmerkung)}}
                           </td>
                           <td style="width: 40px; color: orange" *ngIf="DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email)">
-                            {{DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email).Kuerzel}}:
+                            {{DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email).Name}}:
                           </td>
                           <td>
                             {{Anmerkung.Anmerkung}}
@@ -436,8 +436,8 @@
                         (ZustaendigExternClicked)="EintragEditorZustaendigExternHandler()"
                         (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
                         (TerminButtonClicked)="ShowDateKkPicker = true"
-
-
+                        (AnerkungVerfassernClicked)="AnerkungVerfasserClickedHandler($event)"
+                        (VerfasserButtonClicked)="VerfasserButtonClickedHandler()"
                         (CancelClickedEvent)="ShowEintragEditor = false"
                         (OkClickedEvent)="ShowEintragEditor = false"></pj-baustelle-lopliste-eintrageditor>
 

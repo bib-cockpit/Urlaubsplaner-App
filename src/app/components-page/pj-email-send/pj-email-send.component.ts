@@ -349,7 +349,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
             this.SendError = true;
           }
 
-          this.SendInProgress   = false;
+          this.SendInProgress  = false;
 
           this.DBLOPListe.CurrentLOPListe.GesendetZeitstempel = NextLOPListe.GesendetZeitstempel;
           this.DBLOPListe.CurrentLOPListe.GesendetZeitstring  = NextLOPListe.GesendetZeitstring;

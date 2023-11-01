@@ -62,6 +62,8 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
   @Output() GebaeudeteilClicked     = new EventEmitter<any>();
   @Output() PrioritaetClicked       = new EventEmitter<any>();
   @Output() AddBildEvent            = new EventEmitter();
+  @Output() AnerkungVerfassernClicked = new EventEmitter<Projektpunktanmerkungstruktur>();
+  @Output() VerfasserButtonClicked    = new EventEmitter<any>();
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -86,6 +88,7 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
   public Thumbbreite: number;
   public Spaltenanzahl: number;
   private ProjektpunktSubscription: Subscription;
+
 
 
   constructor(public Basics: BasicsProvider,
@@ -620,9 +623,8 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
     try {
 
       let Mitarbeiter: Mitarbeiterstruktur = lodash.find(this.Pool.Mitarbeiterliste, {Email: this.DB.CurrentProjektpunkt.Anmerkungenliste[index].Verfasser.Email});
-      let Kuerzel: string = lodash.isUndefined(Mitarbeiter) ? '' : ' &bull; ' + Mitarbeiter.Kuerzel;
 
-      return moment(stempel).format('DD.MM.YYYY') + '<br>' + 'KW' + moment(stempel).isoWeek() + Kuerzel;
+      return moment(stempel).format('DD.MM.YYYY') + '<br>' + 'KW' + moment(stempel).isoWeek();
 
     } catch (error) {
 
@@ -928,6 +930,18 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'FirmaCheckChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  GetAnmerkungVerfasser(Anmerkung: Projektpunktanmerkungstruktur, i: number) : string{
+
+    try {
+
+      return Anmerkung.Verfasser.Vorname + ' ' + Anmerkung.Verfasser.Name;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'GetAnmerkungVerfasser', this.Debug.Typen.Component);
     }
   }
 }

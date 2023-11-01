@@ -51,6 +51,7 @@ export class DatabaseProjektpunkteService {
   private ServerSendFestlegungenToTeamsUrl: string;
   private ServerSaveFestlegungenToTeamsUrl: string;
   private ServerSendReminderUrl: string;
+  public CurrentAnmerkung: Projektpunktanmerkungstruktur;
   EmpfaengerExternIDListe: string[];
   CcEmpfaengerInternIDListe: string[];
 
@@ -76,6 +77,7 @@ export class DatabaseProjektpunkteService {
       this.ServerSendReminderUrl     = this.Pool.CockpitserverURL + '/sendreminder';
       this.Heute                     = moment().locale('de');
       this.LiveEditorOpen            = false;
+      this.CurrentAnmerkung          = null;
       this.Wochenpunkteliste         = [];
       this.CurrentProjektpunkteliste = [];
 

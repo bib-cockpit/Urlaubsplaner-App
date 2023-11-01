@@ -52,6 +52,12 @@
                         </ion-row>
                         <ion-row>
                           <ion-col size="6">
+                            <button-value (ButtonClicked)="VerfasserButtonClicked.emit()" [Wert_A]="DB.CurrentProjektpunkt.Verfasser.Vorname + ' ' + DB.CurrentProjektpunkt.Verfasser.Name" [Buttontext]="'Verfasser'">
+                            </button-value>
+                          </ion-col>
+                        </ion-row>
+                        <ion-row>
+                          <ion-col size="6">
                             <button-value (ButtonClicked)="TerminButtonClicked.emit()" [Wert_A]="GetTerminWert()" [Buttontext]="DB.CurrentProjektpunkt.EndeKalenderwoche === null ? 'Termin' : 'Kalenderwoche'">
                             </button-value>
                           </ion-col>
@@ -200,6 +206,9 @@
                       <button-value-date-small
                         [Buttontext]="GetAnmerkungdatum(Eintrag.Zeitstempel, i)" [Datum]="GetAnmerkungDatum(Eintrag)" [ElementID]="'anmerkungdatum_' + i.toString()" (TimeChanged)="AnmerkungTimeChanged($event, i)">
                       </button-value-date-small>
+                    </td>
+                    <td style="width: 200px;">
+                      <ion-button expand="full" size="small" color="burnicklbraun" (click)="AnerkungVerfassernClicked.emit(Eintrag)">{{GetAnmerkungVerfasser(Eintrag, i)}}</ion-button>
                     </td>
                     <td style="width: auto">
                       <ion-textarea  [autoGrow]="true" style="border: 1px solid black; border-radius: 4px; margin: 0px" (ionChange)="AnmerkungTextChangedHandler($event, i)" [value]="Eintrag.Anmerkung"></ion-textarea>

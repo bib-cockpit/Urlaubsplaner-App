@@ -108,6 +108,8 @@ export class AuswahlDialogService {
     LOPListe_Eintrageditor_Fachbereich:          'LOPListe_Eintrageditor_Fachbereich',
     LOPListe_Eintrageditor_Status:               'LOPListe_Eintrageditor_Status',
     LOPListe_Eintrageditor_Prioritaet:           'LOPListe_Eintrageditor_Prioritaet',
+    LOPListe_Eintrageditor_AnmerkungVerfasser:            'LOPListe_Eintrageditor_AnmerkungVerfasser',
+    LOPListe_Eintrageditor_Verfasser:            'LOPListe_Eintrageditor_Verfasser',
 
     LOPListe_Emaileditor_Intern_Empfaenger:           'LOPListe_Emaileditor_Intern_Empfaenger',
     LOPListe_Emaileditor_Intern_CcEmpfaenger:         'LOPListe_Emaileditor_Intern_CcEmpfaenger',
