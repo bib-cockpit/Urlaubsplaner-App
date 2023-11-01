@@ -320,14 +320,9 @@ export class CommonHomePage implements OnInit, OnDestroy {
           this.ProgressMessage = 'Projektdaten werden geladen';
 
           this.DBProjekte.SetProjekteliste(this.DBProjekte.CurrentFavorit.Projekteliste);
+          this.DBProjekte.SetCurrentFavoritenprojekt();
 
           await this.Pool.ReadProjektdaten(this.DBProjekte.Projektliste);
-
-          this.DBProjekte.CurrentProjektindex = 0;
-          this.DBProjekte.CurrentProjekt      = this.DBProjekte.Projektliste[this.DBProjekte.CurrentProjektindex];
-
-          this.Pool.Mitarbeitersettings.Favoritprojektindex = this.DBProjekte.CurrentProjektindex;
-          this.Pool.Mitarbeitersettings.ProjektID           = this.DBProjekte.CurrentProjekt._id;
 
           Aufgabenansicht = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
 

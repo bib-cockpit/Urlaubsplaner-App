@@ -127,6 +127,43 @@ export class DatabaseProjekteService {
     }
   }
 
+  public SetCurrentFavoritenprojekt() {
+
+    try {
+
+      let Index: number = -1;
+      let Reset: boolean = false;
+
+      if(this.Pool.Mitarbeitersettings.ProjektID !== null) {
+
+        for(let i = 0; i < this.Projektliste.length; i++) {
+
+          if(this.Projektliste[i]._id === this.Pool.Mitarbeitersettings.ProjektID) {
+
+            Index = i;
+
+            break;
+          }
+        }
+
+        if(Index === -1) Reset = true;
+      }
+      else Reset = true;
+
+      if(Reset) {
+
+          this.CurrentProjektindex = 0;
+          this.CurrentProjekt      = this.Projektliste[this.CurrentProjektindex];
+
+          this.Pool.Mitarbeitersettings.Favoritprojektindex = this.CurrentProjektindex;
+          this.Pool.Mitarbeitersettings.ProjektID           = this.CurrentProjekt._id;
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Projekte', 'SetCurrentFavoritenprojekt', this.Debug.Typen.Service);
+    }
+  }
+
   private GetMusterProjekt(): Projektestruktur {
 
     try {
