@@ -921,6 +921,11 @@ export class DatabasePoolService {
         mitarbeiter.Urlaub = 30;
       }
 
+      if(lodash.isUndefined(mitarbeiter.Urlaubsliste)) {
+
+        mitarbeiter.Urlaubsliste = [];
+      }
+
       for(let Eintrag of mitarbeiter.Meinewocheliste) {
 
         if(lodash.isUndefined(Eintrag.Kalenderwoche)) Eintrag.Kalenderwoche = 0;
@@ -1079,6 +1084,13 @@ export class DatabasePoolService {
         AufgabenShowZeitansatz:    false,
         AufgabenShowMeinewoche:    true,
 
+        UrlaubShowBeantragt:         true,
+        UrlaubShowVertreterfreigabe: true,
+        UrlaubShowGenehmigt:         true,
+        UrlaubShowAbgelehnt:         true,
+        UrlaubShowFerien:            true,
+        UrlaubShowFeiertage:         true,
+
         OberkostengruppeFilter: null,
         HauptkostengruppeFilter: null,
         UnterkostengruppeFilter: null,
@@ -1151,6 +1163,13 @@ export class DatabasePoolService {
           if(lodash.isUndefined(Settings.OberkostengruppeFilter))  Settings.OberkostengruppeFilter   = null;
           if(lodash.isUndefined(Settings.UnterkostengruppeFilter)) Settings.UnterkostengruppeFilter  = null;
           if(lodash.isUndefined(Settings.HauptkostengruppeFilter)) Settings.HauptkostengruppeFilter  = null;
+
+          if(lodash.isUndefined(Settings.UrlaubShowBeantragt))         Settings.UrlaubShowBeantragt         = true;
+          if(lodash.isUndefined(Settings.UrlaubShowVertreterfreigabe)) Settings.UrlaubShowVertreterfreigabe = true;
+          if(lodash.isUndefined(Settings.UrlaubShowGenehmigt))         Settings.UrlaubShowGenehmigt         = true;
+          if(lodash.isUndefined(Settings.UrlaubShowAbgelehnt))         Settings.UrlaubShowAbgelehnt         = true;
+          if(lodash.isUndefined(Settings.UrlaubShowFerien))            Settings.UrlaubShowFerien            = true;
+          if(lodash.isUndefined(Settings.UrlaubShowFeiertage))         Settings.UrlaubShowFeiertage         = true;
 
           this.CurrentAufgabenansichten = this.GetAufgabenansichten(null);
 

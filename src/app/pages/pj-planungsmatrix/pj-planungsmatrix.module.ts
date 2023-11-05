@@ -18,6 +18,9 @@ import {
     PjPlanungsmatrixeintragEditorModule
 } from "../../components-page/pj-planungsmatrixeintrag-editor/pj-planungsmatrixeintrag-editor.module";
 import {AuswahlDialogModule} from "../../components/auswahl-dialog/auswahl-dialog.module";
+import {
+    PjProjektpunktDateKwPickerModule
+} from "../../components-page/pj-projektpunkt-date-kw-picker/pj-projektpunkt-date-kw-picker.module";
 
 const routes: Routes = [
   {
@@ -43,6 +46,7 @@ const routes: Routes = [
         CheckboxClonModule,
         PjPlanungsmatrixeintragEditorModule,
         AuswahlDialogModule,
+        PjProjektpunktDateKwPickerModule,
     ],
   declarations: [PjPlanungsmatrixPage]
 })

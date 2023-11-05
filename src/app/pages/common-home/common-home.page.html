@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <page-header #PageHeader>
 
     <ng-container *ngIf="AuthService.ShowLogin === false">
@@ -250,6 +250,48 @@
                           </div>
 
                         </td>
+                        <td>
+                          <div class="trennerdiv" [style.background]="Basics.Farben.Grau"></div>
+                        </td>
+                        <td>
+
+                          <div class="buttonclass"
+                               (click)="UrlaubButtonClicked()"
+                               (mouseenter)="UrlaubMouseOver = true"
+                               (mouseleave)="UrlaubMouseOver = false">
+
+                            <table>
+                              <tr>
+                                <td align="center">
+
+                                  <div style="height: 90px; width: 100px; background: none; position: relative">
+                                    <div class="projektbuttoniconclass">
+                                      <ion-icon name="sunny-outline" [color]="UrlaubMouseOver ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
+                                    </div>
+                                  </div>
+
+
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="text-align: center;">
+                                  <table width="100%">
+                                    <tr>
+                                      <td style="text-align: center;">
+                                        <ion-text [color]="Basics.Ionicfarben.Grau" style="font-size: 22px">Urlaub</ion-text>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+
+                          </div>
+
+                        </td>
+
+
+
                         <td>
                           <div class="trennerdiv" [style.background]="Basics.Farben.Grau"></div>
                         </td>

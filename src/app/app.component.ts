@@ -269,6 +269,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         this.Pool.Mitarbeitersettings = this.Pool.InitMitarbeitersettings(); // fehlende Settingseintraege initialisieren
 
+        debugger;
+
 
         await this.MitarbeitersettingsDB.SaveMitarbeitersettings();
 
@@ -312,7 +314,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           }
           else {
 
-            Page = this.Const.Pages.HomePage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
+            Page = this.Const.Pages.UrlaubsplanungPage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
 
             this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
             this.ProjekteDB.SetCurrentFavoritenprojekt();
@@ -361,6 +363,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
           this.Menuservice.MainMenuebereich = this.Menuservice.MainMenuebereiche.Email;
 
+
+          break;
+
+        case this.Const.Pages.UrlaubsplanungPage:
+
+          this.Menuservice.MainMenuebereich = this.Menuservice.MainMenuebereiche.Urlaubsplanung;
 
           break;
 

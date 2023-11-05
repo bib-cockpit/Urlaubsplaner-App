@@ -39,6 +39,7 @@ import ImageViewer from 'awesome-image-viewer';
 import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 import {DatabaseAuthenticationService} from "../../services/database-authentication/database-authentication.service";
+import {Projektpunktanmerkungstruktur} from "../../dataclasses/projektpunktanmerkungstruktur";
 
 @Component({
   selector:    'pj-aufgaben-liste-page',
@@ -141,6 +142,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   public ShowEmailSenden: boolean;
   public EmailDialogbreite: number;
   public EmailDialoghoehe: number;
+  public Auswahlbreite: number;
 
   constructor(public Displayservice: DisplayService,
               public Basics: BasicsProvider,
@@ -183,6 +185,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.KostenDialoghoehe        = 500;
       this.DialogPosY               = 60;
       this.AuswahlIDliste           = [];
+      this.Auswahlbreite            = 300;
       this.Restarbeitszahl          = 0;
       this.FavoritenProjektpunkteliste    = [];
       this.Meintagprojektpunkteliste      = [];
@@ -421,7 +424,29 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
     try {
 
+      let Mitarbeiter: Mitarbeiterstruktur;
+
       switch (this.Auswahldialogorigin) {
+
+        case this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_Verfasser:
+
+          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: data});
+
+          this.DBProjektpunkte.CurrentProjektpunkt.Verfasser.Email   = Mitarbeiter.Email;
+          this.DBProjektpunkte.CurrentProjektpunkt.Verfasser.Name    = Mitarbeiter.Name;
+          this.DBProjektpunkte.CurrentProjektpunkt.Verfasser.Vorname = Mitarbeiter.Vorname;
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_AnmerkungenVerfasser:
+
+          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: data});
+
+          this.DBProjektpunkte.CurrentAnmerkung.Verfasser.Email   = Mitarbeiter.Email;
+          this.DBProjektpunkte.CurrentAnmerkung.Verfasser.Name    = Mitarbeiter.Name;
+          this.DBProjektpunkte.CurrentAnmerkung.Verfasser.Vorname = Mitarbeiter.Vorname;
+
+          break;
 
         case this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Meintageintrag_Termin:
 
@@ -693,8 +718,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
           this.AlleProjektindex          = index;
           this.DBProjekte.CurrentProjekt = this.AlleProjektliste[index];
-
-          debugger;
 
           break;
 
@@ -1055,6 +1078,8 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
         case this.Datenursprungsvarianten.Favoritenprojekt:
 
+
+
           Index = lodash.findIndex(this.FavoritenProjektpunkteliste, {_id: this.DBProjektpunkte.CurrentProjektpunkt._id});
 
           if(Index !== -1) {
@@ -1081,8 +1106,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
           }
 
           Anzahl = this.DBProjektpunkte.CountProjektpunkte(this.FavoritenProjektpunkteliste, false);
-
-          debugger;
 
           this.DBProjekte.SetProjektpunkteanzahl(Anzahl, this.DBProjekte.CurrentProjekt.Projektkey);
 
@@ -1516,6 +1539,92 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'PrepareDaten', this.Debug.Typen.Page);
+    }
+  }
+
+  VerfasserButtonClickedHandler() {
+
+    try {
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_Verfasser;
+
+      let Index = 0;
+      let Mitarbeiter: Mitarbeiterstruktur;
+
+      this.ShowAuswahl         = true;
+      this.Auswahltitel        = 'Verfasser festlegen';
+      this.Auswahlliste        = [];
+
+      for(let id of this.DBProjekte.CurrentProjekt.MitarbeiterIDListe) {
+
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: id});
+
+        if(!lodash.isUndefined(Mitarbeiter)) {
+
+          this.Auswahlliste.push({ Index: Index, FirstColumn: Mitarbeiter.Name + ' ' + Mitarbeiter.Vorname, SecoundColumn: '', Data: Mitarbeiter._id });
+          Index++;
+        }
+      }
+
+      this.Auswahlliste.sort((a: Auswahldialogstruktur, b: Auswahldialogstruktur) => {
+
+        if (a.FirstColumn < b.FirstColumn) return -1;
+        if (a.FirstColumn > b.FirstColumn) return 1;
+        return 0;
+      });
+
+      Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {Email: this.DBProjektpunkte.CurrentProjektpunkt.Verfasser.Email});
+
+      if(!lodash.isUndefined(Mitarbeiter)) this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: Mitarbeiter._id});
+      else this.Auswahlindex = -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'AnerkungVerfasserClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  AnerkungVerfasserClickedHandler(anmerkung: Projektpunktanmerkungstruktur) {
+
+    try {
+
+      this.DBProjektpunkte.CurrentAnmerkung = anmerkung;
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_AnmerkungenVerfasser;
+
+      let Index = 0;
+      let Mitarbeiter: Mitarbeiterstruktur;
+
+      this.ShowAuswahl         = true;
+      this.Auswahltitel        = 'Verfasser festlegen';
+      this.Auswahlliste        = [];
+
+      for(let id of this.DBProjekte.CurrentProjekt.MitarbeiterIDListe) {
+
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: id});
+
+        if(!lodash.isUndefined(Mitarbeiter)) {
+
+          this.Auswahlliste.push({ Index: Index, FirstColumn: Mitarbeiter.Name + ' ' + Mitarbeiter.Vorname, SecoundColumn: '', Data: Mitarbeiter._id });
+          Index++;
+        }
+      }
+
+      this.Auswahlliste.sort((a: Auswahldialogstruktur, b: Auswahldialogstruktur) => {
+
+        if (a.FirstColumn < b.FirstColumn) return -1;
+        if (a.FirstColumn > b.FirstColumn) return 1;
+        return 0;
+      });
+
+      Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {Email: anmerkung.Verfasser.Email});
+
+      if(!lodash.isUndefined(Mitarbeiter)) this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: Mitarbeiter._id});
+      else this.Auswahlindex = -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Aufgaben Liste', 'AnerkungVerfasserClickedHandler', this.Debug.Typen.Page);
     }
   }
 

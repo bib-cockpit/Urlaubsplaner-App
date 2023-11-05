@@ -24,11 +24,13 @@ const routes: Routes = [
     path: 'EinstellungenPage',
     loadChildren: () => import('./pages/common-einstellungen/common-einstellungen.module').then(m => m.CommonEinstellungenPageModule),
   },
-  { path: 'ErrorPage',
-    loadChildren: () => import('./pages/common-error/common-error.module').then(m => m.CommonErrorPageModule),
-  },
-  { path: 'EmaillistePage',
+  {
+    path: 'EmaillistePage',
     loadChildren: () => import('./pages/common-emailliste/common-emailliste.module').then(m => m.CommonEmaillistePageModule),
+  },
+  {
+    path: 'UrlaubsplanungPage',
+    loadChildren: () => import('./pages/common-urlaubsplanung/common-urlaubsplanung.module').then(m => m.CommonUrlaubsplanungPageModule),
   },
   {
     path: 'FiStandortelistePage',

@@ -9,6 +9,8 @@ import * as Joi from "joi";
 import {ObjectSchema} from "joi";
 import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
 import {BasicsProvider} from "../../services/basics/basics";
+import {Moment} from "moment";
+import moment from "moment";
 
 @Component({
   selector: 'pj-planungsmatrixeintrag-editor',
@@ -27,6 +29,7 @@ export class PjPlanungsmatrixeintragEditorComponent implements OnInit, OnDestroy
   @Output() OkClickedEvent             = new EventEmitter<any>();
   @Output() DeleteClickedEvent         = new EventEmitter<any>();
   @Output() FortschrittClickedEvent    = new EventEmitter<any>();
+  @Output() TerminButtonClicked        = new EventEmitter<any>();
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -271,6 +274,62 @@ export class PjPlanungsmatrixeintragEditorComponent implements OnInit, OnDestroy
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Planungsmatrixeintrag Editor', 'AnwendungCheckedChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  GetTerminWert(): string {
+
+    try {
+
+      let Datum: Moment = moment();
+
+      if(this.DB.CurrentProjektpunkt !== null && this.DB.CurrentProjektpunkt.Endezeitstempel !== null) {
+
+        Datum = moment(this.DB.CurrentProjektpunkt.Endezeitstempel);
+
+        return Datum.format('DD.MM.YYYY');
+
+      }
+      else {
+
+        Datum.add(1, 'month');
+
+        if(this.DB.CurrentProjektpunkt !== null) {
+
+          this.DB.CurrentProjektpunkt.Endezeitstempel = Datum.valueOf();
+          this.DB.CurrentProjektpunkt.Endezeitstring  = Datum.format('DD.MM.YYYY');
+
+        }
+
+        return Datum.format('DD.MM.YYYY');
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Planungsmatrixeintrag Editor', 'GetTerminWert', this.Debug.Typen.Component);
+    }
+  }
+
+  MeilensteinCheckChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      if(this.DB.CurrentProjektpunkt !== null) {
+
+        this.DB.CurrentProjektpunkt.Meilenstein = event.status;
+      }
+
+      if(event.status === true) {
+
+        this.DB.CurrentProjektpunkt.Meilensteinstatus = 'ON';
+      }
+      else {
+
+        this.DB.CurrentProjektpunkt.Meilensteinstatus = 'OFF';
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Planungsmatrixeintrag Editor', 'MeilensteinCheckChanged', this.Debug.Typen.Component);
     }
   }
 }

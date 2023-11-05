@@ -257,6 +257,7 @@ export class DatabaseMitarbeiterService {
         Meintagliste: [],
         Meinewocheliste: [],
         Archiviert: false,
+        Urlaubsliste: []
       };
 
     } catch (error) {

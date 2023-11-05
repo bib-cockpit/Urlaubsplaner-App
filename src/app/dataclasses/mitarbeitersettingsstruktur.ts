@@ -48,5 +48,12 @@ export type Mitarbeitersettingsstruktur = {
   AufgabenShowZeitansatz:    boolean;
   AufgabenShowMeinewoche:    boolean;
 
+  UrlaubShowBeantragt:         boolean;
+  UrlaubShowVertreterfreigabe: boolean;
+  UrlaubShowGenehmigt:         boolean;
+  UrlaubShowAbgelehnt:         boolean;
+  UrlaubShowFerien:            boolean;
+  UrlaubShowFeiertage:         boolean;
+
   __v?: any;
 };

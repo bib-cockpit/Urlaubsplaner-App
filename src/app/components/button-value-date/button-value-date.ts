@@ -35,6 +35,7 @@ export class ButtonValueDateComponent implements OnInit, OnChanges {
   @Input() public ElementID: string;
   @Input() public Buttonsize: string;
   @Input() public ShowKW: boolean;
+  @Input() public ValueBreite: number;
 
   @Output() public TimeChanged = new EventEmitter<Moment>();
   @Output() public DiabledButtonClicked = new EventEmitter<Moment>();
@@ -55,6 +56,7 @@ export class ButtonValueDateComponent implements OnInit, OnChanges {
       let Stunde: number  = 12;
       let Minute: number = 0;
 
+      this.ValueBreite   = 260;
       this.Minimum       = MyMoment().set({year: 2000, month: 0, date: 1 }).locale('de');
       this.Maximum       = MyMoment().set({year: Jahr, month: 11, date: 31}).locale('de');
       this.Minimumstring = '2000-01-01';

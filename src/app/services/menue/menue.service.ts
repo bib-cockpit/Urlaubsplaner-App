@@ -19,6 +19,7 @@ export class MenueService {
     Logout:        'Logout',
     Einstellungen: 'Einstellungen',
     Projekte:      'Projekte',
+    Urlaubsplanung: 'Urlaubsplanung'
   };
 
   public ProjekteMenuebereich: string;
@@ -90,6 +91,7 @@ export class MenueService {
 
     try {
 
+
       switch (this.MainMenuebereich) {
 
         case this.MainMenuebereiche.Home:
@@ -101,6 +103,12 @@ export class MenueService {
         case this.MainMenuebereiche.Email:
 
           this.Tools.SetRootPage(this.Const.Pages.EmaillistePage);
+
+          break;
+
+        case this.MainMenuebereiche.Urlaubsplanung:
+
+          this.Tools.SetRootPage(this.Const.Pages.UrlaubsplanungPage);
 
           break;
 
@@ -125,6 +133,12 @@ export class MenueService {
                   break;
 
                 case this.Aufgabenlisteansichten.Mein_Tag:
+
+                    this.Tools.SetRootPage(this.Const.Pages.PjAufgabenlistePage);
+
+                  break;
+
+                case this.Aufgabenlisteansichten.Meine_Woche:
 
                     this.Tools.SetRootPage(this.Const.Pages.PjAufgabenlistePage);
 

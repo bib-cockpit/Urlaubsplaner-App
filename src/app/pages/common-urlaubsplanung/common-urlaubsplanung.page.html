@@ -1,0 +1,96 @@
+<ion-header class="ion-no-border">
+  <page-header #PageHeader>
+    <page-header-menu></page-header-menu>
+  </page-header>
+</ion-header>
+<ion-content>
+
+  <table style="width: 100%" class="paddingsmalltable">
+    <tr *ngFor="let Zeile of Monateliste">
+      <td style="width: 16%; height: inherit" valign="top" *ngFor="let Monat of Zeile">
+        <urlaubsplanung-kalender
+          [Jahr]="DB.Jahr"
+          [Monat]="Monat"
+          [Feiertageliste]="DB.Feiertageliste"
+          [Ferienliste]="DB.Ferienliste"
+          (FeirtagCrossedEvent)="FeiertagCrossedEventHandler($event)" (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
+        </urlaubsplanung-kalender>
+      </td>
+    </tr>
+  </table>
+
+  <table style="width: 100%">
+    <tr>
+      <td style="width: 50%" valign="top">
+
+        <table style="width: 400px;" class="paddingtable">
+          <tr>
+            <td style="font-size: 160%; color: #444444; height: 40px">{{Message}}</td>
+          </tr>
+          <tr>
+            <td>
+              <button-value [Buttontext]="'Bundesland'"
+                            [Wert_A]="DB.Bundesland" (ButtonClicked)="BundeslandClickedHandler()">
+              </button-value>
+            </td>
+          </tr>
+        </table>
+
+        <table style="width: 400px;" class="paddingtable">
+          <tr *ngFor="let Ferien of DB.Ferienliste">
+            <td>
+              {{Ferien.name}}
+            </td>
+            <td>
+              {{GetDatum(Ferien.Anfangstempel)}}
+            </td>
+            <td>
+              {{GetDatum(Ferien.Endestempel)}}
+            </td>
+          </tr>
+        </table>
+
+      </td>
+      <td style="width: 50%;" valign="top" align="right">
+
+        <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowFeiertage" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Feiertag)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage"></div></td><td>Feiertage</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowFerien" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Ferientag)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien"></div></td><td>Schulferien</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowBeantragt" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Beantrag)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Beantrag"></div></td><td>Beantragter Urlaub</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowVertreterfreigabe" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Vertreterfreigabe)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Urlaub mit Vertreterfreigabe</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowGenehmigt" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Genehmigt)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Genehmigt"></div></td><td>Genehmigter Urlaub</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowAbgelehnt" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Abgelehnt)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+
+  </table>
+
+
+</ion-content>
+<ion-footer>
+  <page-footer #PageFooter>
+
+  </page-footer>
+</ion-footer>
+
+
+<auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"
+                [Dialogbreite]="400"  [PositionY]="200" [Dialoghoehe]="600"
+                [Titel]="Auswahltitel" [Iconname]="''"
+                (OkClickedEvent)="AuswahlOkButtonClicked($event)"
+                (CancelClickedEvent)="ShowAuswahl = false">
+</auswahl-dialog>

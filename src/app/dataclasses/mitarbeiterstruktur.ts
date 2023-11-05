@@ -1,6 +1,7 @@
 import {Favoritenstruktur} from "./favoritenstruktur";
 import {Meintagstruktur} from "./meintagstruktur";
 import {Meinewochestruktur} from "./meinewochestruktur";
+import {Urlaubsstruktur} from "./urlaubsstruktur";
 
 export interface Mitarbeiterstruktur  {
 
@@ -25,6 +26,7 @@ export interface Mitarbeiterstruktur  {
     Meintagliste:    Meintagstruktur[];
     Meinewocheliste: Meinewochestruktur[];
     Favoritenliste:  Favoritenstruktur[];
+    Urlaubsliste:    Urlaubsstruktur[];
     Archiviert: boolean;
     Filtered?: boolean;
     Text_A?: string;

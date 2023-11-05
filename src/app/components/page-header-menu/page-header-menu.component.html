@@ -30,7 +30,7 @@
             <td align="center" class="trennertdclass">
               <div [class]="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte ? 'trennerbigdivclass' : 'trennerdivclass'"></div>
             </td>
-            <td *ngIf="Menuservice.MainMenuebereich !== Menuservice.MainMenuebereiche.Email">
+            <td *ngIf="Menuservice.MainMenuebereich !== Menuservice.MainMenuebereiche.Email && Menuservice.MainMenuebereich !== Menuservice.MainMenuebereiche.Urlaubsplanung">
               <div class="menubuttonclass"
                    (mouseenter)="EmailMouseOver = true"
                    (mouseleave)="EmailMouseOver = false"
@@ -42,6 +42,16 @@
                                 [color]="EmailMouseOver ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Weiss">
                       </ion-icon>
                     </td>
+                  </tr>
+                </table>
+              </div>
+            </td>
+            <td *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Urlaubsplanung">
+              <div class="menubuttonclass">
+                <table class="paddingsmalltable">
+                  <tr>
+                    <td><ion-icon name="sunny-outline" [color]="Basics.Ionicfarben.Schwarz"></ion-icon></td>
+                    <td [style.color]="'#000000'">Urlaubsplanung</td>
                   </tr>
                 </table>
               </div>
@@ -66,7 +76,7 @@
 
             </td>
 
-            <td align="center" style="width: 12px">
+            <td align="center" style="width: 12px" *ngIf="Menuservice.MainMenuebereich !== Menuservice.MainMenuebereiche.Urlaubsplanung">
               <div [class]="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte ? 'trennerbigdivclass' : 'trennerdivclass'"></div>
             </td>
               <td *ngIf="ShowStandorttitle === true">
@@ -450,7 +460,9 @@
         </tr>
 
     </ng-container>
-    <ng-container *ngIf="Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste && Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meine_Woche">
+    <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Projekte &&
+                         Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste &&
+                         Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meine_Woche">
 
       <tr>
         <td colspan="2" style="padding-left: 8px; padding-right: 8px">
@@ -608,6 +620,7 @@
 
 
     </ng-container>
+
 
 
     <!-- Einzelprojekt 3. Menüzeile -->
@@ -786,6 +799,14 @@
   </table>
 
 </ng-container>
+
+
+<!--
+Mainmenu Bereich: {{Menuservice.MainMenuebereich}} | Projekt Menubereich: {{Menuservice.ProjekteMenuebereich}} | Aufgabenlistenansicht: {{Menuservice.Aufgabenlisteansicht}}
+-->
+
+
+
 
 
 

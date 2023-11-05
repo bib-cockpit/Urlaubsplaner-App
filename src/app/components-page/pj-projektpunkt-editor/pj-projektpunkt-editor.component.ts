@@ -57,12 +57,14 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
   @Output() StatusClicked           = new EventEmitter<any>();
   @Output() FachbereichClicked      = new EventEmitter<any>();
   @Output() TerminButtonClicked     = new EventEmitter<any>();
-  @Output() ZustaendigInternClicked = new EventEmitter<any>();
-  @Output() ZustaendigExternClicked = new EventEmitter<any>();
+  // @Output() ZustaendigInternClicked = new EventEmitter<any>();
+  // @Output() ZustaendigExternClicked = new EventEmitter<any>();
   @Output() KostengruppeClicked     = new EventEmitter<any>();
   @Output() GebaeudeteilClicked     = new EventEmitter<any>();
   @Output() LeistungsphaseClickedEvent  = new EventEmitter();
   @Output() AddBildEvent                = new EventEmitter();
+  @Output() AnerkungVerfassernClicked = new EventEmitter<Projektpunktanmerkungstruktur>();
+  @Output() VerfasserButtonClicked    = new EventEmitter<any>();
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -70,6 +72,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
   @Input() Dialoghoehe: number;
   @Input() PositionY: number;
   @Input() ZIndex: number;
+  @Input() TerminValueBreite: number;
 
   public Valid: boolean;
   public DeleteEnabled: boolean;
@@ -127,6 +130,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       this.Thumbnailliste = [];
       this.Thumbbreite = 100;
       this.Spaltenanzahl = 4;
+      this.TerminValueBreite = 250;
 
       this.StatusbuttonEnabled = this.DB.CurrentProjektpunkt.Status !== this.Const.Projektpunktstatustypen.Festlegung.Name;
 
@@ -247,6 +251,43 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
+  public CleanZustaendigPunkteintrag() {
+
+    try {
+      let Liste: string[] = [];
+
+      if(this.DBProjekt.CurrentProjekt !== null && this.DB.CurrentProjektpunkt !== null) {
+
+
+
+        for(let FirmenID of this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe) {
+
+          let Firma: Projektfirmenstruktur= lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, {FirmenID: FirmenID});
+
+          if(!lodash.isUndefined(Firma)) Liste.push(FirmenID);
+        }
+
+        Liste = [];
+
+        for(let MitrbeiterID of this.DB.CurrentProjektpunkt.ZustaendigeInternIDListe) {
+
+          let Mitarbeiter: Mitarbeiterstruktur= lodash.find(this.Pool.Mitarbeiterliste, {_id: MitrbeiterID});
+
+          if(!lodash.isUndefined(Mitarbeiter)) Liste.push(MitrbeiterID);
+        }
+
+
+      }
+
+      this.DB.CurrentProjektpunkt.ZustaendigeInternIDListe = Liste;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'CleanZustaendigPunkteintrag', this.Debug.Typen.Component);
+    }
+
+  }
+
   private async PrepareData() {
 
     try {
@@ -263,6 +304,8 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       let Liste: Thumbnailstruktur[] = [];
       let Imageliste: Teamsfilesstruktur[] = [];
       let File: Teamsfilesstruktur;
+
+      this.CleanZustaendigPunkteintrag();
 
       // Bilder
 
@@ -438,8 +481,6 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
-  /*
-
   TextChanged(event: { Titel: string; Text: string; Valid: boolean }) {
 
     try {
@@ -453,9 +494,6 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'TextChanged', this.Debug.Typen.Component);
     }
   }
-
-   */
-
   LoeschenCheckboxChanged(event: { status: boolean; index: number; event: any }) {
 
     try {
@@ -477,6 +515,23 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'ResetEditor', this.Debug.Typen.Component);
+    }
+  }
+
+  GetMitarbeiterName(MitarbeiterID: string): string {
+
+    try {
+
+      let Mitarbeiter: Mitarbeiterstruktur = this.DBMitarbeiter.GetMitarbeiterByID(MitarbeiterID);
+
+      if(!lodash.isUndefined(Mitarbeiter)) {
+
+        return Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' / ' + Mitarbeiter.Kuerzel;
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetMitarbeiterName', this.Debug.Typen.Component);
     }
   }
 
@@ -647,6 +702,56 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
+  GetAnmerkungVerfasser(Anmerkung: Projektpunktanmerkungstruktur, i: number) : string{
+
+    try {
+
+      return Anmerkung.Verfasser.Vorname + ' ' + Anmerkung.Verfasser.Name;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetAnmerkungVerfasser', this.Debug.Typen.Component);
+    }
+  }
+
+  AnmerkungTimeChanged(datum: moment.Moment, i: number) {
+
+    try {
+
+      this.DB.CurrentProjektpunkt.Anmerkungenliste[i].Zeitstempel = datum.valueOf();
+      this.DB.CurrentProjektpunkt.Anmerkungenliste[i].Zeitstring  = datum.format('DD.MM.YY');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'AnmerkungTimeChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  GetAnmerkungDatum(Eintrag: Projektpunktanmerkungstruktur): Moment {
+
+    try {
+
+      return moment(Eintrag.Zeitstempel);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetAnmerkungDatum', this.Debug.Typen.Component);
+    }
+  }
+
+  GetAnmerkungDatumString(stempel: number): string{
+
+    try {
+
+      return moment(stempel).format('DD.MM.YYYY') + '<br>' + 'KW' + moment(stempel).isoWeek();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'GetAnmerkungdatum', this.Debug.Typen.Component);
+    }
+  }
+
+
   AufgabeTextChangedHandler(event: any) {
 
     try {
@@ -773,73 +878,65 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
-  GetZustaendigInternListe(): string {
+  MitarbeiterCheckChanged(event: { status: boolean; index: number; event: any }, MitarbeiterID: string) {
 
     try {
 
-      let Value: string = '';
-      let Mitarbeiter: Mitarbeiterstruktur;
+      if(event.status === true) this.DB.CurrentProjektpunkt.ZustaendigeInternIDListe.push(MitarbeiterID);
+      else {
 
-      for(let id of this.DB.CurrentProjektpunkt.ZustaendigeInternIDListe) {
+        this.DB.CurrentProjektpunkt.ZustaendigeInternIDListe = lodash.filter(this.DB.CurrentProjektpunkt.ZustaendigeInternIDListe, (id: string) => {
 
-        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: id});
-
-        if(!lodash.isUndefined(Mitarbeiter)) {
-
-          Value += Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + '\n';
-        }
+          return id !== MitarbeiterID;
+        });
       }
-
-      return Value;
-
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'GetZustaendigInternListe', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'MitarbeiterCheckChanged', this.Debug.Typen.Component);
     }
   }
 
-  GetZustaendigExternListe(): string {
+  MitarbeiterIsChecked(mitrabeiterid: string) {
 
     try {
 
-      let Firma: Projektfirmenstruktur;
-      let Value: string = '';
-
-      for(let id of this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe) {
-
-        Firma = lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, { FirmenID: id });
-
-
-        if(!lodash.isUndefined(Firma)) {
-
-          Value += Firma.Firma + '\n';
-        }
-      }
-
-      return Value;
+      return this.DB.CurrentProjektpunkt.ZustaendigeInternIDListe.indexOf(mitrabeiterid) !== -1;
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'GetZustaendigExternListe', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'MitarbeiterIsChecked', this.Debug.Typen.Component);
     }
-
   }
 
-  GetAnmerkungdatum(stempel: number, index: number): string{
+  FirmaCheckChanged(event: { status: boolean; index: number; event: any }, FirmenID: string) {
 
     try {
 
-      let Mitarbeiter: Mitarbeiterstruktur = lodash.find(this.Pool.Mitarbeiterliste, {Email: this.DB.CurrentProjektpunkt.Anmerkungenliste[index].Verfasser.Email});
-      let Kuerzel: string = lodash.isUndefined(Mitarbeiter) ? '' : ' &bull; ' + Mitarbeiter.Kuerzel;
+      if(event.status === true) this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe.push(FirmenID);
+      else {
 
-      return moment(stempel).format('DD.MM.YYYY') + '<br>' + 'KW' + moment(stempel).isoWeek() + Kuerzel;
+        this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe = lodash.filter(this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe, (id: string) => {
+
+          return id !== FirmenID;
+        });
+      }
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'GetAnmerkungdatum', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'FirmaCheckChanged', this.Debug.Typen.Component);
     }
+  }
 
+  FirmaIsChecked(firmaid: string) {
 
+    try {
+
+      return this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe.indexOf(firmaid) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'FirmaIsChecked', this.Debug.Typen.Component);
+    }
   }
 
   AnmerkungTextChangedHandler(event: any, i) {

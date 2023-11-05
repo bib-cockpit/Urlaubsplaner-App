@@ -196,6 +196,7 @@ const _Pages = {
   DebugPage: 'DebugPage',
   PDFViewerPage: 'PDFViewerPage',
   EmaillistePage:  'EmaillistePage',
+  UrlaubsplanungPage: 'UrlaubsplanungPage',
 
   // Firma
 

@@ -1643,8 +1643,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
     try {
 
-
-
       this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.LOPListe_Eintrageditor_Verfasser;
 
       let Index = 0;

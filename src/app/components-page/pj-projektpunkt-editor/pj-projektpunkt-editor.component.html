@@ -39,14 +39,15 @@
 
           <ion-grid  *ngIf="DB.CurrentProjektpunkt !== null" class="maingridclass">
             <ion-row>
-              <ion-col>
-                {{DB.CurrentProjektpunkt._id}}
-              </ion-col>
-            </ion-row>
-            <ion-row>
               <ion-col size="6">
 
                 <ion-grid>
+                  <ion-row>
+                    <ion-col size="3">
+                      <button-value (ButtonClicked)="VerfasserButtonClicked.emit()" [Wert_A]="DB.CurrentProjektpunkt.Verfasser.Vorname + ' ' + DB.CurrentProjektpunkt.Verfasser.Name" [Buttontext]="'Verfasser'">
+                      </button-value>
+                    </ion-col>
+                  </ion-row>
                   <ion-row>
                     <ion-col size="3">
                       <button-value [Buttontext]="'Leistungsphase'"
@@ -62,7 +63,9 @@
                   <ion-row>
                     <ion-col size="3">
                       <button-value-date [Datum]="GetStartdatum()"
-                                         [Buttontext]="DB.CurrentProjektpunkt.Status !== Const.Projektpunktstatustypen.Festlegung.Name ? 'Startdatum' : 'Datum'" [ElementID]="'start-datum'" (TimeChanged)="StartdatumChanged($event)"></button-value-date>
+                                         [Buttontext]="DB.CurrentProjektpunkt.Status !== Const.Projektpunktstatustypen.Festlegung.Name ? 'Startdatum' : 'Datum'"
+                                         [ValueBreite]="TerminValueBreite"
+                                         [ElementID]="'start-datum'" (TimeChanged)="StartdatumChanged($event)"></button-value-date>
                     </ion-col>
                     <ion-col size="3" *ngIf="DB.CurrentProjektpunkt.Status !== Const.Projektpunktstatustypen.Festlegung.Name && DB.CurrentProjektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name">
                       <button-value (ButtonClicked)="TerminButtonClicked.emit()" [Wert_A]="GetTerminWert()" [Buttontext]="DB.CurrentProjektpunkt.EndeKalenderwoche === null ? 'Termin' : 'Kalenderwoche'">
@@ -122,13 +125,48 @@
 
                   <ion-row>
                     <ion-col size="3">
+
+                      <table class="paddingsmalltable">
+                        <tr>
+                          <td colspan="2">
+                            <ion-text color="baeblau"><b>Zuständige Firma</b></ion-text>
+                          </td>
+                        </tr>
+                        <tr *ngFor="let Firma of DBProjekt.CurrentProjekt.Firmenliste">
+                          <td>
+                            <checkbox-clon [Checked]="FirmaIsChecked(Firma.FirmenID)" (CheckChanged)="FirmaCheckChanged($event, Firma.FirmenID)"></checkbox-clon>
+                          </td>
+                          <td>
+                            {{Firma.Firma}}
+                          </td>
+                        </tr>
+                      </table>
+                      <!--
                       <input-clone [MinHeight]="44" [Lines]="GetLinienanzahl()"
                                    [Clickable]="true" [Enabled]="false" Titel="Zuständig Extern" [Value]="GetZustaendigExternListe()" (click)="ZustaendigExternClicked.emit()"></input-clone>
+                                   -->
                     </ion-col>
                     <ion-col size="3">
+                      <table class="paddingsmalltable">
+                        <tr>
+                          <td colspan="2">
+                            <ion-text color="baeblau"><b>Zuständig bei BAE</b></ion-text>
+                          </td>
+                        </tr>
+                        <tr *ngFor="let MitarbeiterID of DBProjekt.CurrentProjekt.MitarbeiterIDListe">
+                          <td>
+                            <checkbox-clon [Checked]="MitarbeiterIsChecked(MitarbeiterID)" (CheckChanged)="MitarbeiterCheckChanged($event, MitarbeiterID)"></checkbox-clon>
+                          </td>
+                          <td>
+                            {{GetMitarbeiterName(MitarbeiterID)}}
+                          </td>
+                        </tr>
+                      </table>
+                      <!--
                       <input-clone [MinHeight]="44" [Lines]="GetLinienanzahl()"
                                    [Clickable]="true" [Enabled]="false" Titel="Zuständig Intern" [Value]="GetZustaendigInternListe()"
                                    (click)="ZustaendigInternClicked.emit()"></input-clone>
+                                   -->
                     </ion-col>
                   </ion-row>
 
@@ -147,7 +185,7 @@
                   <ion-row>
                     <ion-col size="6">
 
-                        <ion-textarea [value]="DB.CurrentProjektpunkt.Aufgabe" auto-grow style="border: 1px solid #444444; min-height: 140px" (ionChange)="AufgabeTextChangedHandler($event)"></ion-textarea>
+                        <ion-textarea [value]="DB.CurrentProjektpunkt.Aufgabe" auto-grow style="border: 1px solid #444444; min-height: 140px" (ionInput)="AufgabeTextChangedHandler($event)"></ion-textarea>
 
                         <!--
                         <editor
@@ -259,6 +297,32 @@
                   <tr *ngFor="let Eintrag of DB.CurrentProjektpunkt.Anmerkungenliste; let i = index">
                     <td style="width: 120px">
                       <button-value-date-small
+                        [Buttontext]="GetAnmerkungDatumString(Eintrag.Zeitstempel)" [Datum]="GetAnmerkungDatum(Eintrag)" [ElementID]="'anmerkungdatum_' + i.toString()" (TimeChanged)="AnmerkungTimeChanged($event, i)">
+                      </button-value-date-small>
+                    </td>
+                    <td style="width: 200px;">
+                      <ion-button expand="full" size="small" color="burnicklbraun" (click)="AnerkungVerfassernClicked.emit(Eintrag)">{{GetAnmerkungVerfasser(Eintrag, i)}}</ion-button>
+                    </td>
+                    <td style="width: auto">
+                      <ion-textarea  [autoGrow]="true" style="border: 1px solid black; border-radius: 4px; margin: 0px" (ionChange)="AnmerkungTextChangedHandler($event, i)" [value]="Eintrag.Anmerkung"></ion-textarea>
+                    </td>
+                    <td style="width: 50px"><ion-button (click)="DeleteAnmerkungClicked(i)" color="rot" size="small"><ion-icon name="trash"></ion-icon></ion-button></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3">
+                      <ion-button size="small" color="burnicklgruen" (click)="AddAnmerkungClicked()">
+                        <ion-icon name="add-circle-outline" slot="icon-only"></ion-icon>
+                      </ion-button>
+                    </td>
+                  </tr>
+
+                </table>
+                <!--
+
+                <table class="paddingsmalltable" width="100%">
+                  <tr *ngFor="let Eintrag of DB.CurrentProjektpunkt.Anmerkungenliste; let i = index">
+                    <td style="width: 120px">
+                      <button-value-date-small
                         [Buttontext]="GetAnmerkungdatum(Eintrag.Zeitstempel, i)" [ElementID]="'anmerkungdatum_' + i.toString()"></button-value-date-small>
                     </td>
                     <td style="width: auto">
@@ -275,6 +339,8 @@
                   </tr>
 
                 </table>
+
+                -->
 
 
               </ion-col>

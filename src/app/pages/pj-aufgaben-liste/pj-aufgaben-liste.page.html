@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <page-header #PageHeader>
 
     <page-header-menu
@@ -386,36 +386,6 @@
                            (MeinewocheBearbeitenClicked)="MeineWocheBearbeitenClickedHandler($event, null, Datenursprungsvarianten.Favoritenprojekt)"
                            (SendeRuecklauferinnerungEvent)="SendeRuecklauferinnerungHandler($event)">
     </pj-projektpunkteliste>
-    <!--
-      <table *ngIf="DBProjekte.CurrentProjekt !== null && Kalenderliste.length > 0" style="width: 100%" class="docinnertable">
-        <tr>
-          <td colspan="20" class="nobordertitelbuttonclass">
-            Termine
-          </td>
-        </tr>
-      </table>
-      <table class="docinnertable">
-        <ng-container *ngFor="let Tageintrag of Tageliste; let Tagindex = index">
-          <ng-container *ngIf="Kalenderliste[Tagindex] && Kalenderliste[Tagindex].length > 0">
-            <tr>
-              <td colspan="10"><b><ion-text color="burnicklgruen">{{Tageintrag.Tag + ', ' + Tageintrag.Datum}}</ion-text></b></td>
-            </tr>
-            <tr>
-              <td style="font-weight: bold">Begin</td>
-              <td style="font-weight: bold">Ende</td>
-              <td style="font-weight: bold">Thema</td>
-              <td style="font-weight: bold">Organisator</td>
-            </tr>
-            <tr *ngFor="let Termin of Kalenderliste[Tagindex]">
-              <td>{{GetUhrzeitstring(Termin.start.Zeitstempel)}}</td>
-              <td>{{GetUhrzeitstring(Termin.end.Zeitstempel)}}</td>
-              <td>{{Termin.subject}}</td>
-              <td>{{Termin.organizer.emailAddress.name}}</td>
-            </tr>
-          </ng-container>
-        </ng-container>
-      </table>
-      -->
 
   </div>
 
@@ -431,11 +401,6 @@
           <div class="datumkeeperclass">{{GetDatum()}}</div>
         </td>
         <td style="width: 50px" align="right">
-          <!--
-          <div class="rootbuttonclass" (click)="DBProjekte.CurrentProjekt !== null ? AddAufgabeClickedHandler() : null">
-            <ion-icon style="font-size: 28px" [color]="DBProjekte.CurrentProjekt !== null ? 'burnicklgruen' : 'burnicklbraun'" name="add-circle-outline"></ion-icon>
-          </div>
-          -->
         </td>
       </tr>
     </table>
@@ -470,12 +435,12 @@
                         [ZIndex]="3000" [Titel]="GetProjektpunkteditorTitel()" Iconname="book-outline"
                         (StatusClicked)="EditorStatusClickedHandler()" (FachbereichClicked)="FachbereichClickedHandler()"
                         (KostengruppeClicked)="KostengruppeClickedHandler()"
-                        (ZustaendigInternClicked)="EditorZustaendigInternHandler()"
-                        (ZustaendigExternClicked)="EditorZustaendigExternHandler()"
                         (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
                         (LeistungsphaseClickedEvent)="LeistungsphaseClickedHandler()"
                         (TerminButtonClicked)="ShowDateKkPicker = true"
                         (CancelClickedEvent)="ShowProjektpunktEditor = false"
+                        (VerfasserButtonClicked)="VerfasserButtonClickedHandler()"
+                        (AnerkungVerfassernClicked)="AnerkungVerfasserClickedHandler($event)"
                         (OkClickedEvent)="ShowProjektpunktEditor = false"></pj-projektpunkt-editor>
 
 <pj-kostengruppen-auswahl *ngIf="ShowKostengruppenauswahl" Titel="Kostengruppe festlegen"
@@ -546,7 +511,7 @@
 </pj-meinewoche-editor>
 
 <auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"
-                [Dialogbreite]="200" [Dialoghoehe]="Auswahlhoehe" [PositionY]="200"
+                [Dialogbreite]="Auswahlbreite" [Dialoghoehe]="Auswahlhoehe" [PositionY]="200"
                 [Titel]="Auswahltitel" [Iconname]="GetDialogTitelicon()"
                 (OkClickedEvent)="AuswahlOkButtonClicked($event)"
                 (CancelClickedEvent)="ShowAuswahl = false">

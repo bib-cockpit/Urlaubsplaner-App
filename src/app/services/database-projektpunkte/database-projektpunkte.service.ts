@@ -685,6 +685,7 @@ export class DatabaseProjektpunkteService {
       let Vorname: string = this.Pool.Mitarbeiterdaten   !== null ? this.Pool.Mitarbeiterdaten.Vorname : '';
       let Name: string    = this.Pool.Mitarbeiterdaten   !== null ? this.Pool.Mitarbeiterdaten.Name    : '';
       let Email: string   = this.Pool.Mitarbeiterdaten   !== null ? this.Pool.Mitarbeiterdaten.Email   : '';
+      let Heute: Moment   = moment();
 
 
       let Punkt: Projektpunktestruktur = {
@@ -717,10 +718,10 @@ export class DatabaseProjektpunkteService {
         Endezeitstempel:   null,
         Endezeitstring:    null,
         EndeKalenderwoche: null,
-        Startzeitsptempel: null,
-        Startzeitstring:   null,
-        Geschlossenzeitstempel: null,
-        Geschlossenzeitstring: null,
+        Startzeitsptempel: Heute.valueOf(),
+        Startzeitstring:   Heute.format('DD.MM.YY'),
+        Geschlossenzeitstempel: Heute.add(1, 'month').valueOf(),
+        Geschlossenzeitstring:  Heute.format('DD.MM.YY'),
         FileDownloadURL:   this.Const.NONE,
         Filename:          this.Const.NONE,
         Filezoom:          1,
@@ -1638,18 +1639,11 @@ export class DatabaseProjektpunkteService {
       let GoOn: boolean;
       let Stichtag: Moment;
       let Settings: Mitarbeitersettingsstruktur = (this.Pool.Mitarbeitersettings === null || lodash.isUndefined(this.Pool.Mitarbeitersettings) === true) ? this.Pool.GetNewMitarbeitersettings() : this.Pool.Mitarbeitersettings;
-
-      // let Vergleichstag: Moment = MyMoment(Projektpunkt.Endezeitstempel).locale('de');
-      //  let VergleichsKW: number  = Vergleichstag.isoWeek();
       let Starttag: Moment;
       let Endetag: Moment;
       let ResultA: boolean;
       let ResultB: boolean;
       let Ansichtensetup: Aufgabenansichtstruktur;
-
-      // let Wocheanzahl: number = MyMoment().isoWeeksInYear();
-      // let NaechsteWoche: number       = this.Heute.isoWeek();
-      //  let Faellig: boolean = this.CheckProjektpunktFaellig(Projektpunkt) !== this.Const.Faelligkeitsstatus.Nicht_faellig ? true : false;
 
       GoOn = true;
 
@@ -1722,7 +1716,7 @@ export class DatabaseProjektpunkteService {
 
           if(Ansichtensetup.AufgabenShowPlanung === false) {
 
-            if(Projektpunkt.LOPListeID == null) GoOn = false; // Wenn es kein LOP Liste Punkt ist ist es eine Aufgabe oder ein Protokolleintrag
+            if(Projektpunkt.LOPListeID === null) GoOn = false; // Wenn es kein LOP Liste Punkt ist ist es eine Aufgabe oder ein Protokolleintrag
           }
 
           if(Ansichtensetup.AufgabenShowAusfuehrung === false) {

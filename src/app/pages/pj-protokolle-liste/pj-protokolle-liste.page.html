@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <page-header #PageHeader>
     <page-header-menu
       (LeistungsphaseFilterClicked)="LeistungsphaseFilterClickedHanlder()"
@@ -129,11 +129,10 @@
 
 <pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="100"
                         [ZIndex]="3000" [Titel]="GetProjektpunkteditorTitel()" Iconname="book-outline"
+                        [TerminValueBreite]="420"
                         (StatusClicked)="StatusClickedHandler()"
                         (FachbereichClicked)="FachbereichClickedHandler()"
                         (KostengruppeClicked)="KostengruppeClickedHandler()"
-                        (ZustaendigInternClicked)="ZustaendigInternHandler()"
-                        (ZustaendigExternClicked)="ZustaendigExternHandler()"
                         (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
                         (AddBildEvent)="AddBildEventHandler()"
                         (TerminButtonClicked)="ShowDateKkPicker = true"

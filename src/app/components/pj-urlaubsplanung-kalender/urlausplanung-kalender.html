@@ -1,0 +1,112 @@
+
+  <div *ngIf="Pool.Mitarbeitersettings !== null" class="frameclass">
+
+    <table class="paddingsmalltable" width="100%">
+      <tr>
+        <td colspan="8" style="font-size: 120%; color: #444444; text-align: center;">
+          {{Monat}}
+        </td>
+      </tr>
+      <tr style="text-align: center; color: #307ac1">
+        <td style="width: 12%"><div class="tagnamedivclass">KW</div></td>
+        <td style="width: 12%"><div class="tagnamedivclass">Mo</div></td>
+        <td style="width: 12%"><div class="tagnamedivclass">Di</div></td>
+        <td style="width: 12%"><div class="tagnamedivclass">Mi</div></td>
+        <td style="width: 12%"><div class="tagnamedivclass">Do</div></td>
+        <td style="width: 12%"><div class="tagnamedivclass">Fr</div></td>
+        <td style="width: 12%"><div class="wochendenedivclass">Sa</div></td>
+        <td style="width: 12%"><div class="wochendenedivclass">So</div></td>
+      </tr>
+      <tr *ngFor="let Tageliste of Kalendertageliste; let wocheindex = index" style="text-align: center">
+        <td style="height: 40px">
+          <!--
+          (click)="KalenderwocheClicked($event, Tageliste[6])"  [style.background]="CheckKalenderwoche(Tageliste[wocheindex].Kalenderwoche) === true ? '#c7d304' : 'none'"
+          -->
+          <div class="tagnamedivclass">
+            {{Tageliste[wocheindex].Kalenderwoche}}
+          </div>
+        </td>
+        <td *ngFor="let Tag of Tageliste; let Tagindex = index" [style.color]="Tag.Hauptmonat === true ? 'black' : 'darkgray'">
+          <ng-container *ngIf="Tagindex >= 5">
+            <div class="tagrahmenclass">
+              <div class="wochendenedivclass">{{Tag.Tagnummer}}</div>
+              <ng-container *ngIf="Pool.Mitarbeitersettings.UrlaubShowFeiertage">
+                <div [style.background]="CheckIsFeiertag(Tag) === false ? DB.Urlaubsfaben.Wochenende : DB.Urlaubsfaben.Feiertage" class="buttoninfoclass"
+                     (mouseenter)="CheckIsFeiertag(Tag) === false ? null : FeietragMouseOverEvent(Tag)"
+                     (mouseleave)="CheckIsFeiertag(Tag) === false ? null : FeietragMouseLeaveEvent()">
+                </div>
+              </ng-container>
+              <div class="buttoninfoclass" [style.background]="DB.Urlaubsfaben.Wochenende"></div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="Tagindex < 5">
+            <ng-container *ngIf="Tag.Hauptmonat === true">
+              <div class="tagrahmenclass">
+                <div class="tagdivclass">
+                  {{Tag.Tagnummer}}
+                </div>
+                <ng-container *ngIf="Pool.Mitarbeitersettings.UrlaubShowFeiertage">
+                  <div [style.background]="CheckIsFeiertag(Tag) === false ? 'none' : DB.Urlaubsfaben.Feiertage" class="buttoninfoclass"
+                       (mouseenter)="CheckIsFeiertag(Tag) === false ? null : FeietragMouseOverEvent(Tag)"
+                       (mouseleave)="CheckIsFeiertag(Tag) === false ? null : FeietragMouseLeaveEvent()">
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="Pool.Mitarbeitersettings.UrlaubShowFerien">
+                  <div [style.background]="CheckIsFerientag(Tag) === false ? 'none' : DB.Urlaubsfaben.Ferien" class="buttoninfoclass"
+                       (mouseenter)="CheckIsFerientag(Tag) === false ? null : FerientagMouseOverEvent(Tag)"
+                       (mouseleave)="CheckIsFerientag(Tag) === false ? null : FerientagMouseLeaveEvent()">
+                  </div>
+                </ng-container>
+                <div class="buttoninfoclass">
+
+                </div>
+              </div>
+
+            </ng-container>
+            <ng-container *ngIf="Tag.Hauptmonat === false">
+              {{Tag.Tagnummer}}
+            </ng-container>
+            <!--
+              <ng-container *ngIf="CheckIsFeiertag(Tag) === true">
+                <div (mouseenter)="FeietragMouseOverEvent(Tag)" (mouseleave)="FeietragMouseLeaveEvent()" class="feiertagdivclass">
+                  {{Tag.Tagnummer}}
+                </div>
+              </ng-container>
+              <ng-container *ngIf="CheckIsFeiertag(Tag) === false">
+                <ng-container *ngIf="CheckIsFerientag(Tag) === true">
+                  <div (mouseenter)="FerientagMouseOverEvent(Tag)" (mouseleave)="FerientagMouseLeaveEvent()" class="ferientagdivclass">
+                    {{Tag.Tagnummer}}
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="CheckIsFerientag(Tag) === false">
+
+                  {{Tag.Tagnummer}}
+
+                </ng-container>
+
+
+
+              </ng-container>
+            -->
+
+
+          </ng-container>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

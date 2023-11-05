@@ -55,6 +55,7 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
   private FavoritenProjektSubcription: Subscription;
   ShowProjektschnellauswahl: boolean;
   private Auswahldialogorigin: string;
+  public ShowDateKkPicker: boolean;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -90,6 +91,7 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
       this.KostengruppenSubscription   = null;
       this.ProjektpunkteSubscription   = null;
       this.FavoritenProjektSubcription = null;
+      this.ShowDateKkPicker = false;
     }
     catch (error) {
 

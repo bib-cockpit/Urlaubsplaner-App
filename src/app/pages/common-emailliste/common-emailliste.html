@@ -1,5 +1,5 @@
 
-<ion-header>
+<ion-header class="ion-no-border">
   <page-header #PageHeader>
     <page-header-menu
       (EmailDatumChanged)="PrepareDaten()"
@@ -12,25 +12,23 @@
   <div class="keeperclass">
 
     <div class="leftdivclass" [style.width.px]="Maillistebreite">
-      <div class="lefttitleclass" [style.height.px]="ListeTitlehoehe">
-        <ion-list>
-          <ion-item class="ion-no-padding" *ngFor="let Folder of this.Folderliste; let i = index" (click)="FolderClickedHandler(Folder, i)">
-            <table class="paddingtable" style="font-size: 80%; width: 100%">
-              <tr>
-                <td style="width: 20px"><div *ngIf="Folderindex === i" class="currentcircleclass"></div></td>
-                <td style="width: auto; font-weight: bold;">
-                  {{Folder.displayName}}
-                </td>
-                <td style="width: 20px; text-align: right">
-                  <span *ngIf="Folder.totalItemCount > 0">{{Folder.totalItemCount}}</span>
-                </td>
-              </tr>
-            </table>
-          </ion-item>
-        </ion-list>
+      <div class="leftpostfaecherclass"  [style.height.px]="Basics.InnerContenthoehe + 100" [style.width.px]="Postfachbuttonbreite">
+
+        <table width="100%">
+          <tr>
+            <td style="height: 10px"></td>
+          </tr>
+          <tr *ngFor="let Folder of this.Folderliste; let i = index" (click)="FolderClickedHandler(Folder, i)">
+            <td align="center">
+              <div class="postfachbuttonclass" [style.color]="Folderindex === i ? 'black' : 'white'">
+                {{Folder.displayName}}<span *ngIf="Folder.totalItemCount > 0" style="padding: 4px">[{{Folder.totalItemCount}}]</span>
+              </div>
+            </td>
+          </tr>
+        </table>
 
       </div>
-      <div class="leftcontentclass" [style.height.px]="ListeContenthoehe">
+      <div class="leftemaillisteclass" [style.left.px]="Postfachbuttonbreite" [style.height.px]="Basics.InnerContenthoehe" [style.width.px]="Maillistebreite - Postfachbuttonbreite">
         <ion-list>
           <ng-container *ngIf="DBEmail.Projektsortierung === true">
 
@@ -95,10 +93,6 @@
 
             <ng-container *ngIf="BAE_Emailliste.length > 0">
 
-              <!--
-               (click)="EmaillisteProjektClicked(Projekt)"
-              -->
-
               <ion-item class="ion-no-padding">
                 <div [style.background]="Basics.Farben.BAEBlau"
                      [style.color]="'white'"
@@ -155,6 +149,7 @@
         </ion-list>
 
         <abstand-element-fixed></abstand-element-fixed>
+
 
       </div>
 
@@ -326,8 +321,6 @@
                         [ZIndex]="3000" [Titel]="'Aufgabe bearbeiten'" Iconname="book-outline"
                         (StatusClicked)="EditorStatusClickedHandler()" (FachbereichClicked)="FachbereichClickedHandler()"
                         (KostengruppeClicked)="KostengruppeClickedHandler()"
-                        (ZustaendigInternClicked)="EditorZustaendigInternHandler()"
-                        (ZustaendigExternClicked)="EditorZustaendigExternHandler()"
                         (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
                         (TerminButtonClicked)="ShowDateKkPicker = true"
                         (CancelClickedEvent)="ShowProjektpunktEditor = false"
@@ -348,9 +341,7 @@
                        (CancelClickedEvent)="ShowBeteiligteneditor = false"
                        (OkClickedEvent)="ShowBeteiligteneditor = false"
                        (DeleteClickedEvent)="ShowBeteiligteneditor = false"
-                       (ProjektClickedEvent)="BeteiligtenEditorProjektClickedEventHandler()"
-                       (FachbereichClickedEvent)="BeteiligteFachbereichClickedEventHandler()"
-                       (FachfirmaClickedEvent)="BeteiligteFachfirmaClickedEventHandler()">
+                       (ProjektClickedEvent)="BeteiligtenEditorProjektClickedEventHandler()">
 </pj-beteiligten-editor>
 
 <auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex"

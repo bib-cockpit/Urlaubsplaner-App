@@ -56,8 +56,8 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
   @Output() TerminButtonClicked     = new EventEmitter<any>();
   @Output() GeschlossenButtonClicked = new EventEmitter<any>();
   @Output() GeschlossenTerminButtonClicked = new EventEmitter<any>();
-  @Output() ZustaendigInternClicked = new EventEmitter<any>();
-  @Output() ZustaendigExternClicked = new EventEmitter<any>();
+  //  @Output() ZustaendigInternClicked = new EventEmitter<any>();
+  // @Output() ZustaendigExternClicked = new EventEmitter<any>();
   @Output() KostengruppeClicked     = new EventEmitter<any>();
   @Output() GebaeudeteilClicked     = new EventEmitter<any>();
   @Output() PrioritaetClicked       = new EventEmitter<any>();
@@ -247,21 +247,28 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
 
   public CleanExternZustaendigLOPEintrag() {
 
-    let Liste: string[] = [];
+    try {
 
-    if(this.DBLOPListe.CurrentLOPListe !== null && this.DB.CurrentProjektpunkt !== null && this.DBProjekt.CurrentProjekt !== null) {
+      let Liste: string[] = [];
 
-      debugger;
+      if(this.DBLOPListe.CurrentLOPListe !== null && this.DB.CurrentProjektpunkt !== null && this.DBProjekt.CurrentProjekt !== null) {
 
-      for(let FirmenID of this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe) {
+        debugger;
 
-        let Firma: Projektfirmenstruktur= lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, {FirmenID: FirmenID});
+        for(let FirmenID of this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe) {
 
-        if(!lodash.isUndefined(Firma)) Liste.push(FirmenID);
+          let Firma: Projektfirmenstruktur= lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, {FirmenID: FirmenID});
+
+          if(!lodash.isUndefined(Firma)) Liste.push(FirmenID);
+        }
       }
-    }
 
-    this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe = Liste;
+      this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe = Liste;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'CleanExternZustaendigLOPEintrag', this.Debug.Typen.Component);
+    }
   }
 
 
@@ -618,19 +625,6 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
     }
   }
 
-  GetAnmerkungdatum(stempel: number, index: number): string{
-
-    try {
-
-      let Mitarbeiter: Mitarbeiterstruktur = lodash.find(this.Pool.Mitarbeiterliste, {Email: this.DB.CurrentProjektpunkt.Anmerkungenliste[index].Verfasser.Email});
-
-      return moment(stempel).format('DD.MM.YYYY') + '<br>' + 'KW' + moment(stempel).isoWeek();
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Liste Eintrageditor', 'GetAnmerkungdatum', this.Debug.Typen.Component);
-    }
-  }
 
   AnmerkungTextChangedHandler(event: any, i) {
 
@@ -840,6 +834,18 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'AnmerkungTimeChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  GetAnmerkungDatumString(stempel: number): string{
+
+    try {
+
+      return moment(stempel).format('DD.MM.YYYY') + '<br>' + 'KW' + moment(stempel).isoWeek();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'GetAnmerkungdatum', this.Debug.Typen.Component);
     }
   }
 

@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <page-header #PageHeader>
     <page-header-menu [SendFestlegungenEnabled]="DB.Displayliste.length > 0"
                       (ShowProjektfilesEvent)="ShowProjektfilesHandler()"
@@ -139,8 +139,6 @@
                         [ZIndex]="3000" [Titel]="DBProjektpunkte.CurrentProjektpunkt._id !== null ? 'Festlegung bearbeiten' : 'Neue Festlegung'" Iconname="book-outline"
                         (FachbereichClicked)="FachbereichClickedHandler()"
                         (KostengruppeClicked)="KostengruppeClickedHandler('Editor')"
-                        (ZustaendigInternClicked)="EditorZustaendigInternHandler()"
-                        (ZustaendigExternClicked)="EditorZustaendigExternHandler()"
                         (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
                         (LeistungsphaseClickedEvent)="LeistungsphaseClickedHandler('Editor')"
                         (CancelClickedEvent)="ShowProjektpunktEditor = false"

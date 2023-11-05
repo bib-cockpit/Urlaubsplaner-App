@@ -49,6 +49,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
   private ChangelogSubscription: Subscription;
   public ProgressMessage: string;
   public ReloadMouseOver: boolean;
+  public UrlaubMouseOver: boolean;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -80,6 +81,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
       this.ChangelogSubscription  = null;
       this.ProgressMessage        = '';
       this.ReloadMouseOver        = false;
+      this.UrlaubMouseOver        = false;
 
       // Test
     }
@@ -280,6 +282,18 @@ export class CommonHomePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Home', 'MitarbeiterButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  UrlaubButtonClicked() {
+
+    try {
+
+      this.Tools.SetRootPage(this.Const.Pages.UrlaubsplanungPage);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'UrlaubButtonClicked', this.Debug.Typen.Page);
     }
   }
 

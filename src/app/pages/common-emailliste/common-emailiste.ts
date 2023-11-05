@@ -62,8 +62,8 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
   public HTMLBody: string;
   public Editorconfig: any;
   public MailTitlehoehe: number;
-  public ListeTitlehoehe: number;
-  public ListeContenthoehe: number;
+  // public ListeTitlehoehe: number;
+  // public ListeContenthoehe: number;
   public MailContenthoehe: number;
   public CurrentMail: Outlookemailstruktur;
   public ShowDateKkPicker: boolean;
@@ -91,6 +91,7 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
   private BeteiligteSubscription: Subscription;
   public ShowAllEmpfaenger: boolean;
   public Projekt: Projektestruktur;
+  public Postfachbuttonbreite: number;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -117,8 +118,8 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
       this.Mailcontentbreite = 200;
       this.MailTitlehoehe    = 200;
       this.MailContenthoehe  = 200;
-      this.ListeTitlehoehe   = 200;
-      this.ListeContenthoehe = 200;
+      // this.ListeTitlehoehe   = 400;
+      // this.ListeContenthoehe = 200;
       this.HTMLBody          = null;
       this.CurrentMail       = null;
       this.BackMouseOver     = false;
@@ -146,6 +147,7 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
       this.BeteiligteSubscription = null;
       this.ShowAllEmpfaenger = false;
       this.Projekt = null;
+      this.Postfachbuttonbreite = 40;
 
       this.Editorconfig = {
 
@@ -221,9 +223,9 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
 
       this.Mailcontentbreite   = this.Basics.Contentbreite - this.Maillistebreite;
       this.Editorconfig.width  = this.Mailcontentbreite;
-      this.ListeTitlehoehe     = 210;
+      // this.ListeTitlehoehe     = 210;
       this.MailTitlehoehe      = 208;
-      this.ListeContenthoehe   = this.Basics.InnerContenthoehe - this.ListeTitlehoehe;
+      // this.ListeContenthoehe   = this.Basics.InnerContenthoehe - this.ListeTitlehoehe;
       this.MailContenthoehe    = this.Basics.InnerContenthoehe - this.MailTitlehoehe;
       this.Editorconfig.height = this.MailContenthoehe;
 

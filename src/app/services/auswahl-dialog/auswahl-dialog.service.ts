@@ -42,6 +42,8 @@ export class AuswahlDialogService {
     Aufgabenliste_Editor_ZustaendigExtern:               'Aufgabenliste_Editor_ZustaendigExtern',
     Aufgabenliste_Editor_ZustaendigIntern:               'Aufgabenliste_Editor_ZustaendigIntern',
     Aufgabenliste_Editor_Leistungsphase:                 'Aufgabenliste_Editor_Leistungsphase',
+    Aufgabenliste_Editor_Verfasser:                      'Aufgabenliste_Editor_Verfasser',
+    Aufgabenliste_Editor_AnmerkungenVerfasser:           'Aufgabenliste_Editor_AnmerkungenVerfasser',
 
     Aufgabenliste_Meintageintrag_Status:                 'Aufgabenliste_Meintageintrag_Status',
     Aufgabenliste_Meintageintrag_Termin:                 'Aufgabenliste_Meintageintrag_Termin',

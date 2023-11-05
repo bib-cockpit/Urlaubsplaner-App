@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <page-header #PageHeader>
     <page-header-menu
       (LOPListeZeitspanneEvent)="ZeitspanneFilterClickedHandler()"
@@ -432,8 +432,6 @@
                         (PrioritaetClicked)="EintragPrioritaetClickedHandler()"
                         (AddBildEvent)="AddBildEventHandler()"
                         (FachbereichClicked)="EintragEditorFachbereichClickedHandler()"
-                        (ZustaendigInternClicked)="EintragEditorZustaendigInternHandler()"
-                        (ZustaendigExternClicked)="EintragEditorZustaendigExternHandler()"
                         (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
                         (TerminButtonClicked)="ShowDateKkPicker = true"
                         (AnerkungVerfassernClicked)="AnerkungVerfasserClickedHandler($event)"
