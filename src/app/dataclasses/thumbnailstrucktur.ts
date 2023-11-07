@@ -1,3 +1,5 @@
+import {Projektpunktestruktur} from "./projektpunktestruktur";
+
 export type Thumbnailstruktur = {
 
   id:        string;
@@ -19,4 +21,5 @@ export type Thumbnailstruktur = {
     medium: number;
     large:  number;
   };
+  Projektpunkt?: Projektpunktestruktur;
 };

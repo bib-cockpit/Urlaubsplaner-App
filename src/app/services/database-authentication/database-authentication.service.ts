@@ -27,10 +27,7 @@ const Keys = {
 export class DatabaseAuthenticationService {
 
   public LoginSuccessEvent: EventEmitter<any> = new EventEmitter<any>();
-  public ActiveUsername: string;
   public ActiveUser: AccountInfo;
-  // public AccessToken: string;
-  // public AccessTokenExpired: boolean;
   public SecurityEnabled: boolean;
   private DevelopmentUser: AccountInfo;
   public ShowLogin: boolean;
@@ -48,8 +45,6 @@ export class DatabaseAuthenticationService {
     try {
 
       this.SecurityEnabled    = true;
-      // this.AccessToken        = this.Const.NONE;
-      // this.AccessTokenExpired = false;
       this.ActiveUser         = null;
       this.ShowLogin          = false;
 
@@ -75,7 +70,6 @@ export class DatabaseAuthenticationService {
       this.Debug.ShowMessage('Unset Active User', 'Database Authentication', 'UnsetActiveUser', this.Debug.Typen.Service);
 
       this.ActiveUser  = null;
-      // this.AccessToken = null;
       this.ShowLogin   = true;
 
     } catch (error) {
@@ -131,27 +125,6 @@ export class DatabaseAuthenticationService {
             this.ActiveUser  = Account;
 
             resolve(true);
-            /*
-
-            this.LoadAccessToken().then((token) => {
-
-              if(token !== this.Const.NONE) {
-
-                this.Debug.ShowMessage('Token konte aus Cookie geladen werden.', 'Database Authentication', 'SetActiveUser', this.Debug.Typen.Service);
-
-                // this.AccessToken = token;
-              }
-              else {
-
-                this.Debug.ShowMessage('Token konte nicht aus Cookie geladen werden.', 'Database Authentication', 'SetActiveUser', this.Debug.Typen.Service);
-
-                this.UnsetActiveUser();
-              }
-
-              resolve(true);
-            });
-
-             */
           }
           else
           {
@@ -163,7 +136,6 @@ export class DatabaseAuthenticationService {
         else {
 
           this.ActiveUser  = this.DevelopmentUser;
-          // this.AccessToken = null;
 
           resolve(true);
         }
@@ -342,78 +314,11 @@ export class DatabaseAuthenticationService {
 
     try {
 
-      return true; //  this.AuthenticationDB.HasActiveAccount();
+      return true;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'CheckSecurity', this.Debug.Typen.Service);
     }
   }
-
-  private LoadAccessToken(): Promise<string> {
-
-    try {
-
-      return new Promise<string>((resolve, reject) => {
-
-        let Wert = Cookies.get(Keys.AccessToken);
-
-        if(lodash.isUndefined(Wert)) {
-
-          resolve(this.Const.NONE);
-        }
-        else {
-
-          resolve(Wert);
-        }
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'LoadAccessToken', this.Debug.Typen.Service);
-    }
-  }
-
-  /*
-  public SaveAccessToken(token: string): Promise<boolean> {
-
-    try {
-
-      return new Promise((resolve) => {
-
-        console.log('Save Access Token: ' + token);
-
-        Cookies.set(Keys.AccessToken, token);
-
-        resolve(true);
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'SaveAccessToken', this.Debug.Typen.Service);
-    }
-  }
-
-   */
-
-  /*
-
-  public DeleteAccessToken(): Promise<boolean> {
-
-    try {
-
-      return new Promise((resolve, reject) => {
-
-        Cookies.remove(Keys.AccessToken);
-
-        resolve(true);
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Authentication', 'DeleteAccessToken', this.Debug.Typen.Service);
-    }
-  }
-
-   */
 }

@@ -475,6 +475,7 @@ export class DatabaseProjektpunkteService {
         delete punkt.Text_A;
         delete punkt.Text_B;
         delete punkt.Text_C;
+        delete punkt.ThumbID;
 
         Observer = this.http.put(this.ServerProjektpunkteUrl, punkt);
 

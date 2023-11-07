@@ -173,7 +173,9 @@
                                 <tr>
                                   <td style="padding: 2px" (click)="ThumbnailClicked($event, Zeilenliste, Thumbnailindex)">
                                     <div class="imageclass">
-                                      <img  [src]="GetThumbSource(Punkt, Thumb)" [style.width.px]="Thumbbreite[LOP._id][Punktindex]"/>
+                                      x
+                                      <img  [src]="GetThumbSource(Punkt, Thumb)"
+                                            [style.width.px]="Thumbbreite[LOP._id][Punktindex]" [style.height.px]="Thumbhoehe[LOP._id][Punktindex]"/>
                                     </div>
                                   </td>
                                 </tr>
@@ -183,7 +185,7 @@
                                 <tr>
                                   <td style="padding: 2px">
                                     <div class="imageclass">
-                                      <div style="border: 1px solid gray; font-size: 80%; min-height: 120px;" [style.width.px]="Thumbbreite">
+                                      <div style="border: 1px solid gray; font-size: 80%; min-height: 120px;" [style.width.px]="Thumbbreite[LOP._id][Punktindex]" [style.height.px]="Thumbhoehe[LOP._id][Punktindex]">
                                         <table width="100%">
                                           <tr>
                                             <td style="text-align: center">
@@ -309,7 +311,7 @@
           <tr *ngFor="let Thumb of BigThumbnailliste; let Index = index">
             <td style="text-align: center; background: #444444; color: white;">{{BigThumbnailnumernliste[Index]}}</td>
             <td colspan="10" (click)="ThumbnailClicked($event, BigThumbnailliste, Index)">
-              <img [src]="Thumb.largeurl">
+              <img [src]="Thumb.largeurl" [style.height.px]="Thumb.height.large" [style.wdth.px]="Thumb.width.large">
             </td>
           </tr>
 

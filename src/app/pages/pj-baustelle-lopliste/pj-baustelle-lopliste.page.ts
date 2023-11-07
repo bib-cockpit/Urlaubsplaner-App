@@ -94,6 +94,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
   public BigThumbnailnumernliste: string[];
   public Zeilenanzahlliste: number[][][];
   public Thumbbreite: number[][];
+  public Thumbhoehe: number[][];
   public Spaltenanzahl: number;
   private Imageviewer: ImageViewer;
 
@@ -154,6 +155,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.Thumbnailliste    = [];
       this.Zeilenanzahlliste = [];
       this.Thumbbreite       = [];
+      this.Thumbhoehe        = [];
       this.Spaltenanzahl     = 6;
       this.Imageviewer       = null;
       this.BigThumbnailliste = [];
@@ -240,6 +242,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       let Liste: Thumbnailstruktur[] = [];
       let Imageliste: Teamsfilesstruktur[] = [];
       let File: Teamsfilesstruktur;
+      let Faktor: number;
 
       if(this.Pool.Mitarbeitersettings !== null) Stichtag = Heute.clone().subtract(this.Pool.Mitarbeitersettings.LOPListeGeschlossenZeitfilter, 'days');
       else                                       Stichtag = Heute.clone().subtract(10, 'days');
@@ -247,6 +250,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.Thumbnailliste          = [];
       this.Zeilenanzahlliste       = [];
       this.Thumbbreite             = [];
+      this.Thumbhoehe              = [];
       this.BigThumbnailliste       = [];
       this.BigThumbnailnumernliste = [];
 
@@ -350,90 +354,153 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
             this.Thumbnailliste[LOPListe._id]    = [];
             this.Zeilenanzahlliste[LOPListe._id] = [];
             this.Thumbbreite[LOPListe._id]       = [];
+            this.Thumbhoehe[LOPListe._id]        = [];
 
             Punkteindex = 0;
 
             for(Punkt of this.DB.CurrentPunkteliste[LOPListe._id]) {
 
-              Imageliste = [];
-              Liste      = [];
+              if(Punkt.ProtokollShowBilder && Punkt.Bilderliste.length > 0) {
 
-              for(let Bild of Punkt.Bilderliste) {
+                Imageliste = [];
+                Liste      = [];
 
-                File        = this.GraphService.GetEmptyTeamsfile();
-                File.id     = Bild.FileID;
-                File.webUrl = Bild.WebUrl;
+                for(let Bild of Punkt.Bilderliste) {
 
-                Imageliste.push(File);
-              }
+                  File        = this.GraphService.GetEmptyTeamsfile();
+                  File.id     = Bild.FileID;
+                  File.webUrl = Bild.WebUrl;
 
-              for(File of Imageliste) {
+                  Imageliste.push(File);
+                }
 
-                Thumb = await this.GraphService.GetSiteThumbnail(File);
+                for(File of Imageliste) {
 
-                if(Punkt.Thumbnailsize !== 'large') {
+                  Thumb = await this.GraphService.GetSiteThumbnail(File);
 
-                  if(Thumb !== null) {
+                  if(Punkt.Thumbnailsize !== 'large') {
 
-                    Thumb.weburl = File.webUrl;
-                    Merker       = lodash.find(Liste, {id: File.id});
+                    if(Thumb !== null) {
 
-                    if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+                      Thumb.weburl       = File.webUrl;
+                      Merker             = lodash.find(Liste, {id: File.id});
+                      Punkt.ThumbID      = Thumb.id;
+                      Thumb.Projektpunkt = Punkt;
+
+                      if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+                    }
+                    else {
+
+                      Thumb              = this.DBProjektpunkte.GetEmptyThumbnail();
+                      Thumb.id           = File.id;
+                      Thumb.weburl       = null;
+                      Punkt.ThumbID      = Thumb.id;
+                      Thumb.Projektpunkt = Punkt;
+
+                      Liste.push(Thumb);
+
+                    }
                   }
                   else {
 
-                    Thumb        = this.DBProjektpunkte.GetEmptyThumbnail();
-                    Thumb.id     = File.id;
-                    Thumb.weburl = null;
+                    if(Thumb !== null) {
 
-                    Liste.push(Thumb);
+                      Thumb.weburl       = File.webUrl;
+                      Thumb.id           = File.id;
+                      Merker             = lodash.find(this.BigThumbnailliste, {id: File.id});
+                      Thumb.Projektpunkt = Punkt;
+
+                      if(lodash.isUndefined(Merker)) {
+
+                        this.BigThumbnailliste.push(Thumb);
+                        this.BigThumbnailnumernliste.push(Punkt.Nummer);
+
+                        Punkt.ThumbID = Thumb.id;
+
+                      }
+                    }
+                  }
+                }
+
+                if(Punkt.Thumbnailsize !== 'large') {
+
+                  Thumb = lodash.find(Liste, {id: Punkt.ThumbID});
+
+
+                } else {
+
+                  Thumb = lodash.find(this.BigThumbnailliste, {id: Punkt.ThumbID});
+                }
+
+                if(!lodash.isUndefined(Thumb)) {
+
+                  if     (!lodash.isUndefined(Thumb.width.large)  && !lodash.isUndefined(Thumb.height.large))  Faktor = Thumb.width.large  / Thumb.height.large;
+                  else if(!lodash.isUndefined(Thumb.width.medium) && !lodash.isUndefined(Thumb.height.medium)) Faktor = Thumb.width.medium / Thumb.height.medium;
+                  else if(!lodash.isUndefined(Thumb.width.small)  && !lodash.isUndefined(Thumb.height.small))  Faktor = Thumb.width.small  / Thumb.height.small;
+                  else {
+
+                    Faktor = 1;
                   }
                 }
                 else {
 
-                  if(Thumb !== null) {
+                  Faktor = 1;
 
-                    Thumb.weburl = File.webUrl;
-                    Thumb.id     = File.id;
-                    Merker       = lodash.find(this.BigThumbnailliste, {id: File.id});
-
-                    if(lodash.isUndefined(Merker)) {
-
-                      this.BigThumbnailliste.push(Thumb);
-                      this.BigThumbnailnumernliste.push(Punkt.Nummer);
-                    }
-                  }
                 }
-              }
 
-              switch (Punkt.Thumbnailsize) {
+                debugger;
 
-                case 'small':  this.Spaltenanzahl = 4; this.Thumbbreite[LOPListe._id][Punkteindex] = 100; break;
-                case 'medium': this.Spaltenanzahl = 2; this.Thumbbreite[LOPListe._id][Punkteindex] = 200; break;
-                case 'large':  this.Spaltenanzahl = 1; this.Thumbbreite[LOPListe._id][Punkteindex] = 800; break;
-              }
+                switch (Punkt.Thumbnailsize) {
 
-              Anzahl              = Liste.length;
-              this.Zeilenanzahlliste[LOPListe._id][Punkteindex] = Math.ceil(Anzahl / this.Spaltenanzahl);
-              Index               = 0;
-              this.Thumbnailliste[LOPListe._id][Punkteindex] = [];
+                  case 'small':  {
 
-              for(let Zeilenindex = 0; Zeilenindex < this.Zeilenanzahlliste[LOPListe._id][Punkteindex]; Zeilenindex++) {
+                    this.Spaltenanzahl = 4;
+                    this.Thumbbreite[LOPListe._id][Punkteindex] = Thumb.width.small; // 100;
 
-                this.Thumbnailliste[LOPListe._id][Punkteindex][Zeilenindex] = [];
-
-                for(let Spaltenindex = 0; Spaltenindex < this.Spaltenanzahl; Spaltenindex++) {
-
-                  if(!lodash.isUndefined(Liste[Index])) {
-
-                    this.Thumbnailliste[LOPListe._id][Punkteindex][Zeilenindex][Spaltenindex] = Liste[Index];
+                    break;
                   }
-                  else {
+                  case 'medium':
 
-                    this.Thumbnailliste[LOPListe._id][Punkteindex][Zeilenindex][Spaltenindex] = null;
+                    this.Spaltenanzahl = 2;
+                    this.Thumbbreite[LOPListe._id][Punkteindex] = Thumb.width.medium; // 200;
+
+
+                    break;
+
+                  case 'large':
+
+                    this.Spaltenanzahl = 1;
+                    this.Thumbbreite[LOPListe._id][Punkteindex] = Thumb.width.large; // 800;
+
+                    break;
+                }
+
+                this.Thumbhoehe[LOPListe._id][Punkteindex] = this.Thumbbreite[LOPListe._id][Punkteindex] * Faktor;
+
+                debugger;
+
+                Anzahl              = Liste.length;
+                this.Zeilenanzahlliste[LOPListe._id][Punkteindex] = Math.ceil(Anzahl / this.Spaltenanzahl);
+                Index               = 0;
+                this.Thumbnailliste[LOPListe._id][Punkteindex] = [];
+
+                for(let Zeilenindex = 0; Zeilenindex < this.Zeilenanzahlliste[LOPListe._id][Punkteindex]; Zeilenindex++) {
+
+                  this.Thumbnailliste[LOPListe._id][Punkteindex][Zeilenindex] = [];
+
+                  for(let Spaltenindex = 0; Spaltenindex < this.Spaltenanzahl; Spaltenindex++) {
+
+                    if(!lodash.isUndefined(Liste[Index])) {
+
+                      this.Thumbnailliste[LOPListe._id][Punkteindex][Zeilenindex][Spaltenindex] = Liste[Index];
+                    }
+                    else {
+
+                      this.Thumbnailliste[LOPListe._id][Punkteindex][Zeilenindex][Spaltenindex] = null;
+                    }
+
+                    Index++;
                   }
-
-                  Index++;
                 }
               }
 
@@ -1491,15 +1558,15 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
     }
   }
 
-  ShowBilderCheckChanged(event: { status: boolean; index: number; event: any }, Punkt: Projektpunktestruktur) {
+  async ShowBilderCheckChanged(event: { status: boolean; index: number; event: any }, Punkt: Projektpunktestruktur) {
 
     try {
 
       Punkt.ProtokollShowBilder = event.status;
 
-      this.DBProjektpunkte.UpdateProjektpunkt(Punkt, false);
+      await this.DBProjektpunkte.UpdateProjektpunkt(Punkt, false);
 
-
+      this.PrepareData();
 
     } catch (error) {
 
