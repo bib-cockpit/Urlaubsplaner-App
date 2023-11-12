@@ -12,6 +12,7 @@ import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import * as lodash from "lodash-es";
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
+import {DatabaseProjekteService} from "../database-projekte/database-projekte.service";
 
 
 @Injectable({
@@ -46,6 +47,7 @@ export class DatabaseFestlegungenService {
               @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
               private Debug: DebugProvider,
               private Pool: DatabasePoolService,
+              private DBProjekte: DatabaseProjekteService,
               private authService: MsalService,
               private http: HttpClient,
               private Const: ConstProvider,
@@ -182,6 +184,23 @@ export class DatabaseFestlegungenService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Festlegungskategorie', 'UpdateFestlegungskategorienliste', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetFestlegungskategorieByID(id: string): Festlegungskategoriestruktur {
+
+    try {
+
+      if(this.DBProjekte.CurrentProjekt !== null) {
+
+        return lodash.find(this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey], {_id: id});
+      }
+      else return null;
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Festlegungskategorie', 'GetFestlegungskategorieByID', this.Debug.Typen.Service);
     }
   }
 

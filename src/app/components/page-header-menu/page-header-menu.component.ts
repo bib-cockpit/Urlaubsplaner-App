@@ -7,10 +7,7 @@ import {Subscription} from "rxjs";
 import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
 import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
 import * as lodash from 'lodash-es';
-import {Projektauswahlmenuestruktur} from "../../dataclasses/projektauswahlmenuestruktur";
-import {Projektestruktur} from "../../dataclasses/projektestruktur";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
-import {DatabaseProtokolleService} from "../../services/database-protokolle/database-protokolle.service";
 import {ConstProvider} from "../../services/const/const";
 import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
@@ -18,9 +15,7 @@ import {DatabaseAuthenticationService} from "../../services/database-authenticat
 import {HttpErrorResponse} from "@angular/common/http";
 import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
 import moment, {Moment} from "moment";
-import {
-  DatabaseMitarbeitersettingsService
-} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {DatabaseMitarbeitersettingsService} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {Graphservice} from "../../services/graph/graph";
 import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
 import {DatabaseOutlookemailService} from "../../services/database-email/database-outlookemail.service";
@@ -29,6 +24,7 @@ import {DatabaseLoplisteService} from "../../services/database-lopliste/database
 import {Fachbereichestruktur} from "../../dataclasses/fachbereicheclass";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 import {ToolsProvider} from "../../services/tools/tools";
+import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
 
 @Component({
   selector: 'page-header-menu',
@@ -58,7 +54,6 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   @Output()  ShowProjektauswahlEvent = new EventEmitter<any>();
   @Output()  ShowProjektfilesEvent = new EventEmitter<any>();
   @Output()  LOPListeZeitspanneEvent = new EventEmitter<any>();
-  @Output()  KostengruppeFilterClicked = new EventEmitter<any>();
   @Output()  ShowOpenFestlegungOnlyEvent = new EventEmitter<any>();
   @Output()  SendFestlegungenClicked = new EventEmitter<any>();
   @Output()  ShowUngelesenOnlyChanged = new EventEmitter<any>();
@@ -66,6 +61,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   @Output()  EmailDatumChanged = new EventEmitter<any>();
   @Output()  PlanungsmatrixLeistungsphaseClicked = new EventEmitter<any>();
   @Output()  ShowLOPListeInfoeintraegeChanged = new EventEmitter<any>();
+  @Output()  ExpandFestlegungeEvent = new EventEmitter<boolean>();
 
   private SuchleisteInputSubscription: Subscription;
   private Suchleiste2InputSubscription: Subscription;
@@ -82,6 +78,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   public ShowOpenFestlegungOnly: boolean;
   public BackMouseOver: boolean;
   public Timelinebreite: number;
+
 
   constructor(private Debug: DebugProvider,
               public Basics: BasicsProvider,
@@ -807,35 +804,39 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
-  GetKostengruppenname(): string {
+  GetKostengruppenname(id: string): string {
 
     try {
 
-      let Name: string;
+      let Kategorie: Festlegungskategoriestruktur;
 
-      if(this.Pool.Mitarbeitersettings !== null) {
+      if(this.DBProjekte.CurrentProjekt !== null && this.Pool.Mitarbeitersettings !== null) {
 
-        Name = this.Kostengruppenservice.GetKostengruppennameByGruppennummern(
-          this.Pool.Mitarbeitersettings.UnterkostengruppeFilter,
-          this.Pool.Mitarbeitersettings.HauptkostengruppeFilter,
-          this.Pool.Mitarbeitersettings.OberkostengruppeFilter,
-        );
+        Kategorie = lodash.find(this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey], (Eintrag: Festlegungskategoriestruktur) => {
 
-        return Name !== null ? Name : 'Alle';
+          return Eintrag.Unterkostengruppe === this.Pool.Mitarbeitersettings.UnterkostengruppeFilter &&
+                 Eintrag.Hauptkostengruppe === this.Pool.Mitarbeitersettings.HauptkostengruppeFilter &&
+                 Eintrag.Oberkostengruppe  === this.Pool.Mitarbeitersettings.OberkostengruppeFilter;
+        });
 
-        return Name;
+        if(!lodash.isUndefined(Kategorie)) {
 
+          return Kategorie.Kostengruppennummer + ' ' + Kategorie.Beschreibung;
+        }
+        else {
+
+          return 'Alle';
+
+        }
       }
       else {
 
         return 'Alle';
       }
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetKostengruppenname', this.Debug.Typen.Component);
     }
-
   }
 
   ShowOpenFestlegungOnlyChanged(event: { status: boolean; index: number; event: any }) {

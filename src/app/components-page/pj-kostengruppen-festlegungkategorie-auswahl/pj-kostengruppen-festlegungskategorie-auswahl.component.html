@@ -105,8 +105,8 @@
               <td style="width: 100%"></td>
               <td>
 
-                <div class="rootbuttonclass" (click)="OkClickedEvent.emit()">
-                  <ion-icon style="font-size: 28px" [color]="'weiss'" name="save-outline"></ion-icon>
+                <div class="rootbuttonclass" (click)="OkButtonEnabled ? OkButtonClicked() : null">
+                  <ion-icon style="font-size: 28px" [color]="OkButtonEnabled ? 'weiss' : 'grau'" name="save-outline"></ion-icon>
                 </div>
               </td>
             </tr>

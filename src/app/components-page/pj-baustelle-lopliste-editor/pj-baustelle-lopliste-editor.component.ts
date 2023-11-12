@@ -93,12 +93,11 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
   public Titelhoehe: number;
   public Listeheaderhoehe: number;
   public Listehoehe: number;
-  public LinesanzahlTeilnehmer: number;
   private ComponentLoaded: boolean;
   public  Beteiligtenliste: Projektbeteiligtestruktur[][];
   public Mitarbeiterliste: Mitarbeiterstruktur[];
-  private MitarbeiterSubscription: Subscription;
-  private BeteiligteSubscription: Subscription;
+  // private MitarbeiterSubscription: Subscription;
+  // private BeteiligteSubscription: Subscription;
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -127,7 +126,6 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
       this.Titelhoehe               = 0;
       this.Listeheaderhoehe         = 0;
       this.Listehoehe               = 0;
-      this.LinesanzahlTeilnehmer    = 1;
       this.Valid                    = false;
       this.Projektbeteiligteliste   = [];
       this.Punkteliste              = [];
@@ -141,8 +139,8 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
       this.ShowUpload               = false;
       this.LOPListeSubscription     = null;
       this.ProjektpunktSubscription = null;
-      this.MitarbeiterSubscription  = null;
-      this.BeteiligteSubscription   = null;
+      // this.MitarbeiterSubscription  = null;
+      // this.BeteiligteSubscription   = null;
       this.Beteiligtenliste         = [];
       this.Titel = this.Const.NONE;
       this.Iconname = 'help-circle-outline';
@@ -175,6 +173,8 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
       this.ComponentLoaded       = false;
       this.Bereich          = this.DB.LOPListeEditorViewModus;
 
+      /*
+
       this.MitarbeiterSubscription = this.Pool.MitarbeiterAuswahlChanged.subscribe(() => {
 
         this.PrepareData();
@@ -184,6 +184,8 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
 
         this.PrepareData();
       });
+
+       */
 
       this.LOPListeSubscription = this.Pool.LOPListeChanged.subscribe(() => {
 
@@ -237,6 +239,8 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
         this.ProjektpunktSubscription = null;
       }
 
+      /*
+
       if(this.MitarbeiterSubscription !== null) {
 
         this.MitarbeiterSubscription.unsubscribe();
@@ -248,6 +252,8 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
         this.BeteiligteSubscription.unsubscribe();
         this.BeteiligteSubscription = null;
       }
+
+       */
 
 
     } catch (error) {
@@ -339,10 +345,7 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
           });
         }
 
-        let AnzahlExtern   = this.DB.CurrentLOPListe.BeteiligExternIDListe.length;
-        let AnzahlBurnickl = this.DB.CurrentLOPListe.BeteiligtInternIDListe.length;
 
-        this.LinesanzahlTeilnehmer = Math.max(AnzahlExtern, AnzahlBurnickl);
 
         this.Punkteliste = [];
 

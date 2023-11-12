@@ -11,7 +11,6 @@ import {PjBeteiligtenAuswahlModule} from "../../components-page/pj-beteiligten-a
 import {PjProtokolleListePage} from "./pj-protokolle-liste.page";
 import {PjProtokollEditorModule} from "../../components-page/pj-protokoll-editor/pj-protokoll-editor.module";
 import {PjProjektpunktEditorModule} from "../../components-page/pj-projektpunkt-editor/pj-projektpunkt-editor.module";
-import {PjKostengruppenAuswahlModule} from "../../components-page/pj-kostengruppen-auswahl/pj-kostengruppen-auswahl.module";
 import {PjGebaeudeRaumauswahlModule} from "../../components-page/pj-gebaeude-raumauswahl/pj-gebaeude-raumauswahl.module";
 import {PjProtokollListefilterModule} from "../../components-page/pj-protokoll-listefilter/pj-protokoll-listefilter.module";
 import {
@@ -54,7 +53,6 @@ const routes: Routes = [
         PjBeteiligtenAuswahlModule,
         PjProtokollEditorModule,
         PjProjektpunktEditorModule,
-        PjKostengruppenAuswahlModule,
         PjGebaeudeRaumauswahlModule,
         PjProtokollListefilterModule,
         PjProjektpunktDateKwPickerModule,

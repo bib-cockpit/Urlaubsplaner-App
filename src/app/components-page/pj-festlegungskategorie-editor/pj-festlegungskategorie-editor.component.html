@@ -33,7 +33,7 @@
             <ion-row>
               <ion-col>
                 <button-value [Buttontext]="'Kostengruppe'"
-                              [Wert_A]="KostenService.GetKostengruppennameByFestlegungskategorie(this.DB.CurrentFestlegungskategorie)" (ButtonClicked)="KostengruppeClicked.emit()">
+                              [Wert_A]="KostenService.GetKostengruppennameByFestlegungskategorieFullName(this.DB.CurrentFestlegungskategorie)" (ButtonClicked)="KostengruppeClicked.emit()">
                 </button-value>
               </ion-col>
             </ion-row>

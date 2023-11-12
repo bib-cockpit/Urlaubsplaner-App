@@ -7,7 +7,46 @@
   align-items: center; // vertikal
   color: white;
   font-weight: bold;
+  padding: 4px;
+}
+
+.festlegunglistesubheader {
+
+  width: 100%;
+  height: 32px;
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
+  color: white;
+  font-weight: bold;
+  padding: 4px;
   cursor: pointer;
+}
+
+.tableborderone {
+
+  border: 1px solid black;
+  padding: 4px;
+}
+
+.tableborderleft {
+
+  border-left:   1px solid black;
+  border-bottom: 1px solid black;
+  border-top:    1px solid black;
+}
+
+.tableborderright {
+
+  border-right:   1px solid black;
+  border-bottom: 1px solid black;
+  border-top:    1px solid black;
+}
+
+.tableborderfull {
+
+  border: 1px solid black;
+  padding: 4px;
 }
 
 

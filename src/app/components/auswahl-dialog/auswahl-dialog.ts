@@ -34,7 +34,6 @@ export class AuswahlDialogComponent implements OnInit, OnDestroy, OnChanges {
   @Input() Auswahlindex: number;
   @Input() Iconname: string;
   @Input() Dialogbreite: number;
-  @Input() Dialoghoehe: number;
   @Input() PositionY: number;
   @Input() ZIndex: number;
 
@@ -46,8 +45,6 @@ export class AuswahlDialogComponent implements OnInit, OnDestroy, OnChanges {
   constructor(public Tools: ToolsProvider,
               public Basics: BasicsProvider,
               private Debug: DebugProvider,
-              private DBStandort: DatabaseStandorteService,
-              private Service: AuswahlDialogService,
               public Displayservice: DisplayService,
               public Const: ConstProvider) {
     try {

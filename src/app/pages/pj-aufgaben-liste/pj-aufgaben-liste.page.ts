@@ -40,6 +40,9 @@ import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 import {DatabaseAuthenticationService} from "../../services/database-authentication/database-authentication.service";
 import {Projektpunktanmerkungstruktur} from "../../dataclasses/projektpunktanmerkungstruktur";
+import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
+import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
+import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
 
 @Component({
   selector:    'pj-aufgaben-liste-page',
@@ -81,7 +84,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   public KostenDialogbreite: number;
   public KostenDialoghoehe: number;
   public AuswahlIDliste: string[];
-  public ShowKostengruppenauswahl: boolean;
+  public ShowKostengruppenauswahlFestlegungskategorie: boolean;
   public StrukturDialogbreite: number;
   public StrukturDialoghoehe: number;
   public ShowRaumauswahl: boolean;
@@ -143,6 +146,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   public EmailDialogbreite: number;
   public EmailDialoghoehe: number;
   public Auswahlbreite: number;
+  public Kostengruppeauswahltitel: string;
 
   constructor(public Displayservice: DisplayService,
               public Basics: BasicsProvider,
@@ -153,6 +157,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
               private DBLOPListe: DatabaseLoplisteService,
               public DBProjekte: DatabaseProjekteService,
               public DBMitarbeiter: DatabaseMitarbeiterService,
+              public KostenService: KostengruppenService,
               public Tools: ToolsProvider,
               private GraphService: Graphservice,
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
@@ -176,7 +181,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.ShowMitarbeiterauswahl   = false;
       this.ShowBeteiligteauswahl    = false;
       this.ShowProjektpunktEditor   = false;
-      this.ShowKostengruppenauswahl = false;
+      this.ShowKostengruppenauswahlFestlegungskategorie = false;
       this.ShowRaumauswahl          = false;
       this.ShowZeitspannefilter     = false;
       this.Dialoghoehe              = 400;
@@ -274,7 +279,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.Headerhoehe  = 30;
       this.Listenhoehe  = this.Basics.InnerContenthoehe;
       this.Minutenhoehe = this.Listenhoehe / (8 * 60);
-      this.Tagbreite    = (this.Basics.Contentbreite - 4) / 5;
+      this.Tagbreite    = (this.Basics.Contentbreite - 4 - this.Timelinebreite) / 5;
 
       this.StrukturDialoghoehe = this.Dialoghoehe;
 
@@ -466,7 +471,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
               for(let Teilnehmeremail of this.DBProjektpunkte.CurrentProjektpunkt.Teilnehmeremailliste) {
 
-                let Mitarbeiter: Mitarbeiterstruktur = lodash.find(this.Pool.Mitarbeiterliste, {Email: Teilnehmeremail});
+                Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {Email: Teilnehmeremail});
 
                 if(!lodash.isUndefined(Mitarbeiter)) this.DBProtokolle.CurrentProtokoll.BeteiligtInternIDListe.push(Mitarbeiter._id);
               }
@@ -541,7 +546,11 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
           this.DBProjektpunkte.CurrentProjektpunkt.Leistungsphase = data;
 
-          // this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt);
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_Kostengruppe:
+
+          this.DBProjektpunkte.CurrentProjektpunkt.FestlegungskategorieID = data;
 
           break;
 
@@ -858,18 +867,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
   }
 
 
-  KostengruppeClickedHandler() {
-
-    try {
-
-      this.ShowKostengruppenauswahl = true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, '', 'KostengruppeClickedHandler', this.Debug.Typen.Page);
-    }
-  }
-
   GebaeudeteilClickedHandler() {
 
     try {
@@ -907,20 +904,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'GetDatum', 'function', this.Debug.Typen.Page);
-    }
-  }
-
-  EditorZustaendigInternHandler() {
-
-    try {
-
-      this.AuswahlIDliste         = lodash.cloneDeep(this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeInternIDListe);
-      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_ZustaendigIntern;
-      this.ShowMitarbeiterauswahl = true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'EditorZustaendigInternHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -968,20 +951,6 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'GetBeteiligtenauswahlTitel', this.Debug.Typen.Page);
-    }
-  }
-
-  EditorZustaendigExternHandler() {
-
-    try {
-
-      this.AuswahlIDliste        = lodash.cloneDeep(this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeExternIDListe);
-      this.Auswahldialogorigin   = this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_ZustaendigExtern;
-      this.ShowBeteiligteauswahl = true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'EditorZustaendigExternHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -1539,6 +1508,51 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'PrepareDaten', this.Debug.Typen.Page);
+    }
+  }
+
+  KostengruppeClickedHandler(origin: string) {
+
+    try {
+
+      let Kategorie: Festlegungskategoriestruktur;
+      let Kostengruppetext: string;
+      let Kostengruppe: Kostengruppenstruktur;
+
+      this.Kostengruppeauswahltitel = 'Kostengruppe festlegen';
+
+      if(origin === 'Festlegungskategorie') {
+
+        this.ShowKostengruppenauswahlFestlegungskategorie = true;
+      }
+      else {
+
+        this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_Kostengruppe;
+
+        let Index = 0;
+
+        this.ShowAuswahl         = true;
+        this.Auswahltitel        = 'Kostengruppe festlegen';
+        this.Auswahlliste        = [];
+        this.Auswahlhoehe        = 600;
+        this.Auswahlbreite       = 600;
+
+        for(Kategorie of this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
+
+          Kostengruppe     = this.KostenService.GetKostengruppeByFestlegungskategorieID(Kategorie._id);
+          Kostengruppetext = Kostengruppe.Kostengruppennummer + ' ' + Kostengruppe.Bezeichnung;
+
+          this.Auswahlliste.push({ Index: Index, FirstColumn: Kostengruppetext, SecoundColumn: Kategorie.Beschreibung, Data: Kategorie._id });
+          Index++;
+
+        }
+
+        this.Auswahlindex = lodash.findIndex(this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey], {_id: this.DBProjektpunkte.CurrentProjektpunkt.FestlegungskategorieID });
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Aufgaben Liste', 'KostengruppeClickedHandler', this.Debug.Typen.Page);
     }
   }
 

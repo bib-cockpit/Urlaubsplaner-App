@@ -18,8 +18,9 @@ import {Projektestruktur} from "../../dataclasses/projektestruktur";
 import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
 import {DatabaseProjektbeteiligteService} from "../database-projektbeteiligte/database-projektbeteiligte.service";
 import {BasicsProvider} from "../basics/basics";
-import {KostengruppenService} from "../kostengruppen/kostengruppen.service";
 import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
+import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
+import {DatabaseFestlegungenService} from "../database-festlegungen/database-festlegungen.service";
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +69,7 @@ export class DatabaseProtokolleService {
               private http: HttpClient,
               private Basics: BasicsProvider,
               private AuthService: DatabaseAuthenticationService,
-              public KostenService: KostengruppenService,
+              private DBFestlegungen: DatabaseFestlegungenService,
               private GraphService: Graphservice,
               private Pool: DatabasePoolService) {
     try {
@@ -523,6 +524,7 @@ export class DatabaseProtokolleService {
       let Kostengruppenliste: string[];
       let Beteiligter: Projektbeteiligtestruktur;
       let Mitarbeiter: Mitarbeiterstruktur;
+      let Kategortie: Festlegungskategoriestruktur;
       let Name: string;
       let CcEmpfaengerliste: {
         Name:  string;
@@ -602,7 +604,14 @@ export class DatabaseProtokolleService {
 
         if(Projektpunkt.Status === this.Const.Projektpunktstatustypen.Festlegung.Name) {
 
-          Kostengruppenliste.push(this.KostenService.GetKostengruppennameByProjektpunkt(Projektpunkt));
+          Kategortie = this.DBFestlegungen.GetFestlegungskategorieByID(Projektpunkt.FestlegungskategorieID);
+
+          if(!lodash.isUndefined(Kategortie) && Kategortie !== null) {
+
+            Kostengruppenliste.push(Kategortie.Kostengruppennummer + ' ' + Kategortie.Beschreibung); // .KostenService.GetKostengruppennameByProjektpunkt(Projektpunkt));
+          }
+
+          // Kostengruppenliste.push(this.KostenService.GetKostengruppennameByProjektpunkt(Projektpunkt));
         }
         else {
 
@@ -787,11 +796,8 @@ export class DatabaseProtokolleService {
 
             this.CurrentProtokoll = result.Protokoll;
 
-            debugger;
           },
           complete: () => {
-
-            debugger;
 
             this.UpdateProtokollliste(this.CurrentProtokoll);
 
@@ -885,8 +891,6 @@ export class DatabaseProtokolleService {
       let Value: string = '';
       let Liste:string[] = [];
       let Eintrag: string;
-
-      debugger;
 
       for(let id of this.CurrentProtokoll.BeteiligtInternIDListe) {
 

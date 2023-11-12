@@ -82,6 +82,17 @@
     border:  1px solid var(--ion-color-schwarz);
   }
 
+  .docinnertablenopadding {
+
+    border:  1px solid #000000;
+  }
+
+  .docinnertablenopadding td {
+
+    padding: 0px;
+    border:  1px solid var(--ion-color-schwarz);
+  }
+
   .docinnertablenew {
 
   }

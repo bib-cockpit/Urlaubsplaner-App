@@ -474,7 +474,7 @@
           <table>
             <tr>
               <td [style.width.px]="Tagbreite">
-                <div class="wocheheaderdivclass" [style.height.px]="Wochentaghoehe">Montag {{GetDatumtext('Montag')}} {{DBMitarbeiter.GetMeinewocheStunden('Montag')}}</div>
+                <div class="wocheheaderdivclass" [style.height.px]="Wochentaghoehe">Montag {{Timelineindex}} {{GetDatumtext('Montag')}} {{DBMitarbeiter.GetMeinewocheStunden('Montag')}}</div>
               </td>
               <td *ngIf="Timelineindex === 0" [style.width.px]="Timelinebreite" style="background:  #354547;"></td>
               <td style="width: 1px; background: white"></td>
@@ -529,11 +529,11 @@
                                 [Wert_A]="Pool.Mitarbeitersettings.LeistungsphaseFilter !== Const.Leistungsphasenvarianten.UNBEKANNT ? Pool.Mitarbeitersettings.LeistungsphaseFilter : 'Alle'">
                   </button-value>
                 </td>
-                <td style="width: 600px">
-                  <button-value [Buttontext]="'Kostengruppe'" [Linkebreite]="20" [Rechtebreite]="80"
-                                (ButtonClicked)="KostengruppeFilterClicked.emit()"
-                                [Wert_A]="GetKostengruppenname()">
-                  </button-value>
+                <td style="width: 40px">
+                  <ion-button (click)="ExpandFestlegungeEvent.emit(true)" color="burnicklbraun"><ion-icon name="add-circle-outline"></ion-icon></ion-button>
+                </td>
+                <td style="width: 40px">
+                  <ion-button (click)="ExpandFestlegungeEvent.emit(false)" color="burnicklbraun"><ion-icon name="remove-circle-outline"></ion-icon></ion-button>
                 </td>
                 <td style="width: 280px">
                   <ion-searchbar #Suchleiste2 placeholder="Suche"></ion-searchbar>
@@ -547,10 +547,12 @@
                   </table>
                 </td>
                 <td style="width: 120px;" align="right">
+                  <!--
                   <ion-button size="small" [color]="SendFestlegungenEnabled === true ? 'burnicklbraun' : 'grau'" (click)="SendFestlegungenEnabled === true ? SendFestlegungenClicked.emit() : null">
                     <ion-icon name="mail-outline" color="weiss" slot="start"></ion-icon>
                     <ion-text color="weiss">Email</ion-text>
                   </ion-button>
+                  -->
                 </td>
               </tr>
             </table>

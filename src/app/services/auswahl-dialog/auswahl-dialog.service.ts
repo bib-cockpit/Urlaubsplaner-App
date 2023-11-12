@@ -41,7 +41,8 @@ export class AuswahlDialogService {
     Aufgabenliste_Editor_Standortfilter:                 'Aufgabenliste_Editor_Standortfilter',
     Aufgabenliste_Editor_ZustaendigExtern:               'Aufgabenliste_Editor_ZustaendigExtern',
     Aufgabenliste_Editor_ZustaendigIntern:               'Aufgabenliste_Editor_ZustaendigIntern',
-    Aufgabenliste_Editor_Leistungsphase:                 'Aufgabenliste_Editor_Leistungsphase',
+    Aufgabenliste_Editor_Leistungsphase:                 'Aufgabenliste_Editor_Kostengruppe',
+    Aufgabenliste_Editor_Kostengruppe:                 'Aufgabenliste_Editor_Leistungsphase',
     Aufgabenliste_Editor_Verfasser:                      'Aufgabenliste_Editor_Verfasser',
     Aufgabenliste_Editor_AnmerkungenVerfasser:           'Aufgabenliste_Editor_AnmerkungenVerfasser',
 
@@ -69,6 +70,7 @@ export class AuswahlDialogService {
     Bautagebuchliste_Bautagebucheditor:                     'Bautagebuchliste_Bautagebucheditor',
 
     Protokollliste_Editor_Leistungsphase:                   'Protokollliste_Editor_Leistungsphase',
+    Protokollliste_Editor_Kostengruppe:                     'Protokollliste_Editor_Kostengruppe',
     Protokollliste_Protokolleditor_Teamteilnehmer:          'Protokollliste_Protokolleditor_Teamteilnehmer',
     Protokollliste_Projektpunkteditor_Teamteilnehmer:       'Protokollliste_Projektpunkteditor_Teamteilnehmer',
     Protokollliste_Protokolleditor_Beteilgtenteilnehmer:    'Protokollliste_Protokolleditor_Beteilgtenteilnehmer',

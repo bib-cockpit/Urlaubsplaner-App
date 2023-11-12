@@ -86,7 +86,7 @@
                         (StandortfilterClickedEvent)="ProjekteStandortfilterClickedHandler()"></pj-projekte-auswahl>
 
 <auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex"
-                [Dialogbreite]="200" [Dialoghoehe]="200" [PositionY]="200"
+                [Dialogbreite]="300"  [PositionY]="100"
                 [Titel]="Auswahltitel" [Iconname]="GetDialogTitelicon()"
                 (OkClickedEvent)="AuswahlOkButtonClicked($event)"
                 (CancelClickedEvent)="ShowAuswahl = false"></auswahl-dialog>

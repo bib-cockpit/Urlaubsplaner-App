@@ -11,7 +11,6 @@ import {PjBeteiligtenAuswahlModule} from "../../components-page/pj-beteiligten-a
 import {PjAufgabenListePage} from "./pj-aufgaben-liste.page";
 import {PjProtokollEditorModule} from "../../components-page/pj-protokoll-editor/pj-protokoll-editor.module";
 import {PjProjektpunktEditorModule} from "../../components-page/pj-projektpunkt-editor/pj-projektpunkt-editor.module";
-import {PjKostengruppenAuswahlModule} from "../../components-page/pj-kostengruppen-auswahl/pj-kostengruppen-auswahl.module";
 import {PjGebaeudeRaumauswahlModule} from "../../components-page/pj-gebaeude-raumauswahl/pj-gebaeude-raumauswahl.module";
 import {PjProtokollListefilterModule} from "../../components-page/pj-protokoll-listefilter/pj-protokoll-listefilter.module";
 import {PjProjektpunktelisteModule} from "../../components/pj-projektpunkteliste/pj-projektpunkteliste.module";
@@ -27,6 +26,9 @@ import {
 } from "../../components-page/pj-baustelle-lopliste-editor/pj-baustelle-lopliste-editor.module";
 import {PjEmailSendModule} from "../../components-page/pj-email-send/pj-email-send.module";
 import {PjFirmenAuswahlModule} from "../../components-page/pj-firmen-auswahl/pj-firmen-auswahl.module";
+import {
+    PjKostengruppenFestlegungskategorieAuswahlModule
+} from "../../components-page/pj-kostengruppen-festlegungkategorie-auswahl/pj-kostengruppen-festlegungskategorie-auswahl.module";
 // import {AngularImageViewerModule} from "@hreimer/angular-image-viewer";
 
 
@@ -51,7 +53,6 @@ const routes: Routes = [
         PjBeteiligtenAuswahlModule,
         PjProtokollEditorModule,
         PjProjektpunktEditorModule,
-        PjKostengruppenAuswahlModule,
         PjGebaeudeRaumauswahlModule,
         PjProtokollListefilterModule,
         PjProjektpunktelisteModule,
@@ -64,6 +65,7 @@ const routes: Routes = [
         PjBaustelleLoplisteEditorModule,
         PjEmailSendModule,
         PjFirmenAuswahlModule,
+        PjKostengruppenFestlegungskategorieAuswahlModule,
         // AngularImageViewerModule,
 
 

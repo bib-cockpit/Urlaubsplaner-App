@@ -133,8 +133,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
         }
       }
 
-      debugger;
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'SetKalendertageliste', this.Debug.Typen.Component);
@@ -144,8 +142,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     try {
-
-      debugger;
 
       this.Displayservice.AddDialog(this.Displayservice.Dialognamen.ProjektpunktDateKwPicker, this.ZIndex);
 
@@ -378,16 +374,25 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
       this.Debug.ShowMessage('Ok  Button CLicked', 'LOP Liste Date KW Picker', 'OkButtonClicked', this.Debug.Typen.Component);
 
-      this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt, true).then(() => {
+      debugger;
 
-        debugger;
+      if(this.DBProjektpunkte.CurrentProjektpunkt._id !== null && this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe !== '') {
+
+        this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt, true).then(() => {
+
+
+          this.OkClickedEvent.emit();
+
+        }).catch((error: any) => {
+
+          this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'function', this.Debug.Typen.Component);
+        });
+      }
+      else {
 
         this.OkClickedEvent.emit();
+      }
 
-      }).catch((error: any) => {
-
-        this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'function', this.Debug.Typen.Component);
-      });
 
     } catch (error) {
 

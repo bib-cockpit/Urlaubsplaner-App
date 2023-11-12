@@ -28,9 +28,11 @@ import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
 import ImageViewer from "awesome-image-viewer";
-import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 import {DatabaseAuthenticationService} from "../../services/database-authentication/database-authentication.service";
+import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
+import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
+import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
 
 @Component({
   selector:    'pj-protokolle-liste-page',
@@ -57,7 +59,6 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
   public KostenDialogbreite: number;
   public KostenDialoghoehe: number;
   public AuswahlIDliste: string[];
-  public ShowKostengruppenauswahl: boolean;
   public StrukturDialogbreite: number;
   public StrukturDialoghoehe: number;
   public ShowRaumauswahl: boolean;
@@ -76,6 +77,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
   public ShowBildauswahl: boolean;
   private Imageliste: Projektpunktimagestruktur[];
   private Imageviewer: ImageViewer;
+  public Auswahlbreite: number;
 
   constructor(public Displayservice: DisplayService,
               public Basics: BasicsProvider,
@@ -89,6 +91,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
               public Menuservice: MenueService,
               public Pool: DatabasePoolService,
               public Tools: ToolsProvider,
+              public KostenService: KostengruppenService,
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               private AuthService: DatabaseAuthenticationService,
               public Debug: DebugProvider) {
@@ -104,7 +107,6 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       this.ShowMitarbeiterauswahl   = false;
       this.ShowBeteiligteauswahl    = false;
       this.ShowProjektpunktEditor   = false;
-      this.ShowKostengruppenauswahl = false;
       this.ShowRaumauswahl          = false;
       this.ShowZeitspannefilter     = false;
       this.Dialoghoehe              = 800;
@@ -119,10 +121,11 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       this.Protokollliste           = [];
       this.ShowDateKkPicker         = false;
       this.Headerhoehe              = 0;
-      this.Auswahlhoehe             = 200;
       this.Listenhoehe              = 0;
       this.EmailDialogbreite        = 800;
       this.EmailDialoghoehe         = 600;
+      this.Auswahlhoehe             = 600;
+      this.Auswahlbreite            = 300;
       this.ShowEmailSenden          = false;
       this.ShowProjektschnellauswahl = false;
       this.ShowBildauswahl           = false;
@@ -269,6 +272,12 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
         case this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Editor_Leistungsphase:
 
           this.DBProjektpunkte.CurrentProjektpunkt.Leistungsphase = data;
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Editor_Kostengruppe:
+
+          this.DBProjektpunkte.CurrentProjektpunkt.FestlegungskategorieID = data;
 
           break;
 
@@ -650,15 +659,39 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
     }
   }
 
-  KostengruppeClickedHandler() {
+  KostengruppeClickedHandler(origin: string) {
 
     try {
 
-      this.ShowKostengruppenauswahl = true;
+      let Kategorie: Festlegungskategoriestruktur;
+      let Kostengruppetext: string;
+      let Kostengruppe: Kostengruppenstruktur;
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Editor_Kostengruppe;
+
+      let Index = 0;
+
+      this.ShowAuswahl         = true;
+      this.Auswahltitel        = 'Kostengruppe festlegen';
+      this.Auswahlliste        = [];
+      this.Auswahlhoehe        = 600;
+      this.Auswahlbreite       = 600;
+
+      for(Kategorie of this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
+
+        Kostengruppe     = this.KostenService.GetKostengruppeByFestlegungskategorieID(Kategorie._id);
+        Kostengruppetext = Kostengruppe.Kostengruppennummer + ' ' + Kostengruppe.Bezeichnung;
+
+        this.Auswahlliste.push({ Index: Index, FirstColumn: Kostengruppetext, SecoundColumn: Kategorie.Beschreibung, Data: Kategorie._id });
+        Index++;
+      }
+
+      this.Auswahlindex = lodash.findIndex(this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey], {_id: this.DBProjektpunkte.CurrentProjektpunkt.FestlegungskategorieID });
+
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, '', 'KostengruppeClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'KostengruppeClickedHandler', this.Debug.Typen.Page);
     }
   }
 

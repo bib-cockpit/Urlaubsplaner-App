@@ -448,8 +448,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
                 }
 
-                debugger;
-
                 switch (Punkt.Thumbnailsize) {
 
                   case 'small':  {
@@ -476,8 +474,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
                 }
 
                 this.Thumbhoehe[LOPListe._id][Punkteindex] = this.Thumbbreite[LOPListe._id][Punkteindex] * Faktor;
-
-                debugger;
 
                 Anzahl              = Liste.length;
                 this.Zeilenanzahlliste[LOPListe._id][Punkteindex] = Math.ceil(Anzahl / this.Spaltenanzahl);
@@ -1485,8 +1481,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       event.stopPropagation();
 
       let Token = await this.AuthService.RequestToken('.default');
-
-      debugger;
 
       for (let Thumb of Thumbliste) {
 

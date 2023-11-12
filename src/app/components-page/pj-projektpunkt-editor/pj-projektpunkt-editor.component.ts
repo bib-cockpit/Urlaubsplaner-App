@@ -28,13 +28,11 @@ import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestru
 import {DatabaseProtokolleService} from "../../services/database-protokolle/database-protokolle.service";
 import moment from "moment";
 import {Projektpunktanmerkungstruktur} from "../../dataclasses/projektpunktanmerkungstruktur";
-import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
 import * as Joi from "joi";
 import {ObjectSchema} from "joi";
 import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subscription} from "rxjs";
-import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
 import {DatabaseOutlookemailService} from "../../services/database-email/database-outlookemail.service";
 import {Outlookemailstruktur} from "../../dataclasses/outlookemailstruktur";
 import {Outlookemailattachmentstruktur} from "../../dataclasses/outlookemailattachmentstruktur";
@@ -44,6 +42,8 @@ import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
 import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
 import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
+import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
+import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
 
 @Component({
   selector: 'pj-projektpunkt-editor',
@@ -57,8 +57,6 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
   @Output() StatusClicked           = new EventEmitter<any>();
   @Output() FachbereichClicked      = new EventEmitter<any>();
   @Output() TerminButtonClicked     = new EventEmitter<any>();
-  // @Output() ZustaendigInternClicked = new EventEmitter<any>();
-  // @Output() ZustaendigExternClicked = new EventEmitter<any>();
   @Output() KostengruppeClicked     = new EventEmitter<any>();
   @Output() GebaeudeteilClicked     = new EventEmitter<any>();
   @Output() LeistungsphaseClickedEvent  = new EventEmitter();
@@ -103,9 +101,9 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
               public DBProjekt: DatabaseProjekteService,
               public DBProtokoll: DatabaseProtokolleService,
               public Displayservice: DisplayService,
+              public KostenService: KostengruppenService,
               public Pool: DatabasePoolService,
               public Graph: Graphservice,
-              public KostenService: KostengruppenService,
               public DBGebaeude: DatabaseGebaeudestrukturService,
               public DBEmail: DatabaseOutlookemailService,
               public Const: ConstProvider) {
@@ -254,11 +252,11 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
   public CleanZustaendigPunkteintrag() {
 
     try {
-      let Liste: string[] = [];
+      let Liste: string[];
 
       if(this.DBProjekt.CurrentProjekt !== null && this.DB.CurrentProjektpunkt !== null) {
 
-
+        Liste = [];
 
         for(let FirmenID of this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe) {
 
@@ -266,6 +264,8 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
           if(!lodash.isUndefined(Firma)) Liste.push(FirmenID);
         }
+
+        this.DB.CurrentProjektpunkt.ZustaendigeExternIDListe = Liste;
 
         Liste = [];
 
@@ -275,8 +275,6 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
           if(!lodash.isUndefined(Mitarbeiter)) Liste.push(MitrbeiterID);
         }
-
-
       }
 
       this.DB.CurrentProjektpunkt.ZustaendigeInternIDListe = Liste;
@@ -1167,17 +1165,15 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     try {
 
-      let Text = 'unbekannt';
-      let Kategorie: Festlegungskategoriestruktur;
+      let Text: string = 'unbekannt';
+      let Kostengruppe: Kostengruppenstruktur = this.KostenService.GetKostengruppeByFestlegungskategorieID(this.DB.CurrentProjektpunkt.FestlegungskategorieID);
+      let Festlegungskategorie: Festlegungskategoriestruktur = lodash.find(this.Pool.Festlegungskategorienliste[this.DBProjekt.CurrentProjekt.Projektkey], {_id: this.DB.CurrentProjektpunkt.FestlegungskategorieID});
 
-      if(this.DBProjekt.CurrentProjekt !== null && this.DB.CurrentProjektpunkt !== null) {
+      if(Kostengruppe !== null) {
 
-        Kategorie = lodash.find(this.Pool.Festlegungskategorienliste[this.DBProjekt.CurrentProjekt.Projektkey], {_id : this.DB.CurrentProjektpunkt.FestlegungskategorieID});
+        Text = Kostengruppe.Kostengruppennummer + ' ' + Kostengruppe.Bezeichnung;
 
-        if(!lodash.isUndefined(Kategorie)) {
-
-
-        }
+        if(!lodash.isUndefined(Festlegungskategorie)) Text += ' &rarr; ' + Festlegungskategorie.Beschreibung;
       }
 
       return Text;

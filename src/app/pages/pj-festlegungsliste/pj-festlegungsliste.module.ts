@@ -10,16 +10,9 @@ import {PageFooterModule} from "../../components/page-footer/page-footer.module"
 import {PjProtokollEditorModule} from "../../components-page/pj-protokoll-editor/pj-protokoll-editor.module";
 import {AuswahlDialogModule} from "../../components/auswahl-dialog/auswahl-dialog.module";
 import {FiMitarbeiterAuswahlModule} from "../../components-page/fi-mitarbeiter-auswahl/fi-mitarbeiter-auswahl.module";
-import {
-    PjProjekteSchnellauswahlModule
-} from "../../components-page/pj-projekte-schnellauswahl/pj-projekte-schnellauswahl.module";
+import {PjProjekteSchnellauswahlModule} from "../../components-page/pj-projekte-schnellauswahl/pj-projekte-schnellauswahl.module";
 import {PjProjektpunktEditorModule} from "../../components-page/pj-projektpunkt-editor/pj-projektpunkt-editor.module";
-import {
-  PjKostengruppenAuswahlModule
-} from "../../components-page/pj-kostengruppen-auswahl/pj-kostengruppen-auswahl.module";
-import {
-    PjGebaeudeRaumauswahlModule
-} from "../../components-page/pj-gebaeude-raumauswahl/pj-gebaeude-raumauswahl.module";
+import {PjGebaeudeRaumauswahlModule} from "../../components-page/pj-gebaeude-raumauswahl/pj-gebaeude-raumauswahl.module";
 import {PjEmailSendModule} from "../../components-page/pj-email-send/pj-email-send.module";
 import {PjBeteiligtenAuswahlModule} from "../../components-page/pj-beteiligten-auswahl/pj-beteiligten-auswahl.module";
 import {
@@ -50,7 +43,6 @@ const routes: Routes = [
         FiMitarbeiterAuswahlModule,
         PjProjekteSchnellauswahlModule,
         PjProjektpunktEditorModule,
-        PjKostengruppenAuswahlModule,
         PjGebaeudeRaumauswahlModule,
         PjEmailSendModule,
         PjBeteiligtenAuswahlModule,

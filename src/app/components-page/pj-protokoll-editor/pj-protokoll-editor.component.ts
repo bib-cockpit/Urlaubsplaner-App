@@ -39,6 +39,8 @@ import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Graphservice} from "../../services/graph/graph";
 import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
+import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
+import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
 // import tinymce from "../../../assets/tinymce/tinymce";
 
 @Component({
@@ -77,7 +79,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
   public Title: string;
   // public MyForm: FormGroup;
   // public Modus: string;
-  public Projektbeteiligteliste: Projektbeteiligtestruktur[];
+  // public Projektbeteiligteliste: Projektbeteiligtestruktur[];
   public Teammitgliederliste: Mitarbeiterstruktur[];
   /*
   public Be_Spaltenanzahl: number;
@@ -106,12 +108,14 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
   public Listeheaderhoehe: number;
   public Listehoehe: number;
   public LinesanzahlTeilnehmer: number;
-  private MitarbeiterSubscription: Subscription;
-  private BeteiligteSubscription: Subscription;
+  // private MitarbeiterSubscription: Subscription;
+  // private BeteiligteSubscription: Subscription;
   public Thumbnailliste: Thumbnailstruktur[][][];
   public Zeilenanzahl: number;
   public Thumbbreite: number;
   public Spaltenanzahl: number;
+  public  Beteiligtenliste: Projektbeteiligtestruktur[][];
+  public Mitarbeiterliste: Mitarbeiterstruktur[];
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -143,9 +147,9 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       this.Listehoehe               = 0;
       this.LinesanzahlTeilnehmer    = 1;
       this.Valid                    = false;
-      this.Projektbeteiligteliste   = [];
+      // this.Projektbeteiligteliste   = [];
       this.Punkteliste              = [];
-      this.Teammitgliederliste      = [];
+      //  this.Teammitgliederliste      = [];
       this.SaveTimer                = null;
       this.ProtokollSaved           = true;
       this.ShowDatumStatusDialog    = false;
@@ -155,8 +159,8 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       this.ShowUpload               = false;
       this.ProtokollSubscription    = null;
       this.ProjektpunktSubscription = null;
-      this.MitarbeiterSubscription  = null;
-      this.BeteiligteSubscription   = null;
+      // this.MitarbeiterSubscription  = null;
+      // this.BeteiligteSubscription   = null;
       this.Titel = this.Const.NONE;
       this.Iconname = 'help-circle-outline';
       this.Dialogbreite = 400;
@@ -164,6 +168,8 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       this.PositionY = 100;
       this.ZIndex = 2000;
       this.Thumbnailliste = [];
+      this.Beteiligtenliste = [];
+      this.Mitarbeiterliste = [];
     }
     catch (error) {
 
@@ -188,6 +194,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       this.PageLoaded       = false;
       this.Bereich          = this.DB.CurrentProtokoll._id === null ? this.Bereiche.Allgemein : this.Bereiche.Themenliste;
 
+      /*
       this.MitarbeiterSubscription = this.Pool.MitarbeiterAuswahlChanged.subscribe(() => {
 
         this.PrepareData();
@@ -197,6 +204,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
         this.PrepareData();
       });
+       */
 
       this.ProtokollSubscription = this.Pool.ProtokolllisteChanged.subscribe(() => {
 
@@ -252,6 +260,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
         this.ProjektpunktSubscription = null;
       }
 
+      /*
       if(this.MitarbeiterSubscription !== null) {
 
         this.MitarbeiterSubscription.unsubscribe();
@@ -263,6 +272,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
         this.BeteiligteSubscription.unsubscribe();
         this.BeteiligteSubscription = null;
       }
+       */
 
 
     } catch (error) {
@@ -299,96 +309,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
   }
 
-  /*
-
-  AufgabeClickedHandler(Projektpunkt: Projektpunktestruktur) {
-
-    try {
-
-
-      tinymce.init({
-
-        menubar:false,
-        statusbar: false,
-        selector: 'div#' + Projektpunkt._id,  // change this value according to your HTML
-        auto_focus : true,
-        // plugins: 'autoresize',
-        // icons: 'material',
-        language: 'de',
-        browser_spellcheck: true,
-        height: 200,
-        // forced_root_block: 'span',
-        base_url: 'assets/tinymce', // Root for resources
-        suffix: '.min',        // Suffix to use when loading resources
-        toolbar: [
-          { name: 'history',     items: [ 'undo', 'redo' ] },
-          { name: 'styles',      items: [ 'forecolor', 'backcolor', 'fontfamily', 'fontsize' ] },
-          { name: 'formatting',  items: [ 'bold', 'italic', 'underline' ] },
-          { name: 'alignment',   items: [ 'alignleft', 'aligncenter', 'alignright', 'alignjustify' ] },
-          { name: 'indentation', items: [ 'outdent', 'indent' ] }
-        ],
-      });
-
-
-
-      if(this.ShowUpload === false) {
-
-        for(let Punkt of this.Punkteliste) {
-
-          if(Punkt._id !== Projektpunkt._id)  Punkt.LiveEditor = false;
-        }
-
-        Projektpunkt.LiveEditor = true;
-
-        this.LiveEditorOpen = true;
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Projektpunkteintrag', 'AufgabeClickedHandler', this.Debug.Typen.Component);
-    }
-  }
-
-   */
-
-  /*
-
-  private PreparePersonen() {
-
-    try {
-
-      let Mitarbeiter: Mitarbeiterstruktur;
-      let Projektbeteiligter: Projektbeteiligtestruktur;
-
-      if(this.DB.CurrentProtokoll !== null) {
-
-        this.Projektbeteiligteliste = [];
-
-        for (let ProjektbeteiligteID of this.DB.CurrentProtokoll.ProjektbeteiligteIDListe) {
-
-          Projektbeteiligter = <Projektbeteiligtestruktur>lodash.find(this.Pool.Projektbeteiligtenliste[this.DBProjekte.CurrentProjektindex], {ProjektbeteiligteID: ProjektbeteiligteID});
-
-          if (lodash.isUndefined(Projektbeteiligter) === false) this.Projektbeteiligteliste.push(Projektbeteiligter);
-        }
-
-        this.Teammitgliederliste = [];
-
-        for (let MitarbeiterID of this.DB.CurrentProtokoll.TeambeteiligtenIDListe) {
-
-          Mitarbeiter = <Mitarbeiterstruktur>lodash.find(this.Pool.Mitarbeiterliste, {MitarbeiterID: MitarbeiterID});
-
-          if (lodash.isUndefined(Mitarbeiter) === false) this.Teammitgliederliste.push(Mitarbeiter);
-        }
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'LOP Projektpunkteintrag', 'PreparePersonen', this.Debug.Typen.Component);
-    }
-  }
-
-   */
-
   private async PrepareData() {
 
     try {
@@ -400,18 +320,57 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       let Index: number;
       let Punktindex: number;
       let Liste: Thumbnailstruktur[] = [];
+      let Beteiligteliste: Projektbeteiligtestruktur[];
       let Imageliste: Teamsfilesstruktur[] = [];
       let File: Teamsfilesstruktur;
+      let Mitarbeiter: Mitarbeiterstruktur;
 
+      this.Beteiligtenliste = [];
+      this.Mitarbeiterliste = [];
+      this.Punkteliste = [];
 
-      if(this.DB.CurrentProtokoll !== null) {
+      if(this.DB.CurrentProtokoll !== null && this.DBProjekte.CurrentProjekt !== null) {
 
-        let AnzahlExtern   = this.DB.CurrentProtokoll.BeteiligExternIDListe.length;
-        let AnzahlBurnickl = this.DB.CurrentProtokoll.BeteiligtInternIDListe.length;
+        // Mitarbeiter und Beteiligte
 
-        this.LinesanzahlTeilnehmer = Math.max(AnzahlExtern, AnzahlBurnickl);
+        Index = 0;
 
-        this.Punkteliste = [];
+        for (let Firma of this.DBProjekte.CurrentProjekt.Firmenliste) {
+
+          this.Beteiligtenliste[Index] = [];
+
+          Beteiligteliste = lodash.filter(this.DBProjekte.CurrentProjekt.Beteiligtenliste, {FirmaID: Firma.FirmenID});
+
+          Beteiligteliste.sort((a: Projektbeteiligtestruktur, b: Projektbeteiligtestruktur) => {
+
+            if (a.Name > b.Name) return -1;
+            if (a.Name < b.Name) return 1;
+            return 0;
+          });
+
+          this.Beteiligtenliste[Index] = Beteiligteliste;
+
+          Index++;
+        }
+
+        for (let MitarbeiterID of this.DBProjekte.CurrentProjekt.MitarbeiterIDListe) {
+
+          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: MitarbeiterID});
+
+          if (!lodash.isUndefined(Mitarbeiter)) {
+
+            this.Mitarbeiterliste.push(Mitarbeiter);
+          }
+        }
+
+        this.Mitarbeiterliste.sort((a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
+
+          if (a.Name > b.Name) return -1;
+          if (a.Name < b.Name) return 1;
+          return 0;
+        });
+
+        // Projektpunkte
 
         for(let id of this.DB.CurrentProtokoll.ProjektpunkteIDListe) {
 
@@ -438,80 +397,79 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
           Punkt.Nummer = Nummer.toString();
           Nummer++;
         }
-      }
 
-      this.DBProjektpunkte.CurrentProjektpunkteliste = lodash.cloneDeep(this.Punkteliste);
+        this.DBProjektpunkte.CurrentProjektpunkteliste = lodash.cloneDeep(this.Punkteliste);
 
-      // Bilder
+        // Bilder
 
-      this.Thumbnailliste = [];
-      this.Thumbbreite    = 140;
-      this.Spaltenanzahl  = 4;
-      Punktindex          = 0;
+        this.Thumbnailliste = [];
+        this.Thumbbreite    = 140;
+        this.Spaltenanzahl  = 4;
+        Punktindex          = 0;
 
-      for(let Punkt of this.DBProjektpunkte.CurrentProjektpunkteliste) {
+        for(let Punkt of this.DBProjektpunkte.CurrentProjektpunkteliste) {
 
-        Imageliste = [];
+          Imageliste = [];
 
-        for(let Bild of Punkt.Bilderliste) {
+          for(let Bild of Punkt.Bilderliste) {
 
-          File        = this.GraphService.GetEmptyTeamsfile();
-          File.id     = Bild.FileID;
-          File.webUrl = Bild.WebUrl;
+            File        = this.GraphService.GetEmptyTeamsfile();
+            File.id     = Bild.FileID;
+            File.webUrl = Bild.WebUrl;
 
-          Imageliste.push(File);
-        }
-
-        Liste = [];
-
-        for(File of Imageliste) {
-
-          Thumb = await this.GraphService.GetSiteThumbnail(File);
-
-          if(Thumb !== null) {
-
-            Thumb.weburl = File.webUrl;
-            Merker       = lodash.find(Liste, {id: File.id});
-
-            if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+            Imageliste.push(File);
           }
-          else {
 
-            Thumb        = this.DBProjektpunkte.GetEmptyThumbnail();
-            Thumb.id     = File.id;
-            Thumb.weburl = null;
+          Liste = [];
 
-            Liste.push(Thumb);
-          }
-        }
+          for(File of Imageliste) {
 
-        Anzahl                          = Liste.length;
-        this.Zeilenanzahl               = Math.ceil(Anzahl / this.Spaltenanzahl);
-        this.Thumbnailliste[Punktindex] = [];
-        Index                           = 0;
+            Thumb = await this.GraphService.GetSiteThumbnail(File);
 
-        for(let Zeilenindex = 0; Zeilenindex < this.Zeilenanzahl; Zeilenindex++) {
+            if(Thumb !== null) {
 
-          this.Thumbnailliste[Punktindex][Zeilenindex] = [];
+              Thumb.weburl = File.webUrl;
+              Merker       = lodash.find(Liste, {id: File.id});
 
-          for(let Spaltenindex = 0; Spaltenindex < this.Spaltenanzahl; Spaltenindex++) {
-
-            if(!lodash.isUndefined(Liste[Index])) {
-
-              this.Thumbnailliste[Punktindex][Zeilenindex][Spaltenindex] = Liste[Index];
+              if(lodash.isUndefined(Merker)) Liste.push(Thumb);
             }
             else {
 
-              this.Thumbnailliste[Punktindex][Zeilenindex][Spaltenindex] = null;
+              Thumb        = this.DBProjektpunkte.GetEmptyThumbnail();
+              Thumb.id     = File.id;
+              Thumb.weburl = null;
+
+              Liste.push(Thumb);
             }
-
-            Index++;
           }
+
+          Anzahl                          = Liste.length;
+          this.Zeilenanzahl               = Math.ceil(Anzahl / this.Spaltenanzahl);
+          this.Thumbnailliste[Punktindex] = [];
+          Index                           = 0;
+
+          for(let Zeilenindex = 0; Zeilenindex < this.Zeilenanzahl; Zeilenindex++) {
+
+            this.Thumbnailliste[Punktindex][Zeilenindex] = [];
+
+            for(let Spaltenindex = 0; Spaltenindex < this.Spaltenanzahl; Spaltenindex++) {
+
+              if(!lodash.isUndefined(Liste[Index])) {
+
+                this.Thumbnailliste[Punktindex][Zeilenindex][Spaltenindex] = Liste[Index];
+              }
+              else {
+
+                this.Thumbnailliste[Punktindex][Zeilenindex][Spaltenindex] = null;
+              }
+
+              Index++;
+            }
+          }
+
+          Punktindex++;
         }
-
-        Punktindex++;
       }
-
     }
     catch (error) {
 
@@ -764,32 +722,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
   }
 
 
-  CheckProjektbeteiligterExist(index: number): boolean {
-
-    try {
-
-      if(lodash.isUndefined(this.Projektbeteiligteliste[index]) === true) return false;
-      else return true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'CheckProjektbeteiligterExist', this.Debug.Typen.Component);
-    }
-  }
-
-  CheckTeammitgliedExist(index: number): boolean {
-
-    try {
-
-      if(lodash.isUndefined(this.Teammitgliederliste[index]) === true) return false;
-      else return true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'CheckTeammitgliedExist', this.Debug.Typen.Component);
-    }
-  }
-
   public CheckProtokollpunktBearbeitung(): boolean {
 
     try {
@@ -949,153 +881,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
   }
 
-  /*
-
-  ProjektpunktProtokollPublicChanged(event: { status: boolean; index: number; event: any }) {
-
-    try {
-
-      this.StopSaveProtokollTimer();
-
-      this.Punkteliste[event.index].ProtokollPublic = event.status;
-      this.Punkteliste[event.index].DataChanged     = true;
-
-      this.StartSaveProtokollTimer();
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ProjektpunktProtokollPublicChanged', this.Debug.Typen.Component);
-    }
-
-  }
-
-   */
-
-  /*
-
-  BeteiligteButtonClicked() {
-
-    try {
-
-      if(this.CheckOkButtonEnabled()) {
-
-        this.StopSaveProtokollTimer();
-
-       // this.Personenauswahlservice.Auswahlursprung = this.Personenauswahlservice.Auswahlurspungsvarianten.Protokoll;
-       // this.DB.PersonenauswahlModus = this.Constclass.Eventvarianten.BesprechungsteilnehmerExtern;
-
-        this.StartSubscription();
-
-        // this.Tools.PushPage(this.Constclass.Pages.PJProjektbeteiligteauswalPage);
-      }
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'BeteiligteButtonClicked', this.Debug.Typen.Component);
-    }
-  }
-
-   */
-
-  /*
-  ZustaendigExternZuweisenClicked(Projektpunkt: Projektpunktestruktur) {
-
-    try {
-
-
-      if(this.CheckProtokollpunktBearbeitung() === false) {
-
-        this.StopSaveProtokollTimer();
-
-        this.StartSubscription();
-
-        this.DBProjekte.Projektpunkt        = Projektpunkt;
-        this.DB.PersonenauswahlModus   = this.Constclass.Eventvarianten.ZustaendigkeitExtern;
-        this.Personenauswahlservice.Auswahlursprung   = this.Personenauswahlservice.Auswahlurspungsvarianten.Protokoll;
-
-        this.Tools.PushPage(this.Constclass.Pages.PJProjektbeteiligteauswalPage);
-
-      }
-
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ZustaendigExternZuweisenClicked', this.Debug.Typen.Component);
-    }
-  }
-  */
-
-  /*
-  ZustaendigInternZuweisenClicked(Projektpunkt: Projektpunktestruktur) {
-
-    try {
-
-
-      let Mitarbeiterliste: Mitarbeiterstruktur[] = [];
-      let Mitarbeiter: Mitarbeiterstruktur;
-
-      if(this.CheckProtokollpunktBearbeitung() === false) {
-
-        this.StopSaveProtokollTimer();
-
-        this.DBProjekte.Projektpunkt = Projektpunkt;
-
-        for (let MitarbeiterID of Projektpunkt.ZustaendigeInternIDListe) {
-
-          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {MitarbeiterID: MitarbeiterID});
-
-          if (lodash.isUndefined(Mitarbeiter) === false) Mitarbeiterliste.push(Mitarbeiter);
-        }
-
-        this.NavParams.Mitarbeiterauswahl = {
-
-          Auswahlliste: Mitarbeiterliste,
-          FastSelection:      false,
-          NoSelectionEnabled: true,
-          Title: "Zuständige Teammitglieder wählen"
-        };
-
-        this.DB.PersonenauswahlModus = this.Constclass.Eventvarianten.ZustaendigkeitIntern;
-        this.Personenauswahlservice.Auswahlursprung = this.Personenauswahlservice.Auswahlurspungsvarianten.Protokoll;
-
-        this.StartSubscription();
-
-        this.Tools.PushPage(this.Constclass.Pages.FiMitarbeiterauswahlPage);
-      }
-
-
-
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ZustaendigInternZuweisenClicked', this.Debug.Typen.Component);
-    }
-  }
-
-
-   */
-
-
-
-
-  DuplicateProtokollClicked() {
-
-    try {
-
-      /*
-
-      this.ProtokolleDatabase.DuplicateProtokoll(this.DB.CurrentProtokoll).then(() => {
-
-        this.Tools.PopPage();
-      });
-
-       */
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'DuplicateProtokollClicked', this.Debug.Typen.Component);
-    }
-  }
-
   StartzeitChanged(event: Moment) {
 
     try {
@@ -1154,288 +939,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
   }
 
-  ShowDetailsChanged(event: any) {
-
-    try {
-
-      this.DB.CurrentProtokoll.ShowDetails = !this.DB.CurrentProtokoll.ShowDetails;
-
-      this.StartSaveProtokollTimer();
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ShowDetailsChanged', this.Debug.Typen.Component);
-    }
-  }
-
-  /*
-  private StopSubscription() {
-
-    try {
-
-      if(this.MessageSubscription !== null) {
-
-        this.MessageSubscription.unsubscribe();
-        this.MessageSubscription = null;
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'StopSubscription', this.Debug.Typen.Component);
-    }
-
-  }
-   */
-
-  /*
-
-  public StartSubscription() {
-
-    try {
-
-      let Liste: Mitarbeiterstruktur[];
-      let Index: number;
-      let Punkteliste: Projektpunktestruktur[] = [];
-      let Punkt: Projektpunktestruktur;
-      let Projektbeteiligter: Projektbeteiligtestruktur;
-      let Mitarbeiter: Mitarbeiterstruktur;
-
-      /*
-      this.MessageSubscription = this.Messenger.MessageReplaySubject.subscribe((message: string) => {
-
-        switch (message) {
-
-          case this.Personenauswahlservice.Auswahlurspungsvarianten.Protokoll:
-
-            switch (this.DB.PersonenauswahlModus) {
-
-              case this.Constclass.Eventvarianten.BesprechungsteilnehmerIntern:
-
-                Liste = this.DatabaseFirma.GetMitarbeiterauswahlliste();
-
-                this.Teammitgliederliste = [];
-                this.DB.CurrentProtokoll.TeambeteiligtenIDListe = [];
-
-                for(Mitarbeiter of Liste) {
-
-                  this.DB.CurrentProtokoll.TeambeteiligtenIDListe.push(Mitarbeiter.MitarbeiterID);
-                  this.Teammitgliederliste.push(Mitarbeiter);
-                }
-
-                this.Messenger.ClearMessage();
-
-                this.StopSaveProtokollTimer();
-                this.SaveProtokoll();
-
-                break;
-
-              case this.Constclass.Eventvarianten.BesprechungsteilnehmerExtern:
-
-                this.Projektbeteiligteliste = [];
-
-                for(let ProjektbeteiligteID of this.DB.CurrentProtokoll.ProjektbeteiligteIDListe) {
-
-                  Projektbeteiligter = lodash.find(this.Pool.Projektbeteiligteliste[this.Projektservice.CurrentProjektindex], {ProjektbeteiligteID: ProjektbeteiligteID});
-
-                  if (lodash.isUndefined(Projektbeteiligter) === false) this.Projektbeteiligteliste.push(Projektbeteiligter);
-                }
-
-                this.Be_Zeilenanzahl = Math.ceil(this.Projektbeteiligteliste.length / this.Be_Spaltenanzahl);
-
-                this.Messenger.ClearMessage();
-                this.StopSaveProtokollTimer();
-                this.SaveProtokoll();
-
-                break;
-
-              case this.Constclass.Eventvarianten.ZustaendigkeitExtern:
-
-                let text  = this.DBProjekte.Projektpunkt.ZustaendigeExternIDListe;
-                let text2 = this.Punkteliste;
-
-                Punkt = lodash.find(this.Pool.Projektpunkteliste[this.Projektservice.CurrentProjektindex], {id: this.DBProjekte.Projektpunkt._id});
-
-                console.log('Zustaendige: ' + Punkt.ZustaendigeExternIDListe.length);
-
-                this.Messenger.ClearMessage();
-
-                this.StopSaveProtokollTimer();
-                this.SaveProtokoll();
-
-                break;
-
-              case this.Constclass.Eventvarianten.ZustaendigkeitIntern:
-
-                Index       = lodash.findIndex(this.Punkteliste, {id: this.DBProjekte.Projektpunkt._id});
-                Liste       = this.DatabaseFirma.GetMitarbeiterauswahlliste();
-                Punkteliste = [];
-
-                for(Index = 0; Index < this.Punkteliste.length; Index++) {
-
-                  Punkt = lodash.cloneDeep(this.Punkteliste[Index]);
-
-                  if(Punkt._id === this.DBProjekte.Projektpunkt._id) {
-
-                    Punkt.ZustaendigeInternIDListe = [];
-
-                    for(Mitarbeiter of Liste) {
-
-                      Punkt.ZustaendigeInternIDListe.push(Mitarbeiter.MitarbeiterID);
-                    }
-
-                    console.log('Anzahl: ' + Punkt.ZustaendigeExternIDListe.length);
-                  }
-
-                  Punkteliste.push(Punkt);
-                }
-
-                this.Punkteliste = [];
-                this.Punkteliste = lodash.cloneDeep(Punkteliste);
-
-                this.Messenger.ClearMessage();
-
-                this.StopSaveProtokollTimer();
-                this.SaveProtokoll();
-
-                break;
-            }
-
-            break;
-        }
-
-        this.StopSubscription();
-      });
-
-
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'StartSubscription', this.Debug.Typen.Component);
-    }
-  }
-
-   */
-
-
-  TeammitgliederButtonClicked() {
-
-    try {
-
-      /*
-      let Mitarbeiterliste: Mitarbeiterstruktur[] = [];
-      let Mitarbeiter: Mitarbeiterstruktur;
-
-      if(this.CheckOkButtonEnabled()) {
-
-        this.StopSaveProtokollTimer();
-
-        for (let MitarbeiterID of this.DB.CurrentProtokoll.TeambeteiligtenIDListe) {
-
-          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {MitarbeiterID: MitarbeiterID});
-
-          if (lodash.isUndefined(Mitarbeiter) === false) Mitarbeiterliste.push(Mitarbeiter);
-        }
-
-        this.NavParams.Mitarbeiterauswahl = {
-
-          Auswahlliste: Mitarbeiterliste,
-          FastSelection: false,
-          NoSelectionEnabled: true,
-          Title: "Teammitglieder wählen"
-        };
-
-        this.StartSubscription();
-
-        this.Personenauswahlservice.Auswahlursprung    = this.Personenauswahlservice.Auswahlurspungsvarianten.Protokoll;
-        this.DB.PersonenauswahlModus    = this.Constclass.Eventvarianten.BesprechungsteilnehmerIntern;
-
-        this.Tools.PushPage(this.Constclass.Pages.FiMitarbeiterauswahlPage);
-      }
-
-       */
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'TeammitgliederButtonClicked', this.Debug.Typen.Component);
-    }
-  }
-
-  GetTeammitgliedername(Index: number) {
-
-    try {
-
-      let Mitarbeiter: Mitarbeiterstruktur;
-
-      if (lodash.isUndefined(this.Teammitgliederliste[Index]) === false) {
-
-        Mitarbeiter = this.Teammitgliederliste[Index];
-
-        return Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
-
-      } else {
-
-        return 'unbekannt';
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetTeammitgliedername', this.Debug.Typen.Component);
-    }
-  }
-
-  GetTeammitgliederkuerzel(Index: number) {
-
-    try {
-
-      let Mitarbeiter: Mitarbeiterstruktur;
-
-      if (lodash.isUndefined(this.Teammitgliederliste[Index]) === false) {
-
-        Mitarbeiter = this.Teammitgliederliste[Index];
-
-        return Mitarbeiter.Kuerzel;
-
-      } else {
-
-        return 'unbekannt';
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetTeammitgliederkuerzel', this.Debug.Typen.Component);
-    }
-  }
-
-
-  ZoomImageClicked(Projektpunkt: Projektpunktestruktur) {
-
-    try {
-
-      /*
-
-      this.DBProjekte.Projektpunkt = Projektpunkt;
-
-      this.Auswahltitel = 'Bildzoom';
-
-      this.Auswahlliste = [];
-
-      for(let Zahl of this.Zoomfaktorenliste) {
-
-        this.Auswahlliste.push(Zahl.toFixed(1));
-      }
-
-      this.Auswahlindex = this.Zoomfaktorenliste.indexOf(Projektpunkt.Filezoom);
-
-      this.MyAuswahlDialog.Open(false, this.Auswahlindex);
-
-
-       */
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ZoomImageClicked', this.Debug.Typen.Component);
-    }
-  }
 
   public TextChangedHandler() {
 
@@ -1448,8 +951,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       this.Debug.ShowErrorMessage(error.message, 'Festlegung Liste', 'TextChangedHandler', this.Debug.Typen.Component);
     }
   }
-
-
 
   AllgemeinMenuButtonClicked() {
 
@@ -1508,8 +1009,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
   }
 
-
-
   GetThemenlisteIconcolor(): string {
 
     try {
@@ -1564,8 +1063,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
         Thumbliste: Thumbliste
       });
 
-
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'ThumbnailClicked', this.Debug.Typen.Component);
@@ -1593,5 +1090,172 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'DeleteThumbnailClicked', this.Debug.Typen.Component);
     }
 
+  }
+
+  TeilnehmerExternCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      if(this.DB.CurrentProtokoll !== null) {
+
+        if(event.status === true) {
+
+          this.DB.CurrentProtokoll.BeteiligExternIDListe.push(event.value);
+        }
+        else {
+
+          this.DB.CurrentProtokoll.BeteiligExternIDListe = lodash.filter(this.DB.CurrentProtokoll.BeteiligExternIDListe, (id: any) => {
+
+            return id !== event.value;
+          });
+        }
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'TeilnehmerExternCheckedChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  EmpfaengerExternCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      if(this.DB.CurrentProtokoll !== null) {
+
+        if(event.status === true) {
+
+          this.DB.CurrentProtokoll.EmpfaengerExternIDListe.push(event.value);
+        }
+        else {
+
+          this.DB.CurrentProtokoll.EmpfaengerExternIDListe = lodash.filter(this.DB.CurrentProtokoll.EmpfaengerExternIDListe, (id: any) => {
+
+            return id !== event.value;
+          });
+        }
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'EmpfaengerExternCheckedChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  GetTeilnehmerExternChecked(FirmenID: string): boolean {
+
+    try {
+
+      return lodash.indexOf(this.DB.CurrentProtokoll.BeteiligExternIDListe, FirmenID) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetTeilnehmerExternChecked', this.Debug.Typen.Component);
+    }
+  }
+
+  GetTeilnehmerInternChecked(FirmenID: string): boolean {
+
+    try {
+
+      return lodash.indexOf(this.DB.CurrentProtokoll.BeteiligtInternIDListe, FirmenID) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetTeilnehmerInternChecked', this.Debug.Typen.Component);
+    }
+  }
+
+  GetEmpfaengerExternChecked(FirmenID: string): boolean {
+
+    try {
+
+      return lodash.indexOf(this.DB.CurrentProtokoll.EmpfaengerExternIDListe, FirmenID) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetEmpfaengerExternChecked', this.Debug.Typen.Component);
+    }
+  }
+
+  EmpfaengerInternCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      if(this.DB.CurrentProtokoll !== null) {
+
+        if(event.status === true) {
+
+          this.DB.CurrentProtokoll.EmpfaengerInternIDListe.push(event.value);
+        }
+        else {
+
+          this.DB.CurrentProtokoll.EmpfaengerInternIDListe = lodash.filter(this.DB.CurrentProtokoll.EmpfaengerInternIDListe, (id: any) => {
+
+            return id !== event.value;
+          });
+        }
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'EmpfaengerInternCheckedChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  TeilnehmerInternCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      if(this.DB.CurrentProtokoll !== null) {
+
+        if(event.status === true) {
+
+          this.DB.CurrentProtokoll.BeteiligtInternIDListe.push(event.value);
+        }
+        else {
+
+          this.DB.CurrentProtokoll.BeteiligtInternIDListe = lodash.filter(this.DB.CurrentProtokoll.BeteiligtInternIDListe, (id: any) => {
+
+            return id !== event.value;
+          });
+        }
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'TeilnehmerInternCheckedChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  GetEmpfaengerInternChecked(id: string) {
+
+    try {
+
+      return lodash.indexOf(this.DB.CurrentProtokoll.EmpfaengerInternIDListe, id) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetEmpfaengerInternChecked', this.Debug.Typen.Component);
+    }
+  }
+
+  GetKostengruppe(Projektpunkt: Projektpunktestruktur): string {
+
+    try {
+
+      let Text: string = 'unbekannt';
+      let Kostengruppe: Kostengruppenstruktur = this.KostenService.GetKostengruppeByFestlegungskategorieID(Projektpunkt.FestlegungskategorieID);
+      let Festlegungskategorie: Festlegungskategoriestruktur = lodash.find(this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey], {_id: Projektpunkt.FestlegungskategorieID});
+
+      if(Kostengruppe !== null) {
+
+        Text = Kostengruppe.Kostengruppennummer + ' ' + Kostengruppe.Bezeichnung;
+
+        if(!lodash.isUndefined(Festlegungskategorie)) Text += ' &rarr; ' + Festlegungskategorie.Beschreibung;
+      }
+
+      return Text;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetKostengruppe', this.Debug.Typen.Component);
+    }
   }
 }

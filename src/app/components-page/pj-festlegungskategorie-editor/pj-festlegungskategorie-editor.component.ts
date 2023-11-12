@@ -16,6 +16,8 @@ import * as Joi from "joi";
 import {ObjectSchema} from "joi";
 import {DatabaseFestlegungenService} from "../../services/database-festlegungen/database-festlegungen.service";
 import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
+import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'pj-festlegungskategorie-editor',
@@ -28,6 +30,7 @@ export class PjFestlegungskategorieEditorComponent implements OnInit, OnDestroy,
   public Valid: boolean;
   public CanDelete: boolean;
   private JoiShema: ObjectSchema;
+  private KategorieSubscription: Subscription;
 
   @Output() ValidChange = new EventEmitter<boolean>();
   @Output() CancelClickedEvent         = new EventEmitter<any>();
@@ -46,6 +49,7 @@ export class PjFestlegungskategorieEditorComponent implements OnInit, OnDestroy,
               public Displayservice: DisplayService,
               public Const: ConstProvider,
               private Tools: ToolsProvider,
+              private Pool: DatabasePoolService,
               public KostenService: KostengruppenService,
               public DB: DatabaseFestlegungenService) {
     try {
@@ -59,6 +63,7 @@ export class PjFestlegungskategorieEditorComponent implements OnInit, OnDestroy,
       this.PositionY         = 100;
       this.ZIndex            = 2000;
       this.CanDelete         = false;
+      this.KategorieSubscription = null;
 
     } catch (error) {
 
@@ -71,6 +76,9 @@ export class PjFestlegungskategorieEditorComponent implements OnInit, OnDestroy,
       try {
 
         this.Displayservice.RemoveDialog(this.Displayservice.Dialognamen.Festlegungkategorieneditor);
+
+        this.KategorieSubscription.unsubscribe();
+        this.KategorieSubscription = null;
 
       } catch (error) {
 
@@ -100,12 +108,16 @@ export class PjFestlegungskategorieEditorComponent implements OnInit, OnDestroy,
 
     try {
 
+      this.Displayservice.AddDialog(this.Displayservice.Dialognamen.Festlegungkategorieneditor, this.ZIndex);
+      this.SetupValidation();
+
       if(this.DB.CurrentFestlegungskategorie._id === null) this.Titel = 'Neue Festlegungskategroie';
       else this.Titel = 'Festlegungskategroie bearbeiten';
 
-      this.SetupValidation();
+      this.KategorieSubscription = this.Pool.CurrentFestlegungskategorieChanged.subscribe(() => {
 
-      this.Displayservice.AddDialog(this.Displayservice.Dialognamen.Festlegungkategorieneditor, this.ZIndex);
+        this.ValidateInput();
+      });
 
     } catch (error) {
 
@@ -118,9 +130,21 @@ export class PjFestlegungskategorieEditorComponent implements OnInit, OnDestroy,
     try {
 
       let Result = this.JoiShema.validate(this.DB.CurrentFestlegungskategorie);
+      let GoOn: boolean;
 
-      if(Result.error) this.Valid = false;
-      else             this.Valid = true;
+      if(Result.error) GoOn = false;
+      else             GoOn = true;
+
+      if(GoOn) {
+
+        this.Valid = this.DB.CurrentFestlegungskategorie.Oberkostengruppe  !== null &&
+                     this.DB.CurrentFestlegungskategorie.Unterkostengruppe !== null &&
+                     this.DB.CurrentFestlegungskategorie.Hauptkostengruppe !== null;
+      }
+      else {
+
+        this.Valid = false;
+      }
 
       this.ValidChange.emit(this.Valid);
 

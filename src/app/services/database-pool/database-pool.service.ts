@@ -55,17 +55,9 @@ export class DatabasePoolService {
   public Outlookkatekorien: Outlookkategoriesstruktur[];
   public ContacsSubscriptionURl: string;
   public Fachbereich: Fachbereiche;
-  public  Festlegungskategorienliste: Festlegungskategoriestruktur[][];
+  public Festlegungskategorienliste: Festlegungskategoriestruktur[][];
   public ProjektdatenLoaded: boolean;
-  public Emailcontentvarinaten = {
-
-    NONE: this.Const.NONE,
-    Protokoll:    'Protokoll',
-    Bautagebuch:  'Bautagebuch',
-    Festlegungen: 'Festlegungen',
-    LOPListe:     'LOPListe',
-    Aufgabenliste: 'Aufgabenliste'
-  };
+  public Emailcontentvarinaten: any;
 
   public StandortelisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public MitarbeiterlisteChanged: EventEmitter<any> = new EventEmitter<any>();
@@ -89,6 +81,7 @@ export class DatabasePoolService {
   public NotizenkapitellisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public CurrentLOPGewerkelisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public FestlegungskategorienlisteChanged: EventEmitter<any> = new EventEmitter<any>();
+  public CurrentFestlegungskategorieChanged: EventEmitter<any> = new EventEmitter<any>();
   public Signatur: string;
 
   constructor(private Debug: DebugProvider,
@@ -96,6 +89,16 @@ export class DatabasePoolService {
               private AuthService: DatabaseAuthenticationService,
               private Http:  HttpClient) {
     try {
+
+      this.Emailcontentvarinaten  = {
+
+        NONE: this.Const.NONE,
+        Protokoll:    'Protokoll',
+        Bautagebuch:  'Bautagebuch',
+        Festlegungen: 'Festlegungen',
+        LOPListe:     'LOPListe',
+        Aufgabenliste: 'Aufgabenliste'
+      };
 
       this.Mitarbeiterdaten         = null;
       this.MitarbeiterdatenHasError = true;

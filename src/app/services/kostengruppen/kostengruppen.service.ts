@@ -5,11 +5,15 @@ import {DebugProvider} from "../debug/debug";
 import * as lodash from 'lodash-es';
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
 import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
+import {DatabasePoolService} from "../database-pool/database-pool.service";
+import {DatabaseProjekteService} from "../database-projekte/database-projekte.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class KostengruppenService {
+
+  public Kostengruppenbeispieleliste: string[][];
 
     public Kostengruppentypen = {
 
@@ -1965,9 +1969,40 @@ export class KostengruppenService {
   ];
 
 
-  constructor(private Debug: DebugProvider) {
+  constructor(private Debug: DebugProvider,
+              private Pool : DatabasePoolService,
+              private DBProjekte: DatabaseProjekteService) {
 
     try {
+
+      this.Kostengruppenbeispieleliste = [];
+      this.Kostengruppenbeispieleliste[441] = ['Schaltanlagen', 'Transformstoren'];
+      this.Kostengruppenbeispieleliste[442] = ['Stromerzeugungsaggregate', 'Batterieversorgungsanlagen', 'Unterbrechnugsfreie Stromversorgungen', 'Photovoltaikanlagen'];
+      this.Kostengruppenbeispieleliste[443] = ['Niederspannungshauptverteiler', 'Blindstromkompensationsanlagen', 'Maximumüberwachungsanlagen', 'Oberschwinfungsfilter'];
+      this.Kostengruppenbeispieleliste[444] = ['Kabel', 'Leitungen', 'Kernbohrungen', 'Brandschottung', 'Unterverteilungen', 'Verlegesysteme', 'Installationsgeräte'];
+      this.Kostengruppenbeispieleliste[445] = ['Ortsfeste Leuchten', 'Sicherheitsbeleuchtung', 'Verkehrsbeleuchtung', 'Flutlichtanlagen'];
+      this.Kostengruppenbeispieleliste[446] = ['Auffnageinrichtungen', 'Ableitungen', 'Erdungsanlagen', 'Potentialausgleich'];
+      this.Kostengruppenbeispieleliste[447] = ['Stromführende Leitungen für den Schinen- und Straßenverkehr'];
+      this.Kostengruppenbeispieleliste[449] = ['Sonstiges', 'Frequenzumformer'];
+
+      this.Kostengruppenbeispieleliste[451] = ['Anlagen für Datenübertragung (Sprache, Text, Bild)'];
+      this.Kostengruppenbeispieleliste[452] = ['Personrufanlagen', 'Lichtrufanlagen', 'Klingelanlagen', 'Türsprechanlagen', 'Türöffneranlagen'];
+      this.Kostengruppenbeispieleliste[453] = ['Uhrenanlagen', 'Zeitdienstanlagen'];
+      this.Kostengruppenbeispieleliste[454] = ['Beschallungsanlagen', 'Konferenzanlagen', 'Dolmetscheranlagen', 'Gegebsprechanlagen', 'Wechselsprechanlagen'];
+      this.Kostengruppenbeispieleliste[455] = ['AV - Medienanlagen', 'Sendeanlagen', 'Empfangsanlagen', 'Umsetzer'];
+      this.Kostengruppenbeispieleliste[456] = ['Brandmeldeanlage', 'Überfallmedeanlage', 'Einbruchmeldeanlage', 'Wächterkontrollanlagen', 'Zugangskontrollanlagen', 'Überwachungsanlagen'];
+      this.Kostengruppenbeispieleliste[457] = ['Netze für Datenübertragung (Sprache, Text, Bild)', 'Datenverteiler', 'passive Komponenten', 'aktive Komponenten'];
+      this.Kostengruppenbeispieleliste[458] = ['Verkehrssignalanlagen', 'Anzeigetafeln', 'Mautsysteme', 'Parkleitsysteme', 'Besucherleitsysteme', 'Verkehrstelematik'];
+      this.Kostengruppenbeispieleliste[459] = ['Sonstiges', 'Fernwirkanlagen'];
+
+      this.Kostengruppenbeispieleliste[461] = ['Personenaufzüge', 'Lastenaufzüge'];
+      this.Kostengruppenbeispieleliste[462] = ['Rolltreppen', 'Treppenlifte', 'Personenförderbänder'];
+      this.Kostengruppenbeispieleliste[463] = ['Fassadenaufüge', 'Befahranlagen'];
+      this.Kostengruppenbeispieleliste[464] = ['Warentransportanlagen', 'Aktentransportanlagen', 'Rohrpostanlagen'];
+      this.Kostengruppenbeispieleliste[465] = ['Krananlage', 'Hebezeuge'];
+      this.Kostengruppenbeispieleliste[466] = ['Hydraulische Anlagen', 'Toranlagen', 'Brücken', 'Ausleger', 'Entnahmeanlagen'];
+      this.Kostengruppenbeispieleliste[469] = ['Hebebühnen', 'Parksysteme'];
+
 
     } catch (error) {
 
@@ -1975,37 +2010,50 @@ export class KostengruppenService {
     }
   }
 
-  public GetKostengruppeByProjektpunkt(projektpunkt: Projektpunktestruktur): Kostengruppenstruktur {
+  public GetKostengruppeByID(id: string) {
+
+    try {
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Kostengruppen', 'GetKostengruppeByID', this.Debug.Typen.Service);
+    }
+  }
+
+
+  public GetKostengruppeByFestlegungskategorieID(festlegungskategorieid: string): Kostengruppenstruktur {
 
     try {
 
       let Kostengruppe: Kostengruppenstruktur;
 
-      if(projektpunkt !== null) {
+      let Festlegungskategorie: Festlegungskategoriestruktur = lodash.find(this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey], {_id: festlegungskategorieid});
 
-        if(projektpunkt.Unterkostengruppe !== null) {
+      if(!lodash.isUndefined(Festlegungskategorie)) {
 
-          Kostengruppe = lodash.find(this.Kostengruppen, (gruppe: Kostengruppenstruktur) => {
-
-            return gruppe.Typ === this.Kostengruppentypen.Untergruppe && gruppe.Kostengruppennummer === projektpunkt.Unterkostengruppe;
-          });
-
-           if(!lodash.isUndefined(!Kostengruppe)) return Kostengruppe;
-        }
-        else if(projektpunkt.Hauptkostengruppe !== null) {
+        if(Festlegungskategorie.Unterkostengruppe !== null) {
 
           Kostengruppe = lodash.find(this.Kostengruppen, (gruppe: Kostengruppenstruktur) => {
 
-            return gruppe.Typ === this.Kostengruppentypen.Hauptgruppe && gruppe.Kostengruppennummer === projektpunkt.Hauptkostengruppe;
+            return gruppe.Typ === this.Kostengruppentypen.Untergruppe && gruppe.Kostengruppennummer === Festlegungskategorie.Unterkostengruppe;
           });
 
           if(!lodash.isUndefined(!Kostengruppe)) return Kostengruppe;
         }
-        else if(projektpunkt.Oberkostengruppe !== null) {
+        else if(Festlegungskategorie.Hauptkostengruppe !== null) {
 
           Kostengruppe = lodash.find(this.Kostengruppen, (gruppe: Kostengruppenstruktur) => {
 
-            return gruppe.Typ === this.Kostengruppentypen.Obergruppe && gruppe.Kostengruppennummer === projektpunkt.Oberkostengruppe;
+            return gruppe.Typ === this.Kostengruppentypen.Hauptgruppe && gruppe.Kostengruppennummer === Festlegungskategorie.Hauptkostengruppe;
+          });
+
+          if(!lodash.isUndefined(!Kostengruppe)) return Kostengruppe;
+        }
+        else if(Festlegungskategorie.Oberkostengruppe !== null) {
+
+          Kostengruppe = lodash.find(this.Kostengruppen, (gruppe: Kostengruppenstruktur) => {
+
+            return gruppe.Typ === this.Kostengruppentypen.Obergruppe && gruppe.Kostengruppennummer === Festlegungskategorie.Oberkostengruppe;
           });
 
           if(!lodash.isUndefined(!Kostengruppe)) return Kostengruppe;
@@ -2016,9 +2064,10 @@ export class KostengruppenService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'GetKostengruppeByProjektpunkt', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'GetKostengruppeByFestlegungskategorieID', this.Debug.Typen.Service);
     }
   }
+
 
   public GetKostengruppeByFestlegungskategorie(festlegungskategorie: Festlegungskategoriestruktur): Kostengruppenstruktur {
 
@@ -2107,27 +2156,29 @@ export class KostengruppenService {
     }
   }
 
-  public GetKostengruppennameByProjektpunkt(projektpunkt: Projektpunktestruktur): string {
 
-    try {
 
-      let Kostengruppe: Kostengruppenstruktur = this.GetKostengruppeByProjektpunkt(projektpunkt);
-
-      return Kostengruppe !== null ? Kostengruppe.Kostengruppennummer + ' ' + Kostengruppe.Bezeichnung : 'Unbekannt';
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'GetKostengruppennameByProjektpunkt', this.Debug.Typen.Service);
-    }
-  }
-
-  public GetKostengruppennameByFestlegungskategorie(Festlegungskategorie: Festlegungskategoriestruktur): string {
+  public GetKostengruppennameByFestlegungskategorieFullName(Festlegungskategorie: Festlegungskategoriestruktur): string {
 
     try {
 
       let Kostengruppe: Kostengruppenstruktur = this.GetKostengruppeByFestlegungskategorie(Festlegungskategorie);
 
       return Kostengruppe !== null ? Kostengruppe.Kostengruppennummer + ' ' + Kostengruppe.Bezeichnung : 'Unbekannt';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Kostengruppen', 'GetKostengruppennameByFestlegungskategorieFullName', this.Debug.Typen.Service);
+    }
+
+  }
+  public GetKostengruppennameByFestlegungskategorie(Festlegungskategorie: Festlegungskategoriestruktur): string {
+
+    try {
+
+      let Kostengruppe: Kostengruppenstruktur = this.GetKostengruppeByFestlegungskategorie(Festlegungskategorie);
+
+      return Kostengruppe !== null ? Kostengruppe.Bezeichnung : 'Unbekannt';
 
     } catch (error) {
 

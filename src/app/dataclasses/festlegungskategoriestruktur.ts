@@ -15,4 +15,5 @@ export type Festlegungskategoriestruktur = {
   Kostengruppennummer?: number;
   DisplayKostengruppe?: boolean;
   Kostengruppecolor?: string;
+  Expanded?: boolean;
 };

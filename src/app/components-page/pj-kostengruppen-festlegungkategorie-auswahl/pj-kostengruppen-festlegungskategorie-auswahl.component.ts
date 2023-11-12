@@ -21,6 +21,7 @@ import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.s
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 import {DatabaseFestlegungenService} from "../../services/database-festlegungen/database-festlegungen.service";
 import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
+import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
 
 @Component({
   selector: 'pj-kostengruppen-festlegungskategorie-auswahl',
@@ -45,6 +46,7 @@ export class PjKostengruppenFestlegungskategorieAuswahlComponent implements OnIn
   public Oberkostengruppenliste: Kostengruppenstruktur[];
   public Hauptkostengruppenliste: Kostengruppenstruktur[];
   public Unterkostengruppenliste: Kostengruppenstruktur[];
+  public OkButtonEnabled: boolean;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -52,6 +54,7 @@ export class PjKostengruppenFestlegungskategorieAuswahlComponent implements OnIn
               public DB: DatabaseFestlegungenService,
               private DBProjekte: DatabaseProjekteService,
               public Displayservice: DisplayService,
+              private Pool: DatabasePoolService,
               public Kostengruppenservice: KostengruppenService,
               public Const: ConstProvider) {
     try {
@@ -63,6 +66,7 @@ export class PjKostengruppenFestlegungskategorieAuswahlComponent implements OnIn
       this.PositionY = 100;
       this.ZIndex = 3000;
       this.KostengruppenOrigin = this.Const.NONE;
+      this.OkButtonEnabled = false;
 
       this.Oberkostengruppenliste  = [];
       this.Hauptkostengruppenliste = [];
@@ -90,6 +94,8 @@ export class PjKostengruppenFestlegungskategorieAuswahlComponent implements OnIn
 
     try {
 
+      debugger;
+
       this.Displayservice.AddDialog(this.Displayservice.Dialognamen.Kostengruppenauswahl, this.ZIndex);
 
       this.PrepareData();
@@ -105,6 +111,7 @@ export class PjKostengruppenFestlegungskategorieAuswahlComponent implements OnIn
   private PrepareData() {
 
     try {
+
 
       this.Oberkostengruppenliste  = [];
 
@@ -146,6 +153,8 @@ export class PjKostengruppenFestlegungskategorieAuswahlComponent implements OnIn
 
         this.DB.CurrentFestlegungskategorie.Unterkostengruppe = null;
       }
+
+      this.CheckOkReady();
 
     } catch (error) {
 
@@ -201,6 +210,7 @@ export class PjKostengruppenFestlegungskategorieAuswahlComponent implements OnIn
       this.DB.CurrentFestlegungskategorie.Hauptkostengruppe = event.detail.value;
       this.DB.CurrentFestlegungskategorie.Unterkostengruppe = null;
 
+
       this.PrepareData();
 
     } catch (error) {
@@ -217,10 +227,48 @@ export class PjKostengruppenFestlegungskategorieAuswahlComponent implements OnIn
 
       this.PrepareData();
 
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Kostengruppen Auswahl', 'UnterkostengruppeChanged', this.Debug.Typen.Component);
+    }
+  }
+
+
+  CheckOkReady() {
+
+    try {
+
+      let GoOn: boolean;
+
+      if(this.DB.CurrentFestlegungskategorie !== null) {
+
+        GoOn = this.DB.CurrentFestlegungskategorie.Hauptkostengruppe !== null &&
+               this.DB.CurrentFestlegungskategorie.Oberkostengruppe  !== null &&
+               this.DB.CurrentFestlegungskategorie.Unterkostengruppe !== null;
+      }
+      else {
+
+        GoOn = false;
+      }
+
+      this.OkButtonEnabled = GoOn;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Kostengruppen Auswahl', 'CheckOkReady', this.Debug.Typen.Component);
+    }
+  }
+
+  OkButtonClicked() {
+
+    try {
+
+      this.Pool.CurrentFestlegungskategorieChanged.emit();
+      this.OkClickedEvent.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Kostengruppen Auswahl', 'OkButtonClicked', this.Debug.Typen.Component);
     }
   }
 }

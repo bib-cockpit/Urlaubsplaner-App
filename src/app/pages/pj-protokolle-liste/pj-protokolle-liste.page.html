@@ -132,8 +132,9 @@
                         [TerminValueBreite]="420"
                         (StatusClicked)="StatusClickedHandler()"
                         (FachbereichClicked)="FachbereichClickedHandler()"
-                        (KostengruppeClicked)="KostengruppeClickedHandler()"
+                        (KostengruppeClicked)="KostengruppeClickedHandler($event)"
                         (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
+                        (LeistungsphaseClickedEvent)="LeistungsphaseClickedHandler()"
                         (AddBildEvent)="AddBildEventHandler()"
                         (TerminButtonClicked)="ShowDateKkPicker = true"
                         (CancelClickedEvent)="ShowProjektpunktEditor = false"
@@ -149,10 +150,6 @@
                              (CancelClickedEvent)="ShowDateKkPicker = false">
 </projektpunkt-date-kw-picker>
 
-<pj-kostengruppen-auswahl *ngIf="ShowKostengruppenauswahl" Titel="Kostengruppe festlegen"
-                          [Dialogbreite]="KostenDialogbreite" [Dialoghoehe]="KostenDialoghoehe" [PositionY]="DialogPosY"
-                          (OkClickedEvent)="ShowKostengruppenauswahl = false"
-                          (CancelClickedEvent)="ShowKostengruppenauswahl = false"></pj-kostengruppen-auswahl>
 
 <fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
                         [Titel]="'Zuständige Kollegen festlegen'"
@@ -208,7 +205,7 @@
 
 
 <auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"
-                [Dialogbreite]="200" [Dialoghoehe]="280" [PositionY]="200"
+                [Dialogbreite]="Auswahlbreite" [PositionY]="100"
                 [Titel]="Auswahltitel" [Iconname]="GetDialogTitelicon()"
                 (OkClickedEvent)="AuswahlOkButtonClicked($event)"
                 (CancelClickedEvent)="ShowAuswahl = false">

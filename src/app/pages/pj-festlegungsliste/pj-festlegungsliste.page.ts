@@ -14,9 +14,7 @@ import {ConstProvider} from "../../services/const/const";
 import * as lodash from "lodash-es";
 import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
-import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
 import {Subscription} from "rxjs";
-import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
 import {Protokollstruktur} from "../../dataclasses/protokollstruktur";
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
 import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
@@ -24,14 +22,11 @@ import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import MyMoment from "moment";
-import {Standortestruktur} from "../../dataclasses/standortestruktur";
-import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {DatabaseFestlegungenService} from "../../services/database-festlegungen/database-festlegungen.service";
-import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
-import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
-import {Notizenkapitelstruktur} from "../../dataclasses/notizenkapitelstruktur";
+import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
+import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
 
 @Component({
   selector: 'pj-festlegungsliste',
@@ -60,7 +55,6 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
   public ShowBeteiligteauswahl: boolean;
   public ProjektSubscription: Subscription;
   public ShowProjektschnellauswahl: boolean;
-  public ShowKostengruppenauswahl: boolean;
   public ShowRaumauswahl: boolean;
   public KostenDialogbreite: number;
   public KostenDialoghoehe: number;
@@ -78,6 +72,7 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
   private KategorieSubscription: Subscription;
   public Auswahlbreite: number;
   public NoKostengruppePunkteliste: Projektpunktestruktur[];
+  public NoKostengruppePunktelisteExpand: boolean;
   public Eintraegeanzahl: number;
 
   constructor(public Menuservice: MenueService,
@@ -118,12 +113,12 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
       this.ShowOpenFestlegungOnly   = false;
       this.KategorieSubscription    = null;
       this.Auswahlbreite            = 300;
+      this.NoKostengruppePunktelisteExpand = true;
 
       this.ShowProjektpunktEditor    = false;
       this.ShowMitarbeiterauswahl    = false;
       this.ShowBeteiligteauswahl     = false;
       this.ShowProjektschnellauswahl = false;
-      this.ShowKostengruppenauswahl  = false;
       this.ShowRaumauswahl           = false;
       this.EmailDialogbreite        = 800;
       this.EmailDialoghoehe         = 600;
@@ -192,9 +187,7 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
     try {
 
       let Projektpunkteliste: Projektpunktestruktur[];
-      let CurrentPunkt: Projektpunktestruktur;
       let Liste: Projektpunktestruktur[];
-      let Merker: any;
       let Laenge: number;
       let TeilA: string;
       let TeilB: string;
@@ -205,10 +198,7 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
       let Suchtext: string;
       let Kategorie: Festlegungskategoriestruktur;
       let Gruppenliste: number[] = [];
-      let Ungerade: boolean = true;
       let Index: number;
-
-      this.Eintraegeanzahl = 0;
 
       // Festlegungskategorien sortieren
 
@@ -218,6 +208,8 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
         else if(Kategorie.Hauptkostengruppe !== null) Kategorie.Kostengruppennummer = Kategorie.Hauptkostengruppe;
         else if(Kategorie.Oberkostengruppe  !== null) Kategorie.Kostengruppennummer = Kategorie.Oberkostengruppe;
         else Kategorie.Kostengruppennummer = 0;
+
+        Kategorie.Expanded = true;
       }
 
       this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey].sort((a: Festlegungskategoriestruktur, b: Festlegungskategoriestruktur) => {
@@ -228,16 +220,16 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
         return 0;
       });
 
+      this.Eintraegeanzahl = this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey].length;
+
       for(Kategorie of this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
 
         if(lodash.indexOf(Gruppenliste, Kategorie.Kostengruppennummer) === -1) {
 
           Kategorie.DisplayKostengruppe = true;
+          Kategorie.Kostengruppecolor   = this.Basics.Farben.BAEBlau; //  Ungerade ? this.Basics.Farben.Burnicklgruen : this.Basics.Farben.Burnicklbraun;
+
           Gruppenliste.push(Kategorie.Kostengruppennummer);
-
-          Kategorie.Kostengruppecolor = Ungerade ? this.Basics.Farben.Burnicklgruen : this.Basics.Farben.Burnicklbraun;
-
-          Ungerade = !Ungerade;
         }
         else {
 
@@ -336,7 +328,7 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
 
           this.DB.Displayliste[Index] = lodash.filter(Projektpunkteliste, {FestlegungskategorieID: Kategorie._id});
 
-          this.Eintraegeanzahl += this.DB.Displayliste[Index].length;
+          // this.Eintraegeanzahl += this.DB.Displayliste[Index].length;
 
           Index++;
         }
@@ -346,73 +338,8 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
       this.NoKostengruppePunkteliste = [];
       this.NoKostengruppePunkteliste = lodash.filter(Projektpunkteliste, {FestlegungskategorieID: null});
 
-      this.Eintraegeanzahl += this.NoKostengruppePunkteliste.length;
+      // this.Eintraegeanzahl += this.NoKostengruppePunkteliste.length;
 
-
-        /*
-
-        CurrentPunkt = this.DBProjektpunkte.GetNewProjektpunkt(this.DBProjekte.CurrentProjekt, 0);
-
-        CurrentPunkt.Kostengruppenname = 'Unbekannte Kostengruppe';
-
-        this.DB.Kostengruppenliste.push(CurrentPunkt);
-
-        for(let Punkt of Projektpunkteliste) {
-
-          CurrentPunkt = lodash.find(this.DB.Kostengruppenliste, (Eintrag: Projektpunktestruktur) => {
-
-            return Eintrag.Hauptkostengruppe === Punkt.Hauptkostengruppe &&
-                   Eintrag.Oberkostengruppe  === Punkt.Oberkostengruppe  &&
-                   Eintrag.Unterkostengruppe === Punkt.Unterkostengruppe;
-          });
-
-          if(lodash.isUndefined(CurrentPunkt)) {
-
-            Punkt.Kostengruppenname = this.KostenService.GetKostengruppennameByProjektpunkt(Punkt);
-            this.DB.Kostengruppenliste.push(Punkt);
-          }
-        }
-
-        for(let i = 0; i < this.DB.Kostengruppenliste.length; i++) {
-
-          CurrentPunkt = this.DB.Kostengruppenliste[i];
-
-          this.DB.Displayliste[i] = [];
-
-          Liste = lodash.filter(Projektpunkteliste, (Eintrag: Projektpunktestruktur) => {
-
-            return Eintrag.Hauptkostengruppe === CurrentPunkt.Hauptkostengruppe &&
-                   Eintrag.Oberkostengruppe  === CurrentPunkt.Oberkostengruppe  &&
-                   Eintrag.Unterkostengruppe === CurrentPunkt.Unterkostengruppe;
-          });
-
-          for(CurrentPunkt of Liste) {
-
-            this.DB.Displayliste[i].push(CurrentPunkt);
-          }
-        }
-
-        if(this.DB.Displayliste[0].length === 0) {
-
-          this.DB.Kostengruppenliste.shift();
-          this.DB.Displayliste.shift();
-
-        }
-        else {
-
-          Merker = this.DB.Kostengruppenliste[0];
-
-          this.DB.Kostengruppenliste[0] = this.DB.Kostengruppenliste[this.DB.Kostengruppenliste.length - 1];
-          this.DB.Kostengruppenliste[this.DB.Kostengruppenliste.length - 1] = Merker;
-
-          Merker = this.DB.Displayliste[0];
-
-          this.DB.Displayliste[0] = this.DB.Displayliste[this.DB.Displayliste.length - 1];
-          this.DB.Displayliste[this.DB.Displayliste.length - 1] = Merker;
-        }
-      }
-
-         */
 
 
     } catch (error) {
@@ -539,13 +466,45 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
     try {
 
       let Aufgabenansicht: Aufgabenansichtstruktur = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
-
+      let Kategorie: Festlegungskategoriestruktur;
 
       switch (this.Auswahldialogorigin) {
 
         case this.Auswahlservice.Auswahloriginvarianten.Festlegungliste_Editor_Kostengruppe:
 
-          this.DBProjektpunkte.CurrentProjektpunkt.FestlegungskategorieID = data;
+          switch (this.KostengruppenOrigin) {
+
+            case 'Editor':
+
+              this.DBProjektpunkte.CurrentProjektpunkt.FestlegungskategorieID = data;
+
+              break;
+
+            case 'Filter':
+
+              debugger;
+
+              Kategorie = lodash.find(this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey], {_id: data});
+
+              if(!lodash.isUndefined(Kategorie)) {
+
+                this.Pool.Mitarbeitersettings.HauptkostengruppeFilter = Kategorie.Hauptkostengruppe;
+                this.Pool.Mitarbeitersettings.OberkostengruppeFilter  = Kategorie.Oberkostengruppe;
+                this.Pool.Mitarbeitersettings.UnterkostengruppeFilter = Kategorie.Unterkostengruppe;
+
+              }
+              else {
+
+                this.Pool.Mitarbeitersettings.HauptkostengruppeFilter = null;
+                this.Pool.Mitarbeitersettings.OberkostengruppeFilter  = null;
+                this.Pool.Mitarbeitersettings.UnterkostengruppeFilter = null;
+              }
+
+              this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null);
+              this.PrepareData();
+
+              break;
+          }
 
           break;
         case this.Auswahlservice.Auswahloriginvarianten.Festlegungsliste_Editor_Leistungsphase:
@@ -651,99 +610,6 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
     }
   }
 
-  BeteiligteteilnehmerClickedHandler() {
-
-    try {
-
-      this.AuswahlIDliste = lodash.cloneDeep(this.DBProtokolle.CurrentProtokoll.BeteiligExternIDListe);
-
-      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Protokolleditor_Beteilgtenteilnehmer;
-      this.ShowBeteiligteauswahl  = true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Festlegungliste', 'BeteiligteteilnehmerClickedHandler', this.Debug.Typen.Page);
-    }
-  }
-
-
-  MitarebiterStandortfilterClickedHandler() {
-
-    try {
-
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Festlegungliste_Emaileditor_Standortfilter;
-
-      let Index = 0;
-
-      this.ShowAuswahl         = true;
-      this.Auswahltitel        = 'Standort festlegen';
-      this.Auswahlliste        = [];
-      this.Auswahlhoehe        = 300;
-
-      this.Auswahlliste.push({ Index: Index, FirstColumn: 'kein Filter', SecoundColumn: '', Data: null });
-      Index++;
-
-      for(let Eintrag of this.Pool.Standorteliste) {
-
-        this.Auswahlliste.push({ Index: Index, FirstColumn: Eintrag.Kuerzel, SecoundColumn: Eintrag.Standort, Data: Eintrag });
-        Index++;
-      }
-
-      if(this.DBStandort.CurrentStandortfilter !== null) {
-
-        this.Auswahlindex = lodash.findIndex(this.Pool.Standorteliste, {_id: this.DBStandort.CurrentStandortfilter._id});
-      }
-      else this.Auswahlindex = 0;
-
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Festlegungliste', 'MitarebiterStandortfilterClickedHandler', this.Debug.Typen.Page);
-    }
-  }
-
-  MitarbeiterauswahlOkButtonClicked(idliste: string[]) {
-
-    try {
-
-      switch (this.Auswahldialogorigin) {
-
-        case this.Auswahlservice.Auswahloriginvarianten.Festlegungliste_Emaileditor_Intern_Empfaenger:
-
-          this.DB.EmpfaengerInternIDListe = idliste;
-
-          break;
-
-
-        case this.Auswahlservice.Auswahloriginvarianten.Festlegungliste_Emaileditor_Intern_CcEmpfaenger:
-
-          this.DB.CcEmpfaengerInternIDListe = idliste;
-
-          break;
-
-        case this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Editor_ZustaendigIntern:
-
-          this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeInternIDListe = idliste;
-
-          break;
-
-        case this.Auswahlservice.Auswahloriginvarianten.Aufgabenliste_ZustaendigIntern:
-
-          this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeInternIDListe = idliste;
-
-          this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt, true);
-
-          break;
-      }
-
-      this.ShowMitarbeiterauswahl = false;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Festlegungliste', 'MitarbeiterauswahlOkButtonClicked', this.Debug.Typen.Page);
-    }
-  }
-
   AddProtokollpunktClickedHandler() {
 
     try {
@@ -813,38 +679,68 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
     try {
 
       let Kategorie: Festlegungskategoriestruktur;
-      let Name: string;
+      let Index = 0;
+      let Kostengruppetext: string;
+      let Kostengruppe: Kostengruppenstruktur;
 
-      this.KostengruppenOrigin      = origin; // Editor oder Festlegungskategorie
+      this.KostengruppenOrigin      = origin;
       this.Kostengruppeauswahltitel = 'Kostengruppe festlegen';
 
-      if(origin === 'Festlegungskategorie') {
 
-        this.ShowKostengruppenauswahlFestlegungskategorie = true;
+      switch (origin) {
+
+        case 'Festlegungskategorie':
+
+          this.ShowKostengruppenauswahlFestlegungskategorie = true;
+
+          break;
+
+        default:
+
+          this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Festlegungliste_Editor_Kostengruppe;
+          this.ShowAuswahl         = true;
+          this.Auswahltitel        = 'Kostengruppe festlegen';
+          this.Auswahlliste        = [];
+          this.Auswahlhoehe        = 600;
+          this.Auswahlbreite       = 600;
+
+          if(origin === 'Filter') {
+
+            this.Auswahlliste.push({ Index: Index, FirstColumn: '', SecoundColumn: 'Keine Kostengruppe', Data: null });
+            Index++;
+          }
+
+          for(Kategorie of this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
+
+            Kostengruppe     = this.KostenService.GetKostengruppeByFestlegungskategorieID(Kategorie._id);
+            Kostengruppetext = Kostengruppe.Kostengruppennummer + ' ' + Kostengruppe.Bezeichnung;
+
+            this.Auswahlliste.push({ Index: Index, FirstColumn: Kostengruppetext, SecoundColumn: Kategorie.Beschreibung, Data: Kategorie._id });
+            Index++;
+          }
+
+          if(origin === 'Filter') {
+
+            debugger;
+
+            this.Auswahlindex = lodash.indexOf(this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey], (Eintrag: Festlegungskategoriestruktur) => {
+
+              return Eintrag.Unterkostengruppe === this.Pool.Mitarbeitersettings.UnterkostengruppeFilter &&
+                     Eintrag.Hauptkostengruppe === this.Pool.Mitarbeitersettings.HauptkostengruppeFilter &&
+                     Eintrag.Oberkostengruppe  === this.Pool.Mitarbeitersettings.OberkostengruppeFilter;
+            });
+
+            this.Auswahlindex++;
+          }
+          else {
+
+            this.Auswahlindex = lodash.findIndex(this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey], {_id: this.DBProjektpunkte.CurrentProjektpunkt.FestlegungskategorieID });
+
+          }
+
+
+          break;
       }
-      else {
-
-        this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Festlegungliste_Editor_Kostengruppe;
-
-        let Index = 0;
-
-        this.ShowAuswahl         = true;
-        this.Auswahltitel        = 'Kostengruppe festlegen';
-        this.Auswahlliste        = [];
-        this.Auswahlhoehe        = 600;
-        this.Auswahlbreite       = 600;
-
-        for(Kategorie of this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
-
-          Name = this.KostenService.GetKostengruppennameByFestlegungskategorie(Kategorie);
-
-          this.Auswahlliste.push({ Index: Index, FirstColumn: Name, SecoundColumn: Kategorie.Beschreibung, Data: Kategorie._id });
-          Index++;
-        }
-
-        this.Auswahlindex = lodash.findIndex(this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey], {_id: this.DBProjektpunkte.CurrentProjektpunkt.FestlegungskategorieID });
-      }
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Festlegungliste', 'KostengruppeClickedHandler', this.Debug.Typen.Page);
@@ -893,100 +789,16 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
     this.Debug.ShowErrorMessage(error.message, 'Festlegungliste', 'FachbereichClickedHandler', this.Debug.Typen.Page);
   }
 
-  GetBeteiligtenauswahlTitel(): string {
+
+  AddFestlegungClicked(Kategorie: any) {
 
     try {
 
-      switch(this.Auswahldialogorigin) {
-
-        case this.Auswahlservice.Auswahloriginvarianten.Festlegungliste_Emaileditor_Extern_Empfaenger:
-
-          return 'Empfänger festlegen';
-
-          break;
-
-        case this.Auswahlservice.Auswahloriginvarianten.Festlegungliste_Emaileditor_Extern_CcEmpfaenger:
-
-          return 'Cc Empfänge festlegen';
-
-          break;
-
-        default:
-
-          return 'unbekannt';
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Festlegungliste', 'GetBeteiligtenauswahlTitel', this.Debug.Typen.Page);
-    }
-  }
-
-  BeteiligteauswahlOkButtonClicked(idliste: string[]) {
-
-    try {
-
-      switch (this.Auswahldialogorigin) {
-
-        case this.Auswahlservice.Auswahloriginvarianten.Festlegungliste_Emaileditor_Extern_Empfaenger:
-
-          this.DB.EmpfaengerExternIDListe = idliste;
-
-          break;
-
-        case this.Auswahlservice.Auswahloriginvarianten.Festlegungliste_Emaileditor_Extern_CcEmpfaenger:
-
-          this.DB.CcEmpfaengerExternIDListe = idliste;
-
-          break;
-
-      }
-
-      this.ShowBeteiligteauswahl = false;
-
-      this.Pool.EmailempfaengerChanged.emit();
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Festlegungliste Liste', 'BeteiligteauswahlOkButtonClicked', this.Debug.Typen.Page);
-    }
-  }
-
-  EditorZustaendigExternHandler() {
-
-    try {
-
-      this.AuswahlIDliste        = lodash.cloneDeep(this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeExternIDListe);
-      this.Auswahldialogorigin   = this.Auswahlservice.Auswahloriginvarianten.Festlegungliste_Editor_ZustaendigExtern;
-      this.ShowBeteiligteauswahl = true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Festlegungen Liste', 'EditorZustaendigExternHandler', this.Debug.Typen.Page);
-    }
-  }
-
-  EditorZustaendigInternHandler() {
-
-    try {
-
-      this.AuswahlIDliste         = lodash.cloneDeep(this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeInternIDListe);
-      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Festlegungliste_Editor_ZustaendigIntern;
-      this.ShowMitarbeiterauswahl = true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Festlegungen Liste', 'EditorZustaendigInternHandler', this.Debug.Typen.Page);
-    }
-  }
-
-  AddFestlegungClicked() {
-
-    try {
-
-      this.ShowProjektpunktEditor             = true;
       this.DBProjektpunkte.CurrentProjektpunkt = lodash.cloneDeep(this.DBProjektpunkte.GetNewFestlegung());
 
+      this.DBProjektpunkte.CurrentProjektpunkt.FestlegungskategorieID = Kategorie._id;
+
+      this.ShowProjektpunktEditor              = true;
 
     } catch (error) {
 
@@ -1004,61 +816,6 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error, 'Festlegungen Liste', 'FestlegungClicked', this.Debug.Typen.Page);
     }
-  }
-
-  KostengruppeFilterClickedHandler() {
-
-    try {
-
-      this.KostengruppenOrigin                 = 'Filter';
-      this.Kostengruppeauswahltitel            = 'Filter für Kostengruppe festlegen';
-      this.DBProjektpunkte.CurrentProjektpunkt = this.DBProjektpunkte.GetNewProtokollpunkt(null);
-
-      this.DBProjektpunkte.CurrentProjektpunkt.Oberkostengruppe  = this.Pool.Mitarbeitersettings.OberkostengruppeFilter;
-      this.DBProjektpunkte.CurrentProjektpunkt.Unterkostengruppe = this.Pool.Mitarbeitersettings.UnterkostengruppeFilter;
-      this.DBProjektpunkte.CurrentProjektpunkt.Hauptkostengruppe = this.Pool.Mitarbeitersettings.HauptkostengruppeFilter;
-
-      this.ShowKostengruppenauswahl = true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Festlegungen Liste', 'KostengruppeFilterClickedHandler', this.Debug.Typen.Page);
-    }
-  }
-
-  KostengruppenauswahlOkClicked() {
-
-    try {
-
-
-      switch(this.KostengruppenOrigin) {
-
-        case 'Filter':
-
-          this.ShowKostengruppenauswahl = false;
-
-          this.Pool.Mitarbeitersettings.HauptkostengruppeFilter = this.DBProjektpunkte.CurrentProjektpunkt.Hauptkostengruppe;
-          this.Pool.Mitarbeitersettings.UnterkostengruppeFilter = this.DBProjektpunkte.CurrentProjektpunkt.Unterkostengruppe;
-          this.Pool.Mitarbeitersettings.OberkostengruppeFilter  = this.DBProjektpunkte.CurrentProjektpunkt.Oberkostengruppe;
-
-          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null);
-
-          this.PrepareData();
-
-          break;
-
-        case 'Festlegungskategorie':
-
-          this.ShowKostengruppenauswahlFestlegungskategorie = false;
-
-          break;
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Festlegungen Liste', 'KostengruppenauswahlOkClicked', this.Debug.Typen.Page);
-    }
-
   }
 
   SucheChangedHandler(text: string) {
@@ -1108,7 +865,6 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
   EmpfaengerExternClickedHandler() {
 
     try {
-
 
       this.Auswahldialogorigin   = this.Auswahlservice.Auswahloriginvarianten.Festlegungliste_Emaileditor_Extern_Empfaenger;
       this.AuswahlIDliste        = this.DB.EmpfaengerExternIDListe;
@@ -1193,6 +949,7 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
 
       this.DBFestlegungskategorie.CurrentFestlegungskategorie = this.DBFestlegungskategorie.GetEmptyFestlegungskategorie(this.DBProjekte.CurrentProjekt);
 
+
       this.ShowFestlegungskategorieEditor = true;
 
     } catch (error) {
@@ -1205,12 +962,56 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
 
     try {
 
-      this.DBFestlegungskategorie.CurrentFestlegungskategorie = Kategorie;
+      this.DBFestlegungskategorie.CurrentFestlegungskategorie = lodash.cloneDeep(Kategorie);
       this.ShowFestlegungskategorieEditor                     = true;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Festlegungen Liste', 'FestlegungskategorieClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  ExpandFestlegungeEventHandler(expand: boolean) {
+
+    try {
+
+      for(let Kategorie of this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
+
+
+        Kategorie.Expanded = expand;
+      }
+
+      this.NoKostengruppePunktelisteExpand = expand;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Festlegungen Liste', 'ExpandFestlegungeEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  ExpandFestlegungskategorie(event: MouseEvent, Kategorie: Festlegungskategoriestruktur) {
+
+    try {
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      Kategorie.Expanded = !Kategorie.Expanded;
+
+      let Liste: Festlegungskategoriestruktur[] = lodash.filter(this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey], (Eintrag: Festlegungskategoriestruktur) => {
+
+        return Kategorie.Hauptkostengruppe === Eintrag.Hauptkostengruppe &&
+               Kategorie.Oberkostengruppe  === Eintrag.Oberkostengruppe  &&
+               Kategorie.Unterkostengruppe === Eintrag.Unterkostengruppe;
+      });
+
+      for(let Eintrag of Liste) {
+
+        Eintrag.Expanded = Kategorie.Expanded;
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Festlegungen Liste', 'ExpandFestlegungskategorie', this.Debug.Typen.Page);
     }
   }
 }
