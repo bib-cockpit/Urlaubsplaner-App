@@ -828,6 +828,13 @@ export class DatabasePoolService {
           },
           complete: () => {
 
+            for(let Standort of this.Standorteliste) {
+
+              if(lodash.isUndefined(Standort.Konfession)) Standort.Konfession = 'RK';
+              if(lodash.isUndefined(Standort.Bundesland)) Standort.Bundesland = 'DE-BY';
+              if(lodash.isUndefined(Standort.Land))       Standort.Land       = 'DE';
+            }
+
             this.StandortelisteChanged.emit();
 
             resolve(true);

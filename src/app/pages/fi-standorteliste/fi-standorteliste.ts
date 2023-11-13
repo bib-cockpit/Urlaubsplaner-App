@@ -13,6 +13,9 @@ import {PageFooterComponent} from "../../components/page-footer/page-footer";
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
 import * as lodash from "lodash-es";
+import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
+import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
+import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
 
 @Component({
   selector: 'fi-standorteliste-page',
@@ -30,7 +33,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
   public Alphapetbreite: number;
   public Standortealphabetauswahl: string;
   public HideAuswahl: boolean;
-  public Auswahlliste: string[];
+  public Auswahlliste: Auswahldialogstruktur[];
   public Auswahlindex: number;
   public Auswahltitel: string;
   public Lastletter: string;
@@ -44,12 +47,17 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
   public ShowEditor: boolean;
   public EditorValid: boolean;
   public ListeSubscription: Subscription;
+  public ShowAuswahl: boolean;
+  public Auswahlhoehe: number;
+  public Auswahldialogorigin: string;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
               public Const: ConstProvider,
               public DB: DatabaseStandorteService,
+              private DBUrlaub: DatabaseUrlaubService,
+              public Auswahlservice: AuswahlDialogService,
               public  Pool: DatabasePoolService) {
     try
     {
@@ -68,7 +76,10 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
       this.ShowEditor        = false;
       this.EditorValid       = false;
       this.ListeSubscription = null;
-
+      this.Auswahlliste         = [];
+      this.Auswahlindex         = 0;
+      this.Auswahltitel         = '';
+      this.Auswahldialogorigin  = '';
 
 
     }
@@ -369,6 +380,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
     }
   }
 
+
   SucheChangedHandler(text: string) {
 
     try {
@@ -384,5 +396,116 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
       this.Debug.ShowErrorMessage(error.message, 'Standorteliste', 'SucheChangedHandler', this.Debug.Typen.Page);
     }
 
+  }
+
+  async AuswahlOkButtonClicked(data: any) {
+
+    try {
+
+      switch (this.Auswahldialogorigin) {
+
+        case this.Auswahlservice.Auswahloriginvarianten.Standorteeditor_Land:
+
+
+          this.DB.CurrentStandort.Land = data;
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Standorteeditor_Bundesland:
+
+          this.DB.CurrentStandort.Bundesland = data;
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Standorteeditor_Konfession:
+
+          this.DB.CurrentStandort.Konfession = data;
+
+          break;
+      }
+
+      this.ShowAuswahl = false;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Standorteliste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  LandClickedEventHandler() {
+
+
+    try {
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Standorteeditor_Land;
+
+      this.Auswahltitel        = 'Land auswählen';
+      this.Auswahlhoehe        = 600;
+      this.ShowAuswahl         = true;
+
+      this.Auswahlliste  = [];
+
+
+      this.Auswahlliste.push({ Index: 0, FirstColumn: 'Deutschland', SecoundColumn: 'DE', Data: 'DE' });
+      this.Auswahlliste.push({ Index: 1, FirstColumn: 'Bulgarien',   SecoundColumn: 'BG', Data: 'BG' });
+
+
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data:this.DB.CurrentStandort.Land} );
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'LandClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  BundeslandClickedEventHandler() {
+
+    try {
+
+      let Index: number = 0;
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Standorteeditor_Bundesland;
+
+      this.Auswahltitel        = 'Bundesland auswählen';
+      this.Auswahlhoehe        = 600;
+      this.ShowAuswahl         = true;
+
+      this.Auswahlliste  = [];
+
+      for(let Region of this.DBUrlaub.Regionenliste) {
+
+        this.Auswahlliste.push({ Index: Index, FirstColumn: Region.Name, SecoundColumn: Region.isoCode, Data: Region.isoCode });
+
+        Index++;
+      }
+
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data:this.DB.CurrentStandort.Bundesland} );
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'BundeslandClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  KonfessionClickedEventHandler() {
+
+    try {
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Standorteeditor_Konfession;
+
+      this.Auswahltitel  = 'Konfession auswählen';
+      this.Auswahlhoehe  = 600;
+      this.ShowAuswahl   = true;
+      this.Auswahlliste  = [];
+
+      this.Auswahlliste.push({ Index: 0, FirstColumn: 'Katholisch',  SecoundColumn: 'RK', Data: 'RK' });
+      this.Auswahlliste.push({ Index: 1, FirstColumn: 'Evangelisch', SecoundColumn: 'EV', Data: 'EV' });
+
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, { Data:this.DB.CurrentStandort.Konfession });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'KonfessionClickedEventHandler', this.Debug.Typen.Page);
+    }
   }
 }

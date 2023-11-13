@@ -6,15 +6,18 @@
 <ion-content>
 
   <table style="width: 100%" class="paddingsmalltable">
+    <tr>
+      <td colspan="10"><b>Deutschland</b></td>
+    </tr>
     <tr *ngFor="let Zeile of Monateliste">
       <td style="width: 16%; height: inherit" valign="top" *ngFor="let Monat of Zeile">
+
         <urlaubsplanung-kalender
           [Jahr]="DB.Jahr"
           [Monat]="Monat"
-          [Feiertageliste]="DB.Feiertageliste"
-          [Ferienliste]="DB.Ferienliste"
           (FeirtagCrossedEvent)="FeiertagCrossedEventHandler($event)" (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
         </urlaubsplanung-kalender>
+
       </td>
     </tr>
   </table>
@@ -36,19 +39,109 @@
           </tr>
         </table>
 
-        <table style="width: 400px;" class="paddingtable">
-          <tr *ngFor="let Ferien of DB.Ferienliste">
-            <td>
-              {{Ferien.name}}
+        <table>
+          <tr>
+            <td valign="top">
+              <table *ngIf="DB.Ferienliste['DE']" style="width: 400px;" class="paddingtable">
+                <tr>
+                  <td colspan="3"><b>Ferien Deutschland</b></td>
+                </tr>
+                <tr *ngFor="let Ferien of DB.Ferienliste['DE']">
+                  <td>
+                    {{Ferien.Name}}
+                  </td>
+                  <td>
+                    {{GetDatum(Ferien.Anfangstempel)}}
+                  </td>
+                  <td>
+                    {{GetDatum(Ferien.Endestempel)}}
+                  </td>
+                </tr>
+              </table>
             </td>
-            <td>
-              {{GetDatum(Ferien.Anfangstempel)}}
-            </td>
-            <td>
-              {{GetDatum(Ferien.Endestempel)}}
+            <td valign="top">
+              <table *ngIf="DB.Feiertageliste['DE']" style="width: 400px;" class="paddingtable">
+                <tr>
+                  <td colspan="4"><b>Feiertage Deutschland</b></td>
+                </tr>
+                <tr *ngFor="let Feiertag of DB.Feiertageliste['DE']">
+                  <td>
+                    {{Feiertag.Name}}
+                  </td>
+                  <td>
+                    {{GetDatum(Feiertag.Anfangstempel)}}
+                  </td>
+                  <td>
+                    {{GetDatum(Feiertag.Endestempel)}}
+                  </td>
+                  <td>
+                    {{Feiertag.nationwide}}
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
+          <tr>
+            <td valign="top">
+              <table *ngIf="DB.Ferienliste['BG']" style="width: 400px;" class="paddingtable">
+                <tr>
+                  <td colspan="3"><b>Ferien Bulgarien</b></td>
+                </tr>
+                <tr *ngFor="let Ferien of DB.Ferienliste['BG']">
+                  <td>
+                    {{Ferien.Name}}
+                  </td>
+                  <td>
+                    {{GetDatum(Ferien.Anfangstempel)}}
+                  </td>
+                  <td>
+                    {{GetDatum(Ferien.Endestempel)}}
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td valign="top">
+              <table *ngIf="DB.Feiertageliste['BG']" style="width: 400px;" class="paddingtable">
+                <tr>
+                  <td colspan="4"><b>Feiertage Bulgarien</b></td>
+                </tr>
+                <tr *ngFor="let Feiertag of DB.Feiertageliste['BG']">
+                  <td>
+                    {{Feiertag.Name}}
+                  </td>
+                  <td>
+                    {{GetDatum(Feiertag.Anfangstempel)}}
+                  </td>
+                  <td>
+                    {{GetDatum(Feiertag.Endestempel)}}
+                  </td>
+                  <td>
+                    {{Feiertag.nationwide}}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">
+              <table style="width: 400px;" class="paddingtable">
+                <tr>
+                  <td colspan="2"><b>Bundesländer</b></td>
+                </tr>
+                <tr *ngFor="let Region of DB.Regionenliste">
+                  <td>
+                    {{Region.name[0].text}}
+                  </td>
+                  <td>
+                    {{Region.isoCode}}
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td></td>
+          </tr>
         </table>
+
 
       </td>
       <td style="width: 50%;" valign="top" align="right">
@@ -94,3 +187,13 @@
                 (OkClickedEvent)="AuswahlOkButtonClicked($event)"
                 (CancelClickedEvent)="ShowAuswahl = false">
 </auswahl-dialog>
+
+<!--
+<fi-mitarbeiter-editor *ngIf="ShowMitarbeitereditor" [Dialogbreite]="600" [Titel]="'Mitarbeiter bearbeiten'" Iconname="people-outline"
+                       (StandortClickedEvent)="StandortClickedHandler()"
+                       (CancelClickedEvent)="ShowMitarbeitereditor = false"
+                       (OkClickedEvent)="ShowMitarbeitereditor = false"
+                       (AnredeClickedEvent)="AnredeClickedEventHandler()" (UrlaubClickedEvent)="UrlaubClickedEventHandler()"
+                       (FachbereichClickedEvent)="FachbereichClickedHandler()">
+</fi-mitarbeiter-editor>
+-->

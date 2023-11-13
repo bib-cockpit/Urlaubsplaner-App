@@ -67,9 +67,19 @@
   </page-footer>
 </ion-footer>
 
-<fi-standort-editor *ngIf="ShowEditor" [Dialogbreite]="600" [Dialoghoehe]="400" [PositionY]="100" [Titel]="GetDialogTitel()" Iconname="location-outline"
+<fi-standort-editor *ngIf="ShowEditor" [Dialogbreite]="600" [Dialoghoehe]="500" [PositionY]="100" [Titel]="GetDialogTitel()" Iconname="location-outline"
                     (CancelClickedEvent)="ShowEditor = false"
-                    (OkClickedEvent)="ShowEditor = false" (DeleteClickedEvent)="ShowEditor = false"></fi-standort-editor>
+                    (OkClickedEvent)="ShowEditor = false" (DeleteClickedEvent)="ShowEditor = false"
+                    (LandClickedEvent)="LandClickedEventHandler()"
+                    (BundeslandClickedEvent)="BundeslandClickedEventHandler()"
+                    (KonfessionClickedEvent)="KonfessionClickedEventHandler()"></fi-standort-editor>
+
+<auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"
+                [Dialogbreite]="400"  [PositionY]="100"
+                [Titel]="Auswahltitel" [Iconname]="''"
+                (OkClickedEvent)="AuswahlOkButtonClicked($event)"
+                (CancelClickedEvent)="ShowAuswahl = false">
+</auswahl-dialog>
 
 <alphabet #Alphabet (AlphabetClicked)="AlphabetClicked($event)"
           [PageHeader]="PageHeader"

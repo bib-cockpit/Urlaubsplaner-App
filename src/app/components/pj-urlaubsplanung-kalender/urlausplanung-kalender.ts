@@ -43,8 +43,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
   @Input() ZIndex: number;
   @Input() Monat: string;
   @Input() Jahr: number;
-  @Input() Feiertageliste: Feiertagestruktur[];
-  @Input() Ferienliste: Ferienstruktur[];
 
   @Output() FeirtagCrossedEvent      = new EventEmitter<string>();
   @Output() FerientagCrossedEvent    = new EventEmitter<string>();
@@ -63,10 +61,8 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
       this.Dialogbreite        = 300;
       this.Dialoghoehe         = 400;
       this.Jahr                = 2023;
-      this.Feiertageliste      = [];
       this.ShowProtokollpunkte = true;
       this.Kalendertageliste   = [];
-      this.Ferienliste         = [];
       this.Monateliste         = ['Januar', 'Februar', 'März', 'April', 'Mail', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
       this.Monat               = 'Janauar';
 
@@ -178,9 +174,9 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
       let IsFeiertag: boolean = false;
       let xxxxxx = CurrentTag.format('DD.MM.YYYY');
 
-      for(let Eintrag of this.Feiertageliste) {
+      for(let Eintrag of this.DB.Feiertageliste['DE']) {
 
-        Feiertag = moment(Eintrag.Zeitstempel);
+        Feiertag = moment(Eintrag.Anfangstempel);
         let yyyy = Feiertag.format('DD.MM.YYYY');
 
         // debugger;
@@ -205,12 +201,12 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     try {
 
-      let CurrentTag: Moment = moment(Tag.Tagstempel).locale('de');
+      let CurrentTag: Moment = moment(Tag.Tagstempel);
       let Starttag: Moment;
       let Endetag: Moment;
       let IsFerientag: boolean = false;
 
-      for(let Eintrag of this.Ferienliste) {
+      for(let Eintrag of this.DB.Ferienliste['DE']) {
 
         Starttag = moment(Eintrag.Anfangstempel);
         Endetag  = moment(Eintrag.Endestempel);
@@ -235,16 +231,16 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     try {
 
-      let Feiertag: Feiertagestruktur = lodash.find(this.Feiertageliste, (feiertag: Feiertagestruktur) => {
+      let Feiertag: Feiertagestruktur = lodash.find(this.DB.Feiertageliste['DE'], (feiertag: Feiertagestruktur) => {
 
-        return moment(Tag.Tagstempel).isSame(moment(feiertag.Zeitstempel), 'day');
+        return moment(Tag.Tagstempel).isSame(moment(feiertag.Anfangstempel), 'day');
       });
 
       debugger;
 
       if(!lodash.isUndefined(Feiertag)) {
 
-        this.FeirtagCrossedEvent.emit(Feiertag.fname);
+        this.FeirtagCrossedEvent.emit(Feiertag.Name);
       }
 
     } catch (error) {
@@ -257,7 +253,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
     try {
 
-      let Ferientag: Ferienstruktur = lodash.find(this.Ferienliste, (ferientag: Ferienstruktur) => {
+      let Ferientag: Ferienstruktur = lodash.find(this.DB.Ferienliste['DE'], (ferientag: Ferienstruktur) => {
 
         return moment(Tag.Tagstempel).isBetween(moment(ferientag.Anfangstempel), moment(ferientag.Endestempel), 'day');
       });
@@ -266,7 +262,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
       if(!lodash.isUndefined(Ferientag)) {
 
-        this.FerientagCrossedEvent.emit(Ferientag.name);
+        this.FerientagCrossedEvent.emit(Ferientag.Name);
       }
 
     } catch (error) {

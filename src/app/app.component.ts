@@ -6,10 +6,9 @@ import {MenueService} from "./services/menue/menue.service";
 import {BasicsProvider} from "./services/basics/basics";
 import {DatabaseAuthenticationService} from "./services/database-authentication/database-authentication.service";
 import {ToolsProvider} from "./services/tools/tools";
-import {HttpErrorResponse} from "@angular/common/http";
-import {filter, Subject, Subscription, takeUntil, using} from "rxjs";
+import {filter, Subject, Subscription, takeUntil} from "rxjs";
 import {MsalBroadcastService, MsalService} from "@azure/msal-angular";
-import {AuthenticationResult, EventMessage, EventType, InteractionStatus} from "@azure/msal-browser";
+import {InteractionStatus} from "@azure/msal-browser";
 import {ConstProvider} from "./services/const/const";
 import {DatabaseMitarbeiterService} from "./services/database-mitarbeiter/database-mitarbeiter.service";
 import {DatabaseStandorteService} from "./services/database-standorte/database-standorte.service";
@@ -18,9 +17,8 @@ import {DatabaseMitarbeitersettingsService} from "./services/database-mitarbeite
 import * as lodash from "lodash-es";
 import {Graphservice} from "./services/graph/graph";
 import {Mitarbeiterstruktur} from "./dataclasses/mitarbeiterstruktur";
-import {indexOf} from "lodash-es";
 import {environment} from "../environments/environment";
-import {PjPlanungsmatrixPage} from "./pages/pj-planungsmatrix/pj-planungsmatrix.page";
+import {DatabaseUrlaubService} from "./services/database-urlaub/database-urlaub.service";
 
 @Component({
   selector: 'app-root',
@@ -50,9 +48,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
               private MitarbeitersettingsDB: DatabaseMitarbeitersettingsService,
               private StandortDB: DatabaseStandorteService,
               private ProjekteDB: DatabaseProjekteService,
+              private UrlaubDB: DatabaseUrlaubService,
               public GraphService: Graphservice,
               private Debug: DebugProvider) {
-
     try {
 
       this.AuthSubscription     = null;
@@ -153,57 +151,96 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
         this.Debug.ShowMessage('Benutzer ist angemeldet: ' + this.AuthService.ActiveUser.username, 'App Component', 'StartApp', this.Debug.Typen.Component);
 
         this.Pool.ShowProgress         = true;
-        this.Pool.MaxProgressValue     = 10;
+        this.Pool.MaxProgressValue     = 15;
         this.Pool.CurrentProgressValue = 0;
 
         try {
 
-          if(this.AuthService.SecurityEnabled === true) await this.GraphService.GetOwnUserinfo();  // 1
+          if(this.AuthService.SecurityEnabled === true)
+          {
+            this.Pool.ProgressMessage = 'Lade eigene Daten';
 
-          this.Pool.ProgressMessage = 'Lade eigene Daten';
-          this.Pool.CurrentProgressValue++;
+            await this.GraphService.GetOwnUserinfo();
 
-          if(this.AuthService.SecurityEnabled === true) await this.GraphService.GetOwnUserimage(); // 2
+            this.Pool.CurrentProgressValue++;
+          }
 
-          this.Pool.ProgressMessage = 'Lade eigens Bild';
-          this.Pool.CurrentProgressValue++;
+
+          if(this.AuthService.SecurityEnabled === true) {
+
+            this.Pool.ProgressMessage = 'Lade eigens Bild';
+
+            await this.GraphService.GetOwnUserimage();
+
+            this.Pool.CurrentProgressValue++;
+          }
+
+          this.Pool.ProgressMessage = 'Lade eigene Outlookkategorien';
 
           this.Pool.Outlookkatekorien = await this.GraphService.GetOwnOutlookCategories(); // 3
 
-          this.Pool.ProgressMessage = 'Lade eigene Outlookkategorien';
           this.Pool.CurrentProgressValue++;
 
-          await this.Pool.ReadChangelogliste(); // 4
+          this.Pool.ProgressMessage = 'Lade Outlookkategorien';
+
+          await this.GraphService.GetOwnOutlookCategories(); // 3
+
+          this.Pool.CurrentProgressValue++;
 
           this.Pool.ProgressMessage = 'Lade Change Log';
+
+          this.Pool.ReadChangelogliste();
+
           this.Pool.CurrentProgressValue++;
+
+          this.Pool.ProgressMessage = 'Lade Standortliste';
 
           await this.Pool.ReadStandorteliste(); // 5
 
-          this.Pool.ProgressMessage = 'Lade Standortliste';
           this.Pool.CurrentProgressValue++;
 
-          console.log('Read Mitarbeiterliste:');
+          this.Pool.ProgressMessage = 'Lade aktuelle Mitarbeiterliste';
 
           await this.Pool.ReadMitarbeiterliste(); // 6
 
-          this.Pool.ProgressMessage = 'Lade aktuelle Mitarbeiterliste';
           this.Pool.CurrentProgressValue++;
+
+          this.Pool.ProgressMessage = 'Lade Gesamtprojektliste';
 
           await this.ProjekteDB.ReadGesamtprojektliste(); // 7
 
-          this.Pool.ProgressMessage = 'Lade Gesamtprojektliste';
           this.Pool.CurrentProgressValue++;
+
+          this.Pool.ProgressMessage = 'Erstelle Musterprojekt';
 
           await this.ProjekteDB.AddMusterprojekt(); // 8
 
-          this.Pool.ProgressMessage = 'Erstelle Musterprojekt';
           this.Pool.CurrentProgressValue++;
+
+          this.Pool.ProgressMessage = 'Aktuallisiere Mitarbeiterliste';
 
           let Liste = await this.GraphService.GetAllUsers(); // 9
 
-          this.Pool.ProgressMessage = 'Aktuallisiere Mitarbeiterliste';
           this.Pool.CurrentProgressValue++;
+
+          this.Pool.ProgressMessage = 'Lade Bundesländer';
+
+          await this.UrlaubDB.ReadRegionen('DE'); // 4
+
+          this.Pool.CurrentProgressValue++;
+
+          this.Pool.ProgressMessage = 'Lade Ferien Deutschland';
+
+          await this.UrlaubDB.ReadFerien('DE');
+
+          this.Pool.CurrentProgressValue++;
+
+          this.Pool.ProgressMessage = 'Lade Ferien Bulgarien';
+
+          await this.UrlaubDB.ReadFerien('BG');
+
+          this.Pool.CurrentProgressValue++;
+
 
           for(let User of Liste) {
 
@@ -255,23 +292,38 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
         this.Pool.Mitarbeiterdaten = this.Pool.InitMitarbeiter(Mitarbeiter); // fehlende Mitarbeiterdaten initialisieren
         this.Pool.CheckMitarbeiterdaten();
 
-        await this.Pool.ReadSettingsliste(); // 9
+        this.Pool.ProgressMessage = 'Lade Feiertage Deutschland';
+
+        await this.UrlaubDB.ReadFeiertage('DE');
+
+        this.Pool.CurrentProgressValue++;
+
+        this.Pool.ProgressMessage = 'Lade Feiertage Bulgarien';
+
+        await this.UrlaubDB.ReadFeiertage('BG');
+
+        this.Pool.CurrentProgressValue++;
 
         this.Pool.ProgressMessage = 'Lade Einstellungen';
+
+        await this.Pool.ReadSettingsliste();
+
         this.Pool.CurrentProgressValue++;
+
+        this.Pool.ProgressMessage = 'Syncronisiere Gesamtprojektliste';
 
         await this.ProjekteDB.SyncronizeGesamtprojektlisteWithTeams(this.GraphService.Teamsliste); // 10
 
-        this.Pool.ProgressMessage = 'Syncronisiere Gesamtprojektliste';
         this.Pool.CurrentProgressValue++;
 
         this.ProjekteDB.CheckMyProjektdaten();
 
         this.Pool.Mitarbeitersettings = this.Pool.InitMitarbeitersettings(); // fehlende Settingseintraege initialisieren
 
+        this.Pool.ProgressMessage = 'Aktualisiere Mitarbeitereinstellungen';
+
         await this.MitarbeitersettingsDB.SaveMitarbeitersettings();
 
-        this.Pool.ProgressMessage = 'Aktualisiere Mitarbeitereinstellungen';
         this.Pool.CurrentProgressValue++;
 
         this.Zoomfaktor = this.Pool.Mitarbeitersettings.Zoomfaktor;
@@ -311,11 +363,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           }
           else {
 
-            Page = this.Const.Pages.PjFestlegungslistePage; // UrlaubsplanungPage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
+            Page = this.Const.Pages.UrlaubsplanungPage; // FiStandortelistePage; // UrlaubsplanungPage; // UrlaubsplanungPage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
 
             this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
             this.ProjekteDB.SetCurrentFavoritenprojekt();
-            await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
+            // await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
 
             this.Pool.ProjektdatenLoaded = true;
           }

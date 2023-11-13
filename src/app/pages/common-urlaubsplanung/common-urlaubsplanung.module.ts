@@ -11,6 +11,7 @@ import {UrlausplanungKalenderModule} from "../../components/pj-urlaubsplanung-ka
 import {ButtonValueModule} from "../../components/button-value/button-value.module";
 import {AuswahlDialogModule} from "../../components/auswahl-dialog/auswahl-dialog.module";
 import {CheckboxClonModule} from "../../components/checkbox-clon/checkbox-clon.module";
+import {FiMitarbeiterEditorModule} from "../../components-page/fi-mitarbeiter-editor/fi-mitarbeiter-editor.module";
 
 const routes: Routes = [
   {
@@ -32,6 +33,7 @@ const routes: Routes = [
         ButtonValueModule,
         AuswahlDialogModule,
         CheckboxClonModule,
+        FiMitarbeiterEditorModule,
     ],
   declarations: [CommonUrlaubsplanungPage]
 })

@@ -8,6 +8,7 @@ import {AbstandElementFixedModule} from "../../components/abstand-element-fixed/
 import {PageHeaderModule} from "../../components/page-header/page-header.module";
 import {CheckboxClonModule} from "../../components/checkbox-clon/checkbox-clon.module";
 import {PageFooterModule} from "../../components/page-footer/page-footer.module";
+import {ButtonValueModule} from "../../components/button-value/button-value.module";
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import {PageFooterModule} from "../../components/page-footer/page-footer.module"
         PageHeaderModule,
         CheckboxClonModule,
         PageFooterModule,
+        ButtonValueModule,
     ],
   providers: [
 

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MenueService} from "../../services/menue/menue.service";
 import {DebugProvider} from "../../services/debug/debug";
 import {BasicsProvider} from "../../services/basics/basics";
@@ -15,13 +15,17 @@ import {Subscription} from "rxjs";
 import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {ConstProvider} from "../../services/const/const";
+import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
+import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
+import {languageSharp} from "ionicons/icons";
 
 @Component({
   selector: 'common-urlaubsplanung-page',
   templateUrl: 'common-urlaubsplanung.page.html',
   styleUrls: ['common-urlaubsplanung.page.scss'],
 })
-export class CommonUrlaubsplanungPage implements OnInit {
+export class CommonUrlaubsplanungPage implements OnInit, OnDestroy {
 
   @ViewChild('PageHeader', { static: false }) PageHeader: PageHeaderComponent;
   @ViewChild('PageFooter', { static: false }) PageFooter: PageFooterComponent;
@@ -35,13 +39,18 @@ export class CommonUrlaubsplanungPage implements OnInit {
   public Auswahlhoehe: number;
 
   public Message: string;
-  private SettingsSubscription: Subscription;
+  public ShowMitarbeitereditor: boolean;
+  private Auswahldialogorigin: string;
+  private DataSubscription: Subscription;
 
   constructor(public Menuservice: MenueService,
               public Basics: BasicsProvider,
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public Pool: DatabasePoolService,
               public DB: DatabaseUrlaubService,
+              private DBMitarbeiter: DatabaseMitarbeiterService,
+              public Const: ConstProvider,
+              public Auswahlservice: AuswahlDialogService,
               public Debug: DebugProvider) {
 
     try {
@@ -53,35 +62,30 @@ export class CommonUrlaubsplanungPage implements OnInit {
       this.Auswahlliste         = [{ Index: 0, FirstColumn: '', SecoundColumn: '', Data: null}];
       this.Auswahlindex         = 0;
       this.Auswahltitel         = '';
+      this.DataSubscription     = null;
 
-      this.SettingsSubscription = null;
 
       this.Message              = '';
-
-      this.BundeslandAuswahlliste  = [];
-      this.BundeslandAuswahlliste.push({ Index:  0, FirstColumn:   'Baden-Württemberg', SecoundColumn: '', Data:   'bw' });
-      this.BundeslandAuswahlliste.push({ Index:  1, FirstColumn:   'Bayern', SecoundColumn: '', Data:   'by' });
-      this.BundeslandAuswahlliste.push({ Index:  2, FirstColumn:   'Berlin', SecoundColumn: '', Data:   'be' });
-      this.BundeslandAuswahlliste.push({ Index:  3, FirstColumn:   'Brandenburg', SecoundColumn: '', Data:   'bb' });
-      this.BundeslandAuswahlliste.push({ Index:  4, FirstColumn:   'Bremen', SecoundColumn: '', Data:   'hb' });
-      this.BundeslandAuswahlliste.push({ Index:  5, FirstColumn:   'Hamburg', SecoundColumn: '', Data:   'hh' });
-      this.BundeslandAuswahlliste.push({ Index:  6, FirstColumn:   'Hessen', SecoundColumn: '', Data:   'he' });
-      this.BundeslandAuswahlliste.push({ Index:  7, FirstColumn:   'Mecklenburg-Vorpommern', SecoundColumn: '', Data:   'mv' });
-      this.BundeslandAuswahlliste.push({ Index:  8, FirstColumn:   'Niedersachsen', SecoundColumn: '', Data:   'ni' });
-      this.BundeslandAuswahlliste.push({ Index:  9, FirstColumn:   'Nordrhrein-Westfalen', SecoundColumn: '', Data:   'nw' });
-      this.BundeslandAuswahlliste.push({ Index: 10, FirstColumn:   'Rheinland-Pfalz', SecoundColumn: '', Data:   'rp' });
-      this.BundeslandAuswahlliste.push({ Index: 11, FirstColumn:   'Saarland', SecoundColumn: '', Data:   'sl' });
-      this.BundeslandAuswahlliste.push({ Index: 12, FirstColumn:   'Sachsen', SecoundColumn: '', Data:   'sn' });
-      this.BundeslandAuswahlliste.push({ Index: 13, FirstColumn:   'Sachsen-Anhalt', SecoundColumn: '', Data:   'st' });
-      this.BundeslandAuswahlliste.push({ Index: 14, FirstColumn:   'Schleswig-Holstein', SecoundColumn: '', Data:   'sh' });
-      this.BundeslandAuswahlliste.push({ Index: 15, FirstColumn:   'Thüringen', SecoundColumn: '', Data:   'th' });
-
-      this.DB.Bundesland = lodash.find(this.BundeslandAuswahlliste, {Data: this.DB.Bundeslandkuerzel}).FirstColumn;
+      this.ShowMitarbeitereditor = false;
+      this.Auswahldialogorigin   = this.Const.NONE;
 
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Urlaubsplanung Page', 'constructor', this.Debug.Typen.Page);
+    }
+  }
+
+  ngOnDestroy(): void {
+
+    try {
+
+      this.DataSubscription.unsubscribe();
+      this.DataSubscription = null;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'OnDestroy', this.Debug.Typen.Page);
     }
   }
 
@@ -91,9 +95,9 @@ export class CommonUrlaubsplanungPage implements OnInit {
 
       this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
 
-      this.SettingsSubscription = this.Pool.MitarbeitersettingsChanged.subscribe(() => {
+      this.DataSubscription = this.Pool.LoadingAllDataFinished.subscribe(() => {
 
-
+        this.PrepareData();
       });
 
       this.PrepareData();
@@ -108,9 +112,29 @@ export class CommonUrlaubsplanungPage implements OnInit {
 
     try {
 
-      this.DB.Bundeslandkuerzel = data;
-      this.DB.Bundesland        = lodash.find(this.BundeslandAuswahlliste, {Data: this.DB.Bundeslandkuerzel}).FirstColumn;
-      this.ShowAuswahl          = false;
+      switch (this.Auswahldialogorigin) {
+
+        case this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Editor_Anrede:
+
+          this.Pool.Mitarbeiterdaten.Anrede = data;
+          this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten);
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Urlaubsliste_Bundesland:
+
+          this.DB.Bundeslandkuerzel = data;
+
+          let landcode = this.DB.Bundeslandkuerzel.substring(0, 2);
+
+          this.DB.ReadFeiertage(landcode);
+
+          debugger;
+
+          break;
+      }
+
+      this.ShowAuswahl = false;
 
       this.PrepareData();
 
@@ -124,6 +148,8 @@ export class CommonUrlaubsplanungPage implements OnInit {
 
     try {
 
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Urlaubsliste_Bundesland;
+
       this.Auswahltitel        = 'Bundesland';
       this.Auswahlhoehe        = 600;
       this.Auswahlliste        = this.BundeslandAuswahlliste;
@@ -136,16 +162,22 @@ export class CommonUrlaubsplanungPage implements OnInit {
     }
   }
 
-
-
-
-
   private async PrepareData() {
 
     try {
 
-      await this.DB.ReadFeiertage();
-      await this.DB.ReadFerien();
+      let Index: number = 0;
+
+      this.BundeslandAuswahlliste  = [];
+
+      for(let Region of this.DB.Regionenliste) {
+
+        this.BundeslandAuswahlliste.push({ Index: Index, FirstColumn: Region.Name, SecoundColumn: Region.isoCode, Data: Region.isoCode });
+
+        Index++;
+      }
+
+      this.DB.Bundesland = lodash.find(this.BundeslandAuswahlliste, {Data: this.DB.Bundeslandkuerzel}).FirstColumn;
 
     } catch (error) {
 
@@ -233,6 +265,28 @@ export class CommonUrlaubsplanungPage implements OnInit {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'AnsichtCheckChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  AnredeClickedEventHandler() {
+
+    try {
+
+      this.ShowAuswahl  = true;
+      this.Auswahltitel = 'Anrede festlegen';
+      this.Auswahlliste = [];
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Editor_Anrede;
+
+      this.Auswahlliste.push({ Index: 0, FirstColumn: 'Unbekannt', SecoundColumn: '', Data: this.Const.NONE });
+      this.Auswahlliste.push({ Index: 1, FirstColumn: 'Frau',      SecoundColumn: '', Data: 'Frau' });
+      this.Auswahlliste.push({ Index: 2, FirstColumn: 'Herr',      SecoundColumn: '', Data: 'Herr' });
+
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.Pool.Mitarbeiterdaten.Anrede});
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'AnredeClickedEvent', 'AnredeClickedEventHandler', this.Debug.Typen.Page);
     }
   }
 }

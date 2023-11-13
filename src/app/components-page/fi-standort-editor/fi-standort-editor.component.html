@@ -43,6 +43,19 @@
               </ion-col>
             </ion-row>
             <ion-row>
+              <ion-col size="6">
+                <button-value [Buttontext]="'Land'" [Wert_A]="GetLand()" (ButtonClicked)="LandClickedEvent.emit()"></button-value>
+              </ion-col>
+              <ion-col size="6" *ngIf="DB.CurrentStandort.Land === 'DE'">
+                <button-value [Buttontext]="'Bundesland'" [Wert_A]="GetBundesland()" (ButtonClicked)="BundeslandClickedEvent.emit()"></button-value>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="DB.CurrentStandort.Land === 'DE'">
+              <ion-col size="6">
+                <button-value [Buttontext]="'Konfession'" [Wert_A]="GetKonfession()" (ButtonClicked)="KonfessionClickedEvent.emit()"></button-value>
+              </ion-col>
+            </ion-row>
+              <ion-row>
               <ion-col size="12"><br><br></ion-col>
             </ion-row>
             <ion-row>

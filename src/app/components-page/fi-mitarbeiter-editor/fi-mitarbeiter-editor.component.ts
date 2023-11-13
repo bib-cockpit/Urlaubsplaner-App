@@ -35,8 +35,8 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
   @Output() CancelClickedEvent         = new EventEmitter<any>();
   @Output() OkClickedEvent             = new EventEmitter<any>();
-  @Output() DeleteClickedEvent         = new EventEmitter<any>();
   @Output() ErrorEvent                 = new EventEmitter<any>();
+
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -235,23 +235,6 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'LoeschenCheckboxChanged', this.Debug.Typen.Component);
-    }
-  }
-
-  LoeschenButtonClicked() {
-
-    try {
-
-      this.DB.DeleteMitarbeiter(this.DB.CurrentMitarbeiter).then(() => {
-
-        this.ResetEditor();
-
-        this.DeleteClickedEvent.emit();
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'LoeschenButtonClicked', this.Debug.Typen.Component);
     }
   }
 

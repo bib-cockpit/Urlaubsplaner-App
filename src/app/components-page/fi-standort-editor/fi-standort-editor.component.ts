@@ -13,7 +13,10 @@ import {ConstProvider} from "../../services/const/const";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ToolsProvider} from "../../services/tools/tools";
 import * as Joi from "joi";
+import * as lodash from "lodash-es";
 import {ObjectSchema} from "joi";
+import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
+import {Regionenstruktur} from "../../dataclasses/regionenstruktur";
 
 @Component({
   selector: 'fi-standort-editor',
@@ -31,6 +34,9 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
   @Output() CancelClickedEvent         = new EventEmitter<any>();
   @Output() OkClickedEvent             = new EventEmitter<any>();
   @Output() DeleteClickedEvent         = new EventEmitter<any>();
+  @Output() LandClickedEvent           = new EventEmitter<any>();
+  @Output() BundeslandClickedEvent     = new EventEmitter<any>();
+  @Output() KonfessionClickedEvent     = new EventEmitter<any>();
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -43,6 +49,7 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
               public Displayservice: DisplayService,
               public Const: ConstProvider,
               private Tools: ToolsProvider,
+              private DBUrlaub: DatabaseUrlaubService,
               public DB: DatabaseStandorteService) {
 
     try {
@@ -252,5 +259,72 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
       this.Debug.ShowErrorMessage(error.message, 'Standort Editor', 'CanDeleteCheckedChanged', this.Debug.Typen.Component);
     }
 
+  }
+
+  GetLand() {
+
+    try {
+
+      if(this.DB.CurrentStandort !== null) {
+
+        switch (this.DB.CurrentStandort.Land) {
+
+          case 'DE': return 'Deutschland'; break;
+          case 'BG': return 'Bulgarien';   break;
+        }
+      }
+      else return 'Unbekannt';
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'GetLand', this.Debug.Typen.Component);
+    }
+  }
+
+  GetBundesland(): string {
+
+    try {
+
+      let Region: Regionenstruktur;
+
+      if(this.DB.CurrentStandort !== null) {
+
+        Region = lodash.find(this.DBUrlaub.Regionenliste, {isoCode: this.DB.CurrentStandort.Bundesland});
+
+        if(!lodash.isUndefined(Region)) return Region.Name;
+        else return 'Unbekannt';
+
+      } else {
+
+        return 'Unbekannt';
+      }
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'funGetBundeslandction', this.Debug.Typen.Component);
+    }
+  }
+
+  GetKonfession() {
+
+    try {
+
+      if(this.DB.CurrentStandort !== null) {
+
+        switch (this.DB.CurrentStandort.Konfession) {
+
+          case 'RK': return 'Katholisch';  break;
+          case 'EV': return 'Evangelisch'; break;
+        }
+      }
+      else return 'Unbekannt';
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'GetKonfession', this.Debug.Typen.Component);
+    }
   }
 }

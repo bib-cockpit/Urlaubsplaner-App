@@ -11,6 +11,7 @@ import {PageHeaderModule} from "../../components/page-header/page-header.module"
 import {PageFooterModule} from "../../components/page-footer/page-footer.module";
 import {PageHeaderMenuModule} from "../../components/page-header-menu/page-header-menu.module";
 import {PageModalKeepermodule} from "../../components/page-modal-keeper/page-modal-keeper.module";
+import {AuswahlDialogModule} from "../../components/auswahl-dialog/auswahl-dialog.module";
 
 
 const routes: Routes = [
@@ -22,20 +23,21 @@ const routes: Routes = [
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    IonicModule,
-    RouterModule.forChild(routes),
-    AbstandElementFixedModule,
-    AlphabetModule,
-    FiStandortEditorModule,
-    PageHeaderModule,
-    PageFooterModule,
-    PageHeaderMenuModule,
-    PageModalKeepermodule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        IonicModule,
+        RouterModule.forChild(routes),
+        AbstandElementFixedModule,
+        AlphabetModule,
+        FiStandortEditorModule,
+        PageHeaderModule,
+        PageFooterModule,
+        PageHeaderMenuModule,
+        PageModalKeepermodule,
+        AuswahlDialogModule
+    ],
   declarations: [FiStandortelistePage]
 })
 export class FiStandortelistePageModule {}

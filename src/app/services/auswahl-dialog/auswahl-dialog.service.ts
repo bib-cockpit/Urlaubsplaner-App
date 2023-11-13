@@ -8,6 +8,10 @@ export class AuswahlDialogService {
 
   public Auswahloriginvarianten = {
 
+    Standorteeditor_Land:       'Standorteeditor_Land',
+    Standorteeditor_Bundesland: 'Standorteeditor_Bundesland',
+    Standorteeditor_Konfession: 'Standorteeditor_Konfession',
+
     Projekteliste_Standortfiler:                       'Projekteliste_Standortfiler',
     Projekteliste_Editor_Leistungsphase:               'Projekteliste_Editor_Leistungsphase',
 
@@ -119,6 +123,8 @@ export class AuswahlDialogService {
     LOPListe_Emaileditor_Intern_CcEmpfaenger:         'LOPListe_Emaileditor_Intern_CcEmpfaenger',
     LOPListe_Emaileditor_Extern_Empfaenger:           'LOPListe_Emaileditor_Extern_Empfaenger',
     LOPListe_Emaileditor_Extern_CcEmpfaenger:         'LOPListe_Emaileditor_Extern_CcEmpfaenger',
+
+    Urlaubsliste_Bundesland: 'Urlaubsliste_Bundesland'
   };
 
   constructor(private Debug: DebugProvider) {

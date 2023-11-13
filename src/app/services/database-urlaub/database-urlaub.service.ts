@@ -8,8 +8,10 @@ import moment, {Moment} from "moment";
 import {ConstProvider} from "../const/const";
 import {Changelogstruktur} from "../../dataclasses/changelogstruktur";
 import {Urlaubsstruktur} from "../../dataclasses/urlaubsstruktur";
-import {Feiertagestruktur} from "../../dataclasses/feiertagestruktur";
+import {Feiertagestruktur, FeiertagsubdevisionsStruktur} from "../../dataclasses/feiertagestruktur";
 import {Ferienstruktur} from "../../dataclasses/ferienstruktur";
+import {Regionenstruktur} from "../../dataclasses/regionenstruktur";
+import {Standortestruktur} from "../../dataclasses/standortestruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +21,7 @@ export class DatabaseUrlaubService {
 
   public Bundeslandkuerzel: string;
   public Bundesland: string;
+  public Regionenliste: Regionenstruktur[];
   public Jahr: number;
   public Feiertageliste: Feiertagestruktur[];
   public Ferienliste: Ferienstruktur[];
@@ -50,11 +53,11 @@ export class DatabaseUrlaubService {
     try {
 
       this.CurrentUrlaub = null;
-      this.Jahr        = 2023;
-      this.Bundeslandkuerzel    = 'by';
-      this.Bundesland           = '';
-      this.Feiertageliste       = [];
-      this.Ferienliste          = [];
+      this.Jahr                    = moment().year();
+      this.Bundeslandkuerzel       = 'DE-BY';
+      this.Bundesland              = '';
+      this.Feiertageliste          = [];
+      this.Ferienliste             = [];
 
     } catch (error) {
 
@@ -62,22 +65,111 @@ export class DatabaseUrlaubService {
     }
   }
 
-  public ReadFeiertage(): Promise<any> {
+  public ReadRegionen(landcode: string) {
 
     try {
+
+      return new Promise((resolve, reject)=> {
+
+        let http: string = 'https://openholidaysapi.org/Subdivisions?countryIsoCode=' + landcode; // DE&validFrom=2023-01-01&validTo=2023-12-31'; // 'https://ferien-api.de/api/v1/holidays/' + this.Bundeslandkuerzel.toUpperCase() + '/' + this.Jahr.toString();
+
+        let RegionenObserver = this.http.get(http);
+
+        RegionenObserver.subscribe({
+
+          next: (data: any) => {
+
+            this.Regionenliste = <Regionenstruktur[]>data;
+          },
+          complete: () => {
+
+            this.Regionenliste = lodash.filter(this.Regionenliste, (region: Regionenstruktur) => {
+
+              return region.isoCode !== '';
+            });
+
+            for(let Region of this.Regionenliste) {
+
+              Region.Name = Region.name[0].text;
+            }
+
+            resolve(true);
+          },
+          error: (error: HttpErrorResponse) => {
+
+            reject(error);
+          }
+        });
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'ReadRegionen', this.Debug.Typen.Service);
+    }
+  }
+
+  public ReadCountries() {
+
+    try {
+
+      return new Promise((resolve, reject)=> {
+
+        let http: string = 'https://openholidaysapi.org/Countries'; // Subdivisions?countryIsoCode // =' + landcode; // DE&validFrom=2023-01-01&validTo=2023-12-31'; // 'https://ferien-api.de/api/v1/holidays/' + this.Bundeslandkuerzel.toUpperCase() + '/' + this.Jahr.toString();
+
+
+        let RegionenObserver = this.http.get(http);
+
+        RegionenObserver.subscribe({
+
+          next: (data: any) => {
+
+            // debugger;
+
+            // this.Regionenliste = <Regionenstruktur[]>data;
+
+
+          },
+          complete: () => {
+
+
+            resolve(true);
+
+          },
+          error: (error: HttpErrorResponse) => {
+
+            reject(error);
+          }
+        });
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'ReadRegionen', this.Debug.Typen.Service);
+    }
+  }
+
+  public ReadFeiertage(landcode: string): Promise<any> {
+
+    try {
+
 
       let Werte: string[];
       let Jahr: number;
       let Monat: number;
       let Tag: number;
       let Datum: Moment;
-      let Weihnachtenstring: string = this.Jahr.toString() + '-12-24';
-      let Weihnachten = moment().set({date: 24, month: 11, year: Jahr, hour: 8, minute: 0}).locale('de');
-      this.Feiertageliste = [];
+      let Index: number;
+      let Allerheiligen: Moment   = moment().set({year: this.Jahr, month: 10, date: 1 }).locale('de');  // 1. November
+      let Reformationstag: Moment = moment().set({year: this.Jahr, month: 10, date: 31 }).locale('de'); // 31. Novemberg
+      let Standort: Standortestruktur = lodash.find(this.Pool.Standorteliste, {_id: this.Pool.Mitarbeiterdaten.StandortID});
+
+      if(lodash.isUndefined(Standort)) Standort = null;
+
+      this.Feiertageliste[landcode] = [];
 
       return new Promise((resolve, reject)=> {
 
-        let http: string = 'https://get.api-feiertage.de?years=' + this.Jahr.toString() + '&states=' + this.Bundeslandkuerzel;
+        let http: string = 'https://openholidaysapi.org/PublicHolidays?countryIsoCode=' + landcode + '&validFrom=' + this.Jahr + '-01-01&validTo=' + this.Jahr + '-12-31';
 
         let FeiertageObserver = this.http.get(http);
 
@@ -85,48 +177,86 @@ export class DatabaseUrlaubService {
 
           next: (data: any) => {
 
-            this.Feiertageliste = <Feiertagestruktur[]>data.feiertage;
+            this.Feiertageliste[landcode] = <Feiertagestruktur[]>data;
+
           },
           complete: () => {
 
-            /*
-            if(lodash.isUndefined(lodash.find(this.Feiertageliste, {date: Weihnachtenstring}))) {
+            for(let Feiertag of this.Feiertageliste[landcode]) {
 
-              this.Feiertageliste.push({
-                Zeitstempel: null, date: Weihnachtenstring, fname: "Heillig Abend", katholisch: null
-              });
-            }
-             */
-
-            for(let Feiertag of this.Feiertageliste) {
-
-              Werte = Feiertag.date.split('-');
+              Werte = Feiertag.startDate.split('-');
               Jahr  = parseInt(Werte[0]);
               Monat = parseInt(Werte[1]) - 1;
               Tag   = parseInt(Werte[2]);
               Datum = moment().set({date: Tag, month: Monat, year: Jahr, hour: 8, minute: 0}).locale('de');
 
-              Feiertag.Zeitstempel = Datum.valueOf();
+              Feiertag.Anfangstempel = Datum.valueOf();
+
+              Werte = Feiertag.endDate.split('-');
+              Jahr  = parseInt(Werte[0]);
+              Monat = parseInt(Werte[1]) - 1;
+              Tag   = parseInt(Werte[2]);
+              Datum = moment().set({date: Tag, month: Monat, year: Jahr, hour: 8, minute: 0}).locale('de');
+
+              Index = landcode === 'DE' ? 0 : 1;
+
+              Feiertag.Endestempel = Datum.valueOf();
+              Feiertag.Name        = Feiertag.name[Index].text; // .toUpperCase() + Ferien.name.slice(1);
+              Feiertag.Konfession  = null;
+
+              // Religiöse Feiertage markieren
+
+              if(Datum.isSame(Reformationstag, 'day')) Feiertag.Konfession = 'EV';
+              if(Datum.isSame(Allerheiligen,   'day')) Feiertag.Konfession = 'RK';
+            }
+
+            // Nicht bundeseinheitliche Feiertag nach Bundesland ausfiltern
+
+            this.Feiertageliste[landcode] = lodash.filter(this.Feiertageliste[landcode], (Feiertag: Feiertagestruktur) => {
+
+              if(Feiertag.nationwide) return true;
+              else {
+
+                let Sub = lodash.find(Feiertag.subdivisions, (sub: FeiertagsubdevisionsStruktur) => {
+
+                  return sub.code === this.Bundeslandkuerzel;
+                });
+
+                return !lodash.isUndefined(Sub);
+              }
+            });
+
+            // Religiöse Feiertage nach Kofession des Standortes filtern
+
+            if(Standort !== null) {
+
+              this.Feiertageliste[landcode] = lodash.filter(this.Feiertageliste[landcode], (Feiertag: Feiertagestruktur) => {
+
+                if(Feiertag.nationwide || Feiertag.Konfession === null) return true;
+                else {
+
+                  return Feiertag.Konfession === Standort.Konfession;
+                }
+              });
             }
 
             resolve(true);
           },
           error: (error: HttpErrorResponse) => {
 
+            debugger;
+
             reject(error);
           }
         });
-
       });
-
-
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'ReadFeiertage', this.Debug.Typen.Service);
     }
   }
 
-  public ReadFerien(): Promise<any> {
+  public ReadFerien(landcode: string): Promise<any> {
 
     try {
 
@@ -135,14 +265,28 @@ export class DatabaseUrlaubService {
       let Monat: number;
       let Tag: number;
       let Datum: Moment;
-      let Weihnachtenstring: string = this.Jahr.toString() + '-12-24';
-      let Weihnachten = moment().set({date: 24, month: 11, year: Jahr, hour: 8, minute: 0}).locale('de');
+      let Index: number;
+      let Liste: Ferienstruktur[];
+      let Zeitstempelliste: number[];
 
-      this.Ferienliste    = [];
+      this.Ferienliste[landcode] = [];
 
       return new Promise((resolve, reject)=> {
 
-        let http: string = 'https://ferien-api.de/api/v1/holidays/' + this.Bundeslandkuerzel.toUpperCase() + '/' + this.Jahr.toString();
+        let http: string = 'https://openholidaysapi.org/SchoolHolidays?countryIsoCode=' + landcode + '&validFrom=' + this.Jahr + '-01-01&validTo=' + this.Jahr + '-12-31';
+
+        switch (landcode) {
+
+          case 'DE':
+
+            http += '&subdivisionCode=' + this.Bundeslandkuerzel;
+
+            break;
+
+          default:
+
+            break;
+        }
 
         let FerienObserver = this.http.get(http);
 
@@ -150,30 +294,47 @@ export class DatabaseUrlaubService {
 
           next: (data: any) => {
 
-            this.Ferienliste = <Ferienstruktur[]>data;
+            Liste = <Ferienstruktur[]>data;
           },
           complete: () => {
 
-            for(let Ferien of this.Ferienliste) {
+            for (let Ferien of Liste) {
 
-              Werte = Ferien.start.split('T');
-              Werte = Werte[0].split('-');
-              Jahr  = parseInt(Werte[0]);
+              if (lodash.isUndefined(Ferien.subdivisions)) Ferien.subdivisions = [];
+
+              Werte = Ferien.startDate.split('-');
+              Jahr = parseInt(Werte[0]);
               Monat = parseInt(Werte[1]) - 1;
-              Tag   = parseInt(Werte[2]);
+              Tag = parseInt(Werte[2]);
               Datum = moment().set({date: Tag, month: Monat, year: Jahr, hour: 8, minute: 0}).locale('de');
 
               Ferien.Anfangstempel = Datum.valueOf();
 
-              Werte = Ferien.end.split('T');
-              Werte = Werte[0].split('-');
-              Jahr  = parseInt(Werte[0]);
+              Werte = Ferien.endDate.split('-');
+              Jahr = parseInt(Werte[0]);
               Monat = parseInt(Werte[1]) - 1;
-              Tag   = parseInt(Werte[2]);
+              Tag = parseInt(Werte[2]);
               Datum = moment().set({date: Tag, month: Monat, year: Jahr, hour: 8, minute: 0}).locale('de');
 
+              Index = landcode === 'DE' ? 0 : 1;
+
               Ferien.Endestempel = Datum.valueOf();
-              Ferien.name        = Ferien.name.charAt(0).toUpperCase() + Ferien.name.slice(1);
+              Ferien.Name = Ferien.name[Index].text; // .toUpperCase() + Ferien.name.slice(1);
+            }
+
+            // Doppelte Ferieneintraege ausfiltern
+
+            this.Ferienliste[landcode] = [];
+
+            Zeitstempelliste = [];
+
+            for(let Ferien of Liste) {
+
+              if(Zeitstempelliste.indexOf(Ferien.Anfangstempel) === -1) {
+
+                Zeitstempelliste.push(Ferien.Anfangstempel);
+                this.Ferienliste[landcode].push(Ferien);
+              }
             }
 
             resolve(true);
@@ -183,16 +344,12 @@ export class DatabaseUrlaubService {
             reject(error);
           }
         });
-
       });
-
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Dataabse Urlaub', 'ReadFerien', this.Debug.Typen.Service);
     }
   }
-
 
   public GetEmptyUrlaub(): Urlaubsstruktur {
 

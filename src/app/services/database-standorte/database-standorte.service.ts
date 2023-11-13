@@ -118,6 +118,9 @@ export class DatabaseStandorteService {
         Telefon:  "",
         Email:    "",
         Deleted:  false,
+        Bundesland: 'DE-BY',
+        Konfession: 'RK',
+        Land: 'DE',
         Zeitstempel: Heute.valueOf(),
         Zeitpunkt: Heute.format('DD.MM.YYYY')
       };

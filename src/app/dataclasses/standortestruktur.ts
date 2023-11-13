@@ -2,7 +2,6 @@
 export interface Standortestruktur  {
 
     _id: string;
-    // StandortID: string;
     Standort: string;
     Kuerzel: string;
     Strasse: string;
@@ -13,6 +12,9 @@ export interface Standortestruktur  {
     Deleted: boolean;
     Zeitstempel: number;
     Zeitpunkt: string;
+    Land: string;
+    Bundesland: string;
+    Konfession: string;
     Filtered?: boolean;
     Text_A?: string;
     Text_B?: string;
