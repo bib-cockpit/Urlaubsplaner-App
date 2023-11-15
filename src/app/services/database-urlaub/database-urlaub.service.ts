@@ -26,6 +26,7 @@ export class DatabaseUrlaubService {
   public Feiertageliste: Feiertagestruktur[];
   public Ferienliste: Ferienstruktur[];
   public CurrentUrlaub: Urlaubsstruktur;
+  public CurrentMonatindex: number;
   public Urlaubstatusvarianten = {
 
     Beantrag:          'Beantragt',
@@ -41,8 +42,10 @@ export class DatabaseUrlaubService {
     Vertreterfreigabe: 'orange',
     Abgelehnt:         'red',
     Genehmigt:         'green',
-    Ferien:            'burlywood',
-    Feiertage:         'lightsteelblue',
+    Ferien_DE:            'black',
+    Ferien_BG:            '#FBFCFC',
+    Feiertage_DE:         '#F4D03F',
+    Feiertage_BG:         '#229954',
     Wochenende:        '#34495E'
   };
 
@@ -58,6 +61,7 @@ export class DatabaseUrlaubService {
       this.Bundesland              = '';
       this.Feiertageliste          = [];
       this.Ferienliste             = [];
+      this.CurrentMonatindex       = 0;
 
     } catch (error) {
 

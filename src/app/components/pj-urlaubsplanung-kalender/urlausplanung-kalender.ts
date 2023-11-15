@@ -164,28 +164,29 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
     }
   }
 
-
-  CheckIsFeiertag(Tag: Kalendertagestruktur): boolean {
+  CheckIsFeiertag(Tag: Kalendertagestruktur, landcode: string): boolean {
 
     try {
 
       let CurrentTag: Moment = moment(Tag.Tagstempel).locale('de');
       let Feiertag: Moment;
       let IsFeiertag: boolean = false;
-      let xxxxxx = CurrentTag.format('DD.MM.YYYY');
 
-      for(let Eintrag of this.DB.Feiertageliste['DE']) {
+      if(!lodash.isUndefined(this.DB.Feiertageliste[landcode])) {
 
-        Feiertag = moment(Eintrag.Anfangstempel);
-        let yyyy = Feiertag.format('DD.MM.YYYY');
+        for(let Eintrag of this.DB.Feiertageliste[landcode]) {
 
-        // debugger;
+          Feiertag = moment(Eintrag.Anfangstempel);
+          let yyyy = Feiertag.format('DD.MM.YYYY');
 
-        if(Feiertag.isSame(CurrentTag, 'day')) {
+          // debugger;
 
-          IsFeiertag = true;
+          if(Feiertag.isSame(CurrentTag, 'day')) {
 
-          break;
+            IsFeiertag = true;
+
+            break;
+          }
         }
       }
 
@@ -197,7 +198,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
     }
   }
 
-  CheckIsFerientag(Tag: Kalendertagestruktur): boolean {
+  CheckIsFerientag(Tag: Kalendertagestruktur, landcode: string): boolean {
 
     try {
 
@@ -206,16 +207,19 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
       let Endetag: Moment;
       let IsFerientag: boolean = false;
 
-      for(let Eintrag of this.DB.Ferienliste['DE']) {
+      if(!lodash.isUndefined(this.DB.Ferienliste[landcode])) {
 
-        Starttag = moment(Eintrag.Anfangstempel);
-        Endetag  = moment(Eintrag.Endestempel);
+        for(let Eintrag of this.DB.Ferienliste[landcode]) {
 
-        if(CurrentTag.isSameOrAfter(Starttag, 'day') && CurrentTag.isSameOrBefore(Endetag, 'day')) {
+          Starttag = moment(Eintrag.Anfangstempel);
+          Endetag  = moment(Eintrag.Endestempel);
 
-          IsFerientag = true;
+          if(CurrentTag.isSameOrAfter(Starttag, 'day') && CurrentTag.isSameOrBefore(Endetag, 'day')) {
 
-          break;
+            IsFerientag = true;
+
+            break;
+          }
         }
       }
 
@@ -227,11 +231,11 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
     }
   }
 
-  FeietragMouseOverEvent(Tag: Kalendertagestruktur) {
+  FeietragMouseOverEvent(Tag: Kalendertagestruktur, landcode: string) {
 
     try {
 
-      let Feiertag: Feiertagestruktur = lodash.find(this.DB.Feiertageliste['DE'], (feiertag: Feiertagestruktur) => {
+      let Feiertag: Feiertagestruktur = lodash.find(this.DB.Feiertageliste[landcode], (feiertag: Feiertagestruktur) => {
 
         return moment(Tag.Tagstempel).isSame(moment(feiertag.Anfangstempel), 'day');
       });
@@ -249,11 +253,11 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
     }
   }
 
-  FerientagMouseOverEvent(Tag: Kalendertagestruktur) {
+  FerientagMouseOverEvent(Tag: Kalendertagestruktur, landcode: string) {
 
     try {
 
-      let Ferientag: Ferienstruktur = lodash.find(this.DB.Ferienliste['DE'], (ferientag: Ferienstruktur) => {
+      let Ferientag: Ferienstruktur = lodash.find(this.DB.Ferienliste[landcode], (ferientag: Ferienstruktur) => {
 
         return moment(Tag.Tagstempel).isBetween(moment(ferientag.Anfangstempel), moment(ferientag.Endestempel), 'day');
       });
@@ -292,6 +296,28 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Kalender', 'FerientagMouseLeaveEvent', this.Debug.Typen.Component);
+    }
+  }
+
+  CheckShowSpecialdays(Tag: Kalendertagestruktur): boolean {
+
+    try {
+
+      if(this.Pool.Mitarbeitersettings !== null) {
+
+        return (this.Pool.Mitarbeitersettings.UrlaubShowFeiertage_DE && this.CheckIsFeiertag(Tag,'DE')) ||
+               (this.Pool.Mitarbeitersettings.UrlaubShowFeiertage_BG && this.CheckIsFeiertag(Tag,'BG')) ||
+               (this.Pool.Mitarbeitersettings.UrlaubShowFeiertage_DE && this.CheckIsFerientag(Tag, 'DE')) ||
+               (this.Pool.Mitarbeitersettings.UrlaubShowFeiertage_BG && this.CheckIsFerientag(Tag, 'BG'));
+      }
+      else {
+
+        return false;
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Kalender', 'CheckShowSpecialdays', this.Debug.Typen.Component);
     }
   }
 }

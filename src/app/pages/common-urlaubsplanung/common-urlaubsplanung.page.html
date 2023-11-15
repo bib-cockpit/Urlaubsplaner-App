@@ -5,11 +5,19 @@
 </ion-header>
 <ion-content>
 
+  <table class="paddingsmalltable">
+    <tr>
+      <td *ngFor="let Monat of Monateliste_Planung; let Monatindex = index">
+        <div [style.color]="GetMonatButtonColor(Monatindex)" (click)="MonatButtonClicked(Monatindex)" (mouseover)="Monateliste_Mounseover[Monatindex] = true" (mouseleave)="Monateliste_Mounseover[Monatindex] = false" class="monatedivclass">{{Monat}}</div>
+      </td>
+    </tr>
+  </table>
+
   <table style="width: 100%" class="paddingsmalltable">
     <tr>
       <td colspan="10"><b>Deutschland</b></td>
     </tr>
-    <tr *ngFor="let Zeile of Monateliste">
+    <tr *ngFor="let Zeile of Monateliste_Uebersicht">
       <td style="width: 16%; height: inherit" valign="top" *ngFor="let Monat of Zeile">
 
         <urlaubsplanung-kalender
@@ -148,22 +156,28 @@
 
         <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
           <tr>
-            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowFeiertage" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Feiertag)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage"></div></td><td>Feiertage</td>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowFeiertage_DE" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Feiertag, 'DE')"></checkbox-clon></td><td><div class="legenderounddivclass" [style.background]="DB.Urlaubsfaben.Feiertage_DE"></div></td><td>Feiertage Deutschland</td>
           </tr>
           <tr>
-            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowFerien" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Ferientag)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien"></div></td><td>Schulferien</td>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowFeiertage_BG" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Feiertag, 'BG')"></checkbox-clon></td><td><div class="legenderounddivclass" [style.background]="DB.Urlaubsfaben.Feiertage_BG"></div></td><td>Feiertage Bulgarien</td>
           </tr>
           <tr>
-            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowBeantragt" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Beantrag)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Beantrag"></div></td><td>Beantragter Urlaub</td>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowFerien_DE" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Ferientag,'DE')"></checkbox-clon></td><td><div class="legenderounddivclass" [style.background]="DB.Urlaubsfaben.Ferien_DE"></div></td><td>Schulferien Deutschland</td>
           </tr>
           <tr>
-            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowVertreterfreigabe" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Vertreterfreigabe)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Urlaub mit Vertreterfreigabe</td>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowFerien_BG" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Ferientag,'BG')"></checkbox-clon></td><td><div class="legenderounddivclass" [style.background]="DB.Urlaubsfaben.Ferien_BG"></div></td><td>Schulferien Bulgarien</td>
           </tr>
           <tr>
-            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowGenehmigt" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Genehmigt)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Genehmigt"></div></td><td>Genehmigter Urlaub</td>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowBeantragt" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Beantrag,null)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Beantrag"></div></td><td>Beantragter Urlaub</td>
           </tr>
           <tr>
-            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowAbgelehnt" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Abgelehnt)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowVertreterfreigabe" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Vertreterfreigabe,null)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Urlaub mit Vertreterfreigabe</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowGenehmigt" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Genehmigt,null)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Genehmigt"></div></td><td>Genehmigter Urlaub</td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowAbgelehnt" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Abgelehnt,null)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
           </tr>
         </table>
 

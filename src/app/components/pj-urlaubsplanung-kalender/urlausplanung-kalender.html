@@ -30,33 +30,62 @@
           <ng-container *ngIf="Tagindex >= 5">
             <div class="tagrahmenclass">
               <div class="wochendenedivclass">{{Tag.Tagnummer}}</div>
+              <!--
               <ng-container *ngIf="Pool.Mitarbeitersettings.UrlaubShowFeiertage">
                 <div [style.background]="CheckIsFeiertag(Tag) === false ? DB.Urlaubsfaben.Wochenende : DB.Urlaubsfaben.Feiertage" class="buttoninfoclass"
                      (mouseenter)="CheckIsFeiertag(Tag) === false ? null : FeietragMouseOverEvent(Tag)"
                      (mouseleave)="CheckIsFeiertag(Tag) === false ? null : FeietragMouseLeaveEvent()">
                 </div>
               </ng-container>
+              -->
               <div class="buttoninfoclass" [style.background]="DB.Urlaubsfaben.Wochenende"></div>
             </div>
           </ng-container>
           <ng-container *ngIf="Tagindex < 5">
-            <ng-container *ngIf="Tag.Hauptmonat === true">
+            <ng-container *ngIf="Tag.Hauptmonat === true && Pool.Mitarbeitersettings !== null">
               <div class="tagrahmenclass">
                 <div class="tagdivclass">
                   {{Tag.Tagnummer}}
                 </div>
-                <ng-container *ngIf="Pool.Mitarbeitersettings.UrlaubShowFeiertage">
-                  <div [style.background]="CheckIsFeiertag(Tag) === false ? 'none' : DB.Urlaubsfaben.Feiertage" class="buttoninfoclass"
-                       (mouseenter)="CheckIsFeiertag(Tag) === false ? null : FeietragMouseOverEvent(Tag)"
-                       (mouseleave)="CheckIsFeiertag(Tag) === false ? null : FeietragMouseLeaveEvent()">
-                  </div>
-                </ng-container>
+                <div class="buttoninfoclass" *ngIf="CheckShowSpecialdays(Tag)">
+                  <table>
+                    <tr>
+                      <td *ngIf="CheckIsFeiertag(Tag, 'DE') && Pool.Mitarbeitersettings.UrlaubShowFeiertage_DE">
+                        <div [style.background]="DB.Urlaubsfaben.Feiertage_DE" class="legenderounddivclass"
+                             (mouseenter)="CheckIsFeiertag(Tag, 'DE') === false ? null : FeietragMouseOverEvent(Tag, 'DE')"
+                             (mouseleave)="CheckIsFeiertag(Tag, 'DE') === false ? null : FeietragMouseLeaveEvent()">
+                        </div>
+                      </td>
+                      <td *ngIf="CheckIsFeiertag(Tag, 'BG') && Pool.Mitarbeitersettings.UrlaubShowFeiertage_BG">
+                        <div [style.background]="DB.Urlaubsfaben.Feiertage_BG" class="legenderounddivclass"
+                             (mouseenter)="CheckIsFeiertag(Tag, 'BG') === false ? null : FeietragMouseOverEvent(Tag, 'BG')"
+                             (mouseleave)="CheckIsFeiertag(Tag, 'BG') === false ? null : FeietragMouseLeaveEvent()">
+                        </div>
+                      </td>
+                      <td *ngIf="CheckIsFerientag(Tag, 'DE') && Pool.Mitarbeitersettings.UrlaubShowFerien_DE">
+                        <div [style.background]="DB.Urlaubsfaben.Ferien_DE" class="legenderounddivclass"
+                             (mouseenter)="CheckIsFerientag(Tag, 'DE') === false ? null : FerientagMouseOverEvent(Tag, 'DE')"
+                             (mouseleave)="CheckIsFerientag(Tag, 'DE') === false ? null : FerientagMouseLeaveEvent()">
+                        </div>
+                      </td>
+                      <td *ngIf="CheckIsFerientag(Tag, 'BG') && Pool.Mitarbeitersettings.UrlaubShowFerien_BG">
+                        <div [style.background]="DB.Urlaubsfaben.Ferien_BG" class="legenderounddivclass"
+                             (mouseenter)="CheckIsFerientag(Tag, 'BG') === false ? null : FerientagMouseOverEvent(Tag, 'BG')"
+                             (mouseleave)="CheckIsFerientag(Tag, 'BG') === false ? null : FerientagMouseLeaveEvent()">
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+
+                </div>
+                <!--
                 <ng-container *ngIf="Pool.Mitarbeitersettings.UrlaubShowFerien">
                   <div [style.background]="CheckIsFerientag(Tag) === false ? 'none' : DB.Urlaubsfaben.Ferien" class="buttoninfoclass"
                        (mouseenter)="CheckIsFerientag(Tag) === false ? null : FerientagMouseOverEvent(Tag)"
                        (mouseleave)="CheckIsFerientag(Tag) === false ? null : FerientagMouseLeaveEvent()">
                   </div>
                 </ng-container>
+                -->
                 <div class="buttoninfoclass">
 
                 </div>

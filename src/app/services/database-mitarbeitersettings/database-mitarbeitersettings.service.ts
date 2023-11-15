@@ -7,7 +7,6 @@ import {DatabasePoolService} from "../database-pool/database-pool.service";
 import {Observable} from "rxjs";
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {DatabaseAuthenticationService} from "../database-authentication/database-authentication.service";
-import {head} from "lodash-es";
 import {Mitarbeitersettingsstruktur} from "../../dataclasses/mitarbeitersettingsstruktur";
 import {ConstProvider} from "../const/const";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
@@ -59,6 +58,8 @@ export class DatabaseMitarbeitersettingsService {
 
     let Observer: Observable<any>;
 
+    debugger;
+
     return new Promise<any>((resolve, reject) => {
 
       if(this.Pool.Mitarbeitersettings._id === null) {
@@ -83,6 +84,8 @@ export class DatabaseMitarbeitersettingsService {
           },
           error: (error: HttpErrorResponse) => {
 
+            debugger;
+
             reject(error);
           }
         });
@@ -91,6 +94,8 @@ export class DatabaseMitarbeitersettingsService {
       else {
 
         // PUT für update Settings
+
+        delete this.Pool.Mitarbeitersettings.__v;
 
         Observer = this.http.put(this.ServerSettingsUrl, this.Pool.Mitarbeitersettings);
 
@@ -164,6 +169,8 @@ export class DatabaseMitarbeitersettingsService {
 
           },
           error: (error: HttpErrorResponse) => {
+
+            debugger;
 
             reject(error);
           }

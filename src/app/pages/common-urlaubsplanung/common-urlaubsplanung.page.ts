@@ -30,7 +30,9 @@ export class CommonUrlaubsplanungPage implements OnInit, OnDestroy {
   @ViewChild('PageHeader', { static: false }) PageHeader: PageHeaderComponent;
   @ViewChild('PageFooter', { static: false }) PageFooter: PageFooterComponent;
 
-  public Monateliste: string[][];
+  public Monateliste_Uebersicht: string[][];
+  public Monateliste_Planung: string[];
+  public Monateliste_Mounseover: boolean[];
   public Auswahlliste: Auswahldialogstruktur[];
   public BundeslandAuswahlliste: Auswahldialogstruktur[];
   public Auswahlindex: number;
@@ -55,9 +57,12 @@ export class CommonUrlaubsplanungPage implements OnInit, OnDestroy {
 
     try {
 
-      this.Monateliste = [];
-      this.Monateliste.push(['Januar', 'Februar', 'März', 'April', 'Mail', 'Juni']);
-      this.Monateliste.push(['Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']);
+      this.Monateliste_Uebersicht = [];
+      this.Monateliste_Uebersicht.push(['Januar', 'Februar', 'März', 'April', 'Mail', 'Juni']);
+      this.Monateliste_Uebersicht.push(['Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']);
+
+      this.Monateliste_Planung = ['Januar', 'Februar', 'März', 'April', 'Mail', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+      this.Monateliste_Mounseover = [false, false, false, false, false, false, false, false, false, false, false, false ];
 
       this.Auswahlliste         = [{ Index: 0, FirstColumn: '', SecoundColumn: '', Data: null}];
       this.Auswahlindex         = 0;
@@ -214,7 +219,7 @@ export class CommonUrlaubsplanungPage implements OnInit, OnDestroy {
     return moment(Anfangstempel).format('DD.MM.YYYY');
   }
 
-  AnsichtCheckChanged(event: {status: boolean; index: number; event: any; value: string}, origin: string) {
+  AnsichtCheckChanged(event: { status: boolean; index: number; event: any; value: string }, origin: string, landcode: string) {
 
     try {
 
@@ -222,13 +227,15 @@ export class CommonUrlaubsplanungPage implements OnInit, OnDestroy {
 
         case this.DB.Urlaubstatusvarianten.Ferientag:
 
-          this.Pool.Mitarbeitersettings.UrlaubShowFerien = event.status;
+          if(landcode === 'DE') this.Pool.Mitarbeitersettings.UrlaubShowFerien_DE = event.status;
+          if(landcode === 'BG') this.Pool.Mitarbeitersettings.UrlaubShowFerien_BG = event.status;
 
           break;
 
         case this.DB.Urlaubstatusvarianten.Feiertag:
 
-          this.Pool.Mitarbeitersettings.UrlaubShowFeiertage = event.status;
+          if(landcode === 'DE') this.Pool.Mitarbeitersettings.UrlaubShowFeiertage_DE = event.status;
+          if(landcode === 'BG') this.Pool.Mitarbeitersettings.UrlaubShowFeiertage_BG = event.status;
 
           break;
 
@@ -286,7 +293,35 @@ export class CommonUrlaubsplanungPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'AnredeClickedEvent', 'AnredeClickedEventHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'AnredeClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  GetMonatButtonColor(Monatindex: number): string {
+
+    try {
+
+      if(this.DB.CurrentMonatindex === Monatindex) return 'orange';
+      else {
+
+        return this.Monateliste_Mounseover[Monatindex] === true ? this.Basics.Farben.BAEBlau : 'black';
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'GetMonatButtonColor', this.Debug.Typen.Page);
+    }
+  }
+
+  MonatButtonClicked(Monatindex: number) {
+
+    try {
+
+      this.DB.CurrentMonatindex = Monatindex;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'MonatButtonClicked', this.Debug.Typen.Page);
     }
   }
 }

@@ -1098,8 +1098,10 @@ export class DatabasePoolService {
         UrlaubShowVertreterfreigabe: true,
         UrlaubShowGenehmigt:         true,
         UrlaubShowAbgelehnt:         true,
-        UrlaubShowFerien:            true,
-        UrlaubShowFeiertage:         true,
+        UrlaubShowFerien_DE:         true,
+        UrlaubShowFeiertage_DE:      true,
+        UrlaubShowFerien_BG:         true,
+        UrlaubShowFeiertage_BG:      true,
 
         OberkostengruppeFilter: null,
         HauptkostengruppeFilter: null,
@@ -1178,8 +1180,10 @@ export class DatabasePoolService {
           if(lodash.isUndefined(Settings.UrlaubShowVertreterfreigabe)) Settings.UrlaubShowVertreterfreigabe = true;
           if(lodash.isUndefined(Settings.UrlaubShowGenehmigt))         Settings.UrlaubShowGenehmigt         = true;
           if(lodash.isUndefined(Settings.UrlaubShowAbgelehnt))         Settings.UrlaubShowAbgelehnt         = true;
-          if(lodash.isUndefined(Settings.UrlaubShowFerien))            Settings.UrlaubShowFerien            = true;
-          if(lodash.isUndefined(Settings.UrlaubShowFeiertage))         Settings.UrlaubShowFeiertage         = true;
+          if(lodash.isUndefined(Settings.UrlaubShowFerien_DE))            Settings.UrlaubShowFerien_DE            = true;
+          if(lodash.isUndefined(Settings.UrlaubShowFerien_BG))            Settings.UrlaubShowFerien_BG            = true;
+          if(lodash.isUndefined(Settings.UrlaubShowFeiertage_DE))         Settings.UrlaubShowFeiertage_DE         = true;
+          if(lodash.isUndefined(Settings.UrlaubShowFeiertage_BG))         Settings.UrlaubShowFeiertage_BG         = true;
 
           this.CurrentAufgabenansichten = this.GetAufgabenansichten(null);
 

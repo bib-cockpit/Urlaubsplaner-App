@@ -17,6 +17,7 @@ import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
 import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
 import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
 import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
+import {Bautagebuchstruktur} from "../../dataclasses/bautagebuchstruktur";
 
 @Component({
   selector: 'fi-mitarbeiterliste-page',
@@ -53,6 +54,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
   private StandortfilterSubsciption: Subscription;
   public ShowMeOnly: boolean;
   public ShowArchivierte: boolean;
+  public ShowAktuelle: boolean;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -85,6 +87,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
       this.StandortfilterSubsciption = null;
       this.ShowMeOnly      = false;
       this.ShowArchivierte = false;
+      this.ShowAktuelle    = true;
 
     }
     catch (error) {
@@ -292,23 +295,48 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
         // Nach Namen sortieren
 
+        Quelle.sort( (a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
+
+          if (a.Name > b.Name) return -1;
+          if (a.Name < b.Name) return 1;
+          return 0;
+        });
+
+        // Filter
+
+        Liste = lodash.cloneDeep(Quelle);
+
         if(this.ShowMeOnly) {
 
-          Liste = lodash.cloneDeep(Quelle);
           Liste = lodash.filter(Liste, {_id: this.Pool.Mitarbeiterdaten._id});
         }
         else {
 
-          Liste = lodash.cloneDeep(Quelle);
+          if(this.ShowArchivierte === true && this.ShowAktuelle === true) {
+
+            // do nothing
+          }
+          else if(this.ShowArchivierte) {
+
+              Liste = lodash.filter(Liste, (Eintrag: Mitarbeiterstruktur) => {
+
+                return Eintrag.Archiviert;
+              });
+          }
+          else if(this.ShowAktuelle) {
+
+            Liste = lodash.filter(Liste, (Eintrag: Mitarbeiterstruktur) => {
+
+              return !Eintrag.Archiviert;
+            });
+          }
+          else if(this.ShowArchivierte === false && this.ShowAktuelle === false) {
+
+            Liste = [];
+          }
+
         }
 
-        if(this.ShowArchivierte === false) {
-
-          Liste = lodash.filter(Liste, (Eintrag: Mitarbeiterstruktur) => {
-
-            return !Eintrag.Archiviert;
-          });
-        }
 
         // Standortfilter anwenden
 
@@ -327,15 +355,6 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
           return 0;
         });
 
-        // Administrator aussortieren
-
-        Merker = lodash.cloneDeep(Liste);
-        Liste  = [];
-
-        for(let Eintrag of Merker) {
-
-          Liste.push(Eintrag);
-        }
 
         // Mitarbeiteralphabetauswahl Buchstaben festlegen
 
@@ -513,8 +532,9 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
         case this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Liste_Standortfilter:
 
-          this.DBStandort.CurrentStandortfilter = data;
+          this.DBStandort.CurrentStandortfilter        = data;
           this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
+          this.Mitarbeiteralphabetauswahl              = 'Alle';
 
           this.DB.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
 
@@ -668,6 +688,19 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
       this.ShowMeOnly = event.status;
 
+      if(this.ShowMeOnly === true) {
+
+        this.DBStandort.CurrentStandortfilter = null;
+        this.Pool.Mitarbeitersettings.StandortFilter = this.Const.NONE;
+        this.Mitarbeiteralphabetauswahl = 'Alle';
+
+        this.DB.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
+
+          this.DBStandort.StandortfilterChanged.emit();
+
+        });
+      }
+
       this.PrepareDaten();
 
     } catch (error) {
@@ -709,7 +742,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'AnredeClickedEvent', 'AnredeClickedEventHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'AnredeClickedEventHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -745,6 +778,21 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
   } catch (error) {
 
-    this.Debug.ShowErrorMessage(error, 'AnredeClickedEvent', 'UrlaubClickedEventHandler', this.Debug.Typen.Page);
+    this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'UrlaubClickedEventHandler', this.Debug.Typen.Page);
+  }
+
+  ShowAktuelleChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      this.ShowAktuelle = event.status;
+
+      this.PrepareDaten();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'ShowAktuelleChanged', this.Debug.Typen.Page);
+    }
+
   }
 }

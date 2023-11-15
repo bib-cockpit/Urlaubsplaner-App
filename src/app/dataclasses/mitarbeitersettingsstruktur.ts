@@ -52,8 +52,10 @@ export type Mitarbeitersettingsstruktur = {
   UrlaubShowVertreterfreigabe: boolean;
   UrlaubShowGenehmigt:         boolean;
   UrlaubShowAbgelehnt:         boolean;
-  UrlaubShowFerien:            boolean;
-  UrlaubShowFeiertage:         boolean;
+  UrlaubShowFerien_DE:         boolean;
+  UrlaubShowFerien_BG:         boolean;
+  UrlaubShowFeiertage_DE:      boolean;
+  UrlaubShowFeiertage_BG:      boolean;
 
   __v?: any;
 };

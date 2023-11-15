@@ -7,6 +7,9 @@
         <td><checkbox-clon [Checked]="ShowMeOnly" (CheckChanged)="ShowMeCheckedChanged($event)"></checkbox-clon></td>
         <td style="color: white">Nur meinen Eintrag anzeigen</td>
         <td style="width: 6px"></td>
+        <td><checkbox-clon [Checked]="ShowAktuelle" (CheckChanged)="ShowAktuelleChanged($event)"></checkbox-clon></td>
+        <td style="color: white">Aktuelle Einträge anzeigen</td>
+        <td style="width: 6px"></td>
         <td><checkbox-clon [Checked]="ShowArchivierte" (CheckChanged)="ShowArchivierteChanged($event)"></checkbox-clon></td>
         <td style="color: white">Archivierte Einträge anzeigen</td>
       </tr>
@@ -31,6 +34,7 @@
                     <td>
                       <table *ngIf="Mitarbeiter !== null && Pool.Mitarbeiterdaten !== null" cellspacing="0" cellpadding="0">
                         <tr *ngIf="!Mitarbeiter.Filtered">
+                          <td><div [style.background]="Mitarbeiter.Archiviert ? 'red' : 'green'" style="height: 20px; width: 20px;  border-radius: 4px"></div></td>
                           <td *ngIf="Mitarbeiter.Email === Pool.Mitarbeiterdaten.Email && Mitarbeiter.Kuerzel === '' || Mitarbeiter.StandortID === ''">
                             <img  src="/assets/svgs/alert.svg" style="height: 26px"/>
                           </td>
@@ -39,6 +43,7 @@
                           </td>
                         </tr>
                         <tr *ngIf="Mitarbeiter.Filtered">
+                          <td><div [style.background]="Mitarbeiter.Archiviert ? 'red' : 'green'" style="height: 20px; width: 20px; border-radius: 4px"></div></td>
                           <td *ngIf="Mitarbeiter.Email === Pool.Mitarbeiterdaten.Email && Mitarbeiter.Kuerzel === '' || Mitarbeiter.StandortID === ''">
                             <img src="/assets/svgs/alert.svg" style="height: 26px"/>
                           </td>
@@ -53,12 +58,15 @@
                     <td>
                       <table class="infotable" style="white-space:nowrap;">
                         <tr>
-                          <td class="ergonametextclass">Stadort:</td><td>{{DBStandort.GetStandort(Mitarbeiter.StandortID)}}</td><td style="width: 20px"></td>
-                          <td class="ergonametextclass">Email:</td><td>{{Mitarbeiter.Email}}</td><td style="width: 20px"></td>
-                          <td class="ergonametextclass">Fachbereich:</td><td>{{Mitarbeiter.Fachbereich}}</td><td style="width: 20px"></td>
-                          <td class="ergonametextclass">_id:</td><td>{{Mitarbeiter._id}}</td><td style="width: 20px"></td>
-                          <td class="ergonametextclass">Zeitstring:</td><td>{{Mitarbeiter.Zeitstring}}</td><td style="width: 20px"></td>
-                          <td class="ergonametextclass">UserID:</td><td>{{Mitarbeiter.UserID}}</td><td style="width: 20px"></td>
+                          <td style="width: 24px"></td>
+                          <td style="width: 80px" class="ergonametextclass">Stadort:</td>     <td style="width: 100px">{{DBStandort.GetStandort(Mitarbeiter.StandortID)}}</td><td style="width: 20px"></td>
+                          <td style="width: 60px"  class="ergonametextclass">Email:</td>      <td style="width: 200px">{{Mitarbeiter.Email}}</td><td style="width: 20px"></td>
+                          <td style="width: 80px"  class="ergonametextclass">Fachbereich:</td><td style="width: 100px">{{Mitarbeiter.Fachbereich}}</td><td style="width: 20px"></td>
+                          <!--
+                          <td style="width: 80px"  class="ergonametextclass">_id:</td>        <td style="width: 100px">{{Mitarbeiter._id}}</td><td style="width: 20px"></td>
+                          <td style="width: 80px"  class="ergonametextclass">Zeitstring:</td> <td style="width: 100px">{{Mitarbeiter.Zeitstring}}</td><td style="width: 20px"></td>
+                          <td style="width: 80px"  class="ergonametextclass">UserID:</td>     <td style="width: 100px">{{Mitarbeiter.UserID}}</td><td style="width: 20px"></td>
+                          -->
                         </tr>
                       </table>
                   </tr>
