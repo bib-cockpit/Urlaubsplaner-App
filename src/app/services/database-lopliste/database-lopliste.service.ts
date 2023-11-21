@@ -276,6 +276,8 @@ export class DatabaseLoplisteService {
 
       // LOP Liste versenden
 
+      debugger;
+
       return new Promise((resolve, reject) => {
 
         // PUT für update -> Datei neu erstellen oder überschreiben

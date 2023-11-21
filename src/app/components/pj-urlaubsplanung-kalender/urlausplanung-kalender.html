@@ -3,122 +3,58 @@
 
     <table class="paddingsmalltable" width="100%">
       <tr>
-        <td colspan="8" style="font-size: 120%; color: #444444; text-align: center;">
-          {{Monat}}
+        <td colspan="8" style="font-size: 120%; font-weight: bold; color: black; text-align: center;">
+          {{Monatname}}
         </td>
       </tr>
-      <tr style="text-align: center; color: #307ac1">
-        <td style="width: 12%"><div class="tagnamedivclass">KW</div></td>
-        <td style="width: 12%"><div class="tagnamedivclass">Mo</div></td>
-        <td style="width: 12%"><div class="tagnamedivclass">Di</div></td>
-        <td style="width: 12%"><div class="tagnamedivclass">Mi</div></td>
-        <td style="width: 12%"><div class="tagnamedivclass">Do</div></td>
-        <td style="width: 12%"><div class="tagnamedivclass">Fr</div></td>
-        <td style="width: 12%"><div class="wochendenedivclass">Sa</div></td>
-        <td style="width: 12%"><div class="wochendenedivclass">So</div></td>
+      <tr>
+        <td style="width: 12%"><div class="tagrahmenclass"><div class="taginfodivclass">KW</div></div></td>
+        <td style="width: 12%"><div class="tagrahmenclass"><div class="taginfodivclass">Mo</div></div></td>
+        <td style="width: 12%"><div class="tagrahmenclass"><div class="taginfodivclass">Di</div></div></td>
+        <td style="width: 12%"><div class="tagrahmenclass"><div class="taginfodivclass">Mi</div></div></td>
+        <td style="width: 12%"><div class="tagrahmenclass"><div class="taginfodivclass">Do</div></div></td>
+        <td style="width: 12%"><div class="tagrahmenclass"><div class="taginfodivclass">Fr</div></div></td>
+        <td style="width: 12%"><div class="tagrahmenclass"><div class="taginfodivclass">Sa</div></div></td>
+        <td style="width: 12%"><div class="tagrahmenclass"><div class="taginfodivclass">So</div></div></td>
       </tr>
-      <tr *ngFor="let Tageliste of Kalendertageliste; let wocheindex = index" style="text-align: center">
-        <td style="height: 40px">
-          <!--
-          (click)="KalenderwocheClicked($event, Tageliste[6])"  [style.background]="CheckKalenderwoche(Tageliste[wocheindex].Kalenderwoche) === true ? '#c7d304' : 'none'"
-          -->
-          <div class="tagnamedivclass">
-            {{Tageliste[wocheindex].Kalenderwoche}}
+      <tr *ngFor="let Tageliste of Kalendertageliste; let Wocheindex = index">
+        <td>
+          <div class="tagrahmenclass">
+            <div class="taginfodivclass">{{Tageliste[Wocheindex].Kalenderwoche}}</div>
+            <div *ngIf="DB.ShowFerientage" class="taginfospacedivclass"></div>
+            <div *ngIf="DB.ShowFeiertage"  class="taginfospacedivclass"></div>
           </div>
         </td>
         <td *ngFor="let Tag of Tageliste; let Tagindex = index" [style.color]="Tag.Hauptmonat === true ? 'black' : 'darkgray'">
           <ng-container *ngIf="Tagindex >= 5">
             <div class="tagrahmenclass">
-              <div class="wochendenedivclass">{{Tag.Tagnummer}}</div>
-              <!--
-              <ng-container *ngIf="Pool.Mitarbeitersettings.UrlaubShowFeiertage">
-                <div [style.background]="CheckIsFeiertag(Tag) === false ? DB.Urlaubsfaben.Wochenende : DB.Urlaubsfaben.Feiertage" class="buttoninfoclass"
-                     (mouseenter)="CheckIsFeiertag(Tag) === false ? null : FeietragMouseOverEvent(Tag)"
-                     (mouseleave)="CheckIsFeiertag(Tag) === false ? null : FeietragMouseLeaveEvent()">
-                </div>
-              </ng-container>
-              -->
-              <div class="buttoninfoclass" [style.background]="DB.Urlaubsfaben.Wochenende"></div>
+              <div class="wochenendedivclass">{{Tag.Tagnummer}}</div>
+              <div  *ngIf="DB.ShowFerientage" class="wochenendespacedivclass"></div>
+              <div  *ngIf="DB.ShowFeiertage"  class="wochenendespacedivclass"></div>
             </div>
           </ng-container>
           <ng-container *ngIf="Tagindex < 5">
             <ng-container *ngIf="Tag.Hauptmonat === true && Pool.Mitarbeitersettings !== null">
-              <div class="tagrahmenclass">
-                <div class="tagdivclass">
-                  {{Tag.Tagnummer}}
+              <div
+                (click)="TagClicked(Tag, Wocheindex, Tagindex)" class="tagrahmenclass">
+                <div class="tagdivclass" [style.background]="Tag.Background" [style.color]="Tag.Color">{{Tag.Tagnummer}}</div>
+                <div *ngIf="DB.ShowFerientage"
+                     (mouseenter)="FerientagMouseOverEvent(Tag)"
+                     (mouseleave)="FerientagCrossedEvent.emit('')"
+                     class="feriendivclass" [style.background]="Tag.IsFerientag ? DB.Ferienfarbe : Tag.Background">
+                  <ion-icon *ngIf="Tag.IsFerientag" name="school-outline" color="weiss" style="font-size: 18px"></ion-icon>
                 </div>
-                <div class="buttoninfoclass" *ngIf="CheckShowSpecialdays(Tag)">
-                  <table>
-                    <tr>
-                      <td *ngIf="CheckIsFeiertag(Tag, 'DE') && Pool.Mitarbeitersettings.UrlaubShowFeiertage_DE">
-                        <div [style.background]="DB.Urlaubsfaben.Feiertage_DE" class="legenderounddivclass"
-                             (mouseenter)="CheckIsFeiertag(Tag, 'DE') === false ? null : FeietragMouseOverEvent(Tag, 'DE')"
-                             (mouseleave)="CheckIsFeiertag(Tag, 'DE') === false ? null : FeietragMouseLeaveEvent()">
-                        </div>
-                      </td>
-                      <td *ngIf="CheckIsFeiertag(Tag, 'BG') && Pool.Mitarbeitersettings.UrlaubShowFeiertage_BG">
-                        <div [style.background]="DB.Urlaubsfaben.Feiertage_BG" class="legenderounddivclass"
-                             (mouseenter)="CheckIsFeiertag(Tag, 'BG') === false ? null : FeietragMouseOverEvent(Tag, 'BG')"
-                             (mouseleave)="CheckIsFeiertag(Tag, 'BG') === false ? null : FeietragMouseLeaveEvent()">
-                        </div>
-                      </td>
-                      <td *ngIf="CheckIsFerientag(Tag, 'DE') && Pool.Mitarbeitersettings.UrlaubShowFerien_DE">
-                        <div [style.background]="DB.Urlaubsfaben.Ferien_DE" class="legenderounddivclass"
-                             (mouseenter)="CheckIsFerientag(Tag, 'DE') === false ? null : FerientagMouseOverEvent(Tag, 'DE')"
-                             (mouseleave)="CheckIsFerientag(Tag, 'DE') === false ? null : FerientagMouseLeaveEvent()">
-                        </div>
-                      </td>
-                      <td *ngIf="CheckIsFerientag(Tag, 'BG') && Pool.Mitarbeitersettings.UrlaubShowFerien_BG">
-                        <div [style.background]="DB.Urlaubsfaben.Ferien_BG" class="legenderounddivclass"
-                             (mouseenter)="CheckIsFerientag(Tag, 'BG') === false ? null : FerientagMouseOverEvent(Tag, 'BG')"
-                             (mouseleave)="CheckIsFerientag(Tag, 'BG') === false ? null : FerientagMouseLeaveEvent()">
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-
-                </div>
-                <!--
-                <ng-container *ngIf="Pool.Mitarbeitersettings.UrlaubShowFerien">
-                  <div [style.background]="CheckIsFerientag(Tag) === false ? 'none' : DB.Urlaubsfaben.Ferien" class="buttoninfoclass"
-                       (mouseenter)="CheckIsFerientag(Tag) === false ? null : FerientagMouseOverEvent(Tag)"
-                       (mouseleave)="CheckIsFerientag(Tag) === false ? null : FerientagMouseLeaveEvent()">
-                  </div>
-                </ng-container>
-                -->
-                <div class="buttoninfoclass">
-
+                <div *ngIf="DB.ShowFeiertage"
+                     (mouseenter)="FeietragMouseOverEvent(Tag)"
+                     (mouseleave)="FeiertagCrossedEvent.emit('')"
+                     class="feiertagdivclass" [style.background]="Tag.IsFeiertag ? DB.Feiertagefarbe : Tag.Background">
+                  <ion-icon *ngIf="Tag.IsFeiertag" name="flag-outline" color="weiss" style="font-size: 18px"></ion-icon>
                 </div>
               </div>
-
             </ng-container>
             <ng-container *ngIf="Tag.Hauptmonat === false">
               {{Tag.Tagnummer}}
             </ng-container>
-            <!--
-              <ng-container *ngIf="CheckIsFeiertag(Tag) === true">
-                <div (mouseenter)="FeietragMouseOverEvent(Tag)" (mouseleave)="FeietragMouseLeaveEvent()" class="feiertagdivclass">
-                  {{Tag.Tagnummer}}
-                </div>
-              </ng-container>
-              <ng-container *ngIf="CheckIsFeiertag(Tag) === false">
-                <ng-container *ngIf="CheckIsFerientag(Tag) === true">
-                  <div (mouseenter)="FerientagMouseOverEvent(Tag)" (mouseleave)="FerientagMouseLeaveEvent()" class="ferientagdivclass">
-                    {{Tag.Tagnummer}}
-                  </div>
-                </ng-container>
-                <ng-container *ngIf="CheckIsFerientag(Tag) === false">
-
-                  {{Tag.Tagnummer}}
-
-                </ng-container>
-
-
-
-              </ng-container>
-            -->
-
-
           </ng-container>
         </td>
       </tr>

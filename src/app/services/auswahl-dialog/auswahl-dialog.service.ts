@@ -80,6 +80,9 @@ export class AuswahlDialogService {
     Protokollliste_Protokolleditor_Beteilgtenteilnehmer:    'Protokollliste_Protokolleditor_Beteilgtenteilnehmer',
     Protokollliste_Projektpunkteditor_Beteilgtenteilnehmer: 'Protokollliste_Projektpunkteditor_Beteilgtenteilnehmer',
 
+    Urlaubsplanung_Mitarbeiter_Wechseln:                    'Urlaubsplanung_Mitarbeiter_Wechseln',
+    Urlaubsplanung_Vertreter_Festlegen:                     'Urlaubsplanung_Vertreter_Festlegen',
+
     Protokollliste_Emaileditor_Extern_Empfaenger:           'Protokollliste_Emaileditor_Extern_Empfaenger',
     Protokollliste_Emaileditor_Extern_CcEmpfaenger:         'Protokollliste_Emaileditor_Extern_CcEmpfaenger',
     Protokollliste_Emaileditor_Intern_Empfaenger:           'Protokollliste_Emaileditor_Intern_Empfaenger',

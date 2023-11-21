@@ -11,6 +11,7 @@ import {ConstProvider} from "../const/const";
 import {Meinewochestruktur} from "../../dataclasses/meinewochestruktur";
 import {Graphuserstruktur} from "../../dataclasses/graphuserstruktur";
 import {Graphservice} from "../graph/graph";
+import {Urlauzeitspannenstruktur} from "../../dataclasses/urlauzeitspannenstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -315,6 +316,16 @@ export class DatabaseMitarbeiterService {
       delete mitarbeiter.__v;
 
       Params.set('id', mitarbeiter._id);
+
+      for(let Urlaubsliste of mitarbeiter.Urlaubsliste) {
+
+        Urlaubsliste.Zeitspannen.sort((a: Urlauzeitspannenstruktur, b:Urlauzeitspannenstruktur) => {
+
+          if (a.Startstempel < b.Startstempel) return -1;
+          if (a.Startstempel > b.Startstempel) return 1;
+          return 0;
+        });
+      }
 
       return new Promise<any>((resove, reject) => {
 

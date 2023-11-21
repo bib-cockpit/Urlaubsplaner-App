@@ -18,7 +18,10 @@ import {
 import {ConstProvider} from "../../services/const/const";
 import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
 import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
-import {languageSharp} from "ionicons/icons";
+import {backspace, languageSharp} from "ionicons/icons";
+import {Urlauzeitspannenstruktur} from "../../dataclasses/urlauzeitspannenstruktur";
+import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
+import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 
 @Component({
   selector: 'common-urlaubsplanung-page',
@@ -31,7 +34,6 @@ export class CommonUrlaubsplanungPage implements OnInit, OnDestroy {
   @ViewChild('PageFooter', { static: false }) PageFooter: PageFooterComponent;
 
   public Monateliste_Uebersicht: string[][];
-  public Monateliste_Planung: string[];
   public Monateliste_Mounseover: boolean[];
   public Auswahlliste: Auswahldialogstruktur[];
   public BundeslandAuswahlliste: Auswahldialogstruktur[];
@@ -39,11 +41,23 @@ export class CommonUrlaubsplanungPage implements OnInit, OnDestroy {
   public Auswahltitel: string;
   public ShowAuswahl: boolean;
   public Auswahlhoehe: number;
+  public Modus: string;
+  public Modusvarianten = {
+
+    Planung: 'Planung',
+    Debug: 'Debug',
+    Uebersicht: 'Uebersicht',
+    Einstellungen: 'Einstellungen'
+  };
 
   public Message: string;
   public ShowMitarbeitereditor: boolean;
+  public AddUrlaubRunning: boolean;
   private Auswahldialogorigin: string;
   private DataSubscription: Subscription;
+  public ShowMitarbeiterauswahl: boolean;
+  public AuswahlIDliste: string[];
+  public MitarbeiterauswahlTitel: string;
 
   constructor(public Menuservice: MenueService,
               public Basics: BasicsProvider,
@@ -52,27 +66,31 @@ export class CommonUrlaubsplanungPage implements OnInit, OnDestroy {
               public DB: DatabaseUrlaubService,
               private DBMitarbeiter: DatabaseMitarbeiterService,
               public Const: ConstProvider,
+              public DBStandort: DatabaseStandorteService,
               public Auswahlservice: AuswahlDialogService,
               public Debug: DebugProvider) {
-
     try {
 
       this.Monateliste_Uebersicht = [];
-      this.Monateliste_Uebersicht.push(['Januar', 'Februar', 'März', 'April', 'Mail', 'Juni']);
+      this.Monateliste_Uebersicht.push(['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni']);
       this.Monateliste_Uebersicht.push(['Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']);
 
-      this.Monateliste_Planung = ['Januar', 'Februar', 'März', 'April', 'Mail', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
       this.Monateliste_Mounseover = [false, false, false, false, false, false, false, false, false, false, false, false ];
 
-      this.Auswahlliste         = [{ Index: 0, FirstColumn: '', SecoundColumn: '', Data: null}];
-      this.Auswahlindex         = 0;
-      this.Auswahltitel         = '';
-      this.DataSubscription     = null;
-
-
-      this.Message              = '';
+      this.Auswahlliste          = [{ Index: 0, FirstColumn: '', SecoundColumn: '', Data: null}];
+      this.Auswahlindex          = 0;
+      this.Auswahltitel          = '';
+      this.DataSubscription      = null;
+      this.Message               = '';
       this.ShowMitarbeitereditor = false;
       this.Auswahldialogorigin   = this.Const.NONE;
+      this.AddUrlaubRunning      = false;
+      this.Modus                 = this.Modusvarianten.Planung;
+      this.ShowMitarbeiterauswahl = false;
+      this.AuswahlIDliste         = [];
+      this.MitarbeiterauswahlTitel = '';
+
+
 
 
     } catch (error) {
@@ -105,7 +123,7 @@ export class CommonUrlaubsplanungPage implements OnInit, OnDestroy {
         this.PrepareData();
       });
 
-      this.PrepareData();
+      // this.PrepareData();
 
     } catch (error) {
 
@@ -173,6 +191,9 @@ export class CommonUrlaubsplanungPage implements OnInit, OnDestroy {
 
       let Index: number = 0;
 
+      this.DB.Init();
+      this.DB.SetPlanungsmonate();
+
       this.BundeslandAuswahlliste  = [];
 
       for(let Region of this.DB.Regionenliste) {
@@ -219,93 +240,82 @@ export class CommonUrlaubsplanungPage implements OnInit, OnDestroy {
     return moment(Anfangstempel).format('DD.MM.YYYY');
   }
 
-  AnsichtCheckChanged(event: { status: boolean; index: number; event: any; value: string }, origin: string, landcode: string) {
+  AnsichtFerientageCheckChanged(event: { status: boolean; index: number; event: any; value: string }, landcode: string) {
 
     try {
 
-      switch (origin) {
+      switch (landcode) {
 
-        case this.DB.Urlaubstatusvarianten.Ferientag:
+        case 'DE':
 
-          if(landcode === 'DE') this.Pool.Mitarbeitersettings.UrlaubShowFerien_DE = event.status;
-          if(landcode === 'BG') this.Pool.Mitarbeitersettings.UrlaubShowFerien_BG = event.status;
-
-          break;
-
-        case this.DB.Urlaubstatusvarianten.Feiertag:
-
-          if(landcode === 'DE') this.Pool.Mitarbeitersettings.UrlaubShowFeiertage_DE = event.status;
-          if(landcode === 'BG') this.Pool.Mitarbeitersettings.UrlaubShowFeiertage_BG = event.status;
+          this.Pool.Mitarbeitersettings.UrlaubShowFerien_DE = event.status;
+          this.DB.ShowFerientage = event.status;
 
           break;
 
-        case this.DB.Urlaubstatusvarianten.Beantrag:
+        case 'BG':
 
-          this.Pool.Mitarbeitersettings.UrlaubShowBeantragt = event.status;
-
-          break;
-
-        case this.DB.Urlaubstatusvarianten.Vertreterfreigabe:
-
-          this.Pool.Mitarbeitersettings.UrlaubShowVertreterfreigabe = event.status;
-
-          break;
-
-        case this.DB.Urlaubstatusvarianten.Genehmigt:
-
-          this.Pool.Mitarbeitersettings.UrlaubShowGenehmigt = event.status;
-
-          break;
-
-        case this.DB.Urlaubstatusvarianten.Abgelehnt:
-
-          this.Pool.Mitarbeitersettings.UrlaubShowAbgelehnt = event.status;
+          this.Pool.Mitarbeitersettings.UrlaubShowFerien_BG = event.status;
+          this.DB.ShowFerientage = event.status;
 
           break;
       }
 
       this.DBMitarbeitersettings.SaveMitarbeitersettings().then(() => {
 
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'AnsichtFerientageCheckChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  AnsichtFeiertageCheckChanged(event: { status: boolean; index: number; event: any; value: string }, landcode: string) {
+
+    try {
+
+      switch (landcode) {
+
+        case 'DE':
+
+          this.Pool.Mitarbeitersettings.UrlaubShowFeiertage_DE = event.status;
+          this.DB.ShowFeiertage = event.status;
+
+          break;
+
+        case 'BG':
+
+          this.Pool.Mitarbeitersettings.UrlaubShowFeiertage_BG = event.status;
+          this.DB.ShowFeiertage = event.status;
+
+          break;
+      }
+
+      this.DBMitarbeitersettings.SaveMitarbeitersettings().then(() => {
 
       });
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'AnsichtCheckChanged', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'AnsichtFeiertageCheckChanged', this.Debug.Typen.Page);
     }
   }
 
-  AnredeClickedEventHandler() {
-
-    try {
-
-      this.ShowAuswahl  = true;
-      this.Auswahltitel = 'Anrede festlegen';
-      this.Auswahlliste = [];
-
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Editor_Anrede;
-
-      this.Auswahlliste.push({ Index: 0, FirstColumn: 'Unbekannt', SecoundColumn: '', Data: this.Const.NONE });
-      this.Auswahlliste.push({ Index: 1, FirstColumn: 'Frau',      SecoundColumn: '', Data: 'Frau' });
-      this.Auswahlliste.push({ Index: 2, FirstColumn: 'Herr',      SecoundColumn: '', Data: 'Herr' });
-
-      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.Pool.Mitarbeiterdaten.Anrede});
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'AnredeClickedEventHandler', this.Debug.Typen.Page);
-    }
-  }
 
   GetMonatButtonColor(Monatindex: number): string {
 
     try {
 
       if(this.DB.CurrentMonatindex === Monatindex) return 'orange';
+
+      /*
       else {
 
         return this.Monateliste_Mounseover[Monatindex] === true ? this.Basics.Farben.BAEBlau : 'black';
       }
+
+       */
 
     } catch (error) {
 
@@ -317,11 +327,363 @@ export class CommonUrlaubsplanungPage implements OnInit, OnDestroy {
 
     try {
 
+      debugger;
+
       this.DB.CurrentMonatindex = Monatindex;
+      this.DB.SetPlanungsmonate();
+
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'MonatButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  MonatBackButtonClicked() {
+
+    try {
+
+      if(this.DB.CurrentMonatindex > 0) {
+
+        this.DB.CurrentMonatindex--;
+
+        this.DB.SetPlanungsmonate();
+
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'MonatBackButtonClicked', this.Debug.Typen.Page);
+    }
+
+  }
+
+  MonatForwardButtonClicked() {
+
+    try {
+
+      if(this.DB.CurrentMonatindex < 11) {
+
+        this.DB.CurrentMonatindex++;
+
+        this.DB.SetPlanungsmonate();
+
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'MonatForwardButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  AddUrlaub() {
+
+    try {
+
+      this.AddUrlaubRunning = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'AddUrlaub', this.Debug.Typen.Page);
+    }
+  }
+
+  AddUrlaubFinishedHandler() {
+
+    try {
+
+      this.AddUrlaubRunning = false;
+
+      if(this.DB.CurrentZeitspanne !== null) {
+
+        this.DB.CurrentUrlaub.Zeitspannen.push(this.DB.CurrentZeitspanne);
+
+        debugger;
+
+        this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
+
+          this.DB.CurrentZeitspanne = null;
+        });
+      }
+
+      // Hier speichern
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'AddUrlaubFinishedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  UrlaubLoeschen(Zeitspanne: Urlauzeitspannenstruktur) {
+
+    try {
+
+      this.DB.CurrentUrlaub.Zeitspannen = lodash.filter(this.DB.CurrentUrlaub.Zeitspannen, (eintrag: Urlauzeitspannenstruktur) => {
+
+        return eintrag.Startstempel !== Zeitspanne.Startstempel;
+      });
+
+      this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
+
+        // this.PrepareData();
+        this.DB.PlanungsmonateChanged.emit();
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'UrlaubLoeschen', this.Debug.Typen.Page);
+    }
+  }
+
+  AnsichtCheckChanged(event: { status: boolean; index: number; event: any; value: string }, origin: string) {
+
+    try {
+
+      switch (origin) {
+
+        case this.DB.Urlaubstatusvarianten.Beantragt:
+
+          this.Pool.Mitarbeitersettings.UrlaubShowBeantragt = event.status;
+
+        break;
+
+        case this.DB.Urlaubstatusvarianten.Vertreterfreigabe:
+
+          this.Pool.Mitarbeitersettings.UrlaubShowVertreterfreigabe = event.status;
+
+        break;
+
+        case this.DB.Urlaubstatusvarianten.Genehmigt:
+
+          this.Pool.Mitarbeitersettings.UrlaubShowGenehmigt = event.status;
+
+        break;
+
+        case this.DB.Urlaubstatusvarianten.Abgelehnt:
+
+          this.Pool.Mitarbeitersettings.UrlaubShowAbgelehnt = event.status;
+
+        break;
+      }
+
+      this.DBMitarbeitersettings.SaveMitarbeitersettings().then(() => {
+
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'AnsichtCheckChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  UrlaubSuchen(Zeitspanne: Urlauzeitspannenstruktur) {
+
+    try {
+
+      let Datum: Moment = moment(Zeitspanne.Startstempel);
+
+      this.DB.CurrentMonatindex = Datum.month();
+      this.DB.SetPlanungsmonate();
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'UrlaubSuchen', this.Debug.Typen.Page);
+    }
+  }
+
+  GetDatumlangtext(Startstempel: number): string {
+
+    try {
+
+      return moment(Startstempel).locale('de').format('DD. MMMM YYYY');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'GetDatumlangtext', this.Debug.Typen.Page);
+    }
+  }
+
+  MitarbeiterauswahlOkButtonClicked(idliste: string[]) {
+
+    try {
+
+      let Mitarbeiter: Mitarbeiterstruktur;
+
+      switch (this.Auswahldialogorigin) {
+
+        case this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Mitarbeiter_Wechseln:
+
+
+          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: idliste[0]});
+
+          this.Pool.Mitarbeiterdaten = Mitarbeiter;
+          this.PrepareData();
+
+          this.DB.PlanungsmonateChanged.emit();
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Vertreter_Festlegen:
+
+          if(!lodash.isUndefined(idliste[0])) {
+
+            Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: idliste[0]});
+
+            this.DB.CurrentZeitspanne.VertreterID = Mitarbeiter._id;
+          }
+          else {
+
+            this.DB.CurrentZeitspanne.VertreterID = null;
+          }
+
+          this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
+
+            this.PrepareData();
+            this.DB.PlanungsmonateChanged.emit();
+
+          });
+
+          break;
+
+      }
+
+      this.ShowMitarbeiterauswahl = false;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Urlaubsplanung Page', 'MitarbeiterauswahlOkButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  MitarebiterStandortfilterClickedHandler() {
+
+    try {
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Editor_Standortfilter;
+
+      let Index = 0;
+
+      this.ShowAuswahl         = true;
+      this.Auswahltitel        = 'Standort festlegen';
+      this.Auswahlliste        = [];
+
+      this.Auswahlliste.push({ Index: Index, FirstColumn: 'kein Filter', SecoundColumn: '', Data: null });
+      Index++;
+
+      for(let Eintrag of this.Pool.Standorteliste) {
+
+        this.Auswahlliste.push({ Index: Index, FirstColumn: Eintrag.Kuerzel, SecoundColumn: Eintrag.Standort, Data: Eintrag });
+        Index++;
+      }
+
+      if(this.DBStandort.CurrentStandortfilter !== null) {
+
+        this.Auswahlindex = lodash.findIndex(this.Pool.Standorteliste, {_id: this.DBStandort.CurrentStandortfilter._id});
+      }
+      else this.Auswahlindex = 0;
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Urlaubsplanung Page', 'MitarebiterStandortfilterClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  MitarbeiterWechselnClicked() {
+
+    try {
+
+      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Mitarbeiter_Wechseln;
+      this.ShowMitarbeiterauswahl = true;
+      this.AuswahlIDliste         = [];
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'MitarbeiterWechselnClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  StellvertreterFestlegenClicked(Zeitspanne: Urlauzeitspannenstruktur) {
+
+    try {
+
+      this.DB.CurrentZeitspanne = Zeitspanne;
+
+      if(Zeitspanne.VertreterID === null || Zeitspanne.VertreterID === '') {
+
+        this.AuswahlIDliste = [];
+      }
+      else {
+
+        this.AuswahlIDliste = [Zeitspanne.VertreterID];
+      }
+
+      this.MitarbeiterauswahlTitel = 'Stellvertreter festlegen';
+      this.Auswahldialogorigin     = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Vertreter_Festlegen;
+      this.ShowMitarbeiterauswahl  = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'StellvertreterFestlegenClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  GetStellvertretername(Zeitspanne: Urlauzeitspannenstruktur): string{
+
+    try {
+
+      let Mitarbeiter: Mitarbeiterstruktur = lodash.find(this.Pool.Mitarbeiterliste, {_id: Zeitspanne.VertreterID});
+
+      if(lodash.isUndefined(Mitarbeiter)) return 'unbekannt';
+      else return Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'GetStellvertretername', this.Debug.Typen.Page);
+    }
+  }
+
+  GetStatusColor(Status: string): string {
+
+    try {
+
+      let Background: string = 'none';
+
+      switch (Status) {
+
+        case this.DB.Urlaubstatusvarianten.Beantragt:
+
+          Background = this.DB.Urlaubsfaben.Beantrag;
+
+          break;
+
+        case this.DB.Urlaubstatusvarianten.Vertreterfreigabe:
+
+          Background = this.DB.Urlaubsfaben.Vertreterfreigabe;
+
+          break;
+
+        case this.DB.Urlaubstatusvarianten.Genehmigt:
+
+          Background = this.DB.Urlaubsfaben.Genehmigt;
+
+          break;
+
+        case this.DB.Urlaubstatusvarianten.Abgelehnt:
+
+          Background = this.DB.Urlaubsfaben.Abgelehnt;
+
+          break;
+      }
+
+
+      return Background;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'GetStatusColor', this.Debug.Typen.Page);
     }
   }
 }

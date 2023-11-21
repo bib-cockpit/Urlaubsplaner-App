@@ -58,8 +58,6 @@ export class DatabaseMitarbeitersettingsService {
 
     let Observer: Observable<any>;
 
-    debugger;
-
     return new Promise<any>((resolve, reject) => {
 
       if(this.Pool.Mitarbeitersettings._id === null) {

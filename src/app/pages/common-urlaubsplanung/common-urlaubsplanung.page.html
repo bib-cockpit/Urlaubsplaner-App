@@ -5,187 +5,343 @@
 </ion-header>
 <ion-content>
 
-  <table class="paddingsmalltable">
+  <table *ngIf="Pool.Mitarbeiterdaten !== null" class="paddingtable">
     <tr>
-      <td *ngFor="let Monat of Monateliste_Planung; let Monatindex = index">
-        <div [style.color]="GetMonatButtonColor(Monatindex)" (click)="MonatButtonClicked(Monatindex)" (mouseover)="Monateliste_Mounseover[Monatindex] = true" (mouseleave)="Monateliste_Mounseover[Monatindex] = false" class="monatedivclass">{{Monat}}</div>
+      <td>{{Pool.Mitarbeiterdaten.Vorname + ' ' + this.Pool.Mitarbeiterdaten.Name}}</td>
+      <td>
+        <ion-button size="small" color="grau" (click)="MitarbeiterWechselnClicked()">Mitarbeiter wechseln</ion-button>
       </td>
     </tr>
   </table>
 
-  <table style="width: 100%" class="paddingsmalltable">
-    <tr>
-      <td colspan="10"><b>Deutschland</b></td>
-    </tr>
-    <tr *ngFor="let Zeile of Monateliste_Uebersicht">
-      <td style="width: 16%; height: inherit" valign="top" *ngFor="let Monat of Zeile">
 
-        <urlaubsplanung-kalender
-          [Jahr]="DB.Jahr"
-          [Monat]="Monat"
-          (FeirtagCrossedEvent)="FeiertagCrossedEventHandler($event)" (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
-        </urlaubsplanung-kalender>
+  <ng-container *ngIf="Modus === Modusvarianten.Planung">
+    <table style="width: 100%">
+      <tr>
+        <td style="height: 20px;"></td>
+      </tr>
+      <tr>
+        <td align="center">
 
-      </td>
-    </tr>
-  </table>
+          <table class="paddingsmalltable">
+            <tr>
+              <td>
+                <div  (click)="MonatBackButtonClicked()"  class="monatedivclass">
+                  <ion-icon name="caret-back-outline" style="font-size: 20px"></ion-icon>
+                </div>
+              </td>
+              <td *ngFor="let Monat of DB.Monateliste; let Monatindex = index">
+                <div [style.color]="GetMonatButtonColor(Monatindex)" (click)="MonatButtonClicked(Monatindex)"  class="monatedivclass">{{Monat}}</div>
+              </td>
+              <td>
+                <div  (click)="MonatForwardButtonClicked()"  class="monatedivclass">
+                  <ion-icon name="caret-forward-outline" style="font-size: 20px"></ion-icon>
+                </div>
+              </td>
+            </tr>
+          </table>
 
-  <table style="width: 100%">
-    <tr>
-      <td style="width: 50%" valign="top">
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
 
-        <table style="width: 400px;" class="paddingtable">
-          <tr>
-            <td style="font-size: 160%; color: #444444; height: 40px">{{Message}}</td>
-          </tr>
-          <tr>
-            <td>
-              <button-value [Buttontext]="'Bundesland'"
-                            [Wert_A]="DB.Bundesland" (ButtonClicked)="BundeslandClickedHandler()">
-              </button-value>
-            </td>
-          </tr>
-        </table>
+          <table class="paddingsmalltable">
+            <tr>
+              <td style="width: 500px" valign="top">
+                <urlaubsplanung-kalender
+                  [Jahr]="DB.Jahr"
+                  [Monatindex]="DB.FirstMonatIndex"
+                  [AddUrlaubRunning]="AddUrlaubRunning"
+                  (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
+                  (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
+                  (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
+                </urlaubsplanung-kalender>
+              </td>
+              <td style="width: 500px" valign="top">
+                <urlaubsplanung-kalender
+                  [Jahr]="DB.Jahr"
+                  [Monatindex]="DB.CurrentMonatindex"
+                  [AddUrlaubRunning]="AddUrlaubRunning"
+                  (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
+                  (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
+                  (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
+                </urlaubsplanung-kalender>
+              </td>
+              <td style="width: 500px" valign="top">
+                <urlaubsplanung-kalender
+                  [Jahr]="DB.Jahr"
+                  [Monatindex]="DB.LastMonatIndex"
+                  [AddUrlaubRunning]="AddUrlaubRunning"
+                  (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
+                  (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
+                  (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
+                </urlaubsplanung-kalender>
+              </td>
+            </tr>
+          </table>
 
-        <table>
-          <tr>
-            <td valign="top">
-              <table *ngIf="DB.Ferienliste['DE']" style="width: 400px;" class="paddingtable">
-                <tr>
-                  <td colspan="3"><b>Ferien Deutschland</b></td>
-                </tr>
-                <tr *ngFor="let Ferien of DB.Ferienliste['DE']">
-                  <td>
-                    {{Ferien.Name}}
-                  </td>
-                  <td>
-                    {{GetDatum(Ferien.Anfangstempel)}}
-                  </td>
-                  <td>
-                    {{GetDatum(Ferien.Endestempel)}}
-                  </td>
-                </tr>
-              </table>
-            </td>
-            <td valign="top">
-              <table *ngIf="DB.Feiertageliste['DE']" style="width: 400px;" class="paddingtable">
-                <tr>
-                  <td colspan="4"><b>Feiertage Deutschland</b></td>
-                </tr>
-                <tr *ngFor="let Feiertag of DB.Feiertageliste['DE']">
-                  <td>
-                    {{Feiertag.Name}}
-                  </td>
-                  <td>
-                    {{GetDatum(Feiertag.Anfangstempel)}}
-                  </td>
-                  <td>
-                    {{GetDatum(Feiertag.Endestempel)}}
-                  </td>
-                  <td>
-                    {{Feiertag.nationwide}}
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <tr>
-            <td valign="top">
-              <table *ngIf="DB.Ferienliste['BG']" style="width: 400px;" class="paddingtable">
-                <tr>
-                  <td colspan="3"><b>Ferien Bulgarien</b></td>
-                </tr>
-                <tr *ngFor="let Ferien of DB.Ferienliste['BG']">
-                  <td>
-                    {{Ferien.Name}}
-                  </td>
-                  <td>
-                    {{GetDatum(Ferien.Anfangstempel)}}
-                  </td>
-                  <td>
-                    {{GetDatum(Ferien.Endestempel)}}
-                  </td>
-                </tr>
-              </table>
-            </td>
-            <td valign="top">
-              <table *ngIf="DB.Feiertageliste['BG']" style="width: 400px;" class="paddingtable">
-                <tr>
-                  <td colspan="4"><b>Feiertage Bulgarien</b></td>
-                </tr>
-                <tr *ngFor="let Feiertag of DB.Feiertageliste['BG']">
-                  <td>
-                    {{Feiertag.Name}}
-                  </td>
-                  <td>
-                    {{GetDatum(Feiertag.Anfangstempel)}}
-                  </td>
-                  <td>
-                    {{GetDatum(Feiertag.Endestempel)}}
-                  </td>
-                  <td>
-                    {{Feiertag.nationwide}}
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <tr>
-            <td valign="top">
-              <table style="width: 400px;" class="paddingtable">
-                <tr>
-                  <td colspan="2"><b>Bundesländer</b></td>
-                </tr>
-                <tr *ngFor="let Region of DB.Regionenliste">
-                  <td>
-                    {{Region.name[0].text}}
-                  </td>
-                  <td>
-                    {{Region.isoCode}}
-                  </td>
-                </tr>
-              </table>
-            </td>
-            <td></td>
-          </tr>
-        </table>
+        </td>
+      </tr>
+      <tr *ngIf="AddUrlaubRunning === false">
+        <td align="center">
+
+          <table class="paddingsmalltable">
+            <tr>
+              <td align="center">
+                <ion-button size="small" (click)="AddUrlaub()">Neuen Urlaub eintragen</ion-button>
+              </td>
+            </tr>
+          </table>
+
+        </td>
+      </tr>
+      <tr>
+        <td *ngIf="AddUrlaubRunning === true" align="center">
+
+          <table class="paddingsmalltable">
+            <tr>
+              <td>Startdatum</td><td>{{this.DB.CurrentZeitspanne !== null ? this.DB.CurrentZeitspanne.Startstring : 'Bitte festlegen'}}</td>
+            </tr>
+            <tr>
+              <td>Endedatum</td><td>{{this.DB.CurrentZeitspanne !== null ? this.DB.CurrentZeitspanne.Endestring : 'Bitte festlegen'}}</td>
+            </tr>
+          </table>
+
+        </td>
+      </tr>
+
+      <tr *ngIf="DB.CurrentUrlaub !== null" align="center">
+        <td>
+          <table class="docinnertable">
+            <tr>
+              <td></td>
+              <td style="font-weight: bold;">Status</td>
+              <td style="font-weight: bold;">Von</td>
+              <td style="font-weight: bold;">Bis</td>
+              <td style="font-weight: bold; text-align: center">Tage</td>
+              <td style="font-weight: bold;">Stellvertreter</td>
+              <td></td>
+            </tr>
+            <tr *ngFor="let Zeitspanne of this.DB.CurrentUrlaub.Zeitspannen">
+
+              <td><ion-button size="small" color="grau" (click)="UrlaubSuchen(Zeitspanne)"><ion-icon name="search" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button></td>
+              <td align="center"><div class="legendedivclass" [style.background]="GetStatusColor(Zeitspanne.Status)"></div></td>
+              <td>{{GetDatumlangtext(Zeitspanne.Startstempel)}}</td>
+              <td>{{GetDatumlangtext(Zeitspanne.Endestempel)}}</td>
+              <td style="text-align: center">{{Zeitspanne.Tageanzahl}}</td>
+              <td>
+                <ion-button size="small" color="grau" (click)="StellvertreterFestlegenClicked(Zeitspanne)">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</ion-button>
+              </td>
+              <td><ion-button size="small" color="rot" (click)="UrlaubLoeschen(Zeitspanne)"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
+      <ng-container *ngIf="DB.Laendercode === 'DE'">
+        <tr>
+          <td><checkbox-clon [Checked]="DB.ShowFeiertage" (CheckChanged)="AnsichtFeiertageCheckChanged($event, this.DB.Laendercode)"></checkbox-clon></td><td>
+          <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage_DE">
+            <ion-icon name="flag-outline" color="weiss" style="font-size: 18px"></ion-icon>
+          </div>
+        </td><td>Feiertage Deutschland</td>
+        </tr>
+        <tr>
+          <td><checkbox-clon [Checked]="DB.ShowFerientage" (CheckChanged)="AnsichtFerientageCheckChanged($event, this.DB.Laendercode)"></checkbox-clon></td><td>
+          <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien_DE">
+            <ion-icon name="school-outline" color="weiss" style="font-size: 18px"></ion-icon>
+          </div>
+        </td><td>Schulferien Deutschland</td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="DB.Laendercode === 'BG'">
+        <tr>
+          <td><checkbox-clon [Checked]="DB.ShowFeiertage" (CheckChanged)="AnsichtFeiertageCheckChanged($event,  this.DB.Laendercode)"></checkbox-clon></td><td>
+          <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage_BG">
+            <ion-icon name="flag-outline" color="weiss" style="font-size: 18px"></ion-icon>
+          </div>
+        </td><td>Feiertage Bulgarien</td>
+        </tr>
+        <tr>
+          <td><checkbox-clon [Checked]="DB.ShowFerientage" (CheckChanged)="AnsichtFerientageCheckChanged($event, this.DB.Laendercode)"></checkbox-clon></td><td>
+          <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien_BG">
+            <ion-icon name="school-outline" color="weiss" style="font-size: 18px"></ion-icon>
+          </div>
+        </td><td>Schulferien Bulgarien</td>
+        </tr>
+      </ng-container>
+      <tr>
+        <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowBeantragt" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Beantragt)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Beantrag"></div></td><td>Beantragter Urlaub</td>
+      </tr>
+      <tr>
+        <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowVertreterfreigabe" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Vertreterfreigabe)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Urlaub mit Vertreterfreigabe</td>
+      </tr>
+      <tr>
+        <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowGenehmigt" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Genehmigt)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Genehmigt"></div></td><td>Genehmigter Urlaub</td>
+      </tr>
+      <tr>
+        <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowAbgelehnt" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Abgelehnt)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
+      </tr>
+    </table>
+
+    <table style="width: 400px;" class="paddingtable">
+      <tr>
+        <td style="font-size: 160%; color: #444444; height: 40px">{{Message}}</td>
+      </tr>
+    </table>
+
+  </ng-container>
+
+  <ng-container *ngIf="Modus === Modusvarianten.Uebersicht">
+    <table style="width: 100%" class="paddingsmalltable">
+      <!--
+      <tr *ngFor="let Zeile of Monateliste_Uebersicht">
+        <td style="width: 16%; height: inherit" valign="top" *ngFor="let Monat of Zeile">
+
+          <urlaubsplanung-kalender
+            [Jahr]="DB.Jahr"
+            [Monatindex]="Monat"
+            (FeirtagCrossedEvent)="FeiertagCrossedEventHandler($event)" (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
+          </urlaubsplanung-kalender>
+
+        </td>
+      </tr>
+      -->
+    </table>
+
+  </ng-container>
+
+  <ng-container *ngIf="Modus === Modusvarianten.Debug">
+
+    <table style="width: 400px;" class="paddingtable">
+      <tr>
+        <td>
+          <button-value [Buttontext]="'Bundesland'"
+                        [Wert_A]="DB.Bundesland" (ButtonClicked)="BundeslandClickedHandler()">
+          </button-value>
+        </td>
+      </tr>
+    </table>
 
 
-      </td>
-      <td style="width: 50%;" valign="top" align="right">
-
-        <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
-          <tr>
-            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowFeiertage_DE" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Feiertag, 'DE')"></checkbox-clon></td><td><div class="legenderounddivclass" [style.background]="DB.Urlaubsfaben.Feiertage_DE"></div></td><td>Feiertage Deutschland</td>
-          </tr>
-          <tr>
-            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowFeiertage_BG" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Feiertag, 'BG')"></checkbox-clon></td><td><div class="legenderounddivclass" [style.background]="DB.Urlaubsfaben.Feiertage_BG"></div></td><td>Feiertage Bulgarien</td>
-          </tr>
-          <tr>
-            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowFerien_DE" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Ferientag,'DE')"></checkbox-clon></td><td><div class="legenderounddivclass" [style.background]="DB.Urlaubsfaben.Ferien_DE"></div></td><td>Schulferien Deutschland</td>
-          </tr>
-          <tr>
-            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowFerien_BG" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Ferientag,'BG')"></checkbox-clon></td><td><div class="legenderounddivclass" [style.background]="DB.Urlaubsfaben.Ferien_BG"></div></td><td>Schulferien Bulgarien</td>
-          </tr>
-          <tr>
-            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowBeantragt" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Beantrag,null)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Beantrag"></div></td><td>Beantragter Urlaub</td>
-          </tr>
-          <tr>
-            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowVertreterfreigabe" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Vertreterfreigabe,null)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Urlaub mit Vertreterfreigabe</td>
-          </tr>
-          <tr>
-            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowGenehmigt" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Genehmigt,null)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Genehmigt"></div></td><td>Genehmigter Urlaub</td>
-          </tr>
-          <tr>
-            <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowAbgelehnt" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Abgelehnt,null)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
-          </tr>
-        </table>
-
-      </td>
-    </tr>
-
-  </table>
-
+    <table>
+      <tr>
+        <td valign="top">
+          <table *ngIf="DB.Ferienliste['DE']" style="width: 400px;" class="paddingtable">
+            <tr>
+              <td colspan="3"><b>Ferien Deutschland</b></td>
+            </tr>
+            <tr *ngFor="let Ferien of DB.Ferienliste['DE']">
+              <td>
+                {{Ferien.Name}}
+              </td>
+              <td>
+                {{GetDatum(Ferien.Anfangstempel)}}
+              </td>
+              <td>
+                {{GetDatum(Ferien.Endestempel)}}
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td valign="top">
+          <table *ngIf="DB.Feiertageliste['DE']" style="width: 400px;" class="paddingtable">
+            <tr>
+              <td colspan="4"><b>Feiertage Deutschland</b></td>
+            </tr>
+            <tr *ngFor="let Feiertag of DB.Feiertageliste['DE']">
+              <td>
+                {{Feiertag.Name}}
+              </td>
+              <td>
+                {{GetDatum(Feiertag.Anfangstempel)}}
+              </td>
+              <td>
+                {{GetDatum(Feiertag.Endestempel)}}
+              </td>
+              <td>
+                {{Feiertag.nationwide}}
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <table *ngIf="DB.Ferienliste['BG']" style="width: 400px;" class="paddingtable">
+            <tr>
+              <td colspan="3"><b>Ferien Bulgarien</b></td>
+            </tr>
+            <tr *ngFor="let Ferien of DB.Ferienliste['BG']">
+              <td>
+                {{Ferien.Name}}
+              </td>
+              <td>
+                {{GetDatum(Ferien.Anfangstempel)}}
+              </td>
+              <td>
+                {{GetDatum(Ferien.Endestempel)}}
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td valign="top">
+          <table *ngIf="DB.Feiertageliste['BG']" style="width: 400px;" class="paddingtable">
+            <tr>
+              <td colspan="4"><b>Feiertage Bulgarien</b></td>
+            </tr>
+            <tr *ngFor="let Feiertag of DB.Feiertageliste['BG']">
+              <td>
+                {{Feiertag.Name}}
+              </td>
+              <td>
+                {{GetDatum(Feiertag.Anfangstempel)}}
+              </td>
+              <td>
+                {{GetDatum(Feiertag.Endestempel)}}
+              </td>
+              <td>
+                {{Feiertag.nationwide}}
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <table style="width: 400px;" class="paddingtable">
+            <tr>
+              <td colspan="2"><b>Bundesländer</b></td>
+            </tr>
+            <tr *ngFor="let Region of DB.Regionenliste">
+              <td>
+                {{Region.name[0].text}}
+              </td>
+              <td>
+                {{Region.isoCode}}
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td></td>
+      </tr>
+    </table>
+    <table *ngIf="DB.Laendercode === 'DE'" style="width: 400px;" class="paddingtable">
+      <tr>
+        <td style="font-size: 160%; color: #444444; height: 40px">{{Message}}</td>
+      </tr>
+      <tr>
+        <td>
+          <button-value [Buttontext]="'Bundesland'"
+                        [Wert_A]="DB.Bundesland" (ButtonClicked)="BundeslandClickedHandler()">
+          </button-value>
+        </td>
+      </tr>
+    </table>
+  </ng-container>
 
 </ion-content>
 <ion-footer>
@@ -201,6 +357,17 @@
                 (OkClickedEvent)="AuswahlOkButtonClicked($event)"
                 (CancelClickedEvent)="ShowAuswahl = false">
 </auswahl-dialog>
+
+<fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
+                        [Titel]="MitarbeiterauswahlTitel"
+                        [Dialogbreite]="600" [ZIndex]="4000"
+                        [Multiselect]="false"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
+                        (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
+                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
+
 
 <!--
 <fi-mitarbeiter-editor *ngIf="ShowMitarbeitereditor" [Dialogbreite]="600" [Titel]="'Mitarbeiter bearbeiten'" Iconname="people-outline"

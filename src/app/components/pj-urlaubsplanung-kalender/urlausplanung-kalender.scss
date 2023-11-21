@@ -18,19 +18,45 @@
   border: 1px solid #444444;
 }
 
-.tagnamedivclass {
+.feiertagdivclass {
+
+  width: 100%;
+  height: 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+}
+
+.feriendivclass {
+
+  width: 100%;
+  height: 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+}
+
+.taginfodivclass {
 
   font-weight: bold;
-  color: #307ac1;
   width: 100%;
   display: flex;
   justify-content: center; // horizontal
   align-items: center; // vertikal
-  border: 1px solid #444444;
-  height: 30px;
+  height: inherit;
+  height: 36px;
+  color: #307ac1;
 }
 
-.wochendenedivclass {
+.taginfospacedivclass {
+
+  height: 20px;
+  width: 100%;
+}
+
+.wochenendedivclass {
 
   font-weight: bold;
   color: white;
@@ -38,9 +64,17 @@
   display: flex;
   justify-content: center; // horizontal
   align-items: center; // vertikal
-  height: 30px;
+  height: 36px;
   background: #34495E;
 }
+
+.wochenendespacedivclass {
+
+  background: #34495E;
+  height: 20px;
+  width: 100%;
+}
+
 
 .tagdivclass {
 
@@ -48,28 +82,13 @@
   font-weight: bold;
   color: black;
   width: 100%;
-  height: 20px;
+  height: 36px;
   display: flex;
   justify-content: center; // horizontal
   align-items: center; // vertikal
 }
 
-/*
 
-.feiertagdivclass {
-
-  cursor: pointer;
-  font-weight: bold;
-  color: white;
-  width: 100%;
-  display: flex;
-  justify-content: center; // horizontal
-  align-items: center; // vertikal
-  height: 30px;
-  background: lightsteelblue;
-}
-
- */
 
 .buttoninfoclass {
 

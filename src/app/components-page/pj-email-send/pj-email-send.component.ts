@@ -321,6 +321,8 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
     try {
 
+      debugger;
+
       switch (this.Pool.Emailcontent) {
 
         case this.Pool.Emailcontentvarinaten.LOPListe:

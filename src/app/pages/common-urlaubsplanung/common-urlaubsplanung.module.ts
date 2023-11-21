@@ -12,6 +12,7 @@ import {ButtonValueModule} from "../../components/button-value/button-value.modu
 import {AuswahlDialogModule} from "../../components/auswahl-dialog/auswahl-dialog.module";
 import {CheckboxClonModule} from "../../components/checkbox-clon/checkbox-clon.module";
 import {FiMitarbeiterEditorModule} from "../../components-page/fi-mitarbeiter-editor/fi-mitarbeiter-editor.module";
+import {FiMitarbeiterAuswahlModule} from "../../components-page/fi-mitarbeiter-auswahl/fi-mitarbeiter-auswahl.module";
 
 const routes: Routes = [
   {
@@ -34,6 +35,7 @@ const routes: Routes = [
         AuswahlDialogModule,
         CheckboxClonModule,
         FiMitarbeiterEditorModule,
+        FiMitarbeiterAuswahlModule,
     ],
   declarations: [CommonUrlaubsplanungPage]
 })

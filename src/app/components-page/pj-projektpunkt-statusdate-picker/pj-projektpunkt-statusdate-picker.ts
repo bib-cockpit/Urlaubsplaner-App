@@ -10,17 +10,7 @@ import {DatabaseProjekteService} from "../../services/database-projekte/database
 import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
 import {DisplayService} from "../../services/diplay/display.service";
 import 'moment-duration-format';
-
-export type Kalendertagestruktur = {
-
-    Tagnummer:  number;
-    Tag:        string;
-    Kalenderwoche: number;
-    Hauptmonat: boolean;
-    Tagstempel: number;
-};
-
-
+import {Kalendertagestruktur} from "../../dataclasses/kalendertagestruktur";
 
 @Component({
   selector:    'projektpunkt-statusdate-picker',
