@@ -3,11 +3,19 @@
   font-weight: bold;
   color: white;
   width: 30px;
+  border: 1px solid #444444;
+  height: 20px;
   display: flex;
   justify-content: center; // horizontal
   align-items: center; // vertikal
-  border: 1px solid #444444;
+
+}
+.legendeexterndivclass {
+
+  width: 30px;
+  border: 1px solid red;
   height: 20px;
+  font-size: 80%;
   display: flex;
   justify-content: center; // horizontal
   align-items: center; // vertikal

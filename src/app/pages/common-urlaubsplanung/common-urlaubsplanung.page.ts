@@ -22,6 +22,7 @@ import {backspace, languageSharp} from "ionicons/icons";
 import {Urlauzeitspannenstruktur} from "../../dataclasses/urlauzeitspannenstruktur";
 import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
+import {Urlaubsstruktur} from "../../dataclasses/urlaubsstruktur";
 
 @Component({
   selector: 'common-urlaubsplanung-page',
@@ -685,5 +686,20 @@ export class CommonUrlaubsplanungPage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'GetStatusColor', this.Debug.Typen.Page);
     }
+  }
+
+  DisplayExternCheckChanged(event: { status: boolean; index: number; event: any; value: string }, Urlaub: Urlaubsstruktur, i: number) {
+
+    try {
+
+      Urlaub.DisplayExtern = event.status;
+
+      // Hello World wieter hier
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'DisplayExternCheckChanged', this.Debug.Typen.Page);
+    }
+
   }
 }

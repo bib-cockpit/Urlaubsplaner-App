@@ -16,4 +16,5 @@ export type Kalendertagestruktur = {
   Ferienname?: string;
   Background?: string;
   Color?: string;
+  Kuerzel?: string;
 };

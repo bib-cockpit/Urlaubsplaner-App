@@ -11,19 +11,13 @@ import {
 } from '@angular/core';
 import {Moment} from "moment";
 import moment from "moment";
-import {FormBuilder} from "@angular/forms";
 import {DebugProvider} from "../../services/debug/debug";
 import {BasicsProvider} from "../../services/basics/basics";
 import {ConstProvider} from "../../services/const/const";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
-import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
-import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
-import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
-import {Geschossstruktur} from "../../dataclasses/geschossstruktur";
 import {DisplayService} from "../../services/diplay/display.service";
 import 'moment-duration-format';
 import * as lodash from "lodash-es";
-import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
 import {Feiertagestruktur} from "../../dataclasses/feiertagestruktur";
 import {Ferienstruktur} from "../../dataclasses/ferienstruktur";
 import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
@@ -31,7 +25,6 @@ import {Urlauzeitspannenstruktur} from "../../dataclasses/urlauzeitspannenstrukt
 import {Kalendertagestruktur} from "../../dataclasses/kalendertagestruktur";
 import {Subscription} from "rxjs";
 import {ToolsProvider} from "../../services/tools/tools";
-
 
 @Component({
   selector: 'urlaubsplanung-kalender',
@@ -55,6 +48,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
   @Output() AddUrlaubFinished = new EventEmitter<string>();
 
   public Kalendertageliste: Kalendertagestruktur[][];
+  public KalendertageExternliste: Kalendertagestruktur[][][];
   private DataSubscription: Subscription;
   private MitarbeiterSubscription: Subscription;
   private MonateSubscription: Subscription;
@@ -74,6 +68,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
       this.Jahr = 2023;
       this.ShowProtokollpunkte = true;
       this.Kalendertageliste = [];
+      this.KalendertageExternliste = [];
       this.Monatname = 'none';
       this.AddUrlaubRunning = false;
       this.Monatindex = 0;
@@ -121,6 +116,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
       let Startdatum: Moment;
       let Endedatum: Moment;
       let Datum: Moment;
+      let Mitarbeiterindex: number;
 
       this.Monatname = this.DB.Monateliste[this.Monatindex];
 
@@ -242,6 +238,109 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
           Datum.add(1, 'day');
         }
       }
+
+      // Externe Urlaube
+
+      Tageanzahl = moment(this.Jahr.toString() + '-' + Monattext , "YYYY-MM").daysInMonth(); // 31
+      Tagesumme  = Tageanzahl;
+
+      Tagindex  = MonatStartdatum.isoWeekday();
+      Tage      = Tagindex - 1;
+      Tagesumme = Tagesumme + Tage;
+
+      Startdatum  = MonatStartdatum.clone().subtract(Tage, 'day');
+      Datum       = Startdatum.clone();
+
+      Tagindex      = MonatEndedatum.isoWeekday();
+      Tage          = 7 - Tagindex;
+      Tagesumme     = Tagesumme + Tage;
+      Wochenanazahl = Tagesumme / 7;
+
+      this.KalendertageExternliste = [];
+
+      Mitarbeiterindex = 0;
+
+      for(let i = 0; i < this.DB.UrlaublisteExtern.length; i++) {
+
+        if(this.DB.UrlaublisteExtern[i].DisplayExtern) {
+
+          this.KalendertageExternliste[Mitarbeiterindex] = [];
+
+          for(let wochenindex = 0; wochenindex < Wochenanazahl; wochenindex++) {
+
+            this.KalendertageExternliste[Mitarbeiterindex][wochenindex] = [];
+
+            for(let tagindex = 0; tagindex < 7; tagindex++) {
+
+              debugger;
+
+              Tag = {
+
+                Kuerzel: this.DB.UrlaublisteExtern[i].NameKuerzel,
+                Tagnummer:   Datum.date(),
+                Tag: Datum.format('dddd'),
+                Datumstring: Datum.format('DD.MM.YYYY'),
+                Hauptmonat: Datum.isSameOrAfter(MonatStartdatum, 'day') && Datum.isSameOrBefore(MonatEndedatum, 'day'),
+                Kalenderwoche: Datum.isoWeek(),
+                Tagstempel: Datum.valueOf(),
+                Datum: Datum,
+              };
+
+              for(let Zeitspanne of this.DB.CurrentUrlaub.Zeitspannen) {
+
+                Startdatum = moment(Zeitspanne.Startstempel);
+                Endedatum  = moment(Zeitspanne.Endestempel);
+
+                if(Datum.isSameOrAfter(Startdatum, 'day') === true &&
+                  Datum.isSameOrBefore(Endedatum, 'day') === true &&
+                  this.DB.CheckIsFeiertag(Tag, this.DB.Laendercode) === false) {
+
+                  Tag.IsUrlaub = true;
+
+                  switch (Zeitspanne.Status) {
+
+                    case this.DB.Urlaubstatusvarianten.Beantragt:
+
+                      Tag.Background = this.DB.Urlaubsfaben.Beantrag;
+
+                      break;
+
+                    case this.DB.Urlaubstatusvarianten.Vertreterfreigabe:
+
+                      Tag.Background = this.DB.Urlaubsfaben.Vertreterfreigabe;
+
+                      break;
+
+                    case this.DB.Urlaubstatusvarianten.Genehmigt:
+
+                      Tag.Background = this.DB.Urlaubsfaben.Genehmigt;
+
+                      break;
+
+                    case this.DB.Urlaubstatusvarianten.Abgelehnt:
+
+                      Tag.Background = this.DB.Urlaubsfaben.Abgelehnt;
+
+                      break;
+                  }
+
+                  Tag.Color = 'white';
+
+                  break;
+                }
+              }
+
+              this.KalendertageExternliste[Mitarbeiterindex][wochenindex].push(Tag);
+
+              Datum.add(1, 'day');
+            }
+          }
+
+          Mitarbeiterindex++;
+        }
+      }
+
+      debugger;
 
     } catch (error) {
 

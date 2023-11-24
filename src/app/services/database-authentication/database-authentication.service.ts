@@ -154,6 +154,7 @@ export class DatabaseAuthenticationService {
       let message: string;
       let acountliste: any[] = this.MSALService.instance.getAllAccounts();
 
+
       this.Debug.ShowMessage(message, 'SetShowLoginStatus gestartet', 'SetShowLogin', this.Debug.Typen.Service );
 
       if(acountliste.length === 0) {

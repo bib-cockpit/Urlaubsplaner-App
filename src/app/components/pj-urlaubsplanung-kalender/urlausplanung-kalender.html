@@ -23,6 +23,9 @@
             <div class="taginfodivclass">{{Tageliste[Wocheindex].Kalenderwoche}}</div>
             <div *ngIf="DB.ShowFerientage" class="taginfospacedivclass"></div>
             <div *ngIf="DB.ShowFeiertage"  class="taginfospacedivclass"></div>
+            <ng-container *ngFor="let ExternKalender of KalendertageExternliste;">
+              <div class="taginfospacedivclass"></div>
+            </ng-container>
           </div>
         </td>
         <td *ngFor="let Tag of Tageliste; let Tagindex = index" [style.color]="Tag.Hauptmonat === true ? 'black' : 'darkgray'">
@@ -31,6 +34,9 @@
               <div class="wochenendedivclass">{{Tag.Tagnummer}}</div>
               <div  *ngIf="DB.ShowFerientage" class="wochenendespacedivclass"></div>
               <div  *ngIf="DB.ShowFeiertage"  class="wochenendespacedivclass"></div>
+              <ng-container *ngFor="let ExternKalender of KalendertageExternliste;">
+                <div class="wochenendespacedivclass"></div>
+              </ng-container>
             </div>
           </ng-container>
           <ng-container *ngIf="Tagindex < 5">
@@ -50,6 +56,22 @@
                      class="feiertagdivclass" [style.background]="Tag.IsFeiertag ? DB.Feiertagefarbe : Tag.Background">
                   <ion-icon *ngIf="Tag.IsFeiertag" name="flag-outline" color="weiss" style="font-size: 18px"></ion-icon>
                 </div>
+
+                <ng-container *ngFor="let ExternKalender of KalendertageExternliste; let ExternIndex = index;">
+                  <div *ngIf="ExternKalender[Wocheindex][Tagindex].IsUrlaub" class="tagexterndivclass" [style.background]="ExternKalender[Wocheindex][Tagindex].Background">{{ExternKalender[Wocheindex][Tagindex].Kuerzel}}</div>
+                  <div *ngIf="!ExternKalender[Wocheindex][Tagindex].IsUrlaub" class="tagexterndivclass"></div>
+
+
+                  <!--
+
+                  <ng-container *ngFor="let TagelisteExtern of ExternKalender; let ExternWocheindex = index">
+                    <ng-container *ngFor="let TagExtern of TagelisteExtern; let ExternTagindex = index">
+                    </ng-container>
+                  </ng-container>
+                  -->
+
+                </ng-container>
+
               </div>
             </ng-container>
             <ng-container *ngIf="Tag.Hauptmonat === false">

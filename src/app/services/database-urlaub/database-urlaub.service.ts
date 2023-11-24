@@ -2,7 +2,7 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {DebugProvider} from "../debug/debug";
 import * as lodash from "lodash-es";
 import {DatabasePoolService} from "../database-pool/database-pool.service";
-import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import moment, {Moment} from "moment";
 import {ConstProvider} from "../const/const";
@@ -14,6 +14,7 @@ import {Regionenstruktur} from "../../dataclasses/regionenstruktur";
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import {Urlauzeitspannenstruktur} from "../../dataclasses/urlauzeitspannenstruktur";
 import {Kalendertagestruktur} from "../../dataclasses/kalendertagestruktur";
+import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,7 @@ export class DatabaseUrlaubService {
   public Feiertageliste: Feiertagestruktur[];
   public Ferienliste: Ferienstruktur[];
   public CurrentUrlaub: Urlaubsstruktur;
+  public UrlaublisteExtern: Urlaubsstruktur[];
   public CurrentMonatindex: number;
   public LastMonatIndex: number;
   public FirstMonatIndex: number;
@@ -177,7 +179,6 @@ export class DatabaseUrlaubService {
 
     try {
 
-
       let Werte: string[];
       let Jahr: number;
       let Monat: number;
@@ -196,7 +197,13 @@ export class DatabaseUrlaubService {
 
         let http: string = 'https://openholidaysapi.org/PublicHolidays?countryIsoCode=' + landcode + '&validFrom=' + this.Jahr + '-01-01&validTo=' + this.Jahr + '-12-31';
 
-        let FeiertageObserver = this.http.get(http);
+        let headers = new HttpHeaders();
+
+        headers.append('Access-Control-Allow-Origin', '*');
+        headers.append('Access-Control-Allow-Methods', 'POST, GET');
+
+        let options = {headers: headers};
+        let FeiertageObserver = this.http.get(http, options);
 
         FeiertageObserver.subscribe({
 
@@ -381,7 +388,8 @@ export class DatabaseUrlaubService {
     try {
 
       let Standort: Standortestruktur;
-
+      let Mitarbeiter: Mitarbeiterstruktur;
+      let Urlaub: Urlaubsstruktur;
 
       // Land einstellen
 
@@ -445,9 +453,40 @@ export class DatabaseUrlaubService {
         }
       }
 
+      // Fremde Urlaube zur Einsicht vorbereiten
+
+      this.UrlaublisteExtern = [];
+
+      for(let Zeitspanne of this.CurrentUrlaub.Zeitspannen) {
+
+        if(Zeitspanne.VertreterID !== null) {
+
+          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: Zeitspanne.VertreterID});
+
+          if(!lodash.isUndefined(Mitarbeiter)) {
+
+            Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
+
+            if(!lodash.isUndefined(Urlaub)) {
+
+              Urlaub.MitarbeiterIDExtern = Mitarbeiter._id;
+              Urlaub.NameExtern          = Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
+              Urlaub.NameKuerzel         = Mitarbeiter.Kuerzel;
+              Urlaub.DisplayExtern       = true;
+              Urlaub.Zeitspannen         = lodash.filter(Urlaub.Zeitspannen, (spanne: Urlauzeitspannenstruktur) => {
+
+                return spanne.Status !== this.Urlaubstatusvarianten.Abgelehnt;
+              });
+
+              if(Urlaub.Zeitspannen.length > 0) this.UrlaublisteExtern.push(Urlaub);
+            }
+          }
+        }
+      }
+
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Dataabse Urlaub', 'Init', this.Debug.Typen.Service);
     }
   }
 

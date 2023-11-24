@@ -174,16 +174,39 @@
         </tr>
       </ng-container>
       <tr>
-        <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowBeantragt" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Beantragt)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Beantrag"></div></td><td>Beantragter Urlaub</td>
+        <td>
+          <!--
+          <checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowBeantragt" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Beantragt)"></checkbox-clon>
+          -->
+        </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Beantrag"></div></td><td>Beantragter Urlaub</td>
       </tr>
       <tr>
-        <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowVertreterfreigabe" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Vertreterfreigabe)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Urlaub mit Vertreterfreigabe</td>
+        <td>
+          <!--
+          <checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowVertreterfreigabe" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Vertreterfreigabe)"></checkbox-clon>
+          -->
+        </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Urlaub mit Vertreterfreigabe</td>
       </tr>
       <tr>
-        <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowGenehmigt" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Genehmigt)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Genehmigt"></div></td><td>Genehmigter Urlaub</td>
+        <td>
+          <!--
+          <checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowGenehmigt" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Genehmigt)"></checkbox-clon>
+          -->
+        </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Genehmigt"></div></td><td>Genehmigter Urlaub</td>
       </tr>
       <tr>
-        <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowAbgelehnt" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Abgelehnt)"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
+        <td>
+          <!--
+          <checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowAbgelehnt" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Abgelehnt)"></checkbox-clon>
+          -->
+        </td>
+        <td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
+      </tr>
+      <tr *ngFor="let Urlaub of DB.UrlaublisteExtern; let i = index">
+        <td>
+          <checkbox-clon [Checked]="Urlaub.DisplayExtern" (CheckChanged)="DisplayExternCheckChanged($event, Urlaub, i)"></checkbox-clon>
+        </td>
+        <td><div class="legendeexterndivclass">{{Urlaub.NameKuerzel}}</div></td><td>{{Urlaub.NameExtern}}</td>
       </tr>
     </table>
 
