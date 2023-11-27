@@ -1050,8 +1050,10 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       for(let Thumb of thumbliste) {
 
         this.Imageliste.push({
-            FileID: Thumb.id,
-            WebUrl: Thumb.weburl
+            FileID:  Thumb.id,
+            WebUrl:  Thumb.weburl,
+           Filename: Thumb.filename,
+           Filesize: Thumb.size
           }
         );
       }

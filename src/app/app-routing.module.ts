@@ -4,6 +4,9 @@ import {MsalRedirectComponent} from "@azure/msal-angular";
 import {
   PjFestlegungslistePage
 } from "./pages/pj-festlegungsliste/pj-festlegungsliste.page";
+import {
+  CommonUrlaubEinstellungenPageModule
+} from "./pages/common-urlaub-einstellungen/common-urlaub-einstellungen.module";
 
 const routes: Routes = [
   {
@@ -29,8 +32,12 @@ const routes: Routes = [
     loadChildren: () => import('./pages/common-emailliste/common-emailliste.module').then(m => m.CommonEmaillistePageModule),
   },
   {
-    path: 'UrlaubsplanungPage',
-    loadChildren: () => import('./pages/common-urlaubsplanung/common-urlaubsplanung.module').then(m => m.CommonUrlaubsplanungPageModule),
+    path: 'UrlaubPlanungPage',
+    loadChildren: () => import('./pages/common-urlaub-planung/common-urlaub-planung.module').then(m => m.CommonUrlaubsplanungPageModule),
+  },
+  {
+    path: 'UrlaubEinstellungenPage',
+    loadChildren: () => import('./pages/common-urlaub-einstellungen/common-urlaub-einstellungen.module').then(m => m.CommonUrlaubEinstellungenPageModule),
   },
   {
     path: 'FiStandortelistePage',

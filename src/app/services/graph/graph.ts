@@ -1215,6 +1215,7 @@ export class Graphservice {
                   id:        file.id,
                   weburl:    file.webUrl,
                   filename:  file.name,
+                  size:      file.size,
                   mediumurl: result.value[0].medium.url,
                   largeurl:  result.value[0].large.url,
                   smallurl:  result.value[0].small.url,
@@ -1446,6 +1447,8 @@ export class Graphservice {
 
               // this.TeamsRootfilelist.push(Eintrag);
             }
+
+            debugger;
 
             Verzeichnisliste.sort((a: Teamsfilesstruktur, b: Teamsfilesstruktur) => {
 

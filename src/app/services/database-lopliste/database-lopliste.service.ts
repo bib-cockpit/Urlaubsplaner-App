@@ -95,6 +95,7 @@ export class DatabaseLoplisteService {
       this.MaxDatum                = null;
       this.LOPListeEditorViewModus = this.LOPListeEditorViewModusvarianten.Allgemein;
 
+
       this.ServerLOPListeUrl            = this.Pool.CockpitserverURL + '/lopliste';
       this.ServerSaveLOPListeToSitesUrl = this.Pool.CockpitdockerURL + '/savelopliste';
       this.ServerSendLOPListeToSitesUrl = this.Pool.CockpitdockerURL + '/sendlopliste';

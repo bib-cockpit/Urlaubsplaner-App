@@ -25,6 +25,7 @@ import {Notizenkapitelstruktur} from "../../dataclasses/notizenkapitelstruktur";
 import {Fachbereiche, Fachbereichestruktur} from "../../dataclasses/fachbereicheclass";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
+import {Urlaubsstruktur} from "../../dataclasses/urlaubsstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -940,6 +941,13 @@ export class DatabasePoolService {
 
         if(lodash.isUndefined(Eintrag.Kalenderwoche)) Eintrag.Kalenderwoche = 0;
       }
+
+      mitarbeiter.Urlaubsliste.sort((a: Urlaubsstruktur, b: Urlaubsstruktur) => {
+
+        if (a.Jahr < b.Jahr) return -1;
+        if (a.Jahr > b.Jahr) return 1;
+        return 0;
+      });
 
       return mitarbeiter;
 

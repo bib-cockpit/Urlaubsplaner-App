@@ -328,6 +328,33 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+  UrlaubMenueButtonClicked(urlaubmenubereich: string) {
+
+    try {
+
+      this.Menuservice.UrlaubMenuebereich = urlaubmenubereich;
+
+      switch (this.Menuservice.UrlaubMenuebereich) {
+
+        case this.Menuservice.ProjekteMenuebereiche.Aufgabenliste:
+
+          this.Menuservice.Aufgabenlisteansicht = this.Menuservice.Aufgabenlisteansichten.Projekt;
+
+          break;
+
+        default:
+
+          break;
+      }
+
+      this.Menuservice.SetCurrentPage();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'ProjekteMenueButtonClicked', this.Debug.Typen.Component);
+    }
+  }
+
   GetProjekteMenueIconcolor(projektemenubereich: string) {
 
     try {
@@ -349,6 +376,30 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'GetProjekteMenueIconcolor', this.Debug.Typen.Component);
+    }
+  }
+
+  GetUrlaubMenueIconcolor(urlaubmenubereich: string) {
+
+    try {
+
+      return urlaubmenubereich === this.Menuservice.UrlaubMenuebereich ? 'schwarz' : 'weiss';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'GetUrlaubMenueIconcolor', this.Debug.Typen.Component);
+    }
+  }
+
+  GetUrlaubMenueFontcolor(urlaubmenubereich: string) {
+
+    try {
+
+      return urlaubmenubereich === this.Menuservice.UrlaubMenuebereich ? '#000000' : 'white';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'GetUrlaubMenueFontcolor', this.Debug.Typen.Component);
     }
   }
 

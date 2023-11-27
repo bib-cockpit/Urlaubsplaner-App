@@ -294,26 +294,31 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
           File        = this.Graph.GetEmptyTeamsfile();
           File.id     = Bild.FileID;
           File.webUrl = Bild.WebUrl;
+          File.name   = lodash.isUndefined(Bild.Filename) ? 'unbeknannt' : Bild.Filename;
+          File.size   = lodash.isUndefined(Bild.Filesize) ? 0 : Bild.Filesize;
 
           Imageliste.push(File);
         }
 
         for(File of Imageliste) {
 
-          Thumb        = await this.Graph.GetSiteThumbnail(File);
+          Thumb  = await this.Graph.GetSiteThumbnail(File);
 
           if(Thumb !== null) {
 
             Thumb.weburl = File.webUrl;
             Merker       = lodash.find(Liste, {id: File.id});
 
+
             if(lodash.isUndefined(Merker)) Liste.push(Thumb);
           }
           else {
 
-            Thumb        = this.DB.GetEmptyThumbnail();
-            Thumb.id     = File.id;
-            Thumb.weburl = null;
+            Thumb          = this.DB.GetEmptyThumbnail();
+            Thumb.id       = File.id;
+            Thumb.weburl   = null;
+            Thumb.filename = File.name;
+            Thumb.size     = File.size;
 
             Liste.push(Thumb);
           }
@@ -331,6 +336,8 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
           for(let Spaltenindex = 0; Spaltenindex < this.Spaltenanzahl; Spaltenindex++) {
 
             if(!lodash.isUndefined(Liste[Index])) {
+
+              debugger;
 
               this.Thumbnailliste[Zeilenindex][Spaltenindex] = Liste[Index];
             }
@@ -948,6 +955,46 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'GetAnmerkungVerfasser', this.Debug.Typen.Component);
+    }
+  }
+
+  GetThumbsize(Thumb: Thumbnailstruktur) {
+
+    try {
+
+      if(Thumb.size > 1000000) {
+
+        return Math.round(Thumb.size / 1000000).toFixed(2)+ ' MB';
+      }
+      else if(Thumb.size > 1000) {
+
+        return Math.round(Thumb.size / 1000).toFixed(2)+ ' KB';
+      }
+      else {
+
+        return Thumb.size + ' Byte';
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'GetThumbsize', this.Debug.Typen.Component);
+    }
+  }
+
+  DeleteThumbnail(Thumb: Thumbnailstruktur) {
+
+    try {
+
+      this.DB.CurrentProjektpunkt.Bilderliste = lodash.filter(this.DB.CurrentProjektpunkt.Bilderliste, (bild: Projektpunktimagestruktur) => {
+
+        return Thumb.id !== bild.FileID;
+      });
+
+      this.PrepareData();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'DeleteThumbnail', this.Debug.Typen.Page);
     }
   }
 }

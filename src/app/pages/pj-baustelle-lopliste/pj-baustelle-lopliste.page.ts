@@ -1424,13 +1424,14 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
         this.Imageliste.push({
             FileID: Thumb.id,
-            WebUrl: Thumb.weburl
+            WebUrl: Thumb.weburl,
+            Filename: Thumb.filename,
+            Filesize: Thumb.size
           }
         );
       }
 
-
-      // this.ImageIDListe = idliste;
+      debugger;
 
     } catch (error) {
 

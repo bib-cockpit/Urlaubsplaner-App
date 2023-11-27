@@ -247,14 +247,18 @@
                         <ng-container *ngIf="Thumb !== null">
 
 
-                          <table *ngIf="Thumb.weburl !== null">
+                          <table *ngIf="Thumb.weburl !== null" style="width: 100%">
                             <tr>
-                              <td style="padding: 2px">
-                                <img *ngIf="Thumb !== null" [src]="Thumb.largeurl" [style.width.px]="Thumbbreite"/>
+                              <td style="padding: 2px" colspan="2">
+                               <img *ngIf="Thumb !== null" [src]="Thumb.largeurl" [style.width.px]="Thumbbreite"/>
                               </td>
                             </tr>
                             <tr>
-                              <td style="font-size: 90%">{{Thumb.filename}}</td>
+                              <td style="font-size: 90%">Dateiname: {{Thumb.filename !== '' ? Thumb.filename : 'unbekannt'}}</td>
+                              <td rowspan="2" style="width: 30px"><ion-icon name="trash" color="rot" (click)="DeleteThumbnail(Thumb)"></ion-icon></td>
+                            </tr>
+                            <tr>
+                              <td style="font-size: 90%">Größe: {{GetThumbsize(Thumb)}}</td>
                             </tr>
                           </table>
 

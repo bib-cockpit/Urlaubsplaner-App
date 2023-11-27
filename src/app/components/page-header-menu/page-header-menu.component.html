@@ -47,14 +47,54 @@
               </div>
             </td>
             <td *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Urlaubsplanung">
-              <div class="menubuttonclass">
-                <table class="paddingsmalltable">
-                  <tr>
-                    <td><ion-icon name="sunny-outline" [color]="Basics.Ionicfarben.Schwarz"></ion-icon></td>
-                    <td [style.color]="'#000000'">Urlaubsplanung</td>
-                  </tr>
-                </table>
-              </div>
+
+              <table>
+                <tr>
+                  <td>
+                    <div  class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Planung)">
+                      <table class="paddingsmalltable">
+                        <tr>
+                          <td><ion-icon name="create-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Planung)"></ion-icon></td>
+                          <td style="white-space: nowrap;" [style.color]="GetUrlaubMenueFontcolor(Menuservice.UrlaubMenuebereiche.Planung)">Planung</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </td>
+                  <td style="width: 20px"></td>
+                  <td>
+                    <div class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Uebersicht)">
+                      <table class="paddingsmalltable">
+                        <tr>
+                          <td><ion-icon name="calendar-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Uebersicht)"></ion-icon></td>
+                          <td [style.color]="GetUrlaubMenueFontcolor(Menuservice.UrlaubMenuebereiche.Uebersicht)">Übersicht</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </td>
+                  <td style="width: 20px"></td>
+                  <td>
+                    <div class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Freigaben)">
+                      <table class="paddingsmalltable">
+                        <tr>
+                          <td><ion-icon name="thumbs-up-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Freigaben)"></ion-icon></td>
+                          <td [style.color]="GetUrlaubMenueFontcolor(Menuservice.UrlaubMenuebereiche.Freigaben)">Freigaben</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </td>
+                  <td style="width: 20px"></td>
+                  <td>
+                    <div class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Einstellungen)">
+                      <table class="paddingsmalltable">
+                        <tr>
+                          <td><ion-icon name="settings-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Einstellungen)"></ion-icon></td>
+                          <td [style.color]="GetUrlaubMenueFontcolor(Menuservice.UrlaubMenuebereiche.Einstellungen)">Einstellungen</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </table>
             </td>
             <td *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Email">
 

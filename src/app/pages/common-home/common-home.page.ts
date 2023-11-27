@@ -289,7 +289,9 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     try {
 
-      this.Tools.SetRootPage(this.Const.Pages.UrlaubsplanungPage);
+      this.Menuservice.MainMenuebereich = this.Menuservice.MainMenuebereiche.Urlaubsplanung;
+
+      this.Tools.SetRootPage(this.Const.Pages.UrlaubPlanungPage);
 
     } catch (error) {
 

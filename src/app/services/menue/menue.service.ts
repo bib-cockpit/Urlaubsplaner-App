@@ -22,6 +22,15 @@ export class MenueService {
     Urlaubsplanung: 'Urlaubsplanung'
   };
 
+  public UrlaubMenuebereich: string;
+  public UrlaubMenuebereiche = {
+
+    Planung:       'Planung',
+    Uebersicht:    'Uebersicht',
+    Einstellungen: 'Einstellungen',
+    Freigaben:     'Freigaben'
+  };
+
   public ProjekteMenuebereich: string;
   public ProjekteMenuebereiche = {
 
@@ -77,6 +86,7 @@ export class MenueService {
       this.MainMenuebereich     = this.MainMenuebereiche.Projekte;
       this.FirmaMenuebereich    = this.FirmaMenuebereiche.Projekte;
       this.ProjekteMenuebereich = this.ProjekteMenuebereiche.Aufgabenliste;
+      this.UrlaubMenuebereich   = this.UrlaubMenuebereiche.Planung;
       this.Aufgabenlisteansicht = this.Aufgabenlisteansichten.Projekt;
       this.FilelisteAufrufer    = this.FilelisteAufrufervarianten.Aufgabenliste;
 
@@ -108,7 +118,28 @@ export class MenueService {
 
         case this.MainMenuebereiche.Urlaubsplanung:
 
-          this.Tools.SetRootPage(this.Const.Pages.UrlaubsplanungPage);
+          switch (this.UrlaubMenuebereich) {
+
+            case this.UrlaubMenuebereiche.Planung:
+
+              this.Tools.SetRootPage(this.Const.Pages.UrlaubPlanungPage);
+
+              break;
+
+            case this.UrlaubMenuebereiche.Uebersicht:
+
+              break;
+
+            case this.UrlaubMenuebereiche.Einstellungen:
+
+              this.Tools.SetRootPage(this.Const.Pages.UrlaubEinstellungenPage);
+
+              break;
+
+            case this.UrlaubMenuebereiche.Freigaben:
+
+              break;
+          }
 
           break;
 

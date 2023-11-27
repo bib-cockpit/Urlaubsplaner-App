@@ -1321,6 +1321,7 @@ export class DatabaseProjektpunkteService {
       return {
         id:        "",
         filename:  "",
+        size:      0,
         largeurl:  "",
         mediumurl: "",
         smallurl:  "",

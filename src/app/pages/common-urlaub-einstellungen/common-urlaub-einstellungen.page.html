@@ -1,0 +1,160 @@
+<ion-header class="ion-no-border">
+  <page-header #PageHeader>
+    <page-header-menu></page-header-menu>
+  </page-header>
+</ion-header>
+<ion-content>
+
+  <ion-grid *ngIf="DB.CurrentUrlaub !== null">
+    <ion-row>
+      <ion-col>
+        <ion-text color="baeblau" style="font-size: 120%"><b>Projekt beteiligte Mitarbeiter/innen</b></ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <table class="paddingtable">
+            <tr *ngFor="let Mitarbeiter of Mitarbeiterliste">
+              <td>{{Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name}}</td>
+            </tr>
+            <tr>
+              <td><ion-button size="small" color="grau" (click)="MitarbeiterAuswahlClicked()">Mitarbeiter/innen auswählen</ion-button></td>
+            </tr>
+        </table>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-text color="baeblau" style="font-size: 120%"><b>Projekt Stellvertreter/innen</b></ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <table class="paddingtable">
+            <tr *ngFor="let Mitarbeiter of Vertreterliste">
+              <td>{{Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name}}</td>
+            </tr>
+            <tr>
+              <td><ion-button size="small" color="grau" (click)="VertreterAuswahlClicked()">Mitarbeiter/innen auswählen</ion-button></td>
+            </tr>
+        </table>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-text color="baeblau" style="font-size: 120%"><b>Urlaubsfreigabe</b></ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="6">
+        <table class="paddingtable">
+          <tr *ngIf="DB.CurrentUrlaub.FreigeberID !== null">
+            <td>{{GetFreigeberName(DB.CurrentUrlaub.FreigeberID)}}</td>
+          </tr>
+          <tr>
+            <td><ion-button size="small" color="grau" (click)="FreigabeAuswahlClicked()">Mitarbeiter/in auswählen</ion-button></td>
+          </tr>
+        </table>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-text color="baeblau" style="font-size: 120%"><b>Urlaubstage</b></ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="6">
+        <button-value [Buttontext]="'Urlaubsanspruch ' + DB.Jahr.toString()" [Wert_A]="Pool.Mitarbeiterdaten.Urlaub.toString() + ' Tage'" (ButtonClicked)="UrlaubClickedEvent()"></button-value>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="6">
+        <button-value [Buttontext]="'Resturlaub ' + (DB.Jahr - 1).toString()" [Wert_A]="GetResturlaub()" (ButtonClicked)="ResturlaubClickedEvent()"></button-value>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="3">
+        <ion-text color="baeblau" style="font-size: 120%"><b>Schulferien</b></ion-text>
+      </ion-col>
+      <ion-col size="3">
+        <ion-text color="baeblau" style="font-size: 120%"><b>Feiertage</b></ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="3">
+
+        <table class="paddingtable">
+          <tr style="font-weight: bold;">
+            <td></td>
+            <td>Von</td>
+            <td>Bis</td>
+            <td>Name</td>
+          </tr>
+          <tr *ngFor="let Ferien of Ferienliste">
+            <td><checkbox-clon [Checked]="CheckFerienBlocker(Ferien.Anfangstempel)" (CheckChanged)="FerienBlockedChanged($event, Ferien.Anfangstempel)"></checkbox-clon></td>
+            <td>{{GetDatum(Ferien.Anfangstempel)}}</td>
+            <td>{{GetDatum(Ferien.Endestempel)}}</td>
+            <td>{{Ferien.Name}}</td>
+          </tr>
+        </table>
+
+      </ion-col>
+      <ion-col size="3">
+
+        <table class="paddingtable">
+          <tr style="font-weight: bold;">
+            <td></td>
+            <td>Von</td>
+            <td>Bis</td>
+            <td>Name</td>
+          </tr>
+          <tr *ngFor="let Feiertag of Feiertageliste">
+            <td><checkbox-clon [Checked]="CheckFeiertagBlocker(Feiertag.Anfangstempel)" (CheckChanged)="FeiertagBlockedChanged($event, Feiertag.Anfangstempel)"></checkbox-clon></td>
+            <td>{{GetDatum(Feiertag.Anfangstempel)}}</td>
+            <td>{{GetDatum(Feiertag.Endestempel)}}</td>
+            <td>{{Feiertag.Name}}</td>
+          </tr>
+        </table>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+
+</ion-content>
+<ion-footer>
+  <page-footer #PageFooter>
+
+  </page-footer>
+</ion-footer>
+
+
+<auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"
+                [Dialogbreite]="400"  [PositionY]="100"
+                [Titel]="Auswahltitel" [Iconname]="''"
+                (OkClickedEvent)="AuswahlOkButtonClicked($event)"
+                (CancelClickedEvent)="ShowAuswahl = false">
+</auswahl-dialog>
+
+<fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
+                        [Titel]="MitarbeiterauswahlTitel"
+                        [Dialogbreite]="600" [ZIndex]="4000"
+                        [Multiselect]="MitarbeiterMultiselect"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        [OnlyProjektmitarbeiter]="false"
+                        (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
+                        (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
+                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
+
+
+<!--
+<fi-mitarbeiter-editor *ngIf="ShowMitarbeitereditor" [Dialogbreite]="600" [Titel]="'Mitarbeiter bearbeiten'" Iconname="people-outline"
+                       (StandortClickedEvent)="StandortClickedHandler()"
+                       (CancelClickedEvent)="ShowMitarbeitereditor = false"
+                       (OkClickedEvent)="ShowMitarbeitereditor = false"
+                       (AnredeClickedEvent)="AnredeClickedEventHandler()" (UrlaubClickedEvent)="UrlaubClickedEventHandler()"
+                       (FachbereichClickedEvent)="FachbereichClickedHandler()">
+</fi-mitarbeiter-editor>
+-->

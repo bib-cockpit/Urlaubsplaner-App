@@ -272,8 +272,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
             for(let tagindex = 0; tagindex < 7; tagindex++) {
 
-              debugger;
-
               Tag = {
 
                 Kuerzel: this.DB.UrlaublisteExtern[i].NameKuerzel,
@@ -339,8 +337,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
           Mitarbeiterindex++;
         }
       }
-
-      debugger;
 
     } catch (error) {
 

@@ -143,6 +143,7 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
               smallurl: "",
               weburl: Eintrag.WebUrl,
               content: "",
+              size: 0,
               width: {large: 0, medium: 0, small: 0}
             });
           }
@@ -299,6 +300,8 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
       let Liste: Thumbnailstruktur[] = [];
       let Content: any;
 
+      debugger;
+
       let Imageliste: Teamsfilesstruktur[] = lodash.filter(this.GraphService.TeamsCurrentfilelist, (fileitem: Teamsfilesstruktur) => {
 
           if(!lodash.isUndefined(fileitem.file)) {
@@ -320,11 +323,14 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
 
         Thumb = await this.GraphService.GetSiteThumbnail(File);
 
+        debugger;
+
         if(Thumb !== null) {
 
-          Thumb.weburl = File.webUrl;
-          Merker        = lodash.find(Liste, {id: File.id});
-          // Thumb.content = await this.GraphService.GetSiteThumbnailContent(Thumb, 'medium');
+          Thumb.weburl   = File.webUrl;
+          Thumb.filename = File.name;
+          Thumb.size     = File.size;
+          Merker         = lodash.find(Liste, {id: File.id});
 
           if(lodash.isUndefined(Merker)) {
 
@@ -438,7 +444,6 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
 
           await this.GraphService.GetSiteThumbnail(fileitem);
 
-
           break;
 
         default:
@@ -457,6 +462,8 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
   ThumbnailClicked(Thumb: Thumbnailstruktur) {
 
     try {
+
+      debugger;
 
       let Test: Thumbnailstruktur;
 

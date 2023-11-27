@@ -54,6 +54,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
   public Mitarbeiterliste: Mitarbeiterstruktur[];
   private FilterSubscription: Subscription;
   public PositionY: number;
+  public AuswahlIDListeSicherung: string[];
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -118,6 +119,8 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     try {
+
+      this.AuswahlIDListeSicherung = lodash.cloneDeep(this.AuswahlIDliste);
 
       if(this.Alphabetcomponent) this.Alphabetcomponent.InitScreen();
 
@@ -377,13 +380,30 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
       // Anpassung in der Gesamtliste
 
-      Mitarbeiter = <Mitarbeiterstruktur>lodash.find(this.Mitarbeiterliste, {id: this.Anzeigeliste[result.index]._id});
+      Mitarbeiter = <Mitarbeiterstruktur>lodash.find(this.Mitarbeiterliste, {_id: this.Anzeigeliste[result.index]._id});
 
-      if(!lodash.isUndefined(Mitarbeiter)) Mitarbeiter.Selected = result.status;
+      if(!lodash.isUndefined(Mitarbeiter)) {
+
+        Mitarbeiter.Selected = result.status;
+
+
+        if(result.status === true) {
+
+          this.AuswahlIDliste.push(Mitarbeiter._id);
+        }
+        else {
+
+          this.AuswahlIDliste = lodash.filter(this.AuswahlIDliste, (id: string) => {
+
+            return id !== Mitarbeiter._id;
+          });
+        }
+      }
 
       // Anpassung in der Anzeigeliste
 
       this.Anzeigeliste[result.index].Selected = result.status;
+
 
     } catch (error) {
 
@@ -397,6 +417,8 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
     try {
 
+      this.AuswahlIDliste = lodash.cloneDeep(this.AuswahlIDListeSicherung);
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Auswahl', 'CancelButtonClicked', this.Debug.Typen.Component);
@@ -405,17 +427,20 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
   OkButtonClicked() {
 
+    /*
     let IDListe: string[] = [];
 
     for(let Mitarbeiter of this.Anzeigeliste) {
 
       if(!lodash.isUndefined(Mitarbeiter.Selected) && Mitarbeiter.Selected === true) {
 
-        IDListe.push(Mitarbeiter._id);
+        this.A.push(Mitarbeiter._id);
       }
     }
 
-    this.OkClickedEvent.emit(IDListe);
+     */
+
+    this.OkClickedEvent.emit(this.AuswahlIDliste);
 
     try {
 
