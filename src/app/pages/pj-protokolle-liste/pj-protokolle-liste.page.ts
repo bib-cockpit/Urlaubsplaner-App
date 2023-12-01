@@ -220,7 +220,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
       this.DB.CurrentProtokoll = this.DB.GetEmptyProtokoll();
       this.ShowProtokollEditor = true;
-      this.Dialogbreite        = 1400;
+      this.Dialogbreite        = 1500;
 
     } catch (error) {
 
@@ -567,6 +567,8 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
         this.DBProjektpunkte.CurrentProjektpunkt = this.DBProjektpunkte.GetNewProtokollpunkt(this.DB.CurrentProtokoll);
         this.ShowProjektpunktEditor              = true;
+
+        debugger;
       }
     } catch (error) {
 
@@ -804,7 +806,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
       this.DB.CurrentProtokoll = lodash.cloneDeep(Protokoll);
       this.ShowProtokollEditor = true;
-      this.Dialogbreite        = 1400;
+      this.Dialogbreite        = 1500;
 
     } catch (error) {
 

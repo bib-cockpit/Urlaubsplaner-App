@@ -54,7 +54,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
   @Output() CancelClickedEvent      = new EventEmitter<any>();
   @Output() OkClickedEvent          = new EventEmitter<any>();
-  @Output() StatusClicked           = new EventEmitter<any>();
+  // @Output() StatusClicked           = new EventEmitter<any>();
   @Output() FachbereichClicked      = new EventEmitter<any>();
   @Output() TerminButtonClicked     = new EventEmitter<any>();
   @Output() KostengruppeClicked     = new EventEmitter<any>();
@@ -1181,6 +1181,30 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'GetKostengruppennamen', this.Debug.Typen.Component);
+    }
+  }
+
+  StatusClicked(status: string) {
+
+    try {
+
+      this.DB.CurrentProjektpunkt.Status = status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'StatusClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  StatusChangedHandler(status: any) {
+
+    try {
+
+      this.DB.CurrentProjektpunkt.Status = status.detail.value;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'StatusChangedHandler', this.Debug.Typen.Component);
     }
   }
 }

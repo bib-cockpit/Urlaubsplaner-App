@@ -96,7 +96,7 @@
 .statusdivclass {
 
   width: 100%;
-  height: 100%;
+  height: 28px;
   display: flex;
   justify-content: center; // horizontal
   align-items:     center; // vertikal
@@ -152,8 +152,6 @@
     justify-content: flex-start; // horizontal
     align-items: center; // vertikal
     cursor: pointer;
-    padding: 4px;
-    // border-radius: 3px;
   }
 
   .aufgabedivhoverclass:hover {

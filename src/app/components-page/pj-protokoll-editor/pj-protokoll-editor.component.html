@@ -197,32 +197,21 @@
 
               <div style="padding: 4px">
 
-                <div style="width: 100%;" [style.height.px]="Titelhoehe">
-                  <ion-grid>
-                    <ion-row>
-                      <ion-col size="3">
-                        <ion-text color="burnicklgruen"><b>{{DBProjekte.CurrentProjekt !== null ? DBProjekte.CurrentProjekt.Projektname : 'Projekt unbekannt' }}</b></ion-text>
-                      </ion-col>
-                    </ion-row>
-                    <ion-row>
-                      <ion-col size="3">
-                        <ion-text color="burnicklgruen">
-                          <b>
-                            {{DB.CurrentProtokoll.Titel}} &bull; {{GetDatum().format('DD.MM.YYYY')}}
-                          </b>
-                        </ion-text>
-                      </ion-col>
-                    </ion-row>
-                  </ion-grid>
-                </div>
-
                   <table class="listeheaderclass" style="color: black; width: 100%">
                     <tr>
+                      <td colspan="4">
+                        <ion-text color="baeblau">{{DB.CurrentProtokoll.Titel}} &bull; {{GetDatum().format('DD.MM.YYYY')}}</ion-text>
+                      </td>
+                      <td colspan="2" style="width: 260px; text-align: center"><b>Zuständig</b></td>
+                    </tr>
+                    <tr>
                       <td style="width: 30px; text-align: center"><b>Nr.</b></td>
+                      <td style="width: 80px; text-align: center"><b>Bereich</b></td>
                       <td style="width: 600px"><b>Beschreibung</b></td>
-                      <td style="width: 90px"><b>Termin</b></td>
-                      <td style="width: 110px"><b>Status</b></td>
-                      <td style="width: 160px; text-align: center"><b>Zuständig</b></td>
+                      <td style="width: 90px; text-align: center;"><b>Termin</b></td>
+                      <td style="width: 110px; text-align: center"><b>Status</b></td>
+                      <td style="width: 130px; text-align: center; color: #307ac1;"><b>BAE</b></td>
+                      <td style="width: 130px; text-align: center"><b>Firma</b></td>
                     </tr>
                     <tr *ngFor="let Projektpunkt of Punkteliste; let Punkteindex = index">
 
@@ -236,21 +225,38 @@
                             </tr>
                           </table>
                         </td>
+
+                        <!--- Bereich -->
+
+                      <td align="center">
+
+                        <table class="nobordersmalltable">
+                          <tr>
+                            <td style="text-align: center; font-size: 90%">{{Projektpunkt.Fachbereich}}</td>
+                          </tr>
+                        </table>
+
+                      </td>
+
                         <td valign="top" style="height: inherit;">
 
                           <!-- Aufgabe --->
+
+
 
                           <table class="nobordersmalltable" style="width: 100%;">
                             <tr>
                               <td>
                                 <div (click)="ProtokollpunktClicked.emit(Projektpunkt)" class="aufgabedivclass">
 
-                                  <table style="font-size: 90%">
+                                  <table>
                                     <tr *ngIf="Projektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name">
-                                      <td [innerHTML]="GetKostengruppe(Projektpunkt)" style="color: #FF9333; font-weight: bold; vertical-align: top; min-width: 20px" ></td>
+                                      <td  [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
+                                           [innerHTML]="GetKostengruppe(Projektpunkt)" style="color: #FF9333; font-weight: bold; vertical-align: top; min-width: 20px" ></td>
                                     </tr>
                                     <tr>
-                                      <td [innerHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe: 'html'"></td>
+                                      <td [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
+                                          [innerHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe: 'html'"></td>
                                     </tr>
                                   </table>
 
@@ -322,20 +328,13 @@
 
                           <!-- Termin -->
 
-                          <div style="height: 100%; padding: 6px;" *ngIf="Projektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name &&
+                          <div class="statusdivclass" *ngIf="Projektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name &&
                               Projektpunkt.Status !== Const.Projektpunktstatustypen.Festlegung.Name &&
                               Projektpunkt.Status !== Const.Projektpunktstatustypen.Geschlossen.Name &&
                               Projektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name"
+                               [style.color]="DBProjektpunkte.CheckProjektpunktFaellig(Projektpunkt) === Const.Faelligkeitsstatus.Nicht_faellig ? 'black' : 'white'"
                                [style.background]="DBProjektpunkte.GetFaelligBackground(Projektpunkt)">
-
-                            <table width="100%" class="nobordersmalltable">
-                              <tr>
-                                <td style="font-size: 90%; text-align: center" [style.color]="DBProjektpunkte.CheckProjektpunktFaellig(Projektpunkt) === Const.Faelligkeitsstatus.Nicht_faellig ? 'black' : 'white'">
                                   {{GetTermindatum(Projektpunkt)}}
-                                </td>
-                              </tr>
-                            </table>
-
                           </div>
 
                         </td>
@@ -353,7 +352,7 @@
 
                         <td style="height: inherit;">
 
-                          <!-- Zuständig -->
+                          <!-- Zuständig BAE -->
 
                           <table class="nobordersmalltable" style="width: 100%">
                             <tr  *ngFor="let ZustaendigID of Projektpunkt.ZustaendigeInternIDListe">
@@ -361,28 +360,28 @@
                                 {{DB.GetZustaendigInternName(ZustaendigID)}}
                               </td>
                             </tr>
-                            <tr *ngIf="Projektpunkt.ZustaendigeExternIDListe.length > 0 && Projektpunkt.ZustaendigeInternIDListe.length > 0">
-                              <td style="text-align: center; font-size: 180%; font-weight: bold">&bull;</td>
-                            </tr>
+                          </table>
+                        </td>
+                        <td style="height: inherit;">
+
+                          <!-- Zuständig Firma -->
+
+                          <table class="nobordersmalltable" style="width: 100%">
                             <tr *ngFor="let ZustaendigID of Projektpunkt.ZustaendigeExternIDListe">
                               <td style="text-align: center; color: black; font-size: 90%">
                                 {{DB.GetZustaendigExternName(ZustaendigID)}}
                               </td>
                             </tr>
                           </table>
-                        </td>
 
-                      </tr>
+                      </td>
+                    </tr>
                   </table>
 
                   <ion-grid>
                     <ion-row>
                       <ion-col>
-                        <ion-button size="small" [color]="Valid === true ? 'burnicklbraun' : 'grau'"
-                                    (click)="Valid === true ? AddProtokollpunktClicked.emit() : null">
-                          <ion-icon name="add-circle-outline" color="weiss" slot="start"></ion-icon>
-                          <ion-text color="weiss">Neuer Eintrag</ion-text>
-                        </ion-button>
+
                       </ion-col>
                     </ion-row>
                     <ion-row>
@@ -411,6 +410,13 @@
         <page-footer>
           <table class="paddingsmalltable" width="100%">
             <tr>
+              <td *ngIf="Bereich === Bereiche.Themenliste">
+                <ion-button size="small" [color]="Valid === true ? 'burnicklbraun' : 'grau'"
+                            (click)="Valid === true ? AddProtokollpunktClicked.emit() : null">
+                  <ion-icon name="add-circle-outline" color="weiss" slot="start"></ion-icon>
+                  <ion-text color="weiss">Neuer Eintrag</ion-text>
+                </ion-button>
+              </td>
               <td>
                 <div class="rootbuttonclass" (click)="CancelButtonClicked()">
                   <ion-icon style="font-size: 28px" color="weiss" name="close-outline"></ion-icon>

@@ -111,6 +111,8 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
         this.PrepareData();
       });
 
+      this.PrepareData();
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'OnInit', this.Debug.Typen.Page);

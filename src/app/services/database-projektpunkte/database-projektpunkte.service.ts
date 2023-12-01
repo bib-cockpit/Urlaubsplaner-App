@@ -914,7 +914,7 @@ export class DatabaseProjektpunkteService {
         Listenposition:  parseInt(Nummer) - 1,
         Aufgabe:         "",
         Thematik:        "",
-        Status:          this.Const.Projektpunktstatustypen.Protokollpunkt.Name, // this.GetProjektpunktstusByName().Name,
+        Status:          this.Const.Projektpunktstatustypen.Offen.Name, // this.GetProjektpunktstusByName().Name,
         Deleted:         false,
         Endezeitstempel:   Endezeitstempel,
         Endezeitstring:    Endezeitpunkt,

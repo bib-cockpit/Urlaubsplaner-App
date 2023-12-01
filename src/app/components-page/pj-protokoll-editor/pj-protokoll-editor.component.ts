@@ -6,9 +6,6 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  QueryList,
-  ViewChild,
-  ViewChildren, ViewEncapsulation
 } from '@angular/core';
 import {ToolsProvider} from '../../services/tools/tools';
 import {BasicsProvider} from '../../services/basics/basics';
@@ -17,19 +14,15 @@ import {ConstProvider} from '../../services/const/const';
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 import {Subscription} from "rxjs";
 import * as lodash from "lodash-es";
-import {AuswahlDialogComponent} from "../../components/auswahl-dialog/auswahl-dialog";
 import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
 import {Moment} from 'moment';
 import moment from 'moment';
 import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
-import {LoadingAnimationService} from "../../services/loadinganimation/loadinganimation";
 import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
 import {DatabaseProtokolleService} from "../../services/database-protokolle/database-protokolle.service";
 import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 import {DisplayService} from "../../services/diplay/display.service";
-import {InputCloneComponent} from "../../components/input-clone/input-clone.component";
-import {DatabaseProjektbeteiligteService} from "../../services/database-projektbeteiligte/database-projektbeteiligte.service";
 import * as Joi from "joi";
 import {Protokollstruktur} from "../../dataclasses/protokollstruktur";
 import {ObjectSchema} from "joi";
@@ -41,13 +34,11 @@ import {Graphservice} from "../../services/graph/graph";
 import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
 import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
 import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
-// import tinymce from "../../../assets/tinymce/tinymce";
 
 @Component({
   selector:    'pj-protokoll-editor',
   templateUrl: 'pj-protokoll-editor.component.html',
   styleUrls: ['pj-protokoll-editor.component.scss'],
-  // encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewInit {
 
@@ -134,8 +125,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
               public KostenService: KostengruppenService,
               public Displayservice: DisplayService,
               public GraphService: Graphservice,
-              private LoadingAnimation: LoadingAnimationService,
-              private Pool: DatabasePoolService) {
+              public Pool: DatabasePoolService) {
     try {
 
       this.Bereich                  = this.Bereiche.Allgemein;
@@ -477,27 +467,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
   }
 
-  DeleteImageClicked(Projektpunkt: Projektpunktestruktur) {
-
-    try {
-
-      // this.DBProjektpunkte.CurrentProtokoll = Projektpunkt;
-
-      /*
-      this.StopSaveProtokollTimer();
-
-      this.PoolStorage.DeleteProjektpunktImage(Projektpunkt, this.DBProjekte.CurrentProjekt).then(() => {
-
-        this.StartSaveProtokollTimer();
-      });
-
-       */
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ZoomImageClicked', this.Debug.Typen.Component);
-    }
-  }
 
   CancelButtonClicked() {
 

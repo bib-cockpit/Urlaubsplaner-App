@@ -205,6 +205,20 @@ a:active {
   color: #FF9333;
 }
 
+.statusdivclass {
+
+  border: 2px solid #7b6a58;
+  cursor: pointer;
+  width: 120px;
+  height: 32px;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items:     center; // vertikal
+  flex-wrap: wrap;
+  color: black;
+  border-radius: 3px;
+}
+
 
 
 

@@ -42,22 +42,22 @@
               <ion-col size="6">
 
                 <ion-grid>
+                  <!--
                   <ion-row>
                     <ion-col size="3">
                       <button-value (ButtonClicked)="VerfasserButtonClicked.emit()" [Wert_A]="DB.CurrentProjektpunkt.Verfasser.Vorname + ' ' + DB.CurrentProjektpunkt.Verfasser.Name" [Buttontext]="'Verfasser'">
                       </button-value>
                     </ion-col>
                   </ion-row>
+                  -->
                   <ion-row>
                     <ion-col size="3">
                       <button-value [Buttontext]="'Leistungsphase'"
                                     [Wert_A]="DB.CurrentProjektpunkt.Leistungsphase !== Const.NONE ? DB.CurrentProjektpunkt.Leistungsphase : 'unbekannt'"
                                     (ButtonClicked)="LeistungsphaseClickedEvent.emit()"></button-value>
                     </ion-col>
-                  </ion-row>
-                  <ion-row *ngIf="DB.CurrentProjektpunkt.ProtokollID !== null">
                     <ion-col size="3">
-
+                      <button-value [Buttontext]="'Fachbereich'" [Wert_A]="DB.CurrentProjektpunkt.Fachbereich" (ButtonClicked)="FachbereichClicked.emit()"></button-value>
                     </ion-col>
                   </ion-row>
                   <ion-row>
@@ -76,6 +76,7 @@
                       -->
                     </ion-col>
                   </ion-row>
+                    <!--
                   <ion-row>
                     <ion-col size="3" *ngIf="Pool.Mitarbeiterdaten !== null">
                       <button-value [Buttontext]="'Fachbereich'" [Wert_A]="DB.CurrentProjektpunkt.Fachbereich" (ButtonClicked)="FachbereichClicked.emit()"></button-value>
@@ -86,6 +87,7 @@
                                     [Buttonvaluecolor]="DB.GetStatuscolor(DB.CurrentProjektpunkt)" [Enabled]="StatusbuttonEnabled" (ButtonClicked)="StatusClicked.emit()"></button-value>
                     </ion-col>
                   </ion-row>
+                    -->
                   <ion-row *ngIf="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name">
                     <ion-col size="6">
                       <table style="width: 100%">
@@ -179,7 +181,75 @@
                   -->
                   <ion-row>
                     <ion-col>
-                      <ion-text color="burnicklgruen"><b>Thema</b></ion-text>
+                      <ion-text color="baeblau"><b>Status</b></ion-text>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="DB.CurrentProjektpunkt">
+                    <ion-col>
+
+                      <ion-radio-group [value]="DB.CurrentProjektpunkt.Status" (ionChange)="StatusChangedHandler($event)">
+
+                        <table class="paddingsmalltable">
+                          <tr>
+                            <td><ion-radio [value]="Const.Projektpunktstatustypen.Offen.Name"></ion-radio></td>
+                            <td>
+                              <div class="statusdivclass"
+                                   [style.color]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Offen.Name ? 'white' : 'black'"
+                                   [style.background]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Offen.Name ? DB.GetProjektpunktstusByName(DB.CurrentProjektpunkt.Status).Color : 'white'"
+                                    (click)="StatusClicked(Const.Projektpunktstatustypen.Offen.Name)">Offen</div>
+                            </td>
+                            <td style="width: 10px;"></td>
+                            <td><ion-radio [value]="Const.Projektpunktstatustypen.Bearbeitung.Name"></ion-radio></td>
+                            <td>
+                              <div class="statusdivclass"
+                                   [style.color]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Bearbeitung.Name ? 'white' : 'black'"
+                                   [style.background]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Bearbeitung.Name ? DB.GetProjektpunktstusByName(DB.CurrentProjektpunkt.Status).Color : 'white'"
+                                   (click)="StatusClicked(Const.Projektpunktstatustypen.Bearbeitung.Name)">Bearbeitung</div>
+                            </td>
+                            <td style="width: 10px;"></td>
+                            <td><ion-radio [value]="Const.Projektpunktstatustypen.Geschlossen.Name"></ion-radio></td>
+                            <td>
+                              <div class="statusdivclass"
+                                   [style.color]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Geschlossen.Name ? 'white' : 'black'"
+                                   [style.background]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Geschlossen.Name ? DB.GetProjektpunktstusByName(DB.CurrentProjektpunkt.Status).Color : 'white'"
+                                   (click)="StatusClicked(Const.Projektpunktstatustypen.Geschlossen.Name)">Geschlossen</div>
+                            </td>
+                            <td style="width: 10px;"></td>
+                            <td><ion-radio [value]="Const.Projektpunktstatustypen.Ruecklauf.Name"></ion-radio></td>
+                            <td>
+                              <div class="statusdivclass"
+                                   [style.color]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Ruecklauf.Name ? 'white' : 'black'"
+                                   [style.background]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Ruecklauf.Name ? DB.GetProjektpunktstusByName(DB.CurrentProjektpunkt.Status).Color : 'white'"
+                                   (click)="StatusClicked(Const.Projektpunktstatustypen.Ruecklauf.Name)">Rücklauf</div>
+                            </td>
+                            <td style="width: 10px;"></td>
+                              <td><ion-radio [value]="Const.Projektpunktstatustypen.Festlegung.Name"></ion-radio></td>
+                            <td>
+                              <div class="statusdivclass"
+                                   [style.color]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name ? 'white' : 'black'"
+                                   [style.background]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name ? DB.GetProjektpunktstusByName(DB.CurrentProjektpunkt.Status).Color : 'white'"
+                                   (click)="StatusClicked(Const.Projektpunktstatustypen.Festlegung.Name)">Festlegung</div>
+                            </td>
+                            <td style="width: 10px;"></td>
+                            <td>
+                            <td><ion-radio [value]="Const.Projektpunktstatustypen.Protokollpunkt.Name"></ion-radio></td>
+                            <td>
+                              <div class="statusdivclass"
+                                   [style.color]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Protokollpunkt.Name ? 'white' : 'black'"
+                                   [style.background]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Protokollpunkt.Name ? DB.GetProjektpunktstusByName(DB.CurrentProjektpunkt.Status).Color : 'white'"
+                                   (click)="StatusClicked(Const.Projektpunktstatustypen.Protokollpunkt.Name)">Info</div>
+                            </td>
+                          </tr>
+                        </table>
+
+
+                      </ion-radio-group>
+
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-text color="baeblau"><b>Thema</b></ion-text>
                     </ion-col>
                   </ion-row>
                   <ion-row>
@@ -287,7 +357,7 @@
             </ion-row>
             <ion-row>
               <ion-col>
-                <ion-text color="burnicklgruen"><b>{{DB.CurrentProjektpunkt.Anmerkungenliste.length > 1 ? 'Anmerkungen' : 'Anmerkung'}}</b></ion-text>
+                <ion-text color="baeblau"><b>{{DB.CurrentProjektpunkt.Anmerkungenliste.length > 1 ? 'Anmerkungen' : 'Anmerkung'}}</b></ion-text>
               </ion-col>
             </ion-row>
             <ion-row>
@@ -347,7 +417,7 @@
             </ion-row>
             <ion-row>
               <ion-col>
-                <ion-text color="burnicklgruen"><b>{{DB.CurrentProjektpunkt.Bilderliste.length > 1 ? 'Bilder' : 'Bild'}}</b></ion-text>
+                <ion-text color="baeblau"><b>{{DB.CurrentProjektpunkt.Bilderliste.length > 1 ? 'Bilder' : 'Bild'}}</b></ion-text>
               </ion-col>
             </ion-row>
             <ion-row>

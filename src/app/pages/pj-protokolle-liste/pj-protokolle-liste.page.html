@@ -31,9 +31,9 @@
           <td style="width: 80px; font-weight: bold">LPH</td>
           -->
           <td style="width: auto; font-weight: bold">Titel</td>
-          <td style="width: 80px; font-weight: bold">Einträge</td>
-          <td style="width: 60px; font-weight: bold">Offen</td>
-          <td style="width: 80px; font-weight: bold">Status</td>
+          <td style="width: 80px; font-weight: bold; text-align: center">Einträge</td>
+          <td style="width: 60px; font-weight: bold; text-align: center">Offen</td>
+          <td style="width: 80px; font-weight: bold; text-align: center">Status</td>
         </tr>
       </table>
 
@@ -43,8 +43,8 @@
       <div  *ngFor="let Protokoll of Protokollliste;"  style="width: 100%; padding-left: 8px; padding-right: 8px">
         <table width="100%" class="docinnertablenew">
           <tr>
-            <td style="width: 60px; height: 40px">{{Protokoll.Protokollnummer}}</td>
-            <td style="width: 100px;">{{Protokoll.Zeitstring}}</td>
+            <td style="width: 60px; height: 40px" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">{{Protokoll.Protokollnummer}}</td>
+            <td style="width: 100px;" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">{{Protokoll.Zeitstring}}</td>
               <!--
             <td style="width: 80px;">
               {{Protokoll.Leistungsphase !== Const.NONE ? Protokoll.Leistungsphase : ''}}
@@ -54,18 +54,18 @@
               <div (click)="ProtokollClicked(Protokoll)" class="protokolldivclass">
 
               <ng-container *ngIf="Protokoll.Filtered !== true">
-                {{Protokoll.Titel}}
+               <span [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">{{Protokoll.Titel}}</span>
               </ng-container>
               <ng-container *ngIf="Protokoll.Filtered === true">
-                <span>{{Protokoll.Text_A}}</span><span style="color: orange">{{Protokoll.Text_B}}</span><span>{{Protokoll.Text_C}}</span>
+                <span [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">{{Protokoll.Text_A}}</span><span style="color: orange" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">{{Protokoll.Text_B}}</span><span [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">{{Protokoll.Text_C}}</span>
               </ng-container>
 
               </div>
 
             </td>
 
-            <td style="width: 80px;">{{Protokoll.ProjektpunkteIDListe.length !== 0 ? Protokoll.ProjektpunkteIDListe.length : 'leer'}}</td>
-            <td style="width: 60px;" [style.color]="Protokoll.Punkteanzahl > 0 ? 'red' : 'green'">{{Protokoll.Punkteanzahl > 0 ? Protokoll.Punkteanzahl  : '0'}}</td>
+            <td style="width: 80px; text-align: center" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">{{Protokoll.ProjektpunkteIDListe.length !== 0 ? Protokoll.ProjektpunkteIDListe.length : 'leer'}}</td>
+            <td style="width: 60px; text-align: center" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize" [style.color]="Protokoll.Punkteanzahl > 0 ? 'red' : 'green'">{{Protokoll.Punkteanzahl > 0 ? Protokoll.Punkteanzahl  : '0'}}</td>
             <td style="width: 80px;">
               <div *ngIf="Protokoll.ProjektpunkteIDListe.length > 0"class="maildivclass" (click)="SendMailButtonClicked($event, Protokoll)">
                 <table class="nobordersmalltable">
