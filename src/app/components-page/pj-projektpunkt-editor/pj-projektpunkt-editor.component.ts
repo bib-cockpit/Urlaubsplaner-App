@@ -1165,6 +1165,8 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     try {
 
+      console.log('');
+
       let Text: string = 'unbekannt';
       let Kostengruppe: Kostengruppenstruktur = this.KostenService.GetKostengruppeByFestlegungskategorieID(this.DB.CurrentProjektpunkt.FestlegungskategorieID);
       let Festlegungskategorie: Festlegungskategoriestruktur = lodash.find(this.Pool.Festlegungskategorienliste[this.DBProjekt.CurrentProjekt.Projektkey], {_id: this.DB.CurrentProjektpunkt.FestlegungskategorieID});
