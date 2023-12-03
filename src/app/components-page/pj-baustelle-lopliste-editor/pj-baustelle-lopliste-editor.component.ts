@@ -80,7 +80,6 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
   public ShowDatumStatusDialog: boolean;
   public CanDelete: boolean;
   public CreatePDFRunning: boolean;
-  public PageLoaded: boolean;
   public ShowUpload: boolean;
   public Zoomfaktorenliste: number[];
   public isHovering: boolean;
@@ -89,10 +88,6 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
   public Valid: boolean;
   public Bereich: string;
   private JoiShema: ObjectSchema;
-  public Gesamthoehe: number;
-  public Titelhoehe: number;
-  public Listeheaderhoehe: number;
-  public Listehoehe: number;
   private ComponentLoaded: boolean;
   public  Beteiligtenliste: Projektbeteiligtestruktur[][];
   public Mitarbeiterliste: Mitarbeiterstruktur[];
@@ -102,7 +97,6 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
   @Input() Titel: string;
   @Input() Iconname: string;
   @Input() Dialogbreite: number;
-  @Input() Dialoghoehe: number;
   @Input() PositionY: number;
   @Input() ZIndex: number;
 
@@ -122,10 +116,6 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
       this.Bereich                  = this.DB.LOPListeEditorViewModus;
       this.Zoomfaktorenliste        = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4];
       this.isHovering               = false;
-      this.Gesamthoehe              = 0;
-      this.Titelhoehe               = 0;
-      this.Listeheaderhoehe         = 0;
-      this.Listehoehe               = 0;
       this.Valid                    = false;
       this.Projektbeteiligteliste   = [];
       this.Punkteliste              = [];
@@ -145,7 +135,6 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
       this.Titel = this.Const.NONE;
       this.Iconname = 'help-circle-outline';
       this.Dialogbreite = 400;
-      this.Dialoghoehe = 300;
       this.PositionY = 100;
       this.ZIndex = 2000;
       this.Mitarbeiterliste = [];
@@ -164,14 +153,10 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
 
       this.SetupValidation();
 
-      this.Gesamthoehe      = this.Dialoghoehe;
-      this.Titelhoehe       = 70;
-      this.Listeheaderhoehe = 30;
-      this.Listehoehe       = this.Gesamthoehe - this.Titelhoehe - this.Listeheaderhoehe;
-      this.CanDelete        = false;
+     this.CanDelete         = false;
       this.CreatePDFRunning = false;
-      this.ComponentLoaded       = false;
-      this.Bereich          = this.DB.LOPListeEditorViewModus;
+      this.ComponentLoaded  = false;
+      this.Bereich          = this.DB.CurrentLOPListe._id !== null ? this.DB.LOPListeEditorViewModusvarianten.Eintraege : this.DB.LOPListeEditorViewModusvarianten.Allgemein;
 
       /*
 

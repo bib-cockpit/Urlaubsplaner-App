@@ -116,7 +116,7 @@
 </ion-footer>
 
 
-<pj-protokoll-editor *ngIf="ShowProtokollEditor"  [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="100"
+<pj-protokoll-editor *ngIf="ShowProtokollEditor"  [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="0"
                      [Titel]="GetProtokollTitel()" Iconname="book-outline"
                      [ZIndex]="2000"
                      (OkClickedEvent)="ShowProtokollEditor = false"
@@ -127,10 +127,9 @@
                      (ThumbnailClickedEvent)="ThumbnailClickedEventHandler($event)"
                      (AddProtokollpunktClicked)="AddProtokollpunktClickedHandler()"></pj-protokoll-editor>
 
-<pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="100"
+<pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="0"
                         [ZIndex]="3000" [Titel]="GetProjektpunkteditorTitel()" Iconname="book-outline"
-                        [TerminValueBreite]="420"
-                        (StatusClicked)="StatusClickedHandler()"
+                        [TerminValueBreite]="450"
                         (FachbereichClicked)="FachbereichClickedHandler()"
                         (KostengruppeClicked)="KostengruppeClickedHandler($event)"
                         (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"

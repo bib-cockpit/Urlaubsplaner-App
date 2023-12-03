@@ -207,7 +207,7 @@ export class DatabaseLoplisteService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Databse LOPListe', 'PrepareLOPListeEmaildata', this.Debug.Typen.Service);
     }
   }
 

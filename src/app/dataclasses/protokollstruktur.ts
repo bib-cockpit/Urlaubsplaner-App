@@ -45,10 +45,12 @@ export type Protokollstruktur = {
   InterneTeilnehmerliste?: string[];
   CcEmpfaengerliste?: {
     Name:  string;
+    Firma: string;
     Email: string;
   }[];
   Empfaengerliste?: {
     Name:  string;
+    Firma: string;
     Email: string;
   }[];
 };

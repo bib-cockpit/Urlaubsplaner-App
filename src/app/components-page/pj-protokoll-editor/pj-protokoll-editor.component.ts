@@ -220,6 +220,8 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     event.preventDefault();
     event.stopPropagation();
 
+    // this.CancelClickedEvent.emit(); muss raus da sonst darunteliegende Fenster geschlossen werden (event bubbling)
+
     try {
 
     } catch (error) {
@@ -228,11 +230,9 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
   }
 
-
   ngOnDestroy(): void {
 
     try {
-
 
       this.Displayservice.RemoveDialog(this.Displayservice.Dialognamen.Protokolleditor);
 
@@ -249,22 +249,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
         this.ProjektpunktSubscription.unsubscribe();
         this.ProjektpunktSubscription = null;
       }
-
-      /*
-      if(this.MitarbeiterSubscription !== null) {
-
-        this.MitarbeiterSubscription.unsubscribe();
-        this.MitarbeiterSubscription = null;
-      }
-
-      if(this.BeteiligteSubscription !== null) {
-
-        this.BeteiligteSubscription.unsubscribe();
-        this.BeteiligteSubscription = null;
-      }
-       */
-
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'OnDestroy', this.Debug.Typen.Component);
@@ -384,9 +368,17 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
         for(let Punkt of this.Punkteliste) {
 
-          Punkt.Nummer = Nummer.toString();
+          Punkt.Nummer     = Nummer.toString();
+          Punkt.Sortnumber = Nummer;
           Nummer++;
         }
+
+        this.Punkteliste.sort((a: Projektpunktestruktur, b: Projektpunktestruktur) => {
+
+          if (a.Sortnumber > b.Sortnumber) return -1;
+          if (a.Sortnumber < b.Sortnumber) return  1;
+          return 0;
+        });
 
         this.DBProjektpunkte.CurrentProjektpunkteliste = lodash.cloneDeep(this.Punkteliste);
 
@@ -466,37 +458,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'PrepareData', this.Debug.Typen.Component);
     }
   }
-
-
-  CancelButtonClicked() {
-
-    try {
-
-
-      this.CancelClickedEvent.emit();
-
-      /*
-
-      this.StopSaveProtokollTimer();
-
-      if(this.ShowUpload === true) {
-
-        this.ShowUpload = false;
-      }
-      else {
-
-        this.Tools.PopPage();
-      }
-
-       */
-    }
-    catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'CancelButtonClicked', this.Debug.Typen.Component);
-    }
-  }
-
-
 
   OkButtonClicked() {
 
@@ -1187,6 +1148,8 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
           });
         }
       }
+
+      debugger;
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'TeilnehmerInternCheckedChanged', this.Debug.Typen.Component);
@@ -1225,6 +1188,28 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetKostengruppe', this.Debug.Typen.Component);
+    }
+  }
+
+  TestClicked() {
+
+    let elem: Element = document.getElementById("ScrollDiv");
+
+    debugger;
+
+    elem.scrollTop = elem.scrollHeight;
+  }
+
+  GetLeistungsphase(Leistungsphase: string): string {
+
+    try {
+
+      if(Leistungsphase === null || Leistungsphase === 'unbekannt') return '-';
+      else return Leistungsphase.replace('LPH', '');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetLeistungsphase', this.Debug.Typen.Component);
     }
   }
 }

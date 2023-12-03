@@ -130,55 +130,44 @@
 
                       <table class="paddingsmalltable">
                         <tr>
-                          <td colspan="2">
+                          <td colspan="20">
                             <ion-text color="baeblau"><b>Zuständige Firma</b></ion-text>
                           </td>
                         </tr>
-                        <tr *ngFor="let Firma of DBProjekt.CurrentProjekt.Firmenliste">
-                          <td>
-                            <checkbox-clon [Checked]="FirmaIsChecked(Firma.FirmenID)" (CheckChanged)="FirmaCheckChanged($event, Firma.FirmenID)"></checkbox-clon>
-                          </td>
-                          <td>
-                            {{Firma.Firma}}
-                          </td>
+                        <tr *ngFor="let Zeile of Firmenliste">
+                          <ng-container *ngFor="let Firma of Zeile">
+                            <td>
+                              <checkbox-clon *ngIf="Firma !== null" [Checked]="FirmaIsChecked(Firma.FirmenID)" (CheckChanged)="FirmaCheckChanged($event, Firma.FirmenID)"></checkbox-clon>
+                            </td>
+                            <td>
+                              {{Firma !== null ? Firma.Firma : ''}}
+                            </td>
+                            <td style="width: 10px"></td>
+                          </ng-container>
                         </tr>
                       </table>
-                      <!--
-                      <input-clone [MinHeight]="44" [Lines]="GetLinienanzahl()"
-                                   [Clickable]="true" [Enabled]="false" Titel="Zuständig Extern" [Value]="GetZustaendigExternListe()" (click)="ZustaendigExternClicked.emit()"></input-clone>
-                                   -->
                     </ion-col>
                     <ion-col size="3">
                       <table class="paddingsmalltable">
                         <tr>
-                          <td colspan="2">
+                          <td colspan="20">
                             <ion-text color="baeblau"><b>Zuständig bei BAE</b></ion-text>
                           </td>
                         </tr>
-                        <tr *ngFor="let MitarbeiterID of DBProjekt.CurrentProjekt.MitarbeiterIDListe">
-                          <td>
-                            <checkbox-clon [Checked]="MitarbeiterIsChecked(MitarbeiterID)" (CheckChanged)="MitarbeiterCheckChanged($event, MitarbeiterID)"></checkbox-clon>
-                          </td>
-                          <td>
-                            {{GetMitarbeiterName(MitarbeiterID)}}
-                          </td>
+                        <tr *ngFor="let Zeile of Mitarbeiterliste">
+                          <ng-container *ngFor="let Mitarbeiter of Zeile">
+                            <td>
+                              <checkbox-clon *ngIf="Mitarbeiter !== null" [Checked]="MitarbeiterIsChecked(Mitarbeiter._id)" (CheckChanged)="MitarbeiterCheckChanged($event, Mitarbeiter._id)"></checkbox-clon>
+                            </td>
+                            <td>
+                              {{Mitarbeiter !== null ? GetMitarbeiterName(Mitarbeiter._id) : ''}}
+                            </td>
+                            <td style="width: 10px"></td>
+                          </ng-container>
                         </tr>
                       </table>
-                      <!--
-                      <input-clone [MinHeight]="44" [Lines]="GetLinienanzahl()"
-                                   [Clickable]="true" [Enabled]="false" Titel="Zuständig Intern" [Value]="GetZustaendigInternListe()"
-                                   (click)="ZustaendigInternClicked.emit()"></input-clone>
-                                   -->
                     </ion-col>
                   </ion-row>
-
-                  <!--
-                  <ion-row [hidden]="true">
-                    <ion-col [size]="Tools.GetButtonvalueSize()">
-                      <input-clone Titel="Aufgabennummer" [(Value)]="DB.CurrentProjektpunkt.Nummer"></input-clone>
-                    </ion-col>
-                  </ion-row>
-                  -->
                   <ion-row>
                     <ion-col>
                       <ion-text color="baeblau"><b>Status</b></ion-text>

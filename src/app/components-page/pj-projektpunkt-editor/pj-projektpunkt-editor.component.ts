@@ -90,6 +90,12 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
   public Zeilenanzahl: number;
   public Thumbbreite: number;
   public Spaltenanzahl: number;
+  public Firmenliste: Projektfirmenstruktur[][];
+  public Firmenlistespalten: number;
+  public Firmenlistezeilen: number;
+  public Mitarbeiterliste: Mitarbeiterstruktur[][];
+  public Mitarbeiterspalten: number;
+  public Mitarbeiterzeilen: number;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -129,6 +135,12 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       this.Thumbbreite = 100;
       this.Spaltenanzahl = 4;
       this.TerminValueBreite = 250;
+      this.Firmenliste = [];
+      this.Firmenlistespalten = 3;
+      this.Firmenlistezeilen  = 0;
+      this.Mitarbeiterspalten = 3;
+      this.Mitarbeiterzeilen  = 0;
+      this.Mitarbeiterliste   = [];
 
       this.StatusbuttonEnabled = this.DB.CurrentProjektpunkt.Status !== this.Const.Projektpunktstatustypen.Festlegung.Name;
 
@@ -295,66 +307,65 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       let Attachments: Outlookemailattachmentstruktur[] = [];
       let ImageID: string;
       let Mimetype: string;
-      let Data:string;
+      let Data: string;
       let Thumb: Thumbnailstruktur, Merker: Thumbnailstruktur;
       let Anzahl: number;
       let Index: number;
       let Liste: Thumbnailstruktur[] = [];
       let Imageliste: Teamsfilesstruktur[] = [];
       let File: Teamsfilesstruktur;
+      let Mitarbeiter: Mitarbeiterstruktur;
 
       this.CleanZustaendigPunkteintrag();
 
       // Bilder
 
-      if(this.DB.CurrentProjektpunkt !== null) {
+      if (this.DB.CurrentProjektpunkt !== null) {
 
-        for(let Bild of this.DB.CurrentProjektpunkt.Bilderliste) {
+        for (let Bild of this.DB.CurrentProjektpunkt.Bilderliste) {
 
-          File        = this.Graph.GetEmptyTeamsfile();
-          File.id     = Bild.FileID;
+          File = this.Graph.GetEmptyTeamsfile();
+          File.id = Bild.FileID;
           File.webUrl = Bild.WebUrl;
 
           Imageliste.push(File);
         }
 
-        for(File of Imageliste) {
+        for (File of Imageliste) {
 
-          Thumb        = await this.Graph.GetSiteThumbnail(File);
+          Thumb = await this.Graph.GetSiteThumbnail(File);
 
-          if(Thumb !== null) {
+          if (Thumb !== null) {
 
             Thumb.weburl = File.webUrl;
-            Merker       = lodash.find(Liste, {id: File.id});
+            Merker = lodash.find(Liste, {id: File.id});
 
-            if(lodash.isUndefined(Merker)) Liste.push(Thumb);
-          }
-          else {
+            if (lodash.isUndefined(Merker)) Liste.push(Thumb);
+          } else {
 
-            Thumb        = this.DB.GetEmptyThumbnail();
-            Thumb.id     = File.id;
+            Thumb = this.DB.GetEmptyThumbnail();
+            Thumb.id = File.id;
             Thumb.weburl = null;
 
             Liste.push(Thumb);
           }
         }
 
-        Anzahl              = Liste.length;
-        this.Zeilenanzahl   = Math.ceil(Anzahl / this.Spaltenanzahl);
-        Index               = 0;
+        Anzahl = Liste.length;
+        this.Zeilenanzahl = Math.ceil(Anzahl / this.Spaltenanzahl);
+        Index = 0;
         this.Thumbnailliste = [];
 
-        for(let Zeilenindex = 0; Zeilenindex < this.Zeilenanzahl; Zeilenindex++) {
+        for (let Zeilenindex = 0; Zeilenindex < this.Zeilenanzahl; Zeilenindex++) {
 
           this.Thumbnailliste[Zeilenindex] = [];
 
-          for(let Spaltenindex = 0; Spaltenindex < this.Spaltenanzahl; Spaltenindex++) {
+          for (let Spaltenindex = 0; Spaltenindex < this.Spaltenanzahl; Spaltenindex++) {
 
-            if(!lodash.isUndefined(Liste[Index])) {
+            if (!lodash.isUndefined(Liste[Index])) {
 
               this.Thumbnailliste[Zeilenindex][Spaltenindex] = Liste[Index];
-            }
-            else {
+            } else {
 
               this.Thumbnailliste[Zeilenindex][Spaltenindex] = null;
             }
@@ -372,16 +383,16 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
       this.DBEmail.CurrentEmail = null;
 
-      if(this.DB.CurrentProjektpunkt.EmailID !== null) {
+      if (this.DB.CurrentProjektpunkt.EmailID !== null) {
 
         try {
 
           Email = await this.DBEmail.GetEmail(this.DB.CurrentProjektpunkt.EmailID);
 
-          if(!lodash.isUndefined(Email) && Email !== null) {
+          if (!lodash.isUndefined(Email) && Email !== null) {
 
             this.DBEmail.CurrentEmail = Email;
-            this.HTMLBody             = '';
+            this.HTMLBody = '';
 
             HTML = Email.body.content;
 
@@ -402,14 +413,59 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
             this.HTMLBody = HTML;
           }
-        }
-        catch(error) {
+        } catch (error) {
 
           this.DBEmail.CurrentEmail = null;
           this.HTMLBody = null;
         }
       }
 
+      // Firmenliste
+
+      Index = 0;
+      this.Firmenliste = [];
+      this.Firmenlistezeilen = Math.ceil(this.DBProjekt.CurrentProjekt.Firmenliste.length / this.Firmenlistespalten);
+
+      for (let zeile = 0; zeile < this.Firmenlistezeilen; zeile++) {
+
+        this.Firmenliste[zeile] = [];
+
+        for (let spalte = 0; spalte < this.Firmenlistespalten; spalte++) {
+
+          if (!lodash.isUndefined(this.DBProjekt.CurrentProjekt.Firmenliste[Index])) this.Firmenliste[zeile][spalte] = this.DBProjekt.CurrentProjekt.Firmenliste[Index];
+          else this.Firmenliste[zeile][spalte] = null;
+
+          Index++;
+        }
+      }
+
+      // Miarbeiterliste
+
+      Index = 0;
+      this.Mitarbeiterliste = [];
+      this.Mitarbeiterzeilen = Math.ceil(this.DBProjekt.CurrentProjekt.MitarbeiterIDListe.length / this.Mitarbeiterspalten);
+
+      for (let zeile = 0; zeile < this.Mitarbeiterzeilen; zeile++) {
+
+        this.Mitarbeiterliste[zeile] = [];
+
+        for (let spalte = 0; spalte < this.Mitarbeiterspalten; spalte++) {
+
+          if (!lodash.isUndefined(this.DBProjekt.CurrentProjekt.MitarbeiterIDListe[Index])) {
+
+            Mitarbeiter = this.DBMitarbeiter.GetMitarbeiterByID(this.DBProjekt.CurrentProjekt.MitarbeiterIDListe[Index]);
+
+            if(!lodash.isUndefined(Mitarbeiter)) {
+
+              this.Mitarbeiterliste[zeile][spalte] = Mitarbeiter;
+            }
+            else this.Mitarbeiterliste[zeile][spalte] = null;
+          }
+          else this.Mitarbeiterliste[zeile][spalte] = null;
+
+          Index++;
+        }
+      }
 
     } catch (error) {
 

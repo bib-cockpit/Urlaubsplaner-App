@@ -38,11 +38,24 @@
                       <td>Firma</td>
                       <td>Email</td>
                     </tr>
-                    <tr *ngFor="let Empfaenger of DBLOPListe.CurrentLOPListe.Empfaengerliste" style="font-size: 90%;">
-                      <td>{{Empfaenger.Name}}</td>
-                      <td>{{Empfaenger.Firma}}</td>
-                      <td>{{Empfaenger.Email}}</td>
-                    </tr>
+
+                    <ng-container [ngSwitch]="Pool.Emailcontent">
+                      <ng-container *ngSwitchCase="Pool.Emailcontentvarinaten.LOPListe">
+                        <tr *ngFor="let Empfaenger of DBLOPListe.CurrentLOPListe.Empfaengerliste" style="font-size: 90%;">
+                          <td>{{Empfaenger.Name}}</td>
+                          <td>{{Empfaenger.Firma}}</td>
+                          <td>{{Empfaenger.Email}}</td>
+                        </tr>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="Pool.Emailcontentvarinaten.Protokoll">
+                        <tr *ngFor="let Empfaenger of DBProtokolle.CurrentProtokoll.Empfaengerliste" style="font-size: 90%;">
+                          <td>{{Empfaenger.Name}}</td>
+                          <td>{{Empfaenger.Firma}}</td>
+                          <td>{{Empfaenger.Email}}</td>
+                        </tr>
+                      </ng-container>
+                    </ng-container>
+
                   </table>
 
                 </div>
@@ -56,57 +69,28 @@
                       <td>Firma</td>
                       <td>Email</td>
                     </tr>
-                    <tr *ngFor="let CcEmpfaenger of DBLOPListe.CurrentLOPListe.CcEmpfaengerliste" style="font-size: 90%;">
-                      <td>{{CcEmpfaenger.Name}}</td>
-                      <td>{{CcEmpfaenger.Firma}}</td>
-                      <td>{{CcEmpfaenger.Email}}</td>
-                    </tr>
+                    <ng-container [ngSwitch]="Pool.Emailcontent">
+                      <ng-container *ngSwitchCase="Pool.Emailcontentvarinaten.LOPListe">
+                        <tr *ngFor="let CcEmpfaenger of DBLOPListe.CurrentLOPListe.CcEmpfaengerliste" style="font-size: 90%;">
+                          <td>{{CcEmpfaenger.Name}}</td>
+                          <td>{{CcEmpfaenger.Firma}}</td>
+                          <td>{{CcEmpfaenger.Email}}</td>
+                        </tr>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="Pool.Emailcontentvarinaten.Protokoll">
+                        <tr *ngFor="let CcEmpfaenger of DBProtokolle.CurrentProtokoll.CcEmpfaengerliste" style="font-size: 90%;">
+                          <td>{{CcEmpfaenger.Name}}</td>
+                          <td>{{CcEmpfaenger.Firma}}</td>
+                          <td>{{CcEmpfaenger.Email}}</td>
+                        </tr>
+                      </ng-container>
+                    </ng-container>
+
                   </table>
 
                 </div>
               </ion-col>
             </ion-row>
-
-            <!--
-            <ion-row>
-              <ion-col size="6">
-                <input-clone [MinHeight]="44" [Lines]="LinesanzahlEmpfaenger"
-                             [Clickable]="true"
-                             [Enabled]="false" Titel="Extern"
-                             [Value]="GetExternTeilnehmerliste(false)"
-                             (click)="EmpfaengerExternClicked.emit()">
-                </input-clone>
-              </ion-col>
-              <ion-col *ngIf="ShowEmpfaengerBAE === true" size="6">
-                <input-clone [MinHeight]="44" [Lines]="LinesanzahlEmpfaenger"
-                             [Clickable]="true"
-                             [Enabled]="false" Titel="BAE"
-                             [Value]="GetBrunicklteilnehmerliste(false)"
-                             (click)="EmpfaengerInternClicked.emit()">
-                </input-clone>
-              </ion-col>
-            </ion-row>
-            -->
-            <!--
-            <ion-row>
-              <ion-col *ngIf="ShowCcEmpfaengerExtern === true" size="6">
-                <input-clone [MinHeight]="44" [Lines]="LinesanzahlCcEmpfaenger"
-                             [Clickable]="true"
-                             [Enabled]="false" Titel="Extern"
-                             [Value]="GetExternTeilnehmerliste(true)"
-                             (click)="CcEmpfaengerExternClicked.emit()">
-                </input-clone>
-              </ion-col>
-              <ion-col size="6">
-                <input-clone [MinHeight]="44" [Lines]="LinesanzahlCcEmpfaenger"
-                             [Clickable]="true"
-                             [Enabled]="false" Titel="BAE"
-                             [Value]="GetBrunicklteilnehmerliste(true)"
-                             (click)="CcEmpfaengerInternClicked.emit()">
-                </input-clone>
-              </ion-col>
-            </ion-row>
-            -->
             <ion-row>
               <ion-col size="3">
                 <ion-text color="baeblau"><b>Betreff</b></ion-text>
@@ -115,17 +99,14 @@
             <ion-row>
               <ion-col><input-clone [Required]="true" [MaxLength]="100" [Titel]="'Betreff'" [Titelcolor]="'white'" [Value]="GetBetreff()" (TextChanged)="TextChanged($event)"></input-clone></ion-col>
             </ion-row>
-            <ion-row>
+
+            <ion-row *ngIf="Pool.Emailcontent === Pool.Emailcontentvarinaten.NONE">
               <ion-col size="6">
                 <button-value-date [Datum]="GetTermindatum()"
                                    [Buttontext]="'Termin'" [ElementID]="'termin-datum'" (TimeChanged)="TeermindatumChanged($event)"></button-value-date>
-                <!--
-                <button-value (ButtonClicked)="TerminButtonClicked.emit()" [Wert_A]="GetTerminWert()" [Buttontext]="'Termin'">
-
-                </button-value>
-                -->
               </ion-col>
             </ion-row>
+
             <ion-row>
               <ion-col size="3">
                 <ion-text color="baeblau"><b>Nachricht</b></ion-text>

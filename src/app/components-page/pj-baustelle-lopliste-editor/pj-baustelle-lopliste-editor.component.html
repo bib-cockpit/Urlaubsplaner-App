@@ -3,7 +3,7 @@
   <div  class="keeperdivclass" [style.background]="Displayservice.ShowOpacity(Displayservice.Dialognamen.LOPListeEditor) ? 'rgba(0, 0, 0, 0.5)' : 'none'" (click)="ContentClicked($event)">
     <div class="contentdivclass"
          [style.width.px]="Dialogbreite"
-         [style.height.px]="Dialoghoehe" [style.top.px]="PositionY" (click)="ContentClicked($event)">
+         [style.bottom.px]="PositionY" [style.top.px]="PositionY" (click)="ContentClicked($event)">
       <ion-header>
         <page-header>
           <table class="paddingsmalltable">
@@ -203,182 +203,256 @@
             </ng-container>
             <ng-container *ngSwitchCase="DB.LOPListeEditorViewModusvarianten.Eintraege">
 
-              <div style="width: 100%; overflow: hidden; padding-left: 4px; padding-right: 4px;" [style.height.px]="Gesamthoehe">
+              <div class="innerkeeperdivclass">
 
-                <div style="width: 100%;" [style.height.px]="Titelhoehe">
-                  <ion-grid>
-                    <ion-row>
-                      <ion-col size="3">
-                        <ion-text color="burnicklgruen"><b>{{DBProjekte.CurrentProjekt !== null ? DBProjekte.CurrentProjekt.Projektname : 'Projekt unbekannt' }}</b></ion-text>
-                      </ion-col>
-                    </ion-row>
-                    <ion-row>
-                      <ion-col size="3">
-                        <ion-text color="burnicklgruen">
-                          <b>
-                            {{DB.CurrentLOPListe.Titel}} &bull; {{GetDatum().format('DD.MM.YYYY')}}
-                          </b>
-                        </ion-text>
-                      </ion-col>
-                    </ion-row>
-                  </ion-grid>
+                <div class="innerkeeperleftdiv">
+                  <div class="neubuttondivclass"
+                       [style.background]="Valid === true ? '#7b6a58' : '#444444'"
+                       (click)="Valid === true ? AddLOPListepunktClicked.emit() : null">
+                    <table>
+                      <tr>
+                        <td><ion-icon name="add-circle-outline" color="weiss"></ion-icon></td>
+                      </tr>
+                      <tr>
+                        <td style="writing-mode: vertical-lr; text-orientation: mixed; color: white;">NEUER EINTRAG</td>
+                      </tr>
+                    </table>
+                  </div>
                 </div>
-                <div style="width: 100%; display: flex; justify-content: center; align-items: flex-end;" [style.height.px]="Listeheaderhoehe">
-                  <table class="listeheaderclass" style="color: black; width: 100%">
-                    <tr>
-                      <td style="width: 30px; text-align: center"><b>Nr.</b></td>
-                      <td style="width: 180px;"><b>Bauteil</b></td>
-                      <td style="width: 80px; text-align: center"><b>Gewerk</b></td>
-                      <td style="width: 180px;"><b>Thematik</b></td>
-                      <td style="width: auto"><b>Beschreibung</b></td>
-                      <td style="width: 90px; text-align: center"><b>Termin</b></td>
-                      <td style="width: 100px; text-align: center;"><b>Status</b></td>
-                      <td style="width: 100px; text-align: center;"><b>Priorität</b></td>
-                      <td style="width: 100px; text-align: center"><b>Zuständig</b></td>
-                    </tr>
-                  </table>
-                </div>
+                <div class="innerkeeperrightdiv">
 
-                <div style="width: 100%; display: flex; justify-content: center; align-items: flex-start; overflow: auto;" [style.height.px]="Listehoehe">
 
-                  <table  style="width: 100%">
-                    <tr *ngFor="let Projektpunkt of Punkteliste;">
-                      <td>
-                        <div (click)="LOPListepunktClicked.emit(Projektpunkt)" style="width: 100%; display: flex; justify-content: center; align-items: flex-start;">
+                  <!--
+                <div style="width: 100%; overflow: hidden; padding-left: 4px; padding-right: 4px;" [style.height.px]="Gesamthoehe">
+                  <div style="width: 100%;" [style.height.px]="Titelhoehe">
+                    <ion-grid>
+                      <ion-row>
+                        <ion-col size="3">
+                          <ion-text color="burnicklgruen"><b>{{DBProjekte.CurrentProjekt !== null ? DBProjekte.CurrentProjekt.Projektname : 'Projekt unbekannt' }}</b></ion-text>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="3">
+                          <ion-text color="burnicklgruen">
+                            <b>
+                              {{DB.CurrentLOPListe.Titel}} &bull; {{GetDatum().format('DD.MM.YYYY')}}
+                            </b>
+                          </ion-text>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </div>
+                  <div style="width: 100%; display: flex; justify-content: center; align-items: flex-end;" [style.height.px]="Listeheaderhoehe">
+                  -->
 
-                          <table class="docinnertablespezial" style="width: 100%">
-                            <tr>
-                              <td style="width: 30px" align="center" valign="middle">
+                  <div style="width: 100%; height: 100%; overflow: auto; padding: 4px;">
 
-                                <!-- Nummer -->
+                    <table class="listeheaderclass" style="color: black; width: 100%">
+                      <tr>
+                        <td colspan="8">
+                          <ion-text color="baeblau" style="font-weight: bold; font-size: 120%;">{{DB.CurrentLOPListe.Titel}} &bull; {{GetDatum().format('DD.MM.YYYY')}}</ion-text>
+                        </td>
+                        <td colspan="2" style="width: 260px; text-align: center"><b>Zuständig</b></td>
+                      </tr>
+                      <tr>
+                        <td style="width: 30px; text-align: center"><b>Nr.</b></td>
+                        <td style="width: 180px;"><b>Bauteil</b></td>
+                        <td style="width: 80px; text-align: center"><b>Gewerk</b></td>
+                        <td style="width: 180px;"><b>Thematik</b></td>
+                        <td style="width: auto"><b>Beschreibung</b></td>
+                        <td style="width: 90px; text-align: center"><b>Termin</b></td>
+                        <td style="width: 100px; text-align: center;"><b>Status</b></td>
+                        <td style="width: 100px; text-align: center;"><b>Priorität</b></td>
+                        <td style="width: 100px; text-align: center; color: #307ac1;"><b>BAE</b></td>
+                        <td style="width: 100px; text-align: center"><b>Firma</b></td>
+                      </tr>
+                      <!--
+                      <tr>
+                        <td colspan="100">Laenge: {{Punkteliste.length}}</td>
+                      </tr>
+                      -->
+                      <tr *ngFor="let Projektpunkt of Punkteliste;">
+                        <!--
+                        <td>
+                          <div (click)="LOPListepunktClicked.emit(Projektpunkt)" style="width: 100%; display: flex; justify-content: center; align-items: flex-start;">
 
-                                <table class="nobordersmalltable">
-                                  <tr>
-                                    <td style="text-align: center; font-size: 90%">{{Projektpunkt.Nummer}}</td>
-                                  </tr>
-                                </table>
-                              </td>
-                              <td style="width: 180px; vertical-align: top">
+                            <table class="docinnertablespezial" style="width: 100%">
+                              <tr>
+                              -->
+                                <td style="width: 30px" align="center" valign="middle">
 
-                                <!-- Bauteil -->
-                                {{GetBauteilnamen(Projektpunkt)}}
+                                  <!-- Nummer -->
 
-                              </td>
-                              <td style="width: 80px; text-align: center">
-                                {{Pool.Fachbereich.GetFachbereichbyKey(Projektpunkt.Fachbereich).Kuerzel}}
-                              </td>
-                              <td style="width: 180px; vertical-align: top;">
-                                {{Projektpunkt.Thematik}}
-                              </td>
-                              <td valign="top" style="height: inherit; width: auto" [innerHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe: 'html'">
-
-                                <!-- Aufgabe --->
-
-                              </td>
-                              <td style="height: inherit; width: 90px">
-
-                                <!-- Termin -->
-
-                                <div style="height: 100%; padding: 6px;" *ngIf="Projektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name &&
-                                    Projektpunkt.Status !== Const.Projektpunktstatustypen.Festlegung.Name &&
-                                    Projektpunkt.Status !== Const.Projektpunktstatustypen.Geschlossen.Name &&
-                                    Projektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name"
-                                     [style.background]="DBProjektpunkte.GetFaelligBackground(Projektpunkt)">
-
-                                  <table width="100%" class="nobordersmalltable">
+                                  <table class="nobordersmalltable">
                                     <tr>
-                                      <td style="font-size: 90%; text-align: center" [style.color]="DBProjektpunkte.CheckProjektpunktFaellig(Projektpunkt) === Const.Faelligkeitsstatus.Nicht_faellig ? 'black' : 'white'">
-                                        {{GetTermindatum(Projektpunkt)}}
+                                      <td style="text-align: center; font-size: 90%">{{Projektpunkt.Nummer}}</td>
+                                    </tr>
+                                  </table>
+                                </td>
+                                <td style="width: 180px; vertical-align: top">
+
+                                  <!-- Bauteil -->
+
+                                  {{GetBauteilnamen(Projektpunkt)}}
+
+                                </td>
+                                <td style="width: 80px; text-align: center">
+                                  {{Pool.Fachbereich.GetFachbereichbyKey(Projektpunkt.Fachbereich).Kuerzel}}
+                                </td>
+                                <td style="width: 180px; vertical-align: top;">
+                                  {{Projektpunkt.Thematik}}
+                                </td>
+                                <!--
+                                <td valign="top" style="height: inherit; width: auto" [inne rHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe: 'html'">
+                                -->
+                                <td valign="top" style="height: inherit;">
+
+                                  <!-- Aufgabe --->
+                                  <table class="nobordersmalltable" style="width: 100%;">
+                                    <tr>
+                                      <td>
+                                        <div (click)="LOPListepunktClicked.emit(Projektpunkt)" class="aufgabedivclass">
+
+                                          <table>
+                                            <tr>
+                                              <td [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
+                                                  [innerHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe: 'html'"></td>
+                                            </tr>
+                                          </table>
+
+
+                                        </div>
+
                                       </td>
                                     </tr>
                                   </table>
 
-                                </div>
 
-                              </td>
-                              <td style="width: 100px">
+                                </td>
+                                <td style="height: inherit; width: 90px">
 
-                                <!-- Status -->
+                                  <!-- Termin -->
 
-                                <div class="statusdivclass"
-                                     [style.background]="DBProjektpunkte.GetProjektpunktstusByName(Projektpunkt.Status).LOPColor"
-                                     (click)="ProjektpunktStatusClicked(Projektpunkt)">
-                                  {{DBProjektpunkte.GetProjektpunktstusByName(Projektpunkt.Status).Displayname}}
-                                </div>
+                                  <div style="height: 100%; padding: 6px;" *ngIf="Projektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name &&
+                                        Projektpunkt.Status !== Const.Projektpunktstatustypen.Festlegung.Name &&
+                                        Projektpunkt.Status !== Const.Projektpunktstatustypen.Geschlossen.Name &&
+                                        Projektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name"
+                                       [style.background]="DBProjektpunkte.GetFaelligBackground(Projektpunkt)">
 
-                              </td>
-                              <td style="width: 100px">
+                                    <table width="100%" class="nobordersmalltable">
+                                      <tr>
+                                        <td style="font-size: 90%; text-align: center" [style.color]="DBProjektpunkte.CheckProjektpunktFaellig(Projektpunkt) === Const.Faelligkeitsstatus.Nicht_faellig ? 'black' : 'white'">
+                                          {{GetTermindatum(Projektpunkt)}}
+                                        </td>
+                                      </tr>
+                                    </table>
 
-                                <!-- Priorität -->
+                                  </div>
 
-                                <div *ngIf="Projektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name && Projektpunkt.Status !== Const.Projektpunktstatustypen.Geschlossen.Name" class="statusdivclass"
-                                     [style.background]="DBProjektpunkte.GetPrioritaetcolor(Projektpunkt)">
-                                  {{Projektpunkt.Prioritaet}}
-                                </div>
+                                </td>
+                                <td style="width: 100px">
 
-                              </td>
+                                  <!-- Status -->
 
-                              <td style="height: inherit; width: 100px">
+                                  <div class="statusdivclass"
+                                       [style.background]="DBProjektpunkte.GetProjektpunktstusByName(Projektpunkt.Status).LOPColor"
+                                       (click)="ProjektpunktStatusClicked(Projektpunkt)">
+                                    {{DBProjektpunkte.GetProjektpunktstusByName(Projektpunkt.Status).Displayname}}
+                                  </div>
 
-                                <!-- Zuständig -->
+                                </td>
+                                <td style="width: 100px">
 
-                                <table class="nobordersmalltable" style="width: 100%">
-                                  <tr  *ngFor="let ZustaendigID of Projektpunkt.ZustaendigeInternIDListe">
-                                    <td style="text-align: center; color: black; font-size: 90%">
-                                      {{DB.GetZustaendigInternName(ZustaendigID)}}
-                                    </td>
-                                  </tr>
-                                  <tr *ngIf="Projektpunkt.ZustaendigeExternIDListe.length > 0 && Projektpunkt.ZustaendigeInternIDListe.length > 0">
-                                    <td align="center"><div style="border-radius: 50%; width: 6px; height: 6px; background: black;"></div></td>
-                                  </tr>
-                                  <tr *ngFor="let ZustaendigID of Projektpunkt.ZustaendigeExternIDListe">
-                                    <td style="text-align: center; color: black; font-size: 90%">
-                                      {{DB.GetZustaendigExternName(ZustaendigID)}}
-                                    </td>
-                                  </tr>
-                                </table>
-                              </td>
+                                  <!-- Priorität -->
 
-                            </tr>
-                          </table>
+                                  <div *ngIf="Projektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name && Projektpunkt.Status !== Const.Projektpunktstatustypen.Geschlossen.Name" class="statusdivclass"
+                                       [style.background]="DBProjektpunkte.GetPrioritaetcolor(Projektpunkt)">
+                                    {{Projektpunkt.Prioritaet}}
+                                  </div>
 
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
+                                </td>
 
-                        <ion-grid>
-                          <ion-row>
-                            <ion-col>
-                              <ion-button size="small" [color]="Valid === true ? 'burnicklbraun' : 'grau'"
-                                          (click)="Valid === true ? AddLOPListepunktClicked.emit() : null">
-                                <ion-icon name="add-circle-outline" color="weiss" slot="start"></ion-icon>
-                                <ion-text color="weiss">Neuer Eintrag</ion-text>
-                              </ion-button>
-                            </ion-col>
-                          </ion-row>
-                          <ion-row>
-                            <ion-col>
-                              <div *ngIf="CheckOkButtonEnabled()" class="savestatusdivclass" [style.background]="LOPListeSaved === true ? 'green' : 'red'"></div>
-                            </ion-col>
-                          </ion-row>
-                        </ion-grid>
+                                <td style="height: inherit; width: 100px">
 
-                      </td>
-                    </tr>
-                  </table>
+                                  <!-- Zuständig -->
+
+                                  <table class="nobordersmalltable" style="width: 100%">
+                                    <tr  *ngFor="let ZustaendigID of Projektpunkt.ZustaendigeInternIDListe">
+                                      <td style="text-align: center; color: #307ac1; font-size: 90%">
+                                        {{DB.GetZustaendigInternName(ZustaendigID)}}
+                                      </td>
+                                    </tr>
+                                    <!--
+                                    <tr *ngIf="Projektpunkt.ZustaendigeExternIDListe.length > 0 && Projektpunkt.ZustaendigeInternIDListe.length > 0">
+                                      <td align="center"><div style="border-radius: 50%; width: 6px; height: 6px; background: black;"></div></td>
+                                    </tr>
+                                    <tr *ngFor="let ZustaendigID of Projektpunkt.ZustaendigeExternIDListe">
+                                      <td style="text-align: center; color: black; font-size: 90%">
+                                        {{DB.GetZustaendigExternName(ZustaendigID)}}
+                                      </td>
+                                    </tr>
+                                    -->
+                                  </table>
+                                </td>
+
+                                <td>
+                                  <table class="nobordersmalltable" style="width: 100%">
+                                    <tr *ngFor="let ZustaendigID of Projektpunkt.ZustaendigeExternIDListe">
+                                      <td style="text-align: center; color: black; font-size: 90%">
+                                        {{DB.GetZustaendigExternName(ZustaendigID)}}
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+
+                              </tr>
+
+                      <!--
+                            </table>
 
 
+                          </div>
+                        </td>
+                      </tr>
+                      -->
+                      <!--
+                      <tr>
+                        <td>
+
+                          <ion-grid>
+                            <ion-row>
+                              <ion-col>
+                                <ion-button size="small" [color]="Valid === true ? 'burnicklbraun' : 'grau'"
+                                            (click)="Valid === true ? AddLOPListepunktClicked.emit() : null">
+                                  <ion-icon name="add-circle-outline" color="weiss" slot="start"></ion-icon>
+                                  <ion-text color="weiss">Neuer Eintrag</ion-text>
+                                </ion-button>
+                              </ion-col>
+                            </ion-row>
+                            <ion-row>
+                              <ion-col>
+                                <div *ngIf="CheckOkButtonEnabled()" class="savestatusdivclass" [style.background]="LOPListeSaved === true ? 'green' : 'red'"></div>
+                              </ion-col>
+                            </ion-row>
+                          </ion-grid>
+
+                        </td>
+                      </tr>
+                      -->
+                    </table>
+
+
+                  </div>
                 </div>
+
+
+
               </div>
+
 
             </ng-container>
 
           </ng-container>
-
-
-
 
           </div>
 

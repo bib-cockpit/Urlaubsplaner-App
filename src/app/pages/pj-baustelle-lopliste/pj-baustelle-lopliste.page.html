@@ -392,7 +392,7 @@
                         (OkClickedEvent)="BeteiligteauswahlOkButtonClicked($event)"></pj-beteiligten-auswahl>
 
 
-<pj-baustelle-lopliste-editor *ngIf="ShowLOPListeEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+<pj-baustelle-lopliste-editor *ngIf="ShowLOPListeEditor" [Dialogbreite]="Dialogbreite" [PositionY]="0"
                      [Titel]="GetLOPListeTitel()" Iconname="book-outline"
                      [ZIndex]="2000"
                      (OkClickedEvent)="ShowLOPListeEditor = false"
@@ -427,7 +427,7 @@
                (CancelClickedEvent)="ShowEmailSenden = false"
                (OkClickedEvent)="EmailSendenOkButtonClicked($event)"></pj-email-send>
 
-<pj-baustelle-lopliste-eintrageditor *ngIf="ShowEintragEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+<pj-baustelle-lopliste-eintrageditor *ngIf="ShowEintragEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="0"
                         [ZIndex]="3000" [Titel]="GetEintrageditorTitel()" Iconname="book-outline"
                         (StatusClicked)="EintragEditorStatusClickedHandler()"
                         (PrioritaetClicked)="EintragPrioritaetClickedHandler()"

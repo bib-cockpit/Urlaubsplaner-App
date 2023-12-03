@@ -63,8 +63,8 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() CcEmpfaengerExternClicked   = new EventEmitter<any>();
 
   public Inputtimer: any;
-  public LinesanzahlEmpfaenger: number;
-  public LinesanzahlCcEmpfaenger: number;
+  // public LinesanzahlEmpfaenger: number;
+  // public LinesanzahlCcEmpfaenger: number;
   public ContentIsValid: boolean;
   public FilenameIsValid: boolean;
   public FileExists: boolean;
@@ -103,8 +103,8 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
       this.Dialogbreite                = 400;
       this.PositionY                   = 100;
       this.ZIndex                      = 3000;
-      this.LinesanzahlEmpfaenger       = 1;
-      this.LinesanzahlCcEmpfaenger     = 1;
+      // this.LinesanzahlEmpfaenger       = 1;
+      // this.LinesanzahlCcEmpfaenger     = 1;
       this.ContentIsValid              = false;
       this.FilenameIsValid             = false;
       this.FileExists                  = false;
@@ -212,15 +212,23 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
     try {
 
+      /*
       let AnzahlExtern = 0;
       let AnzahlBurnickl = 0;
       let AnzahlCcExtern = 0;
       let AnzahlCcBunrnickl = 0;
+
+       */
       let Heute: Moment = moment();
 
       switch (this.Pool.Emailcontent) {
 
         case this.Pool.Emailcontentvarinaten.Protokoll:
+
+          this.DBProtokolle.PrepareProtokollEmaildata();
+
+          /*
+
 
           AnzahlExtern   = this.DBProtokolle.CurrentProtokoll.EmpfaengerExternIDListe.length;
           AnzahlBurnickl = this.DBProtokolle.CurrentProtokoll.EmpfaengerInternIDListe.length;
@@ -228,21 +236,27 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
           AnzahlCcExtern    = this.DBProtokolle.CurrentProtokoll.CcEmpfaengerExternIDListe.length;
           AnzahlCcBunrnickl = this.DBProtokolle.CurrentProtokoll.CcEmpfaengerInternIDListe.length;
 
+           */
+
           break;
 
         case this.Pool.Emailcontentvarinaten.LOPListe:
 
           this.DBLOPListe.PrepareLOPListeEmaildata();
 
+          /*
           AnzahlExtern   = this.DBLOPListe.CurrentLOPListe.EmpfaengerExternIDListe.length;
           AnzahlBurnickl = this.DBLOPListe.CurrentLOPListe.EmpfaengerInternIDListe.length;
 
           AnzahlCcExtern    = this.DBLOPListe.CurrentLOPListe.CcEmpfaengerExternIDListe.length;
           AnzahlCcBunrnickl = this.DBLOPListe.CurrentLOPListe.CcEmpfaengerInternIDListe.length;
 
+           */
+
           break;
 
         case this.Pool.Emailcontentvarinaten.Bautagebuch:
+          /*
 
           AnzahlExtern   = this.DBTagebuch.CurrentTagebuch.EmpfaengerExternIDListe.length;
           AnzahlBurnickl = this.DBTagebuch.CurrentTagebuch.EmpfaengerInternIDListe.length;
@@ -250,9 +264,12 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
           AnzahlCcExtern    = this.DBTagebuch.CurrentTagebuch.CcEmpfaengerExternIDListe.length;
           AnzahlCcBunrnickl = this.DBTagebuch.CurrentTagebuch.CcEmpfaengerInternIDListe.length;
 
+           */
+
           break;
 
         case this.Pool.Emailcontentvarinaten.Festlegungen:
+          /*
 
           AnzahlExtern   = this.DBFestlegungen.EmpfaengerExternIDListe.length;
           AnzahlBurnickl = this.DBFestlegungen.EmpfaengerInternIDListe.length;
@@ -260,23 +277,28 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
           AnzahlCcExtern    = this.DBFestlegungen.CcEmpfaengerExternIDListe.length;
           AnzahlCcBunrnickl = this.DBFestlegungen.CcEmpfaengerInternIDListe.length;
 
+           */
+
           break;
 
         case this.Pool.Emailcontentvarinaten.Aufgabenliste:
 
           this.ZeitstempelMerker = Heute.add('5', 'day').valueOf(); //  this.DBProjektpunkte.CurrentProjektpunkt.Endezeitstempel;
 
+          /*
           AnzahlExtern   = this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeExternIDListe.length;
           AnzahlBurnickl = 0;
 
           AnzahlCcExtern    = 0;
           AnzahlCcBunrnickl = this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeInternIDListe.length;
 
+           */
+
           break;
       }
 
-      this.LinesanzahlEmpfaenger   = Math.max(AnzahlExtern, AnzahlBurnickl);
-      this.LinesanzahlCcEmpfaenger = Math.max(AnzahlCcExtern, AnzahlCcBunrnickl);
+      // this.LinesanzahlEmpfaenger   = Math.max(AnzahlExtern, AnzahlBurnickl);
+      // this.LinesanzahlCcEmpfaenger = Math.max(AnzahlCcExtern, AnzahlCcBunrnickl);
 
       if(this.SendAttachment) await this.ValidateFilename();
 
@@ -364,7 +386,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.OkClickedEvent.emit();
 
-          }, 600);
+          }, 3000);
 
           break;
 
@@ -480,7 +502,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.Tools.ShowHinweisDialog(error.message);
 
-      // this.Debug.ShowErrorMessage(error.message, 'Send Mail', 'OkButtonClicked', this.Debug.Typen.Component);
+      this.CancelClickedEvent.emit();
     }
   }
 

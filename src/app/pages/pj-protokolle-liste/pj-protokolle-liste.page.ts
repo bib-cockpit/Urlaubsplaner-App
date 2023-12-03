@@ -567,8 +567,6 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
         this.DBProjektpunkte.CurrentProjektpunkt = this.DBProjektpunkte.GetNewProtokollpunkt(this.DB.CurrentProtokoll);
         this.ShowProjektpunktEditor              = true;
-
-        debugger;
       }
     } catch (error) {
 
@@ -855,6 +853,7 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
   ProtokollpunktClickedHandler(projetpunkt: Projektpunktestruktur) {
 
     try {
+
 
       this.DBProjektpunkte.CurrentProjektpunkt = lodash.cloneDeep(projetpunkt);
       this.ShowProjektpunktEditor              = true;

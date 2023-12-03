@@ -630,7 +630,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.DB.CurrentLOPListe         = this.DB.GetEmptyLOPListe();
       this.DB.LOPListeEditorViewModus = this.DB.LOPListeEditorViewModusvarianten.Allgemein;
       this.ShowLOPListeEditor         = true;
-      this.Dialogbreite               = 1300;
+      this.Dialogbreite               = 1500;
       this.Dialoghoehe                = this.Basics.InnerContenthoehe - this.DialogPosY * 2;
 
     } catch (error) {

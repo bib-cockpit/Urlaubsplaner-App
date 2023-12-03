@@ -434,7 +434,7 @@
 
 <pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
                         [ZIndex]="3000" [Titel]="GetProjektpunkteditorTitel()" Iconname="book-outline"
-                        (StatusClicked)="EditorStatusClickedHandler()" (FachbereichClicked)="FachbereichClickedHandler()"
+                        (FachbereichClicked)="FachbereichClickedHandler()"
                         (KostengruppeClicked)="KostengruppeClickedHandler($event)"
                         (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
                         (LeistungsphaseClickedEvent)="LeistungsphaseClickedHandler()"

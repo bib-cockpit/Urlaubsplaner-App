@@ -100,4 +100,5 @@ export type Projektpunktestruktur = {
   Nachricht?: string;
 
   ThumbID?: string;
+  Sortnumber?: number;
 };
