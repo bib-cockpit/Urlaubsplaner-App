@@ -82,7 +82,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
-              private DBProtokolle: DatabaseProtokolleService,
+              public DBProtokolle: DatabaseProtokolleService,
               public DBProjekte: DatabaseProjekteService,
               public DBBeteiligte: DatabaseProjektbeteiligteService,
               public DBFestlegungen: DatabaseFestlegungenService,

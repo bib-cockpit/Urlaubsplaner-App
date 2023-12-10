@@ -61,9 +61,10 @@
     <div  style="width: 100%; padding-left: 8px; padding-right: 8px; padding-top: 8px">
       <table class="listeheaderclass" style="color: black; width: 100%">
         <tr>
-          <td colspan="10">
+          <td colspan="9">
             <ion-text color="baeblau" style="font-size: 120%"><b>Themenliste</b></ion-text>
           </td>
+          <td  colspan="2" style="text-align: center;"><b>Priorität</b></td>
         </tr>
         <tr>
           <td style="width: 30px; text-align: center"><b>Nr.</b></td>
@@ -75,7 +76,8 @@
           <td style="width: 90px; text-align: center;"><b>Termin</b></td>
           <td style="width: 120px; text-align: center;"><b>Status</b></td>
           <td style="width: 100px; text-align: center;"><b>Priorität</b></td>
-          <td style="width: 160px; text-align: center"><b>Zuständig</b></td>
+          <td style="width: 140px; text-align: center; color: #307ac1;"><b>BAE</b></td>
+          <td style="width: 140px; text-align: center"><b>Firma</b></td>
           <td style="width: 120px; text-align: center"><b>Versand</b></td>
         </tr>
 
@@ -91,7 +93,7 @@
         -->
         <ng-container *ngFor="let LOP of LOPListen; let o = odd">
           <tr>
-            <td colspan="10"  [style.background]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun" style="border-right: none !important;">
+            <td colspan="11"  [style.background]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun" style="border-right: none !important;">
               <div class="loplisteheader" (click)="LOPListeClicked(LOP)">
                 {{LOP.Titel + ' ' + LOP.LOPListenummer + ' vom ' + LOP.Zeitstring + ' / KW ' + GetKalenderwoche(LOP.Zeitstempel)}}
               </div>
@@ -283,12 +285,22 @@
             </td>
             <td style="width: 100px; text-align: center">
 
+              <!-- Zuständig BAE -->
+
               <table class="nobordersmalltable" style="width: 100%">
                 <tr  *ngFor="let ZustaendigID of Punkt.ZustaendigeInternIDListe">
                   <td style="text-align: center; color: #307ac1; font-size: 90%">
                     {{DB.GetZustaendigInternName(ZustaendigID)}}
                   </td>
                 </tr>
+              </table>
+
+            </td>
+            <td>
+
+              <!-- Zuständig Firma -->
+
+              <table class="nobordersmalltable" style="width: 100%">
                 <tr *ngFor="let ZustaendigID of Punkt.ZustaendigeExternIDListe">
                   <td style="text-align: center; color: black; font-size: 90%">
                     {{DB.GetZustaendigExternName(ZustaendigID)}}
@@ -305,11 +317,11 @@
         <ng-container *ngIf="BigThumbnailliste.length > 0">
           <tr style="background: #444444; color: white">
             <td style="text-align: center"><b>Nr.</b></td>
-            <td colspan="10"><b>Abbildung</b></td>
+            <td colspan="11"><b>Abbildung</b></td>
           </tr>
           <tr *ngFor="let Thumb of BigThumbnailliste; let Index = index">
             <td style="text-align: center; background: #444444; color: white;">{{BigThumbnailnumernliste[Index]}}</td>
-            <td colspan="10" (click)="ThumbnailClicked($event, BigThumbnailliste, Index)">
+            <td colspan="11" (click)="ThumbnailClicked($event, BigThumbnailliste, Index)">
               <img [src]="Thumb.largeurl" [style.height.px]="Thumb.height.large" [style.wdth.px]="Thumb.width.large">
             </td>
           </tr>
@@ -429,14 +441,11 @@
 
 <pj-baustelle-lopliste-eintrageditor *ngIf="ShowEintragEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="0"
                         [ZIndex]="3000" [Titel]="GetEintrageditorTitel()" Iconname="book-outline"
-                        (StatusClicked)="EintragEditorStatusClickedHandler()"
-                        (PrioritaetClicked)="EintragPrioritaetClickedHandler()"
                         (AddBildEvent)="AddBildEventHandler()"
                         (FachbereichClicked)="EintragEditorFachbereichClickedHandler()"
                         (GebaeudeteilClicked)="GebaeudeteilClickedHandler()"
                         (TerminButtonClicked)="ShowDateKkPicker = true"
                         (AnerkungVerfassernClicked)="AnerkungVerfasserClickedHandler($event)"
-                        (VerfasserButtonClicked)="VerfasserButtonClickedHandler()"
                         (CancelClickedEvent)="ShowEintragEditor = false"
                         (OkClickedEvent)="ShowEintragEditor = false"></pj-baustelle-lopliste-eintrageditor>
 

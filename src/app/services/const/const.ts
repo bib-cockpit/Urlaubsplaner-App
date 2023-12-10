@@ -7,6 +7,7 @@ import {
   PjFestlegungslistePage
 } from "../../pages/pj-festlegungsliste/pj-festlegungsliste.page";
 import {PjPlanungsmatrixPage} from "../../pages/pj-planungsmatrix/pj-planungsmatrix.page";
+import {CommonUrlaubFreigabenPage} from "../../pages/common-urlaub-freigaben/common-urlaub-freigaben.page";
 
 const _MitarbeiterdatenKeys = {
 
@@ -198,6 +199,8 @@ const _Pages = {
   EmaillistePage:  'EmaillistePage',
   UrlaubPlanungPage: 'UrlaubPlanungPage',
   UrlaubEinstellungenPage: 'UrlaubEinstellungenPage',
+  UrlaubUebersichtPage: 'UrlaubUebersichtPage',
+  UrlaubFreigabenPage: 'UrlaubFreigabenPage',
 
   // Firma
 

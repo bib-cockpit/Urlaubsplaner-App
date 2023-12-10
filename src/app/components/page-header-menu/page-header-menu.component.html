@@ -77,7 +77,8 @@
                       <table class="paddingsmalltable">
                         <tr>
                           <td><ion-icon name="thumbs-up-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Freigaben)"></ion-icon></td>
-                          <td [style.color]="GetUrlaubMenueFontcolor(Menuservice.UrlaubMenuebereiche.Freigaben)">Freigaben</td>
+                          <td [style.color]="GetUrlaubMenueFontcolor(Menuservice.UrlaubMenuebereiche.Freigaben)">Anfragen</td>
+                          <td *ngIf="DBUrlaub.Anfragenanzahl > 0"><ion-badge color="rot">{{DBUrlaub.Anfragenanzahl.toString()}}</ion-badge></td>
                         </tr>
                       </table>
                     </div>

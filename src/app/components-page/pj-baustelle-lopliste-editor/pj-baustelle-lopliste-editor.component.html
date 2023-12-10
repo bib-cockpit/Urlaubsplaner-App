@@ -279,7 +279,7 @@
                             <table class="docinnertablespezial" style="width: 100%">
                               <tr>
                               -->
-                                <td style="width: 30px" align="center" valign="middle">
+                                <td style="width: 30px;  vertical-align: middle; text-align: center">
 
                                   <!-- Nummer -->
 
@@ -289,23 +289,20 @@
                                     </tr>
                                   </table>
                                 </td>
-                                <td style="width: 180px; vertical-align: top">
+                                <td style="width: 180px; vertical-align: middle">
 
                                   <!-- Bauteil -->
 
                                   {{GetBauteilnamen(Projektpunkt)}}
 
                                 </td>
-                                <td style="width: 80px; text-align: center">
+                                <td style="width: 80px; text-align: center; vertical-align: middle">
                                   {{Pool.Fachbereich.GetFachbereichbyKey(Projektpunkt.Fachbereich).Kuerzel}}
                                 </td>
-                                <td style="width: 180px; vertical-align: top;">
+                                <td style="width: 180px; vertical-align: middle;">
                                   {{Projektpunkt.Thematik}}
                                 </td>
-                                <!--
-                                <td valign="top" style="height: inherit; width: auto" [inne rHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe: 'html'">
-                                -->
-                                <td valign="top" style="height: inherit;">
+                                <td style="height: inherit; vertical-align: middle">
 
                                   <!-- Aufgabe --->
                                   <table class="nobordersmalltable" style="width: 100%;">
@@ -323,6 +320,23 @@
 
                                         </div>
 
+                                      </td>
+                                    </tr>
+                                    <tr  *ngIf="Projektpunkt.Anmerkungenliste.length > 0">
+                                      <td>
+                                        <table>
+                                            <tr *ngFor="let Anmerkung of Projektpunkt.Anmerkungenliste">
+                                              <td style="width: 60px; color: orange">
+                                                {{GetAnmerkungDatum(Anmerkung)}}
+                                              </td>
+                                              <td style="width: 40px; color: orange" *ngIf="DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email)">
+                                                {{DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email).Name}}:
+                                              </td>
+                                              <td>
+                                                {{Anmerkung.Anmerkung}}
+                                              </td>
+                                            </tr>
+                                        </table>
                                       </td>
                                     </tr>
                                   </table>

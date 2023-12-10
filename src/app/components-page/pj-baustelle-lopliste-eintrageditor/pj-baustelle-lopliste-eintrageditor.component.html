@@ -45,17 +45,7 @@
                   <tr>
                     <td style="width: 50%">
                       <ion-grid>
-                        <ion-row *ngIf="DB.CurrentProjektpunkt.LOPListeID !== null">
-                            <ion-col size="6">
-                              <input-clone [MinHeight]="44" Titel="Eintragnummer" [Enabled]="false" [(Value)]="DB.CurrentProjektpunkt.Nummer"></input-clone>
-                            </ion-col>
-                        </ion-row>
-                        <ion-row>
-                          <ion-col size="6">
-                            <button-value (ButtonClicked)="VerfasserButtonClicked.emit()" [Wert_A]="DB.CurrentProjektpunkt.Verfasser.Vorname + ' ' + DB.CurrentProjektpunkt.Verfasser.Name" [Buttontext]="'Verfasser'">
-                            </button-value>
-                          </ion-col>
-                        </ion-row>
+
                         <ion-row>
                           <ion-col size="6">
 
@@ -63,13 +53,13 @@
                             </button-value>
 
                           </ion-col>
-                        </ion-row>
-                        <ion-row *ngIf="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Geschlossen.Name">
                           <ion-col size="6">
-                            <button-value-date [Buttontext]="'Abschlusstermin'"
+
+                            <button-value-date  *ngIf="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Geschlossen.Name" [Buttontext]="'Abschlusstermin'"
                                                [ElementID]="'terminbis'"
                                                [Datum]="GetGeschlossenDatum()"
                                                [Enabled]="true"
+                                               [ValueBreite]="380"
                                                (TimeChanged)="TerminGeschlossenChanged($event)">
                             </button-value-date>
                           </ion-col>
@@ -87,19 +77,23 @@
                       <ion-grid>
                         <ion-row>
                           <ion-col size="6">
+                            <!--
                             <button-value  *ngIf="DB.CurrentProjektpunkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name" [Buttontext]="'Priorität'"
                                           [Wert_A]="DB.GetProjektpunktPrioritaetByName(DB.CurrentProjektpunkt.Prioritaet).Displayname" [Buttoncolor]="Basics.Farben.Burnicklbraun"
                                           [Buttonvaluecolor]="DB.GetPrioritaetcolor(DB.CurrentProjektpunkt)" (ButtonClicked)="PrioritaetClicked.emit()">
                             </button-value>
+                            -->
                           </ion-col>
                         </ion-row>
                         <ion-row>
 
                           <ion-col size="6">
+                            <!--
                             <button-value [Buttontext]="'Status'"
                                           [Wert_A]="DB.GetProjektpunktstusByName(DB.CurrentProjektpunkt.Status).Displayname" [Buttoncolor]="Basics.Farben.Burnicklbraun"
                                           [Buttonvaluecolor]="DB.GetLOPStatuscolor(DB.CurrentProjektpunkt)" [Enabled]="StatusbuttonEnabled" (ButtonClicked)="StatusClicked.emit()">
                             </button-value>
+                            -->
                           </ion-col>
                         </ion-row>
 
@@ -124,17 +118,20 @@
 
                 <table class="paddingsmalltable">
                   <tr>
-                    <td colspan="2">
+                    <td colspan="100">
                       <ion-text color="baeblau"><b>Zuständige Firma</b></ion-text>
                     </td>
                   </tr>
-                  <tr *ngFor="let Firma of DBProjekt.CurrentProjekt.Firmenliste">
-                    <td>
-                      <checkbox-clon [Checked]="FirmaIsChecked(Firma.FirmenID)" (CheckChanged)="FirmaCheckChanged($event, Firma.FirmenID)"></checkbox-clon>
-                    </td>
-                    <td>
-                      {{Firma.Firma}}
-                    </td>
+                  <tr *ngFor="let Zeile of Firmenliste">
+                    <ng-container *ngFor="let Firma of Zeile">
+                      <td>
+                        <checkbox-clon *ngIf="Firma !== null" [Checked]="FirmaIsChecked(Firma.FirmenID)" (CheckChanged)="FirmaCheckChanged($event, Firma.FirmenID)"></checkbox-clon>
+                      </td>
+                      <td>
+                        {{Firma !== null ? Firma.Firma : ''}}
+                      </td>
+                      <td style="width: 10px"></td>
+                    </ng-container>
                   </tr>
                 </table>
 
@@ -148,10 +145,22 @@
               <ion-col size="3">
                 <table class="paddingsmalltable">
                   <tr>
-                    <td colspan="2">
+                    <td colspan="100">
                       <ion-text color="baeblau"><b>Zuständig bei BAE</b></ion-text>
                     </td>
                   </tr>
+                  <tr *ngFor="let Zeile of Mitarbeiterliste">
+                    <ng-container *ngFor="let Mitarbeiter of Zeile">
+                      <td>
+                        <checkbox-clon *ngIf="Mitarbeiter !== null" [Checked]="MitarbeiterIsChecked(Mitarbeiter._id)" (CheckChanged)="MitarbeiterCheckChanged($event, Mitarbeiter._id)"></checkbox-clon>
+                      </td>
+                      <td>
+                        {{Mitarbeiter !== null ? GetMitarbeiterName(Mitarbeiter._id) : ''}}
+                      </td>
+                      <td style="width: 10px"></td>
+                    </ng-container>
+                  </tr>
+                  <!--
                   <tr *ngFor="let MitarbeiterID of DBProjekt.CurrentProjekt.MitarbeiterIDListe">
                     <td>
                       <checkbox-clon [Checked]="MitarbeiterIsChecked(MitarbeiterID)" (CheckChanged)="MitarbeiterCheckChanged($event, MitarbeiterID)"></checkbox-clon>
@@ -160,6 +169,7 @@
                       {{GetMitarbeiterName(MitarbeiterID)}}
                     </td>
                   </tr>
+                  -->
                 </table>
                 <!--
                 <input-clone [MinHeight]="44" [Lines]="GetLinienanzahl()"
@@ -168,6 +178,123 @@
                              -->
               </ion-col>
             </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-text color="baeblau"><b>Priorität</b></ion-text>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+
+                <ion-radio-group [value]="DB.CurrentProjektpunkt.Prioritaet" (ionChange)="PrioritaetChangedHandler($event)">
+
+                  <table class="paddingsmalltable">
+                    <tr>
+                      <td><ion-radio [value]="Const.Projektpunktprioritaetstypen.Niedrig.Displayname"></ion-radio></td>
+                      <td>
+                        <div class="statusdivclass"
+                             [style.color]="DB.CurrentProjektpunkt.Prioritaet === Const.Projektpunktprioritaetstypen.Niedrig.Displayname ? 'white' : 'black'"
+                             [style.background]="DB.CurrentProjektpunkt.Prioritaet === Const.Projektpunktprioritaetstypen.Niedrig.Displayname ? DB.GetProjektpunktPrioritaetByName(DB.CurrentProjektpunkt.Prioritaet).Color : 'white'"
+                             (click)="PrioritaetClicked(Const.Projektpunktprioritaetstypen.Niedrig.Displayname)">Niedrig</div>
+                      </td>
+                      <td style="width: 10px;"></td>
+                      <td><ion-radio [value]="this.Const.Projektpunktprioritaetstypen.Mittel.Displayname"></ion-radio></td>
+                      <td>
+                        <div class="statusdivclass"
+                             [style.color]="DB.CurrentProjektpunkt.Prioritaet === this.Const.Projektpunktprioritaetstypen.Mittel.Displayname ? 'white' : 'black'"
+                             [style.background]="DB.CurrentProjektpunkt.Prioritaet === this.Const.Projektpunktprioritaetstypen.Mittel.Displayname ? DB.GetProjektpunktPrioritaetByName(DB.CurrentProjektpunkt.Prioritaet).Color : 'white'"
+                             (click)="PrioritaetClicked(this.Const.Projektpunktprioritaetstypen.Mittel.Displayname)">Mittel</div>
+                      </td>
+                      <td style="width: 10px;"></td>
+                      <td><ion-radio [value]="Const.Projektpunktprioritaetstypen.Hoch.Displayname"></ion-radio></td>
+                      <td>
+                        <div class="statusdivclass"
+                             [style.color]="DB.CurrentProjektpunkt.Prioritaet === Const.Projektpunktprioritaetstypen.Hoch.Displayname ? 'white' : 'black'"
+                             [style.background]="DB.CurrentProjektpunkt.Prioritaet === Const.Projektpunktprioritaetstypen.Hoch.Displayname ? DB.GetProjektpunktPrioritaetByName(DB.CurrentProjektpunkt.Prioritaet).Color : 'white'"
+                             (click)="PrioritaetClicked(Const.Projektpunktprioritaetstypen.Hoch.Displayname)">Hoch</div>
+                      </td>
+
+                    </tr>
+                  </table>
+
+
+                </ion-radio-group>
+
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col>
+                <ion-text color="baeblau"><b>Status</b></ion-text>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col>
+
+                <ion-radio-group [value]="DB.CurrentProjektpunkt.Status" (ionChange)="StatusChangedHandler($event)">
+
+                  <table class="paddingsmalltable">
+                    <tr>
+                      <td><ion-radio [value]="Const.Projektpunktstatustypen.Offen.Name"></ion-radio></td>
+                      <td>
+                        <div class="statusdivclass"
+                             [style.color]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Offen.Name ? 'white' : 'black'"
+                             [style.background]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Offen.Name ? DB.GetProjektpunktstusByName(DB.CurrentProjektpunkt.Status).Color : 'white'"
+                             (click)="StatusClicked(Const.Projektpunktstatustypen.Offen.Name)">Offen</div>
+                      </td>
+                      <td style="width: 10px;"></td>
+                      <td><ion-radio [value]="Const.Projektpunktstatustypen.Bearbeitung.Name"></ion-radio></td>
+                      <td>
+                        <div class="statusdivclass"
+                             [style.color]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Bearbeitung.Name ? 'white' : 'black'"
+                             [style.background]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Bearbeitung.Name ? DB.GetProjektpunktstusByName(DB.CurrentProjektpunkt.Status).Color : 'white'"
+                             (click)="StatusClicked(Const.Projektpunktstatustypen.Bearbeitung.Name)">Bearbeitung</div>
+                      </td>
+                      <td style="width: 10px;"></td>
+                      <td><ion-radio [value]="Const.Projektpunktstatustypen.Geschlossen.Name"></ion-radio></td>
+                      <td>
+                        <div class="statusdivclass"
+                             [style.color]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Geschlossen.Name ? 'white' : 'black'"
+                             [style.background]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Geschlossen.Name ? DB.GetProjektpunktstusByName(DB.CurrentProjektpunkt.Status).Color : 'white'"
+                             (click)="StatusClicked(Const.Projektpunktstatustypen.Geschlossen.Name)">Geschlossen</div>
+                      </td>
+                      <td style="width: 10px;"></td>
+                      <td><ion-radio [value]="Const.Projektpunktstatustypen.Ruecklauf.Name"></ion-radio></td>
+                      <td>
+                        <div class="statusdivclass"
+                             [style.color]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Ruecklauf.Name ? 'white' : 'black'"
+                             [style.background]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Ruecklauf.Name ? DB.GetProjektpunktstusByName(DB.CurrentProjektpunkt.Status).Color : 'white'"
+                             (click)="StatusClicked(Const.Projektpunktstatustypen.Ruecklauf.Name)">Rücklauf</div>
+                      </td>
+                      <td style="width: 10px;"></td>
+                      <td><ion-radio [value]="Const.Projektpunktstatustypen.Festlegung.Name"></ion-radio></td>
+                      <td>
+                        <div class="statusdivclass"
+                             [style.color]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name ? 'white' : 'black'"
+                             [style.background]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name ? DB.GetProjektpunktstusByName(DB.CurrentProjektpunkt.Status).Color : 'white'"
+                             (click)="StatusClicked(Const.Projektpunktstatustypen.Festlegung.Name)">Festlegung</div>
+                      </td>
+                      <td style="width: 10px;"></td>
+                      <td>
+                      <td><ion-radio [value]="Const.Projektpunktstatustypen.Protokollpunkt.Name"></ion-radio></td>
+                      <td>
+                        <div class="statusdivclass"
+                             [style.color]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Protokollpunkt.Name ? 'white' : 'black'"
+                             [style.background]="DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Protokollpunkt.Name ? DB.GetProjektpunktstusByName(DB.CurrentProjektpunkt.Status).Color : 'white'"
+                             (click)="StatusClicked(Const.Projektpunktstatustypen.Protokollpunkt.Name)">Info</div>
+                      </td>
+                    </tr>
+                  </table>
+
+
+                </ion-radio-group>
+
+              </ion-col>
+            </ion-row>
+
+
+
             <ion-row>
               <ion-col>
                 <ion-text color="baeblau"><b>Thematik</b></ion-text>

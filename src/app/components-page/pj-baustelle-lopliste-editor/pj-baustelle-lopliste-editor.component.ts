@@ -35,6 +35,8 @@ import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 import {DatabaseGebaeudestrukturService} from "../../services/database-gebaeudestruktur/database-gebaeudestruktur";
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
 import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
+import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
+import {Projektpunktanmerkungstruktur} from "../../dataclasses/projektpunktanmerkungstruktur";
 
 @Component({
   selector:    'pj-baustelle-lopliste-editor',
@@ -109,6 +111,7 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public DBGebaeude: DatabaseGebaeudestrukturService,
               public Displayservice: DisplayService,
+              public DBMitarbeiter: DatabaseMitarbeiterService,
               private LoadingAnimation: LoadingAnimationService,
               public Pool: DatabasePoolService) {
     try {
@@ -189,6 +192,18 @@ export class PjBaustelleLoplisteEditorComponent implements OnDestroy, OnInit, Af
       this.Debug.ShowErrorMessage(error.message, 'LOP Liste Editor', 'OnInit', this.Debug.Typen.Component);
     }
 
+  }
+
+  GetAnmerkungDatum(Anmerkung: Projektpunktanmerkungstruktur): string {
+
+    try {
+
+      return moment(Anmerkung.Zeitstempel).format('DD.MM.YY');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste Editor', 'GetAnmerkungDatum', this.Debug.Typen.Component);
+    }
   }
 
   ContentClicked(event: MouseEvent) {

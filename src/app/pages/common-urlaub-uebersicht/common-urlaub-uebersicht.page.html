@@ -1,0 +1,54 @@
+<ion-header class="ion-no-border">
+  <page-header #PageHeader>
+    <page-header-menu></page-header-menu>
+  </page-header>
+</ion-header>
+<ion-content>
+
+  <table *ngIf="Pool.Mitarbeiterdaten !== null" class="paddingtable">
+    <tr>
+      <td>{{Pool.Mitarbeiterdaten.Vorname + ' ' + this.Pool.Mitarbeiterdaten.Name}}</td>
+      <td>
+        <ion-button size="small" color="grau" (click)="MitarbeiterWechselnClicked()">Mitarbeiter wechseln</ion-button>
+      </td>
+    </tr>
+  </table>
+
+    <table style="width: 100%" class="paddingsmalltable">
+      <tr *ngFor="let Zeile of Monateliste_Uebersicht; let zeileindex = index">
+        <td style="width: 16%; height: inherit" valign="top" *ngFor="let Monat of Zeile; let spalteindex = index">
+
+          <urlaubsplanung-kalender
+            [Jahr]="DB.Jahr"
+            [Monatindex]="6 * zeileindex + spalteindex"
+            (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)" (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
+          </urlaubsplanung-kalender>
+
+        </td>
+      </tr>
+    </table>
+  
+</ion-content>
+<ion-footer>
+  <page-footer #PageFooter>
+
+  </page-footer>
+</ion-footer>
+
+
+<auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"
+                [Dialogbreite]="400"  [PositionY]="100"
+                [Titel]="Auswahltitel" [Iconname]="''"
+                (OkClickedEvent)="AuswahlOkButtonClicked($event)"
+                (CancelClickedEvent)="ShowAuswahl = false">
+</auswahl-dialog>
+
+<fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
+                        [Titel]="MitarbeiterauswahlTitel"
+                        [Dialogbreite]="600" [ZIndex]="4000"
+                        [Multiselect]="false"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
+                        (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
+                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>

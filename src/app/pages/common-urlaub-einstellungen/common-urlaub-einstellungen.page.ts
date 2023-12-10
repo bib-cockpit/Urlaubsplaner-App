@@ -27,6 +27,7 @@ import {cloneDeep} from "lodash-es";
 import {Ferienstruktur} from "../../dataclasses/ferienstruktur";
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import {Feiertagestruktur} from "../../dataclasses/feiertagestruktur";
+import {Urlaubprojektbeteiligtestruktur} from "../../dataclasses/urlaubprojektbeteiligtestruktur";
 
 @Component({
   selector: 'common-urlaub-einstellungen-page',
@@ -49,8 +50,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
   public ShowMitarbeiterauswahl: boolean;
   public AuswahlIDliste: string[];
   public MitarbeiterauswahlTitel: string;
-  public Mitarbeiterliste: Mitarbeiterstruktur[];
-  public Vertreterliste: Mitarbeiterstruktur[];
+  public Projektbeteiligteliste: Mitarbeiterstruktur[];
   public MitarbeiterMultiselect: boolean;
   public Ferienliste: Ferienstruktur[];
   public Feiertageliste: Feiertagestruktur[];
@@ -76,11 +76,10 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
       this.ShowMitarbeiterauswahl = false;
       this.AuswahlIDliste = [];
       this.MitarbeiterauswahlTitel = '';
-      this.Mitarbeiterliste = [];
       this.MitarbeiterMultiselect = true;
       this.Ferienliste = [];
       this.Feiertageliste = [];
-      this.Vertreterliste = [];
+      this.Projektbeteiligteliste = [];
 
 
     } catch (error) {
@@ -128,34 +127,17 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
       this.DB.Init();
 
-      this.Mitarbeiterliste = [];
+      this.Projektbeteiligteliste = [];
 
 
-      for (let id of this.DB.CurrentUrlaub.Mitarbeiterliste) {
+      for (let Eintrag of this.DB.CurrentUrlaub.Projektbeteiligteliste) {
 
-        Mitarbeiter = this.DBMitarbeiter.GetMitarbeiterByID(id);
+        Mitarbeiter = this.DBMitarbeiter.GetMitarbeiterByID(Eintrag.MitarbeiterID);
 
-        if (Mitarbeiter !== null) this.Mitarbeiterliste.push(Mitarbeiter);
+        if (Mitarbeiter !== null) this.Projektbeteiligteliste.push(Mitarbeiter);
       }
 
-      this.Mitarbeiterliste.sort((a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
-
-        if (a.Name > b.Name) return -1;
-        if (a.Name < b.Name) return 1;
-        return 0;
-      });
-
-      this.Vertreterliste = [];
-
-
-      for (let id of this.DB.CurrentUrlaub.Stellvertreterliste) {
-
-        Mitarbeiter = this.DBMitarbeiter.GetMitarbeiterByID(id);
-
-        if (Mitarbeiter !== null) this.Vertreterliste.push(Mitarbeiter);
-      }
-
-      this.Vertreterliste.sort((a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
+      this.Projektbeteiligteliste.sort((a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
 
         if (a.Name > b.Name) return -1;
         if (a.Name < b.Name) return 1;
@@ -187,37 +169,32 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
     try {
 
       let Urlaub: Urlaubsstruktur;
+      let Eintrag: Urlaubprojektbeteiligtestruktur;
 
       switch (this.Auswahldialogorigin) {
 
+        case this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Projektbeteiligte_Auswahl:
 
-        case this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Mitarbeiter_Auswahl:
+          this.DB.CurrentUrlaub.Projektbeteiligteliste = lodash.filter( this.DB.CurrentUrlaub.Projektbeteiligteliste, (beteiligt: Urlaubprojektbeteiligtestruktur) => {
 
-          this.DB.CurrentUrlaub.Mitarbeiterliste = idliste;
+            return idliste.indexOf(beteiligt.MitarbeiterID) !== -1;
+          });
 
-          Urlaub = lodash.find(this.Pool.Mitarbeiterdaten.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
+          for(let id of idliste) {
 
-          if (!lodash.isUndefined(Urlaub)) {
+            Eintrag = lodash.find(this.DB.CurrentUrlaub.Projektbeteiligteliste, {MitarbeiterID: id});
 
-            Urlaub.Mitarbeiterliste = idliste;
-
-            this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
-
-              this.PrepareData();
+            if(lodash.isUndefined(Eintrag)) this.DB.CurrentUrlaub.Projektbeteiligteliste.push({
+              MitarbeiterID: id,
+              Display: false
             });
           }
 
-          break;
-
-        case this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Vertreter_Auswahl:
-
-          this.DB.CurrentUrlaub.Stellvertreterliste = idliste;
-
           Urlaub = lodash.find(this.Pool.Mitarbeiterdaten.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
 
           if (!lodash.isUndefined(Urlaub)) {
 
-            Urlaub.Stellvertreterliste = idliste;
+            Urlaub.Projektbeteiligteliste = this.DB.CurrentUrlaub.Projektbeteiligteliste;
 
             this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
 
@@ -350,11 +327,17 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
     try {
 
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Mitarbeiter_Auswahl;
-      this.ShowMitarbeiterauswahl = true;
-      this.AuswahlIDliste = this.DB.CurrentUrlaub.Mitarbeiterliste;
+      this.Auswahldialogorigin     = this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Projektbeteiligte_Auswahl;
       this.MitarbeiterauswahlTitel = 'Mitarbeiter/innen auswählen';
-      this.MitarbeiterMultiselect = true;
+      this.ShowMitarbeiterauswahl  = true;
+      this.AuswahlIDliste          = [];
+      this.MitarbeiterMultiselect  = true;
+
+      for(let eintrag of this.DB.CurrentUrlaub.Projektbeteiligteliste) {
+
+        this.AuswahlIDliste.push(eintrag.MitarbeiterID);
+      }
+
 
     } catch (error) {
 
@@ -362,21 +345,6 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
     }
   }
 
-  VertreterAuswahlClicked() {
-
-    try {
-
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Vertreter_Auswahl;
-      this.ShowMitarbeiterauswahl = true;
-      this.AuswahlIDliste = this.DB.CurrentUrlaub.Stellvertreterliste;
-      this.MitarbeiterauswahlTitel = 'Vertreter/innen auswählen';
-      this.MitarbeiterMultiselect = true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'VertreterAuswahlClicked', this.Debug.Typen.Page);
-    }
-  }
 
   ResturlaubClickedEvent() {
 

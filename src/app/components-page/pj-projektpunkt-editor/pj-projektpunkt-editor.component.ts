@@ -135,12 +135,13 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       this.Thumbbreite = 100;
       this.Spaltenanzahl = 4;
       this.TerminValueBreite = 250;
-      this.Firmenliste = [];
+      this.Firmenliste        = [];
       this.Firmenlistespalten = 3;
       this.Firmenlistezeilen  = 0;
       this.Mitarbeiterspalten = 3;
       this.Mitarbeiterzeilen  = 0;
       this.Mitarbeiterliste   = [];
+
 
       this.StatusbuttonEnabled = this.DB.CurrentProjektpunkt.Status !== this.Const.Projektpunktstatustypen.Festlegung.Name;
 
@@ -1258,7 +1259,20 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
     try {
 
+      let Heute: Moment = moment();
+
       this.DB.CurrentProjektpunkt.Status = status.detail.value;
+
+      if(status === this.Const.Projektpunktstatustypen.Geschlossen.Name) {
+
+        this.DB.CurrentProjektpunkt.Geschlossenzeitstempel =  Heute.valueOf();
+        this.DB.CurrentProjektpunkt.Geschlossenzeitstring  =  Heute.format('DD.MM.YYYY');
+      }
+      else {
+
+        this.DB.CurrentProjektpunkt.Geschlossenzeitstempel = null;
+        this.DB.CurrentProjektpunkt.Geschlossenzeitstring  = null;
+      }
 
     } catch (error) {
 

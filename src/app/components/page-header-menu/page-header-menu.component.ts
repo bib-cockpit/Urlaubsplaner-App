@@ -17,14 +17,13 @@ import {DatabaseProjektpunkteService} from "../../services/database-projektpunkt
 import moment, {Moment} from "moment";
 import {DatabaseMitarbeitersettingsService} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {Graphservice} from "../../services/graph/graph";
-import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
 import {DatabaseOutlookemailService} from "../../services/database-email/database-outlookemail.service";
 import {DatabasePlanungsmatrixService} from "../../services/database-planungsmatrix/database-planungsmatrix.service";
 import {DatabaseLoplisteService} from "../../services/database-lopliste/database-lopliste.service";
 import {Fachbereichestruktur} from "../../dataclasses/fachbereicheclass";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
-import {ToolsProvider} from "../../services/tools/tools";
 import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
+import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
 
 @Component({
   selector: 'page-header-menu',
@@ -92,11 +91,10 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public DBPlanungsmatrix: DatabasePlanungsmatrixService,
               public DBLOPliste: DatabaseLoplisteService,
+              public DBUrlaub: DatabaseUrlaubService,
               public GraphService: Graphservice,
               public  AuthService: DatabaseAuthenticationService,
               public  Pool: DatabasePoolService,
-              private Tools: ToolsProvider,
-              public Kostengruppenservice: KostengruppenService,
               public  Menuservice: MenueService) {
     try {
 

@@ -849,15 +849,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
       switch (this.Auswahldialogorigin) {
 
-        case this.Auswahlservice.Auswahloriginvarianten.LOPListe_Eintrageditor_Verfasser:
-
-          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: data});
-
-          this.DBProjektpunkte.CurrentProjektpunkt.Verfasser.Email   = Mitarbeiter.Email;
-          this.DBProjektpunkte.CurrentProjektpunkt.Verfasser.Name    = Mitarbeiter.Name;
-          this.DBProjektpunkte.CurrentProjektpunkt.Verfasser.Vorname = Mitarbeiter.Vorname;
-
-          break;
 
         case this.Auswahlservice.Auswahloriginvarianten.LOPListe_Eintrageditor_AnmerkungVerfasser:
 
@@ -879,30 +870,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
           break;
 
-        case this.Auswahlservice.Auswahloriginvarianten.LOPListe_Eintrageditor_Status:
 
-          this.DBProjektpunkte.CurrentProjektpunkt.Status = data;
-
-          if(data === this.Const.Projektpunktstatustypen.Geschlossen.Name) {
-
-            this.DBProjektpunkte.CurrentProjektpunkt.Geschlossenzeitstempel =  Heute.valueOf();
-            this.DBProjektpunkte.CurrentProjektpunkt.Geschlossenzeitstring  =  Heute.format('DD.MM.YYYY');
-          }
-          else {
-
-            this.DBProjektpunkte.CurrentProjektpunkt.Geschlossenzeitstempel = null;
-            this.DBProjektpunkte.CurrentProjektpunkt.Geschlossenzeitstring  = null;
-          }
-
-          this.Pool.ProjektpunktStatusChanged.emit();
-
-          break;
-
-        case this.Auswahlservice.Auswahloriginvarianten.LOPListe_Eintrageditor_Prioritaet:
-
-          this.DBProjektpunkte.CurrentProjektpunkt.Prioritaet = data;
-
-          break;
 
         case  this.Auswahlservice.Auswahloriginvarianten.LOPListe_Eintrageditor_Fachbereich:
 
@@ -1698,48 +1666,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'LOP Liste', 'GetAnmerkungDatum', this.Debug.Typen.Page);
-    }
-  }
-
-  VerfasserButtonClickedHandler() {
-
-    try {
-
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.LOPListe_Eintrageditor_Verfasser;
-
-      let Index = 0;
-      let Mitarbeiter: Mitarbeiterstruktur;
-
-      this.ShowAuswahl         = true;
-      this.Auswahltitel        = 'Verfasser festlegen';
-      this.Auswahlliste        = [];
-
-      for(let id of this.DBProjekte.CurrentProjekt.MitarbeiterIDListe) {
-
-        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: id});
-
-        if(!lodash.isUndefined(Mitarbeiter)) {
-
-          this.Auswahlliste.push({ Index: Index, FirstColumn: Mitarbeiter.Name + ' ' + Mitarbeiter.Vorname, SecoundColumn: '', Data: Mitarbeiter._id });
-          Index++;
-        }
-      }
-
-      this.Auswahlliste.sort((a: Auswahldialogstruktur, b: Auswahldialogstruktur) => {
-
-        if (a.FirstColumn < b.FirstColumn) return -1;
-        if (a.FirstColumn > b.FirstColumn) return 1;
-        return 0;
-      });
-
-      Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {Email: this.DBProjektpunkte.CurrentProjektpunkt.Verfasser.Email});
-
-      if(!lodash.isUndefined(Mitarbeiter)) this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: Mitarbeiter._id});
-      else this.Auswahlindex = -1;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'AnerkungVerfasserClickedHandler', this.Debug.Typen.Page);
     }
   }
 

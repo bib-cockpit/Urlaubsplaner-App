@@ -14,28 +14,11 @@
     <ion-row>
       <ion-col>
         <table class="paddingtable">
-            <tr *ngFor="let Mitarbeiter of Mitarbeiterliste">
+            <tr *ngFor="let Mitarbeiter of Projektbeteiligteliste">
               <td>{{Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name}}</td>
             </tr>
             <tr>
               <td><ion-button size="small" color="grau" (click)="MitarbeiterAuswahlClicked()">Mitarbeiter/innen auswählen</ion-button></td>
-            </tr>
-        </table>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-text color="baeblau" style="font-size: 120%"><b>Projekt Stellvertreter/innen</b></ion-text>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <table class="paddingtable">
-            <tr *ngFor="let Mitarbeiter of Vertreterliste">
-              <td>{{Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name}}</td>
-            </tr>
-            <tr>
-              <td><ion-button size="small" color="grau" (click)="VertreterAuswahlClicked()">Mitarbeiter/innen auswählen</ion-button></td>
             </tr>
         </table>
       </ion-col>

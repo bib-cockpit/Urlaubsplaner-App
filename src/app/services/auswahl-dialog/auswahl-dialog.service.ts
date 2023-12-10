@@ -82,8 +82,7 @@ export class AuswahlDialogService {
 
     Urlaubsplanung_Mitarbeiter_Wechseln:                    'Urlaubsplanung_Mitarbeiter_Wechseln',
     Urlaubsplanung_Vertreter_Festlegen:                     'Urlaubsplanung_Vertreter_Festlegen',
-    UrlaubEinstellungen_Mitarbeiter_Auswahl:                'UrlaubEinstellungen_Mitarbeiter_Auswahl',
-    UrlaubEinstellungen_Vertreter_Auswahl:                  'UrlaubEinstellungen_Vertreter_Auswahl',
+    UrlaubEinstellungen_Projektbeteiligte_Auswahl:         'UrlaubEinstellungen_Projektbeteiligte_Auswahl',
     UrlaubEinstellungen_Freigeber_Auswahl:                  'UrlaubEinstellungen_Freigeber_Auswahl',
     UrlaubEinstellungen_Standort_Filter:                    'UrlaubEinstellungen_Standort_Filter',
 

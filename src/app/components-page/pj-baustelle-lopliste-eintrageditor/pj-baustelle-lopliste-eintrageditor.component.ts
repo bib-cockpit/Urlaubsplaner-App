@@ -51,19 +51,14 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
 
   @Output() CancelClickedEvent      = new EventEmitter<any>();
   @Output() OkClickedEvent          = new EventEmitter<any>();
-  @Output() StatusClicked           = new EventEmitter<any>();
   @Output() FachbereichClicked      = new EventEmitter<any>();
   @Output() TerminButtonClicked     = new EventEmitter<any>();
   @Output() GeschlossenButtonClicked = new EventEmitter<any>();
   @Output() GeschlossenTerminButtonClicked = new EventEmitter<any>();
-  //  @Output() ZustaendigInternClicked = new EventEmitter<any>();
-  // @Output() ZustaendigExternClicked = new EventEmitter<any>();
   @Output() KostengruppeClicked     = new EventEmitter<any>();
   @Output() GebaeudeteilClicked     = new EventEmitter<any>();
-  @Output() PrioritaetClicked       = new EventEmitter<any>();
   @Output() AddBildEvent            = new EventEmitter();
   @Output() AnerkungVerfassernClicked = new EventEmitter<Projektpunktanmerkungstruktur>();
-  @Output() VerfasserButtonClicked    = new EventEmitter<any>();
 
   @Input() Titel: string;
   @Input() Iconname: string;
@@ -88,8 +83,12 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
   public Thumbbreite: number;
   public Spaltenanzahl: number;
   private ProjektpunktSubscription: Subscription;
-
-
+  public Firmenliste: Projektfirmenstruktur[][];
+  public Firmenlistespalten: number;
+  public Firmenlistezeilen: number;
+  public Mitarbeiterliste: Mitarbeiterstruktur[][];
+  public Mitarbeiterspalten: number;
+  public Mitarbeiterzeilen: number;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -123,6 +122,12 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
       this.Thumbbreite = 100;
       this.Spaltenanzahl = 4;
       this.ProjektpunktSubscription = null;
+      this.Firmenliste        = [];
+      this.Firmenlistespalten = 3;
+      this.Firmenlistezeilen  = 0;
+      this.Mitarbeiterspalten = 3;
+      this.Mitarbeiterzeilen  = 0;
+      this.Mitarbeiterliste   = [];
 
       this.StatusbuttonEnabled = this.DB.CurrentProjektpunkt.Status !== this.Const.Projektpunktstatustypen.Festlegung.Name;
 
@@ -282,6 +287,7 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
       let Liste: Thumbnailstruktur[] = [];
       let Imageliste: Teamsfilesstruktur[] = [];
       let File: Teamsfilesstruktur;
+      let Mitarbeiter: Mitarbeiterstruktur;
 
       this.CleanExternZustaendigLOPEintrag();
 
@@ -352,6 +358,53 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
 
         this.Thumbbreite = (this.Dialogbreite - 8 * (this.Spaltenanzahl + 0)) / this.Spaltenanzahl;
 
+      }
+
+      // Firmenliste
+
+      Index = 0;
+      this.Firmenliste = [];
+      this.Firmenlistezeilen = Math.ceil(this.DBProjekt.CurrentProjekt.Firmenliste.length / this.Firmenlistespalten);
+
+      for (let zeile = 0; zeile < this.Firmenlistezeilen; zeile++) {
+
+        this.Firmenliste[zeile] = [];
+
+        for (let spalte = 0; spalte < this.Firmenlistespalten; spalte++) {
+
+          if (!lodash.isUndefined(this.DBProjekt.CurrentProjekt.Firmenliste[Index])) this.Firmenliste[zeile][spalte] = this.DBProjekt.CurrentProjekt.Firmenliste[Index];
+          else this.Firmenliste[zeile][spalte] = null;
+
+          Index++;
+        }
+      }
+
+      // Miarbeiterliste
+
+      Index = 0;
+      this.Mitarbeiterliste = [];
+      this.Mitarbeiterzeilen = Math.ceil(this.DBProjekt.CurrentProjekt.MitarbeiterIDListe.length / this.Mitarbeiterspalten);
+
+      for (let zeile = 0; zeile < this.Mitarbeiterzeilen; zeile++) {
+
+        this.Mitarbeiterliste[zeile] = [];
+
+        for (let spalte = 0; spalte < this.Mitarbeiterspalten; spalte++) {
+
+          if (!lodash.isUndefined(this.DBProjekt.CurrentProjekt.MitarbeiterIDListe[Index])) {
+
+            Mitarbeiter = this.DBMitarbeiter.GetMitarbeiterByID(this.DBProjekt.CurrentProjekt.MitarbeiterIDListe[Index]);
+
+            if(!lodash.isUndefined(Mitarbeiter)) {
+
+              this.Mitarbeiterliste[zeile][spalte] = Mitarbeiter;
+            }
+            else this.Mitarbeiterliste[zeile][spalte] = null;
+          }
+          else this.Mitarbeiterliste[zeile][spalte] = null;
+
+          Index++;
+        }
       }
 
     } catch (error) {
@@ -996,6 +1049,53 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
 
       this.Debug.ShowErrorMessage(error, 'LOP Liste Eintrageditor', 'DeleteThumbnail', this.Debug.Typen.Page);
     }
+  }
+
+  StatusClicked(status: string) {
+
+    try {
+
+      this.DB.CurrentProjektpunkt.Status = status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'StatusClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  PrioritaetClicked(prioritaet: string) {
+
+    try {
+
+      this.DB.CurrentProjektpunkt.Prioritaet = prioritaet;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'PrioritaetClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  StatusChangedHandler(status: any) {
+
+    try {
+
+      this.DB.CurrentProjektpunkt.Status = status.detail.value;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'StatusChangedHandler', this.Debug.Typen.Component);
+    }
+  }
+
+  PrioritaetChangedHandler(event: any) {
+
+    try {
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'PrioritaetChangedHandler', this.Debug.Typen.Component);
+    }
+
   }
 }
 

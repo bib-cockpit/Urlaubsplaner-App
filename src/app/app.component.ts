@@ -363,7 +363,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           }
           else {
 
-            Page = this.Const.Pages.PjBaustelleLoplistePage; //
+            Page = this.Const.Pages.UrlaubFreigabenPage; // UrlaubPlanungPage; // PjBaustelleLoplistePage; //
             // PjBaustelleLoplistePage; // UrlaubEinstellungenPage; // UrlaubPlanungPage; // PjBaustelleLoplistePage; // FiMitarbeiterlistePage; // UrlaubsplanungPage; // FiStandortelistePage; // UrlaubsplanungPage; // UrlaubsplanungPage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
 
             this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
@@ -421,6 +421,20 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
           this.Menuservice.MainMenuebereich   = this.Menuservice.MainMenuebereiche.Urlaubsplanung;
           this.Menuservice.UrlaubMenuebereich = this.Menuservice.UrlaubMenuebereiche.Planung;
+
+          break;
+
+        case this.Const.Pages.UrlaubUebersichtPage:
+
+          this.Menuservice.MainMenuebereich   = this.Menuservice.MainMenuebereiche.Urlaubsplanung;
+          this.Menuservice.UrlaubMenuebereich = this.Menuservice.UrlaubMenuebereiche.Uebersicht;
+
+          break;
+
+        case this.Const.Pages.UrlaubFreigabenPage:
+
+          this.Menuservice.MainMenuebereich   = this.Menuservice.MainMenuebereiche.Urlaubsplanung;
+          this.Menuservice.UrlaubMenuebereich = this.Menuservice.UrlaubMenuebereiche.Freigaben;
 
           break;
 

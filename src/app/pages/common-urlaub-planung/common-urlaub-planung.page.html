@@ -22,7 +22,7 @@
 
     <table style="width: 100%">
       <tr>
-        <td style="height: 20px;"></td>
+        <td style="height: 20px;" colspan="2"></td>
       </tr>
       <tr>
         <td align="center">
@@ -46,43 +46,132 @@
           </table>
 
         </td>
+        <td></td>
       </tr>
       <tr>
         <td align="center">
 
-          <table class="paddingsmalltable">
+          <table>
             <tr>
-              <td style="width: 500px" valign="top">
-                <urlaubsplanung-kalender
-                  [Jahr]="DB.Jahr"
-                  [Monatindex]="DB.FirstMonatIndex"
-                  [AddUrlaubRunning]="AddUrlaubRunning"
-                  (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
-                  (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
-                  (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
-                </urlaubsplanung-kalender>
+              <td>
+
+                <table class="paddingsmalltable">
+                  <tr>
+
+                    <td style="width: 500px" valign="top">
+                      <urlaubsplanung-kalender
+                        [Jahr]="DB.Jahr"
+                        [Monatindex]="DB.FirstMonatIndex"
+                        [AddUrlaubRunning]="AddUrlaubRunning"
+                        (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
+                        (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
+                        (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
+                      </urlaubsplanung-kalender>
+                    </td>
+
+                    <td style="width: 500px" valign="top">
+                      <urlaubsplanung-kalender
+                        [Jahr]="DB.Jahr"
+                        [Monatindex]="DB.CurrentMonatindex"
+                        [AddUrlaubRunning]="AddUrlaubRunning"
+                        (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
+                        (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
+                        (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
+                      </urlaubsplanung-kalender>
+                    </td>
+
+                    <td style="width: 500px" valign="top">
+                      <urlaubsplanung-kalender
+                        [Jahr]="DB.Jahr"
+                        [Monatindex]="DB.LastMonatIndex"
+                        [AddUrlaubRunning]="AddUrlaubRunning"
+                        (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
+                        (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
+                        (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
+                      </urlaubsplanung-kalender>
+                    </td>
+
+                  </tr>
+                </table>
+
               </td>
-              <td style="width: 500px" valign="top">
-                <urlaubsplanung-kalender
-                  [Jahr]="DB.Jahr"
-                  [Monatindex]="DB.CurrentMonatindex"
-                  [AddUrlaubRunning]="AddUrlaubRunning"
-                  (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
-                  (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
-                  (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
-                </urlaubsplanung-kalender>
-              </td>
-              <td style="width: 500px" valign="top">
-                <urlaubsplanung-kalender
-                  [Jahr]="DB.Jahr"
-                  [Monatindex]="DB.LastMonatIndex"
-                  [AddUrlaubRunning]="AddUrlaubRunning"
-                  (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
-                  (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
-                  (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
-                </urlaubsplanung-kalender>
-              </td>
+
             </tr>
+          </table>
+
+
+
+        </td>
+        <td valign="top">
+          <!-- Legende -->
+
+          <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
+            <ng-container *ngIf="DB.Laendercode === 'DE'">
+              <tr>
+                <td><checkbox-clon [Checked]="DB.ShowFeiertage_DE" (CheckChanged)="AnsichtFeiertageCheckChanged($event, 'DE')"></checkbox-clon></td><td>
+                <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage_DE">
+                  <ion-icon name="flag-outline" color="weiss" style="font-size: 18px"></ion-icon>
+                </div>
+              </td><td>Feiertage Deutschland</td>
+              </tr>
+              <tr>
+                <td><checkbox-clon [Checked]="DB.ShowFerientage_DE" (CheckChanged)="AnsichtFerientageCheckChanged($event, 'DE')"></checkbox-clon></td><td>
+                <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien_DE">
+                  <ion-icon name="school-outline" color="weiss" style="font-size: 18px"></ion-icon>
+                </div>
+              </td><td>Schulferien Deutschland</td>
+              </tr>
+            </ng-container>
+            <ng-container> <!--  *ngIf="DB.Laendercode === 'BG'" -->
+              <tr>
+                <td><checkbox-clon [Checked]="DB.ShowFeiertage_BG" (CheckChanged)="AnsichtFeiertageCheckChanged($event,  'BG')"></checkbox-clon></td><td>
+                <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage_BG">
+                  <ion-icon name="flag-outline" color="gelb" style="font-size: 18px"></ion-icon>
+                </div>
+              </td><td>Feiertage Bulgarien</td>
+              </tr>
+              <tr>
+                <td><checkbox-clon [Checked]="DB.ShowFerientage_BG" (CheckChanged)="AnsichtFerientageCheckChanged($event, 'BG')"></checkbox-clon></td><td>
+                <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien_BG">
+                  <ion-icon name="school-outline" color="gelb" style="font-size: 18px"></ion-icon>
+                </div>
+              </td><td>Schulferien Bulgarien</td>
+              </tr>
+            </ng-container>
+            <tr>
+              <td>
+              </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Beantrag"></div></td><td>Beantragter Urlaub</td>
+            </tr>
+            <tr>
+              <td>
+              </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreteranfrage"></div></td><td>Vertretung angefragt</td>
+            </tr>
+            <tr>
+              <td>
+              </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Urlaub mit Vertreterfreigabe</td>
+            </tr>
+            <tr>
+              <td>
+              </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterablehnung"></div></td><td>Vertretung wurde abgelehnt</td>
+            </tr>
+            <tr>
+              <td>
+              </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Genehmigt"></div></td><td>Genehmigter Urlaub</td>
+            </tr>
+            <tr>
+              <td>
+              </td>
+              <td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
+            </tr>
+            <tr *ngFor="let Urlaub of DB.UrlaublisteExtern; let i = index">
+              <td>
+                <checkbox-clon [Checked]="DB.CheckDisplayExternenUrlaub(Urlaub.MitarbeiterIDExtern)" (CheckChanged)="DisplayExternCheckChanged($event, Urlaub, i)" [Enabled]="Urlaub.Zeitspannen.length > 0"></checkbox-clon>
+              </td>
+              <td><div class="legendeexterndivclass">{{Urlaub.NameKuerzel}}</div></td><td>{{Urlaub.NameExtern}}</td>
+            </tr>
+              <tr>
+                <td colspan="3" style="height: 40px">{{Message}}</td>
+              </tr>
           </table>
 
         </td>
@@ -93,12 +182,13 @@
           <table class="paddingsmalltable">
             <tr>
               <td align="center">
-                <ion-button size="small" (click)="AddUrlaub()">Neuen Urlaub eintragen</ion-button>
+                <ion-button [disabled]="DB.CountResturlaub() <= 0" size="small" (click)="AddUrlaub()">Neuen Urlaub eintragen</ion-button>
               </td>
             </tr>
           </table>
 
         </td>
+        <td></td>
       </tr>
       <tr>
         <td *ngIf="AddUrlaubRunning === true" align="center">
@@ -113,6 +203,7 @@
           </table>
 
         </td>
+        <td></td>
       </tr>
 
       <tr *ngIf="DB.CurrentUrlaub !== null" align="center">
@@ -120,105 +211,58 @@
           <table class="docinnertable">
             <tr>
               <td></td>
-              <td style="font-weight: bold;">Status</td>
               <td style="font-weight: bold;">Von</td>
               <td style="font-weight: bold;">Bis</td>
               <td style="font-weight: bold; text-align: center">Tage</td>
               <td style="font-weight: bold;">Stellvertreter</td>
+              <td style="font-weight: bold;">Status</td>
+              <td style="font-weight: bold; min-width: 600px">Statusmeldung</td>
               <td></td>
             </tr>
             <tr *ngFor="let Zeitspanne of this.DB.CurrentUrlaub.Zeitspannen">
 
-              <td><ion-button size="small" color="grau" (click)="UrlaubSuchen(Zeitspanne)"><ion-icon name="search" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button></td>
-              <td align="center"><div class="legendedivclass" [style.background]="GetStatusColor(Zeitspanne.Status)"></div></td>
+              <td>
+                <ion-button size="small" color="grau" (click)="UrlaubSuchen(Zeitspanne)"><ion-icon name="search" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
+              </td>
               <td>{{GetDatumlangtext(Zeitspanne.Startstempel)}}</td>
               <td>{{GetDatumlangtext(Zeitspanne.Endestempel)}}</td>
               <td style="text-align: center">{{Zeitspanne.Tageanzahl}}</td>
               <td>
-                <ion-button size="small" color="grau" (click)="StellvertreterFestlegenClicked(Zeitspanne)">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</ion-button>
+                <ion-button *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Beantragt" size="small" color="grau" (click)="StellvertreterFestlegenClicked(Zeitspanne)">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</ion-button>
+                <span       *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Beantragt">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</span>
               </td>
+              <td align="center"><div class="legendedivclass" [style.background]="DB.GetStatuscolor(Zeitspanne.Status)"></div></td>
+              <td>{{Zeitspanne.Statusmeldung}}</td>
               <td><ion-button size="small" color="rot" (click)="UrlaubLoeschen(Zeitspanne)"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button></td>
+            </tr>
+            <tr>
+              <td colspan="4" style="text-align: right; font-weight: bold">Resturlaub</td>
+              <td style="text-align: center">{{DB.CountResturlaub()}}</td>
+              <td colspan="3"></td>
             </tr>
           </table>
         </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td align="center">
+
+          <table class="paddingsmalltable">
+            <tr>
+              <td align="center">
+                <ion-button [disabled]="CheckUpdatesAvailable() === false"  size="small" (click)="SendUpdate()">Aktualisierung senden</ion-button>
+              </td>
+            </tr>
+          </table>
+
+        </td>
+        <td></td>
       </tr>
     </table>
 
-    <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
-      <ng-container *ngIf="DB.Laendercode === 'DE'">
-        <tr>
-          <td><checkbox-clon [Checked]="DB.ShowFeiertage" (CheckChanged)="AnsichtFeiertageCheckChanged($event, this.DB.Laendercode)"></checkbox-clon></td><td>
-          <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage_DE">
-            <ion-icon name="flag-outline" color="weiss" style="font-size: 18px"></ion-icon>
-          </div>
-        </td><td>Feiertage Deutschland</td>
-        </tr>
-        <tr>
-          <td><checkbox-clon [Checked]="DB.ShowFerientage" (CheckChanged)="AnsichtFerientageCheckChanged($event, this.DB.Laendercode)"></checkbox-clon></td><td>
-          <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien_DE">
-            <ion-icon name="school-outline" color="weiss" style="font-size: 18px"></ion-icon>
-          </div>
-        </td><td>Schulferien Deutschland</td>
-        </tr>
-      </ng-container>
-      <ng-container *ngIf="DB.Laendercode === 'BG'">
-        <tr>
-          <td><checkbox-clon [Checked]="DB.ShowFeiertage" (CheckChanged)="AnsichtFeiertageCheckChanged($event,  this.DB.Laendercode)"></checkbox-clon></td><td>
-          <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage_BG">
-            <ion-icon name="flag-outline" color="weiss" style="font-size: 18px"></ion-icon>
-          </div>
-        </td><td>Feiertage Bulgarien</td>
-        </tr>
-        <tr>
-          <td><checkbox-clon [Checked]="DB.ShowFerientage" (CheckChanged)="AnsichtFerientageCheckChanged($event, this.DB.Laendercode)"></checkbox-clon></td><td>
-          <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien_BG">
-            <ion-icon name="school-outline" color="weiss" style="font-size: 18px"></ion-icon>
-          </div>
-        </td><td>Schulferien Bulgarien</td>
-        </tr>
-      </ng-container>
-      <tr>
-        <td>
-          <!--
-          <checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowBeantragt" (CheckChanged)="AnsichtCheckChanged($event, DB.Urlaubstatusvarianten.Beantragt)"></checkbox-clon>
-          -->
-        </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Beantrag"></div></td><td>Beantragter Urlaub</td>
-      </tr>
-      <tr>
-        <td>
-          <!--
-          <checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowVertreterfreigabe" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Vertreterfreigabe)"></checkbox-clon>
-          -->
-        </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Urlaub mit Vertreterfreigabe</td>
-      </tr>
-      <tr>
-        <td>
-          <!--
-          <checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowGenehmigt" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Genehmigt)"></checkbox-clon>
-          -->
-        </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Genehmigt"></div></td><td>Genehmigter Urlaub</td>
-      </tr>
-      <tr>
-        <td>
-          <!--
-          <checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowAbgelehnt" (CheckChanged)="AnsichtCheckChanged($event,DB.Urlaubstatusvarianten.Abgelehnt)"></checkbox-clon>
-          -->
-        </td>
-        <td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
-      </tr>
-      <tr *ngFor="let Urlaub of DB.UrlaublisteExtern; let i = index">
-        <td>
-          <checkbox-clon [Checked]="Urlaub.DisplayExtern" (CheckChanged)="DisplayExternCheckChanged($event, Urlaub, i)"></checkbox-clon>
-        </td>
-        <td><div class="legendeexterndivclass">{{Urlaub.NameKuerzel}}</div></td><td>{{Urlaub.NameExtern}}</td>
-      </tr>
-    </table>
 
-    <table style="width: 400px;" class="paddingtable">
-      <tr>
-        <td style="font-size: 160%; color: #444444; height: 40px">{{Message}}</td>
-      </tr>
-    </table>
+
+
 
   <!--
 
@@ -395,6 +439,7 @@
                         [Titel]="MitarbeiterauswahlTitel"
                         [Dialogbreite]="600" [ZIndex]="4000"
                         [Multiselect]="false"
+                        [OnlyProjektmitarbeiter]="false"
                         Iconname="people-outline"
                         [AuswahlIDliste]="AuswahlIDliste"
                         (CancelClickedEvent)="ShowMitarbeiterauswahl = false"

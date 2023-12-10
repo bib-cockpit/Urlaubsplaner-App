@@ -36,6 +36,14 @@ const routes: Routes = [
     loadChildren: () => import('./pages/common-urlaub-planung/common-urlaub-planung.module').then(m => m.CommonUrlaubsplanungPageModule),
   },
   {
+    path: 'UrlaubUebersichtPage',
+    loadChildren: () => import('./pages/common-urlaub-uebersicht/common-urlaub-uebersicht.module').then(m => m.CommonUrlaubsuebersichtPageModule),
+  },
+  {
+    path: 'UrlaubFreigabenPage',
+    loadChildren: () => import('./pages/common-urlaub-freigaben/common-urlaub-freigaben.module').then(m => m.CommonUrlaubFreigabenPageModule),
+  },
+  {
     path: 'UrlaubEinstellungenPage',
     loadChildren: () => import('./pages/common-urlaub-einstellungen/common-urlaub-einstellungen.module').then(m => m.CommonUrlaubEinstellungenPageModule),
   },

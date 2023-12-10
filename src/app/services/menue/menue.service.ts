@@ -101,7 +101,6 @@ export class MenueService {
 
     try {
 
-
       switch (this.MainMenuebereich) {
 
         case this.MainMenuebereiche.Home:
@@ -127,6 +126,14 @@ export class MenueService {
               break;
 
             case this.UrlaubMenuebereiche.Uebersicht:
+
+              this.Tools.SetRootPage(this.Const.Pages.UrlaubUebersichtPage);
+
+              break;
+
+            case this.UrlaubMenuebereiche.Freigaben:
+
+              this.Tools.SetRootPage(this.Const.Pages.UrlaubFreigabenPage);
 
               break;
 
