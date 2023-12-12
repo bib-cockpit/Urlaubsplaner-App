@@ -56,6 +56,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
   private MonateSubscription: Subscription;
   public Monatname: string;
   private ExterneUrlaubSubscription: Subscription;
+  private UrlaubStatusSubscription: Subscription;
 
   constructor(private Debug: DebugProvider,
               public Basics: BasicsProvider,
@@ -81,6 +82,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
       this.MitarbeiterSubscription = null;
       this.MonateSubscription = null;
       this.ExterneUrlaubSubscription = null;
+      this.UrlaubStatusSubscription = null;
 
     } catch (error) {
 
@@ -245,6 +247,8 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
         Datum = Datumsicherung.clone();
 
+        debugger;
+
         if(this.DB.CheckDisplayExternenUrlaub(this.DB.UrlaublisteExtern[i].MitarbeiterIDExtern)) {
 
           this.KalendertageExternliste[Mitarbeiterindex] = [];
@@ -279,36 +283,9 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                   Datum.isSameOrBefore(Endedatum, 'day')   === true &&
                   this.DB.CheckIsFeiertag(Tag, this.DB.Laendercode) === false) {
 
-                  Tag.IsUrlaub = true;
-
-                  switch (Zeitspanne.Status) {
-
-                    case this.DB.Urlaubstatusvarianten.Beantragt:
-
-                      Tag.Background = this.DB.Urlaubsfaben.Beantrag;
-
-                      break;
-
-                    case this.DB.Urlaubstatusvarianten.Vertreterfreigabe:
-
-                      Tag.Background = this.DB.Urlaubsfaben.Vertreterfreigabe;
-
-                      break;
-
-                    case this.DB.Urlaubstatusvarianten.Genehmigt:
-
-                      Tag.Background = this.DB.Urlaubsfaben.Genehmigt;
-
-                      break;
-
-                    case this.DB.Urlaubstatusvarianten.Abgelehnt:
-
-                      Tag.Background = this.DB.Urlaubsfaben.Abgelehnt;
-
-                      break;
-                  }
-
-                  Tag.Color = 'white';
+                  Tag.IsUrlaub   = true;
+                  Tag.Background = this.DB.GetStatuscolor(Zeitspanne.Status);
+                  Tag.Color      = 'white';
 
                   break;
                 }
@@ -354,7 +331,10 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
         this.PrepareData();
       });
 
-      // this.PrepareData();
+      this.UrlaubStatusSubscription = this.DB.UrlaubStatusChanged.subscribe(() => {
+
+        this.PrepareData();
+      });
 
     }
     catch (error) {
@@ -380,6 +360,9 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
       this.ExterneUrlaubSubscription.unsubscribe();
       this.ExterneUrlaubSubscription = null;
+
+      this.UrlaubStatusSubscription.unsubscribe();
+      this.UrlaubStatusSubscription = null;
 
     } catch (error) {
 

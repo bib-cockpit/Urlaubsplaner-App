@@ -117,6 +117,10 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
     try {
 
+      this.DB.Init();
+      this.DB.CheckSetup();
+      this.DB.SetPlanungsmonate();
+
       await this.DB.GetAnfragenlisten();
 
 
@@ -279,7 +283,7 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
     }
   }
 
-  CheckUpdateButtonEnabled(Mitareiter: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur): boolean {
+  CheckVertretungUpdateButtonEnabled(Mitareiter: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur): boolean {
 
     try {
 
@@ -299,11 +303,34 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'CheckUpdateButtonEnabled', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'CheckVertretungUpdateButtonEnabled', this.Debug.Typen.Page);
     }
   }
 
-  CheckUpdateButtonVisible(Mitareiter: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur): boolean {
+  CheckFreigabeUpdateButtonEnabled(Mitareiter: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur): boolean {
+
+    try {
+
+      let Available: boolean = false;
+
+      for(let Zeitspanne of Urlaub.Zeitspannen) {
+
+        if(lodash.isUndefined(Zeitspanne.FreigabeantwortSended)) Zeitspanne.FreigabeantwortSended = false;
+
+        if(Urlaub.FreigeberID               !== null &&
+           Zeitspanne.FreigabeantwortSended === false &&
+          (Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Genehmigt || Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Abgelehnt)) Available = true;
+      }
+
+      return Available;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'CheckFreigabeUpdateButtonEnabled', this.Debug.Typen.Page);
+    }
+  }
+
+  CheckVertretungUpdateButtonVisible(Mitareiter: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur): boolean {
 
     try {
 
@@ -320,7 +347,30 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'CheckUpdateButtonEnabled', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'CheckVertretungUpdateButtonVisible', this.Debug.Typen.Page);
+    }
+  }
+
+  CheckFreigabeUpdateButtonVisible(Mitareiter: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur): boolean {
+
+    try {
+
+      let Visible: boolean = false;
+
+      for(let Zeitspanne of Urlaub.Zeitspannen) {
+
+        if(lodash.isUndefined(Zeitspanne.FreigabeantwortSended)) Zeitspanne.FreigabeantwortSended = false;
+
+        if(Zeitspanne.FreigabeantwortSended === false &&
+          Urlaub.FreigeberID                !== null  &&
+          (Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Genehmigt || Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Abgelehnt)) Visible = true;
+      }
+
+      return Visible;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'CheckFreigabeUpdateButtonVisible', this.Debug.Typen.Page);
     }
   }
 
@@ -359,12 +409,12 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
             await this.DB.SendVertreterantworten(Mitarbeiter, Urlaub);
 
-            Zeitspanne.Statusmeldung += '<br>' + Heute.format('DD.MM.YYYY') + ' Vertretungszusage wurde an ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' gesendet.';
+            Zeitspanne.Statusmeldung += '<br>' + Heute.format('DD.MM.YYYY') + ' Vertretungsabsage wurde an ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' gesendet.';
           }
         }
       }
 
-      // await this.DBMitarbeiter.UpdateMitarbeiter(Mitarbeiter);
+      await this.DBMitarbeiter.UpdateMitarbeiter(Mitarbeiter);
       await this.PrepareData();
 
     } catch (error) {
@@ -380,6 +430,7 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
       let Gesamtanzahl: number = 1;
       let Heute: Moment = moment();
       let Freigebender: Mitarbeiterstruktur;
+      let Vertretung: Mitarbeiterstruktur;
 
       for(let Zeitspanne of Urlaub.Zeitspannen) {
 
@@ -391,25 +442,29 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
         if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Genehmigt || Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Abgelehnt) {
 
-          Freigebender = lodash.find(this.Pool.Mitarbeiterliste, {_id: Urlaub.FreigeberID});
+          Freigebender = lodash.find(this.Pool.Mitarbeiterliste, { _id: Urlaub.FreigeberID });
+          Vertretung   = lodash.find(this.Pool.Mitarbeiterliste, { _id: Zeitspanne.VertreterID });
 
           if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Genehmigt) {
 
-            await this.DB.SendFreigabezusage(Mitarbeiter, Urlaub, Freigebender);
+            await this.DB.SendMitarbeiterFreigabezusage(Mitarbeiter, Urlaub, Freigebender);
+            await this.DB.SendOfficeFreigabezusage(Mitarbeiter, Urlaub, Vertretung, Freigebender);
 
-            Zeitspanne.Statusmeldung += '<br>' + Heute.format('DD.MM.YYYY') + ' Urlaubsfreigabe Anfrage wurde an ' + Freigebender.Vorname + ' ' + Freigebender.Name + ' gesendet.';
+
+            Zeitspanne.Statusmeldung += '<br>' + Heute.format('DD.MM.YYYY') + ' Urlaubsfreigabe wurde an ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' gesendet.';
+            Zeitspanne.Statusmeldung += '<br>' + Heute.format('DD.MM.YYYY') + ' Urlaubsfreigabe wurde an das Office gesendet.';
           }
 
           if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Abgelehnt) {
 
-            await this.DB.SendFreigabeablehnung(Mitarbeiter, Urlaub, Freigebender);
+            await this.DB.SendMitarbeiterFreigabeablehnung(Mitarbeiter, Urlaub, Freigebender);
 
             Zeitspanne.Statusmeldung += '<br>' + Heute.format('DD.MM.YYYY') + ' Urlaubsablehnung wurde an ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' gesendet.';
           }
         }
       }
 
-      // await this.DBMitarbeiter.UpdateMitarbeiter(Mitarbeiter);
+      await this.DBMitarbeiter.UpdateMitarbeiter(Mitarbeiter);
       await this.PrepareData();
 
     } catch (error) {

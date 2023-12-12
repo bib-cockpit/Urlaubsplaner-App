@@ -160,7 +160,9 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
       let Index: number = 0;
 
       this.DB.Init();
+      this.DB.CheckSetup();
       this.DB.SetPlanungsmonate();
+      this.DB.GetAnfragenlisten();
 
       this.BundeslandAuswahlliste  = [];
 

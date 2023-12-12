@@ -126,6 +126,8 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
       let Standort: Standortestruktur;
 
       this.DB.Init();
+      this.DB.CheckSetup();
+      this.DB.GetAnfragenlisten();
 
       this.Projektbeteiligteliste = [];
 

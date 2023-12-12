@@ -27,6 +27,7 @@ export class DatabaseUrlaubService {
 
   public PlanungsmonateChanged: EventEmitter<any> = new EventEmitter<any>();
   public ExterneUrlaubeChanged: EventEmitter<any> = new EventEmitter<any>();
+  public UrlaubStatusChanged:   EventEmitter<any> = new EventEmitter<any>();
 
   public Bundeslandkuerzel: string;
   public Bundesland: string;
@@ -59,7 +60,7 @@ export class DatabaseUrlaubService {
   public Vertretungenanzahl: number;
   public Freigabenanzahl: number;
   public Anfragenanzahl: number;
-
+  public CorrectSetup: boolean;
 
   public Sendestatausvarianten = {
 
@@ -128,6 +129,7 @@ export class DatabaseUrlaubService {
       this.Vertretrungliste        = [];
       this.Vertretungenanzahl      = 0;
       this.Freigabenanzahl         = 0;
+      this.CorrectSetup            = false;
       this.Monateliste             = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
 
     } catch (error) {
@@ -136,11 +138,28 @@ export class DatabaseUrlaubService {
     }
   }
 
+  public CheckSetup() {
+
+    try {
+
+      if(this.CurrentUrlaub !== null && this.Pool.Mitarbeiterdaten !== null) {
+
+        this.CorrectSetup = this.CurrentUrlaub.FreigeberID !== null && this.CurrentUrlaub.Projektbeteiligteliste.length > 0;
+      }
+      else this.CorrectSetup = false;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'CheckSetup', this.Debug.Typen.Service);
+    }
+  }
+
   private GetFreigabenliste(): Promise<any> {
 
     try {
 
       let Urlaub: Urlaubsstruktur;
+      let Count: boolean;
 
       return new Promise((resolve, reject) => {
 
@@ -160,6 +179,7 @@ export class DatabaseUrlaubService {
 
               if(!lodash.isUndefined(Urlaub)) {
 
+                Count = false;
 
                 for (let Zeitspanne of Urlaub.Zeitspannen) {
 
@@ -169,14 +189,19 @@ export class DatabaseUrlaubService {
                       Zeitspanne.Status === this.Urlaubstatusvarianten.Abgelehnt ||
                       Zeitspanne.Status === this.Urlaubstatusvarianten.Genehmigt) {
 
-                      this.Anfragenanzahl++;
-                      this.Freigabenanzahl++;
-
                     if(lodash.isUndefined(lodash.find(this.Freigabenliste, {_id: Mitarbeiter._id}))) {
 
                       this.Freigabenliste.push(Mitarbeiter);
+
+                      if(Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterfreigabe) Count = true; // nur offene Anfragen zaehlen
                     }
                   }
+                }
+
+                if(Count === true) {
+
+                  this.Anfragenanzahl++;
+                  this.Freigabenanzahl++;
                 }
               }
             }
@@ -202,6 +227,7 @@ export class DatabaseUrlaubService {
 
       let Urlaub: Urlaubsstruktur;
       let Vertretung: Mitarbeiterstruktur;
+      let Count: boolean;
 
       return new Promise((resolve, reject) => {
 
@@ -217,6 +243,8 @@ export class DatabaseUrlaubService {
                Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
 
                if(!lodash.isUndefined(Urlaub)) {
+
+                 Count = false;
 
                  for(let Zeitspanne of Urlaub.Zeitspannen) {
 
@@ -234,14 +262,22 @@ export class DatabaseUrlaubService {
 
                      if(Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreteranfrage) {
 
-                       this.Vertretungenanzahl++;
-                       this.Anfragenanzahl++;
+                       Count = true;
                      }
 
                      Vertretung = lodash.find(this.Vertretrungliste, {_id: Mitarbeiter._id});
 
-                     if(lodash.isUndefined(Vertretung)) this.Vertretrungliste.push(Mitarbeiter);
+                     if(lodash.isUndefined(Vertretung)) {
+
+                       this.Vertretrungliste.push(Mitarbeiter);
+                     }
                    }
+                 }
+
+                 if(Count === true) {
+
+                   this.Vertretungenanzahl++;
+                   this.Anfragenanzahl++;
                  }
                }
             }
@@ -377,7 +413,7 @@ export class DatabaseUrlaubService {
     }
   }
 
-  public SendFreigabezusage(Mitarbeiter: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur, Freigebender: Mitarbeiterstruktur): Promise<any> {
+  public SendMitarbeiterFreigabezusage(Mitarbeiter: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur, Freigebender: Mitarbeiterstruktur): Promise<any> {
 
     try {
 
@@ -396,11 +432,35 @@ export class DatabaseUrlaubService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'SendFreigabezusage', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'SendMitarbeiterFreigabezusage', this.Debug.Typen.Service);
     }
   }
 
-  public SendFreigabeablehnung(Mitarbeiter: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur, Freigebender: Mitarbeiterstruktur): Promise<any> {
+  public SendOfficeFreigabezusage(Mitarbeiter: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur, Vertretung: Mitarbeiterstruktur, Freigebender: Mitarbeiterstruktur): Promise<any> {
+
+    try {
+
+      return new Promise((resolve, reject) => {
+
+        for(let Zeitspanne of Urlaub.Zeitspannen) {
+
+          if(Zeitspanne.Status === this.Urlaubstatusvarianten.Genehmigt && Zeitspanne.FreigabeantwortSended === true) {
+
+
+
+          }
+        }
+
+        resolve(true);
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'SendOfficeFreigabezusage', this.Debug.Typen.Service);
+    }
+  }
+
+  public SendMitarbeiterFreigabeablehnung(Mitarbeiter: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur, Freigebender: Mitarbeiterstruktur): Promise<any> {
 
     try {
 
@@ -419,7 +479,7 @@ export class DatabaseUrlaubService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'SendFreigabeablehnung', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'SendMitarbeiterFreigabeablehnung', this.Debug.Typen.Service);
     }
   }
 

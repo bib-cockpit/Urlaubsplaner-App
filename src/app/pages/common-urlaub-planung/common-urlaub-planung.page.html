@@ -49,57 +49,46 @@
         <td></td>
       </tr>
       <tr>
-        <td align="center">
+        <td align="center" valign="top">
 
-          <table>
+          <table class="paddingtable">
             <tr>
-              <td>
 
-                <table class="paddingsmalltable">
-                  <tr>
+              <td style="width: 500px" valign="top">
+                <urlaubsplanung-kalender
+                  [Jahr]="DB.Jahr"
+                  [Monatindex]="DB.FirstMonatIndex"
+                  [AddUrlaubRunning]="AddUrlaubRunning"
+                  (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
+                  (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
+                  (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
+                </urlaubsplanung-kalender>
+              </td>
 
-                    <td style="width: 500px" valign="top">
-                      <urlaubsplanung-kalender
-                        [Jahr]="DB.Jahr"
-                        [Monatindex]="DB.FirstMonatIndex"
-                        [AddUrlaubRunning]="AddUrlaubRunning"
-                        (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
-                        (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
-                        (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
-                      </urlaubsplanung-kalender>
-                    </td>
+              <td style="width: 500px" valign="top">
+                <urlaubsplanung-kalender
+                  [Jahr]="DB.Jahr"
+                  [Monatindex]="DB.CurrentMonatindex"
+                  [AddUrlaubRunning]="AddUrlaubRunning"
+                  (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
+                  (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
+                  (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
+                </urlaubsplanung-kalender>
+              </td>
 
-                    <td style="width: 500px" valign="top">
-                      <urlaubsplanung-kalender
-                        [Jahr]="DB.Jahr"
-                        [Monatindex]="DB.CurrentMonatindex"
-                        [AddUrlaubRunning]="AddUrlaubRunning"
-                        (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
-                        (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
-                        (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
-                      </urlaubsplanung-kalender>
-                    </td>
-
-                    <td style="width: 500px" valign="top">
-                      <urlaubsplanung-kalender
-                        [Jahr]="DB.Jahr"
-                        [Monatindex]="DB.LastMonatIndex"
-                        [AddUrlaubRunning]="AddUrlaubRunning"
-                        (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
-                        (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
-                        (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
-                      </urlaubsplanung-kalender>
-                    </td>
-
-                  </tr>
-                </table>
-
+              <td style="width: 500px" valign="top">
+                <urlaubsplanung-kalender
+                  [Jahr]="DB.Jahr"
+                  [Monatindex]="DB.LastMonatIndex"
+                  [AddUrlaubRunning]="AddUrlaubRunning"
+                  (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
+                  (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
+                  (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
+                </urlaubsplanung-kalender>
               </td>
 
             </tr>
           </table>
-
-
 
         </td>
         <td valign="top">
@@ -232,13 +221,13 @@
                 <span       *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Beantragt">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</span>
               </td>
               <td align="center"><div class="legendedivclass" [style.background]="DB.GetStatuscolor(Zeitspanne.Status)"></div></td>
-              <td>{{Zeitspanne.Statusmeldung}}</td>
+              <td [innerHTML]="Zeitspanne.Statusmeldung"></td>
               <td><ion-button size="small" color="rot" (click)="UrlaubLoeschen(Zeitspanne)"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button></td>
             </tr>
             <tr>
-              <td colspan="4" style="text-align: right; font-weight: bold">Resturlaub</td>
+              <td colspan="3" style="text-align: right; font-weight: bold">Resturlaub</td>
               <td style="text-align: center">{{DB.CountResturlaub()}}</td>
-              <td colspan="3"></td>
+              <td colspan="4"></td>
             </tr>
           </table>
         </td>

@@ -118,7 +118,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
         this.PrepareData();
       });
 
-      // this.PrepareData();
+      this.PrepareData();
 
     } catch (error) {
 
@@ -215,7 +215,9 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
       let Index: number = 0;
 
       this.DB.Init();
+      this.DB.CheckSetup();
       this.DB.SetPlanungsmonate();
+      this.DB.GetAnfragenlisten();
 
       this.BundeslandAuswahlliste  = [];
 
@@ -400,7 +402,8 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
     try {
 
-      this.AddUrlaubRunning = true;
+      this.DB.CurrentZeitspanne = null;
+      this.AddUrlaubRunning     = true;
 
     } catch (error) {
 
@@ -420,7 +423,8 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
         this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
 
-          this.DB.CurrentZeitspanne = null;
+          // debugger;
+          // this.DB.CurrentZeitspanne = null;
         });
       }
     } catch (error) {
@@ -437,6 +441,8 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
         return eintrag.ZeitspannenID !== Zeitspanne.ZeitspannenID;
       });
+
+      debugger;
 
       this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
 
@@ -701,7 +707,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
       await this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten);
 
-
+      this.DB.UrlaubStatusChanged.emit();
 
     } catch (error) {
 
