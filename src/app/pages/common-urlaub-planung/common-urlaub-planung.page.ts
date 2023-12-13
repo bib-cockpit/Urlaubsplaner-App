@@ -170,6 +170,8 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
           this.DB.CurrentZeitspanne.VertreterID = data;
           Zeitspanne.VertreterID                = data;
 
+
+
           this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
 
             this.ShowAuswahl = false;
@@ -437,12 +439,14 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
     try {
 
-      this.DB.CurrentUrlaub.Zeitspannen = lodash.filter(this.DB.CurrentUrlaub.Zeitspannen, (eintrag: Urlauzeitspannenstruktur) => {
+      let Zeitspannen = lodash.filter(this.DB.CurrentUrlaub.Zeitspannen, (eintrag: Urlauzeitspannenstruktur) => {
 
         return eintrag.ZeitspannenID !== Zeitspanne.ZeitspannenID;
       });
 
-      debugger;
+      this.DB.CurrentUrlaub             = lodash.find(this.Pool.Mitarbeiterdaten.Urlaubsliste, {Jahr: this.DB.Jahr});
+      this.DB.CurrentUrlaub.Zeitspannen = Zeitspannen;
+
 
       this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
 
@@ -704,6 +708,8 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
           Zeitspanne.Statusmeldung = Heute.format('DD.MM.YYYY') + ' Vertretungsanfrage wurde an ' + Vertretung.Vorname + ' ' + Vertretung.Name + ' gesendet.';
         }
       }
+
+      debugger;
 
       await this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten);
 
