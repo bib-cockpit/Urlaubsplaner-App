@@ -170,13 +170,13 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
           this.DB.CurrentZeitspanne.VertreterID = data;
           Zeitspanne.VertreterID                = data;
 
+          let Urlaubindex = lodash.findIndex(this.Pool.Mitarbeiterdaten.Urlaubsliste, { Jahr: this.DB.Jahr });
 
+          this.Pool.Mitarbeiterdaten.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
-          this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
+          await this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
 
             this.ShowAuswahl = false;
-
-            // this.PrepareData();
           });
 
           break;
@@ -423,6 +423,10 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
         this.DB.CurrentUrlaub.Zeitspannen.push(this.DB.CurrentZeitspanne);
 
+        let Urlaubindex = lodash.findIndex(this.Pool.Mitarbeiterdaten.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+        this.Pool.Mitarbeiterdaten.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
+
         this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
 
           // debugger;
@@ -447,6 +451,9 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
       this.DB.CurrentUrlaub             = lodash.find(this.Pool.Mitarbeiterdaten.Urlaubsliste, {Jahr: this.DB.Jahr});
       this.DB.CurrentUrlaub.Zeitspannen = Zeitspannen;
 
+      let Urlaubindex = lodash.findIndex(this.Pool.Mitarbeiterdaten.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+      this.Pool.Mitarbeiterdaten.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
       this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
 
@@ -537,7 +544,6 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
       switch (this.Auswahldialogorigin) {
 
         case this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Mitarbeiter_Wechseln:
-
 
           Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: idliste[0]});
 
@@ -668,6 +674,9 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
       debugger;
 
+      let Urlaubindex = lodash.findIndex(this.Pool.Mitarbeiterdaten.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+      this.Pool.Mitarbeiterdaten.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
       this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
 
@@ -709,7 +718,9 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
         }
       }
 
-      debugger;
+      let Urlaubindex = lodash.findIndex(this.Pool.Mitarbeiterdaten.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+      this.Pool.Mitarbeiterdaten.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
       await this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten);
 

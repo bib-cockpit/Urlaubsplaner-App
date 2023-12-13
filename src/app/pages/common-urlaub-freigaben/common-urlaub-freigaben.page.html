@@ -32,13 +32,13 @@
           </table>
         </ion-col>
       </ion-row>
-      <ng-container *ngFor="let Mitareiter of DB.Vertretrungliste">
+      <ng-container *ngFor="let Mitarbeiter of DB.Vertretrungliste">
         <ion-row>
           <ion-col>
             <table width="100%">
               <tr>
                 <td align="center">
-                  {{Mitareiter.Vorname + ' ' + Mitareiter.Name}}
+                  {{Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name}}
                 </td>
               </tr>
             </table>
@@ -61,7 +61,7 @@
                       <td style="font-weight: bold; min-width: 600px">Statusmeldung</td>
                       <td style="font-weight: bold;">Anfrage beantworten</td>
                     </tr>
-                    <ng-container *ngFor="let Urlaub of Mitareiter.Urlaubsliste">
+                    <ng-container *ngFor="let Urlaub of Mitarbeiter.Urlaubsliste">
                       <ng-container *ngIf="Urlaub.Jahr === DB.Jahr">
                         <ng-container *ngFor="let Zeitspanne of Urlaub.Zeitspannen">
                           <tr *ngIf="Zeitspanne.VertreterID === Pool.Mitarbeiterdaten._id &&
@@ -78,7 +78,7 @@
                             <td [innerHTML]="Zeitspanne.Statusmeldung"></td>
                             <td>
                               <ng-container *ngIf="Zeitspanne.VertreterantwortSended === false">
-                                <ion-radio-group [value]="Zeitspanne.Status" (ionChange)="VerteretungStatusChangedHandler($event, Zeitspanne, Mitareiter._id)">
+                                <ion-radio-group [value]="Zeitspanne.Status" (ionChange)="VerteretungStatusChangedHandler($event, Zeitspanne, Mitarbeiter._id)">
                                   <table class="nobordertable">
                                     <tr>
                                       <td><ion-radio [value]="DB.Urlaubstatusvarianten.Vertreterfreigabe"></ion-radio></td><td style="color: green">Vertretung annehmen</td>
@@ -99,9 +99,9 @@
                           </tr>
 
                         </ng-container>
-                        <tr *ngIf="CheckVertretungUpdateButtonVisible(Mitareiter, Urlaub)">
+                        <tr *ngIf="CheckVertretungUpdateButtonVisible(Mitarbeiter, Urlaub)">
                           <td colspan="6">
-                            <ion-button [disabled]="CheckVertretungUpdateButtonEnabled(Mitareiter, Urlaub) === false" size="small" (click)="SendVertretungUpdate(Mitareiter, Urlaub)">Aktualisierung senden</ion-button>
+                            <ion-button [disabled]="CheckVertretungUpdateButtonEnabled(Mitarbeiter, Urlaub) === false" size="small" (click)="SendVertretungUpdate(Mitarbeiter, Urlaub)">Aktualisierung senden</ion-button>
                           </td>
                         </tr>
                         <tr *ngIf="Urlaub.FreigeberID === null">
@@ -140,13 +140,13 @@
           </table>
         </ion-col>
       </ion-row>
-      <ng-container *ngFor="let Mitareiter of DB.Freigabenliste">
+      <ng-container *ngFor="let Mitarbeiter of DB.Freigabenliste">
         <ion-row>
           <ion-col>
             <table width="100%">
               <tr>
                 <td align="center">
-                  {{Mitareiter.Vorname + ' ' + Mitareiter.Name}}
+                  {{Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name}}
                 </td>
               </tr>
             </table>
@@ -167,7 +167,7 @@
                       <td style="font-weight: bold; min-width: 600px">Statusmeldung</td>
                       <td style="font-weight: bold;">Anfrage beantworten</td>
                     </tr>
-                    <ng-container *ngFor="let Urlaub of Mitareiter.Urlaubsliste">
+                    <ng-container *ngFor="let Urlaub of Mitarbeiter.Urlaubsliste">
                       <ng-container *ngIf="Urlaub.Jahr === DB.Jahr && Urlaub.FreigeberID === Pool.Mitarbeiterdaten._id">
                         <ng-container *ngFor="let Zeitspanne of Urlaub.Zeitspannen">
                           <tr *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterfreigabe ||
@@ -186,7 +186,7 @@
                             <td [innerHTML]="Zeitspanne.Statusmeldung"></td>
                             <td>
                               <ng-container *ngIf="Zeitspanne.FreigabeantwortSended === false">
-                                <ion-radio-group [value]="Zeitspanne.Status" (ionChange)="FreigabeStatusChangedHandler($event, Zeitspanne, Mitareiter._id)">
+                                <ion-radio-group [value]="Zeitspanne.Status" (ionChange)="FreigabeStatusChangedHandler($event, Zeitspanne, Mitarbeiter._id)">
                                   <table class="nobordertable">
                                     <tr>
                                       <td><ion-radio [value]="DB.Urlaubstatusvarianten.Genehmigt"></ion-radio></td><td style="color: green">Urlaub genehmigen</td>
@@ -206,9 +206,9 @@
                             </td>
                           </tr>
                         </ng-container>
-                        <tr *ngIf="CheckFreigabeUpdateButtonVisible(Mitareiter, Urlaub)">
+                        <tr *ngIf="CheckFreigabeUpdateButtonVisible(Mitarbeiter, Urlaub)">
                           <td colspan="6">
-                            <ion-button [disabled]="CheckFreigabeUpdateButtonEnabled(Mitareiter, Urlaub) === false" size="small" (click)="SendFreigabeUpdate(Mitareiter, Urlaub)">Aktualisierung senden</ion-button>
+                            <ion-button [disabled]="CheckFreigabeUpdateButtonEnabled(Mitarbeiter, Urlaub) === false" size="small" (click)="SendFreigabeUpdate(Mitarbeiter, Urlaub)">Aktualisierung senden</ion-button>
                           </td>
                         </tr>
                       </ng-container>

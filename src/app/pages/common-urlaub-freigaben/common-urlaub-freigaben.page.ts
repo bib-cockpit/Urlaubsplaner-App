@@ -414,6 +414,10 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
         }
       }
 
+      let Urlaubindex = lodash.findIndex(Mitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+      Mitarbeiter.Urlaubsliste[Urlaubindex] = Urlaub;
+
       await this.DBMitarbeiter.UpdateMitarbeiter(Mitarbeiter);
       await this.PrepareData();
 
@@ -463,6 +467,10 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
           }
         }
       }
+
+      let Urlaubindex = lodash.findIndex(Mitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+      Mitarbeiter.Urlaubsliste[Urlaubindex] = Urlaub;
 
       await this.DBMitarbeiter.UpdateMitarbeiter(Mitarbeiter);
       await this.PrepareData();

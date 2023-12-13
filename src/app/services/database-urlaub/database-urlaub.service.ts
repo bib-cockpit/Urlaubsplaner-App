@@ -746,38 +746,6 @@ export class DatabaseUrlaubService {
           this.UrlaublisteExtern.push(Urlaub);
         }
       }
-
-      /*
-
-      for(let Zeitspanne of this.CurrentUrlaub.Zeitspannen) {
-
-        if(Zeitspanne.VertreterID !== null) {
-
-          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: Zeitspanne.VertreterID});
-
-          if(!lodash.isUndefined(Mitarbeiter)) {
-
-            Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
-
-            if(!lodash.isUndefined(Urlaub)) {
-
-              Urlaub.MitarbeiterIDExtern = Mitarbeiter._id;
-              Urlaub.NameExtern          = Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
-              Urlaub.NameKuerzel         = Mitarbeiter.Kuerzel;
-              Urlaub.DisplayExtern       = true;
-              Urlaub.Zeitspannen         = lodash.filter(Urlaub.Zeitspannen, (spanne: Urlauzeitspannenstruktur) => {
-
-                return spanne.Status !== this.Urlaubstatusvarianten.Abgelehnt;
-              });
-
-              if(Urlaub.Zeitspannen.length > 0) this.UrlaublisteExtern.push(Urlaub);
-            }
-          }
-        }
-      }
-
-       */
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'Init', this.Debug.Typen.Service);
@@ -1056,11 +1024,11 @@ export class DatabaseUrlaubService {
     }
   }
 
+  /*
   private UpdateUrlaubsliste(changelog: Changelogstruktur) {
 
     try {
 
-      /*
 
       let Index: number;
 
@@ -1087,7 +1055,6 @@ export class DatabaseUrlaubService {
         return currentchangelog.Deleted === false;
       });
 
-       */
 
 
     } catch (error) {
@@ -1095,6 +1062,7 @@ export class DatabaseUrlaubService {
       this.Debug.ShowErrorMessage(error.message, 'Database Urlaub', 'UpdateUrlaubsliste', this.Debug.Typen.Service);
     }
   }
+  */
 
   public CountResturlaub(): number {
 
@@ -1122,56 +1090,7 @@ export class DatabaseUrlaubService {
     }
   }
 
-  public DeleteUrlaub(): Promise<any> {
 
-    try {
-
-      let Observer: Observable<any>;
-
-      // this.CurrentChangelog.Deleted = true;
-
-      return new Promise<any>((resove, reject) => {
-
-        /*
-
-          // PUT für update
-
-        Observer = this.http.put(this.ServerUrl, this.CurrentChangelog);
-
-        Observer.subscribe({
-
-          next: (ne) => {
-
-            debugger;
-
-          },
-          complete: () => {
-
-            debugger;
-
-            this.UpdateChangelogliste(this.CurrentChangelog);
-
-            this.Pool.ChangeloglisteChanged.emit();
-
-            resove(true);
-
-          },
-          error: (error: HttpErrorResponse) => {
-
-            debugger;
-
-            reject(error);
-          }
-        });
-
-         */
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Urlaub', 'DeleteUrlaub', this.Debug.Typen.Service);
-    }
-  }
 
   public CheckDisplayExternenUrlaub(mitrbeiterid: string):boolean {
 
