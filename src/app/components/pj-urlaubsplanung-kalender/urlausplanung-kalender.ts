@@ -442,7 +442,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
           this.DB.CurrentZeitspanne.Endestempel = Tag.Tagstempel;
           this.DB.CurrentZeitspanne.Endestring  = Tag.Datumstring;
 
-          Tag.Background = this.DB.Urlaubsfaben.Beantrag;
+          Tag.Background = this.DB.Urlaubsfaben.Geplant;
           Tag.IsUrlaub   = true;
           Tag.Color      = 'white';
         }
@@ -463,7 +463,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
               if(IsFeiertag === false) {
 
-                Kalendertag.Background = this.DB.Urlaubsfaben.Beantrag;
+                Kalendertag.Background = this.DB.Urlaubsfaben.Geplant;
                 Kalendertag.IsUrlaub   = true;
                 Kalendertag.Color      = 'white';
 

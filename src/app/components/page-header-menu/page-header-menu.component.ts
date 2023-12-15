@@ -1018,7 +1018,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
       if(this.DBProjekte.CurrentProjekt !== null) {
 
-        this.DBProjekte.CurrentProjekt.DisplayKG410 = event.status;
+        this.DBProjekte.CurrentProjekt.DisplayKG420 = event.status;
 
         this.DBProjekte.UpdateProjekt(this.DBProjekte.CurrentProjekt).then(() => {
 

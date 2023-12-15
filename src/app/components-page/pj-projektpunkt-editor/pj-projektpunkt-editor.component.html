@@ -244,19 +244,41 @@
                   <ion-row>
                     <ion-col size="6">
 
-                        <ion-textarea [value]="DB.CurrentProjektpunkt.Aufgabe" auto-grow style="border: 1px solid #444444; min-height: 140px" (ionInput)="AufgabeTextChangedHandler($event)"></ion-textarea>
+                      <!--
 
-                        <!--
-                        <editor
-                          [apiKey]="'7hvzif1s8dafhu40z0kjgpw1y4zwc2p5cokjkfox946qpfjc'"
+                        <ion-textarea [value]="DB.CurrentProjektpunkt.Aufgabe" auto-grow style="border: 1px solid #444444; min-height: 140px" (ionInput)="AufgabeTextChangedHandler($event)"></ion-textarea>
                           [init]="Editorconfig" [id]="'Maineditor'"
+
+                      -->
+
+                        <editor *ngIf="Pool.Mitarbeitersettings !== null"
+                          [init]="{
+                            menubar:   false,
+                            statusbar: false,
+                            language: 'de',
+                            browser_spellcheck: true,
+                            newline_behavior: 'linebreak',
+                            height: 300,
+                            base_url: '/tinymce',
+                            suffix: '.min',
+                            auto_focus : true,
+                            content_style: 'body { color: black; margin: 0; line-height: 1.2; font-size: ' + Pool.Mitarbeitersettings.Textsize + 'px; }',
+                            toolbar: [
+                              { name: 'styles',      items: [ 'forecolor', 'backcolor' ] },
+                              { name: 'formatting',  items: [ 'bold', 'italic', 'underline', 'strikethrough' ] },
+                              { name: 'alignment',   items: [ 'alignleft', 'aligncenter', 'alignright', 'alignjustify' ] },
+                              { name: 'indentation', items: [ 'outdent', 'indent' ] }
+                            ],
+                          }"
+                          [apiKey]="'7hvzif1s8dafhu40z0kjgpw1y4zwc2p5cokjkfox946qpfjc'"
                           [(ngModel)]="DB.CurrentProjektpunkt.Aufgabe"
                           (onNodeChange)="AufgabeTextChangedHandler($event)"
                           (onChange)="AufgabeTextChangedHandler($event)"
-                          (onPaste)="AufgabeTextChangedHandler($event)" (onCut)="AufgabeTextChangedHandler($event)"
+                          (onPaste)="AufgabeTextChangedHandler($event)"
+                          (onCut)="AufgabeTextChangedHandler($event)"
                           (onKeyPress)="AufgabeTextChangedHandler($event)">
                         </editor>
-                        -->
+
 
 
 

@@ -23,6 +23,25 @@
 
   <!-- Meilensteine Projektpunkte  -->
 
+  <!--
+
+  <div class="innerkeeperdivclass">
+    <div class="innerkeeperleftdiv">
+      <div class="neubuttondivclass"
+           [style.background]="'#7b6a58'"
+           (click)="AddAufgabeClickedHandler()">
+        <table>
+          <tr>
+            <td><ion-icon name="add-circle-outline" color="weiss"></ion-icon></td>
+          </tr>
+          <tr>
+            <td style="writing-mode: vertical-lr; text-orientation: mixed; color: white;">NEUER EINTRAG</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    -->
+
   <ng-container *ngIf="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meilensteine">
     <ng-container  *ngFor="let Datenliste of this.Meilensteineprojektpunkteliste; let projektindex = index">
 
@@ -432,7 +451,7 @@
 </pj-aufgaben-listefilter>
 
 
-<pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+<pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="0"
                         [ZIndex]="3000" [Titel]="GetProjektpunkteditorTitel()" Iconname="book-outline"
                         (FachbereichClicked)="FachbereichClickedHandler()"
                         (KostengruppeClicked)="KostengruppeClickedHandler($event)"
@@ -518,7 +537,7 @@
                 (CancelClickedEvent)="ShowAuswahl = false">
 </auswahl-dialog>
 
-<pj-protokoll-editor *ngIf="ShowProtokollEditor"  [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+<pj-protokoll-editor *ngIf="ShowProtokollEditor"  [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="0"
                      [Titel]="'Protokoll bearbeiten'" Iconname="book-outline"
                      [ZIndex]="2000"
                      (OkClickedEvent)="ShowProtokollEditor = false"

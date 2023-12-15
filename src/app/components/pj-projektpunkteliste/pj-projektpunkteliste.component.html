@@ -120,16 +120,14 @@
                 <tr>
                   <td>
                     <div class="aufgabedivclass"
-
                          (click)="AufgabeClickedHandler(Projektpunkt)"
                          [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
-                         [innerHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe : 'html'">
+                         [innerHTML]="GetAufgabentext(Projektpunkt.Aufgabe) | safe : 'html'">
                     </div>
                   </td>
                 </tr>
                 <tr>
                   <td>
-
                     <table>
                       <tr *ngFor="let Zeilenliste of Thumbnailliste[i]; let Zeilenindex = index">
                         <ng-container *ngFor="let Thumb of Zeilenliste; let Spaltenindex = index">

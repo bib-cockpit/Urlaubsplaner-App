@@ -1649,6 +1649,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
 
       this.SetProjektindexAndUrsprung(projektindex, ursprung);
 
+      this.Dialogbreite                          = 1100;
       this.DBProjektpunkte.CurrentProjektpunkt   = lodash.cloneDeep(Projektpunkt);
       this.DBProjekte.CurrentProjekt             = lodash.find(this.DBProjekte.Gesamtprojektliste, {_id: Projektpunkt.ProjektID});
 

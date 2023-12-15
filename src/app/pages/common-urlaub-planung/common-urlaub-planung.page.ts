@@ -472,7 +472,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
       switch (origin) {
 
-        case this.DB.Urlaubstatusvarianten.Beantragt:
+        case this.DB.Urlaubstatusvarianten.Geplant:
 
           this.Pool.Mitarbeitersettings.UrlaubShowBeantragt = event.status;
 
@@ -697,26 +697,40 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
       let Gesamtanzahl: number = 1;
       let Vertretung: Mitarbeiterstruktur;
       let Heute: Moment = moment();
+      let VertreterIDListe: string[] = [];
+      let Zeitspannen: Urlauzeitspannenstruktur[];
 
       // Vertretungsanfragen
 
       for(let Zeitspanne of this.DB.CurrentUrlaub.Zeitspannen) {
 
-        if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Beantragt && Zeitspanne.VertreterID !== null) Gesamtanzahl++;
+        if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Geplant && Zeitspanne.VertreterID !== null) Gesamtanzahl++;
+
+        if(lodash.indexOf(VertreterIDListe, Zeitspanne.VertreterID) === -1) VertreterIDListe = [];
       }
 
-      for(let Zeitspanne of this.DB.CurrentUrlaub.Zeitspannen) {
+      for(let VertreterID of VertreterIDListe) {
 
-        Vertretung = lodash.find(this.Pool.Mitarbeiterliste, {_id: Zeitspanne.VertreterID});
+        Zeitspannen = [];
+        Vertretung  = lodash.find(this.Pool.Mitarbeiterliste, {_id: VertreterID});
 
         if(!lodash.isUndefined(Vertretung)) {
 
-          await this.DB.SendVertreteranfragen(Zeitspanne, Vertretung);
+          for(let Zeitspanne of this.DB.CurrentUrlaub.Zeitspannen) {
 
-          Zeitspanne.Status        = this.DB.Urlaubstatusvarianten.Vertreteranfrage;
-          Zeitspanne.Statusmeldung = Heute.format('DD.MM.YYYY') + ' Vertretungsanfrage wurde an ' + Vertretung.Vorname + ' ' + Vertretung.Name + ' gesendet.';
+
+            if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Geplant && Zeitspanne.VertreterID === VertreterID)
+
+              Zeitspannen.push(Zeitspanne);
+
+
+              Zeitspanne.Status        = this.DB.Urlaubstatusvarianten.Vertreteranfrage;
+              Zeitspanne.Statusmeldung = Heute.format('DD.MM.YYYY') + ' Vertretungsanfrage wurde an ' + Vertretung.Vorname + ' ' + Vertretung.Name + ' gesendet.';
+            }
+          }
+
+          await this.DB.SendVertreteranfragen(Zeitspannen, Vertretung);
         }
-      }
 
       let Urlaubindex = lodash.findIndex(this.Pool.Mitarbeiterdaten.Urlaubsliste, { Jahr: this.DB.Jahr });
 
@@ -742,7 +756,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
         for(let Zeitspanne of this.DB.CurrentUrlaub.Zeitspannen) {
 
-          if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Beantragt && Zeitspanne.VertreterID !== null) Available = true;
+          if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Geplant && Zeitspanne.VertreterID !== null) Available = true;
         }
       }
 

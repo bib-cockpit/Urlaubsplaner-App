@@ -129,7 +129,7 @@
             </ng-container>
             <tr>
               <td>
-              </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Beantrag"></div></td><td>Beantragter Urlaub</td>
+              </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Geplant"></div></td><td>geplanter Urlaub</td>
             </tr>
             <tr>
               <td>
@@ -217,8 +217,8 @@
               <td>{{GetDatumlangtext(Zeitspanne.Endestempel)}}</td>
               <td style="text-align: center">{{Zeitspanne.Tageanzahl}}</td>
               <td>
-                <ion-button *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Beantragt" size="small" color="grau" (click)="StellvertreterFestlegenClicked(Zeitspanne)">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</ion-button>
-                <span       *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Beantragt">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</span>
+                <ion-button *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant" size="small" color="grau" (click)="StellvertreterFestlegenClicked(Zeitspanne)">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</ion-button>
+                <span       *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</span>
               </td>
               <td align="center"><div class="legendedivclass" [style.background]="DB.GetStatuscolor(Zeitspanne.Status)"></div></td>
               <td [innerHTML]="Zeitspanne.Statusmeldung"></td>

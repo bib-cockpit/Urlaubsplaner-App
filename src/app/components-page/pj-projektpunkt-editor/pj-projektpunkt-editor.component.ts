@@ -44,6 +44,8 @@ import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategor
 import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
 import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
 import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
+import {InputCloneComponent} from "../../components/input-clone/input-clone.component";
+import {EditorComponent} from "@tinymce/tinymce-angular";
 
 @Component({
   selector: 'pj-projektpunkt-editor',
@@ -51,6 +53,8 @@ import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.s
   styleUrls: ['./pj-projektpunkt-editor.component.scss'],
 })
 export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  @ViewChildren('Editor') Editor: EditorComponent;
 
   @Output() CancelClickedEvent      = new EventEmitter<any>();
   @Output() OkClickedEvent          = new EventEmitter<any>();
@@ -75,7 +79,6 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
   public Valid: boolean;
   public DeleteEnabled: boolean;
   public Editorconfig: any;
-  // public Smalleditorconfig: any;
   public StatusbuttonEnabled: boolean;
   private JoiShema: ObjectSchema<Projektpunktestruktur>;
   public Auswahlliste: string[];
@@ -96,6 +99,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
   public Mitarbeiterliste: Mitarbeiterstruktur[][];
   public Mitarbeiterspalten: number;
   public Mitarbeiterzeilen: number;
+
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -144,6 +148,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
 
       this.StatusbuttonEnabled = this.DB.CurrentProjektpunkt.Status !== this.Const.Projektpunktstatustypen.Festlegung.Name;
+      this.Editorconfig = {};
 
       this.Editorconfig = {
 
@@ -151,11 +156,12 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
         statusbar: false,
         language: 'de',
         browser_spellcheck: true,
+        newline_behavior: 'linebreak',
         height: 300,
+        base_url: '/tinymce',
+        suffix: '.min',
         auto_focus : true,
-        content_style: 'body { color: black; margin: 0; line-height: 0.9; }, ',
-        base_url: 'assets/tinymce', // Root for resources
-        suffix: '.min',        // Suffix to use when loading resources
+        content_style: '',
         toolbar: [
           { name: 'styles',      items: [ 'forecolor', 'backcolor' ] }, // , 'fontfamily', 'fontsize'
           { name: 'formatting',  items: [ 'bold', 'italic', 'underline', 'strikethrough' ] },
@@ -298,6 +304,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     }
 
   }
+
 
   private async PrepareData() {
 
@@ -628,6 +635,8 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
 
       let Index: number;
 
+      debugger;
+
       this.DB.SetStatus(this.DB.CurrentProjektpunkt, this.DB.CurrentProjektpunkt.Status);
 
       if(this.DB.CurrentProjektpunkt._id === null) {
@@ -806,75 +815,16 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
-
   AufgabeTextChangedHandler(event: any) {
 
     try {
 
-      this.DB.CurrentProjektpunkt.Aufgabe = event.detail.value;
 
       this.ValidateInput();
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'AufgabeTextChangedHandler', this.Debug.Typen.Component);
-    }
-  }
-
-  ProjektstatusButtonClicked() {
-
-    try {
-
-      this.Auswahlliste = [];
-
-      for(let Status of this.DB.Statustypenliste) {
-
-        if(Status.Name) {
-
-          switch (Status.Name) {
-
-            case this.Const.Projektpunktstatustypen.Protokollpunkt.Name:
-
-
-              break;
-
-            case this.Const.Projektpunktstatustypen.Offen.Name:
-
-              this.Auswahlliste.push(this.Const.Projektpunktstatustypen.Offen.Displayname);
-
-              break;
-
-            case this.Const.Projektpunktstatustypen.Geschlossen.Name:
-
-              this.Auswahlliste.push(this.Const.Projektpunktstatustypen.Geschlossen.Displayname);
-
-              break;
-
-            case this.Const.Projektpunktstatustypen.Bearbeitung.Name:
-
-              if(!this.DB.CurrentProjektpunkt.Meilenstein)  this.Auswahlliste.push(this.Const.Projektpunktstatustypen.Bearbeitung.Displayname);
-
-              break;
-
-            case this.Const.Projektpunktstatustypen.Ruecklauf.Name:
-
-              if(!this.DB.CurrentProjektpunkt.Meilenstein)  this.Auswahlliste.push(this.Const.Projektpunktstatustypen.Ruecklauf.Displayname);
-
-              break;
-          }
-        }
-      }
-
-      if(this.DBProjekt.CurrentProjekt !== null) {
-
-        this.Auswahlindex = lodash.findIndex(this.DB.Statustypenliste, {Name: this.DBProjekt.CurrentProjekt.Status});
-
-      }
-      else this.Auswahlindex = -1;
-    }
-    catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'ProjektstatusButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -890,21 +840,6 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'StartdatumChanged', this.Debug.Typen.Component);
-    }
-  }
-
-  EndedatumChanged(value: Moment) {
-
-    try {
-
-      let Zeitpunkt: Moment = value;
-
-      this.DB.CurrentProjektpunkt.Endezeitstempel = Zeitpunkt.valueOf();
-      this.DB.CurrentProjektpunkt.Endezeitstring   = Zeitpunkt.format('DD.MM.YYYY');
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Projektpunkt Editor', 'EndedatumChanged', this.Debug.Typen.Component);
     }
   }
 

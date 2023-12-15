@@ -74,7 +74,7 @@ export class DatabaseUrlaubService {
 
   public Urlaubstatusvarianten = {
 
-    Beantragt:          'Beantragt',
+    Geplant:            'Geplant',
     Vertreterablehnung: 'Vertreterablehnung',
     Vertreteranfrage:   'Vertreteranfrage',
     Vertreterfreigabe:  'Vertreterfreigabe',
@@ -85,7 +85,7 @@ export class DatabaseUrlaubService {
   };
   public Urlaubsfaben = {
 
-    Beantrag:           '#307ac1',
+    Geplant:            '#307ac1',
     Vertreterfreigabe:  'orange',
     Vertreteranfrage:   '#04B4AE',
     Vertreterablehnung: '#8A0886',
@@ -305,9 +305,9 @@ export class DatabaseUrlaubService {
 
       switch (status) {
 
-        case this.Urlaubstatusvarianten.Beantragt:
+        case this.Urlaubstatusvarianten.Geplant:
 
-          Color = this.Urlaubsfaben.Beantrag;
+          Color = this.Urlaubsfaben.Geplant;
 
           break;
 
@@ -351,7 +351,7 @@ export class DatabaseUrlaubService {
     }
   }
 
-  public SendVertreteranfragen(Zeitspanne: Urlauzeitspannenstruktur, Vertretung: Mitarbeiterstruktur): Promise<any> {
+  public SendVertreteranfragen(Zeitspannen: Urlauzeitspannenstruktur[], Vertretung: Mitarbeiterstruktur): Promise<any> {
 
     try {
 
@@ -1012,7 +1012,7 @@ export class DatabaseUrlaubService {
         Startstring: "",
         Endestring:  "",
         VertreterID: null,
-        Status: this.Urlaubstatusvarianten.Beantragt,
+        Status: this.Urlaubstatusvarianten.Geplant,
         Statusmeldung: '',
         Tageanzahl: 0,
         VertreterantwortSended: false,

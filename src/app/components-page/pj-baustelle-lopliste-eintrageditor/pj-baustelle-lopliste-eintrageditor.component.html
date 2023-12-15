@@ -190,28 +190,28 @@
 
                   <table class="paddingsmalltable">
                     <tr>
-                      <td><ion-radio [value]="Const.Projektpunktprioritaetstypen.Niedrig.Displayname"></ion-radio></td>
+                      <td><ion-radio [value]="Const.Projektpunktprioritaetstypen.Niedrig.Name"></ion-radio></td>
                       <td>
                         <div class="statusdivclass"
-                             [style.color]="DB.CurrentProjektpunkt.Prioritaet === Const.Projektpunktprioritaetstypen.Niedrig.Displayname ? 'white' : 'black'"
-                             [style.background]="DB.CurrentProjektpunkt.Prioritaet === Const.Projektpunktprioritaetstypen.Niedrig.Displayname ? DB.GetProjektpunktPrioritaetByName(DB.CurrentProjektpunkt.Prioritaet).Color : 'white'"
-                             (click)="PrioritaetClicked(Const.Projektpunktprioritaetstypen.Niedrig.Displayname)">Niedrig</div>
+                             [style.color]="DB.CurrentProjektpunkt.Prioritaet === Const.Projektpunktprioritaetstypen.Niedrig.Name ? 'white' : 'black'"
+                             [style.background]="DB.CurrentProjektpunkt.Prioritaet === Const.Projektpunktprioritaetstypen.Niedrig.Name ? DB.GetProjektpunktPrioritaetByName(DB.CurrentProjektpunkt.Prioritaet).Color : 'white'"
+                             (click)="PrioritaetClicked(Const.Projektpunktprioritaetstypen.Niedrig.Name)">Niedrig</div>
                       </td>
                       <td style="width: 10px;"></td>
-                      <td><ion-radio [value]="this.Const.Projektpunktprioritaetstypen.Mittel.Displayname"></ion-radio></td>
+                      <td><ion-radio [value]="this.Const.Projektpunktprioritaetstypen.Mittel.Name"></ion-radio></td>
                       <td>
                         <div class="statusdivclass"
-                             [style.color]="DB.CurrentProjektpunkt.Prioritaet === this.Const.Projektpunktprioritaetstypen.Mittel.Displayname ? 'white' : 'black'"
-                             [style.background]="DB.CurrentProjektpunkt.Prioritaet === this.Const.Projektpunktprioritaetstypen.Mittel.Displayname ? DB.GetProjektpunktPrioritaetByName(DB.CurrentProjektpunkt.Prioritaet).Color : 'white'"
-                             (click)="PrioritaetClicked(this.Const.Projektpunktprioritaetstypen.Mittel.Displayname)">Mittel</div>
+                             [style.color]="DB.CurrentProjektpunkt.Prioritaet === this.Const.Projektpunktprioritaetstypen.Mittel.Name ? 'white' : 'black'"
+                             [style.background]="DB.CurrentProjektpunkt.Prioritaet === this.Const.Projektpunktprioritaetstypen.Mittel.Name ? DB.GetProjektpunktPrioritaetByName(DB.CurrentProjektpunkt.Prioritaet).Color : 'white'"
+                             (click)="PrioritaetClicked(this.Const.Projektpunktprioritaetstypen.Mittel.Name)">Mittel</div>
                       </td>
                       <td style="width: 10px;"></td>
-                      <td><ion-radio [value]="Const.Projektpunktprioritaetstypen.Hoch.Displayname"></ion-radio></td>
+                      <td><ion-radio [value]="Const.Projektpunktprioritaetstypen.Hoch.Name"></ion-radio></td>
                       <td>
                         <div class="statusdivclass"
-                             [style.color]="DB.CurrentProjektpunkt.Prioritaet === Const.Projektpunktprioritaetstypen.Hoch.Displayname ? 'white' : 'black'"
-                             [style.background]="DB.CurrentProjektpunkt.Prioritaet === Const.Projektpunktprioritaetstypen.Hoch.Displayname ? DB.GetProjektpunktPrioritaetByName(DB.CurrentProjektpunkt.Prioritaet).Color : 'white'"
-                             (click)="PrioritaetClicked(Const.Projektpunktprioritaetstypen.Hoch.Displayname)">Hoch</div>
+                             [style.color]="DB.CurrentProjektpunkt.Prioritaet === Const.Projektpunktprioritaetstypen.Hoch.Name ? 'white' : 'black'"
+                             [style.background]="DB.CurrentProjektpunkt.Prioritaet === Const.Projektpunktprioritaetstypen.Hoch.Name ? DB.GetProjektpunktPrioritaetByName(DB.CurrentProjektpunkt.Prioritaet).Color : 'white'"
+                             (click)="PrioritaetClicked(Const.Projektpunktprioritaetstypen.Hoch.Name)">Hoch</div>
                       </td>
 
                     </tr>
@@ -287,22 +287,18 @@
                     </tr>
                   </table>
 
-
                 </ion-radio-group>
 
               </ion-col>
             </ion-row>
-
-
-
             <ion-row>
               <ion-col>
                 <ion-text color="baeblau"><b>Thematik</b></ion-text>
               </ion-col>
             </ion-row>
-            <ion-row>
+            <ion-row *ngIf="Pool.Mitarbeiterdaten">
               <ion-col [size]="3">
-                <input-clone Titel="Thematik" [MinLength]="3" [MaxLength]="250" [(Value)]="DB.CurrentProjektpunkt.Thematik" (TextChanged)="TextChangedHandler()"></input-clone>
+                <input-clone [Textsize]="Pool.Mitarbeitersettings.Textsize" [MinLength]="3" [MaxLength]="250" [(Value)]="DB.CurrentProjektpunkt.Thematik" (TextChanged)="TextChangedHandler()"></input-clone>
               </ion-col>
             </ion-row>
             <ion-row>
@@ -313,7 +309,33 @@
             <ion-row>
               <ion-col size="6">
 
-                  <ion-textarea [value]="DB.CurrentProjektpunkt.Aufgabe" auto-grow style="border: 1px solid #444444; min-height: 140px" (ionInput)="AufgabeTextChangedHandler($event)"></ion-textarea>
+                <editor *ngIf="Pool.Mitarbeitersettings !== null"
+                        [init]="{
+                            menubar:   false,
+                            statusbar: false,
+                            language: 'de',
+                            browser_spellcheck: true,
+                            newline_behavior: 'linebreak',
+                            height: 300,
+                            base_url: '/tinymce',
+                            suffix: '.min',
+                            auto_focus : true,
+                            content_style: 'body { color: black; margin: 0; line-height: 1.2; font-size: ' + Pool.Mitarbeitersettings.Textsize + 'px; }',
+                            toolbar: [
+                              { name: 'styles',      items: [ 'forecolor', 'backcolor' ] },
+                              { name: 'formatting',  items: [ 'bold', 'italic', 'underline', 'strikethrough' ] },
+                              { name: 'alignment',   items: [ 'alignleft', 'aligncenter', 'alignright', 'alignjustify' ] },
+                              { name: 'indentation', items: [ 'outdent', 'indent' ] }
+                            ],
+                          }"
+                        [apiKey]="'7hvzif1s8dafhu40z0kjgpw1y4zwc2p5cokjkfox946qpfjc'"
+                        [(ngModel)]="DB.CurrentProjektpunkt.Aufgabe"
+                        (onNodeChange)="AufgabeTextChangedHandler($event)"
+                        (onChange)="AufgabeTextChangedHandler($event)"
+                        (onPaste)="AufgabeTextChangedHandler($event)"
+                        (onCut)="AufgabeTextChangedHandler($event)"
+                        (onKeyPress)="AufgabeTextChangedHandler($event)">
+                </editor>
 
               </ion-col>
             </ion-row>

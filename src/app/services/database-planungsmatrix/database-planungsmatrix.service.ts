@@ -32,8 +32,8 @@ export class DatabasePlanungsmatrixService {
               private Const: ConstProvider) {
     try {
 
-      this.InitAufgabenbereicheliste();
       this.InitZielvorgabentextliste();
+      this.InitAufgabenbereicheliste();
       this.InitBerechnungentextliste();
       this.InitBemessungentextliste();
       this.InitSchematatextliste();
@@ -138,7 +138,20 @@ Zusammenstellungen, um die Planung nachvollziehen und beurteilen zu können.`;
       this.Erlaeuterungtextliste[3][460] = Text;
       this.Erlaeuterungtextliste[3][480] = Text;
 
-      this.Erlaeuterungtextliste[4] = [];
+      Text = `Der Erläuterungsbericht enthält alle Angaben, Beschreibungen, Daten und Zusammenstellungen,
+um die Planung nachvollziehen, beurteilen und genehmigen zu können.`;
+
+      this.Erlaeuterungtextliste[4]      = [];
+      this.Erlaeuterungtextliste[4][410] = Text;
+      this.Erlaeuterungtextliste[4][475] = Text;
+      this.Erlaeuterungtextliste[4][420] = Text;
+      this.Erlaeuterungtextliste[4][430] = Text;
+      this.Erlaeuterungtextliste[4][434] = Text;
+      this.Erlaeuterungtextliste[4][440] = Text;
+      this.Erlaeuterungtextliste[4][450] = Text;
+      this.Erlaeuterungtextliste[4][460] = Text;
+      this.Erlaeuterungtextliste[4][480] = Text;
+
       this.Erlaeuterungtextliste[5] = [];
       this.Erlaeuterungtextliste[6] = [];
       this.Erlaeuterungtextliste[7] = [];
@@ -234,7 +247,20 @@ Ausführungsplanung bei unveränderten Planungsgrundlagen vermieden werden.\nAl
       this.Bemessungentextliste[3][460] = Text;
       this.Bemessungentextliste[3][480] = Text;
 
-      this.Bemessungentextliste[4] = [];
+      Text = `Die Bemessung erfolgt auf der Grundlage der vorliegenden Berechnungen des Entwurfs;
+hierbei sind alle für das Brandschutzkonzept notwendigen Bemessungen zu berücksichtigen.`;
+
+      this.Bemessungentextliste[4]   = [];
+      this.Bemessungentextliste[4][410] = Text;
+      this.Bemessungentextliste[4][475] = Text;
+      this.Bemessungentextliste[4][420] = Text;
+      this.Bemessungentextliste[4][430] = Text;
+      this.Bemessungentextliste[4][434] = Text;
+      this.Bemessungentextliste[4][440] = Text;
+      this.Bemessungentextliste[4][450] = Text;
+      this.Bemessungentextliste[4][460] = Text;
+      this.Bemessungentextliste[4][480] = Text;
+
       this.Bemessungentextliste[5] = [];
       this.Bemessungentextliste[6] = [];
       this.Bemessungentextliste[7] = [];
@@ -281,7 +307,20 @@ Ausführungsplanung bei unveränderten Planungsgrundlagen vermieden werden.\nAl
       this.Plaenetextliste[3][460] = Text;
       this.Plaenetextliste[3][480] = Text;
 
-      this.Plaenetextliste[4] = [];
+      Text = `Darstellung aller Ver- und Entsorgungsnetze mit den wesentlichen Funktionsgruppen und
+Funktionselementen sowie alle für das Brandschutzkonzept notwendigen Einbauteile`;
+
+      this.Plaenetextliste[4]   = [];
+      this.Plaenetextliste[4][410] = Text;
+      this.Plaenetextliste[4][475] = Text;
+      this.Plaenetextliste[4][420] = Text;
+      this.Plaenetextliste[4][430] = Text;
+      this.Plaenetextliste[4][434] = Text;
+      this.Plaenetextliste[4][440] = Text;
+      this.Plaenetextliste[4][450] = Text;
+      this.Plaenetextliste[4][460] = Text;
+      this.Plaenetextliste[4][480] = Text;
+
       this.Plaenetextliste[5] = [];
       this.Plaenetextliste[6] = [];
       this.Plaenetextliste[7] = [];
@@ -341,7 +380,21 @@ Ausführungsplanung bei unveränderten Planungsgrundlagen vermieden werden.\nAl
       this.Berechnungentextliste[3][460] = Text;
       this.Berechnungentextliste[3][480] = '';
 
-      this.Berechnungentextliste[4] = [];
+      Text = `Die Festlegungen der Entwurfsplanung sind berücksichtigt, in die Genehmigungspläne überführt
+und beinhalten die Dimensionierung der Zentralen, Versorgungsanschlüsse und Trassen.
+Umfang der beizufügenden Berechnungen ist mit der genehmigenden Stelle abzustimmen.`;
+
+      this.Berechnungentextliste[4]      = [];
+      this.Berechnungentextliste[4][410] = Text;
+      this.Berechnungentextliste[4][475] = Text;
+      this.Berechnungentextliste[4][420] = Text;
+      this.Berechnungentextliste[4][430] = Text;
+      this.Berechnungentextliste[4][434] = Text;
+      this.Berechnungentextliste[4][440] = Text;
+      this.Berechnungentextliste[4][450] = Text;
+      this.Berechnungentextliste[4][460] = Text;
+      this.Berechnungentextliste[4][480] = '';
+
       this.Berechnungentextliste[5] = [];
       this.Berechnungentextliste[6] = [];
       this.Berechnungentextliste[7] = [];
@@ -442,7 +495,23 @@ Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.
       this.Zielvorgabentextliste[3][460] = Text;
       this.Zielvorgabentextliste[3][480] = Text;
 
-      this.Zielvorgabentextliste[4] = [];
+      Text = `Darstellung der im Entwurf abgestimmten Nutzervorgaben zur Vorlage bei den
+Genehmigungsstellen; Darstellung, Berechnungen etc. nach den Vorgaben der
+Genehmigungsstellen (in der Regel Wasserbehörden, Baubehörden, Feuerwehr etc.)
+sowie anderer Stellen (EVU, VdS etc.)
+Die Genehmigungsplanung wird durch die Genehmigungsstelle geprüft und genehmigt.`;
+
+      this.Zielvorgabentextliste[4]      = [];
+      this.Zielvorgabentextliste[4][410] = Text;
+      this.Zielvorgabentextliste[4][475] = Text;
+      this.Zielvorgabentextliste[4][420] = Text;
+      this.Zielvorgabentextliste[4][430] = Text;
+      this.Zielvorgabentextliste[4][434] = Text;
+      this.Zielvorgabentextliste[4][440] = Text;
+      this.Zielvorgabentextliste[4][450] = Text;
+      this.Zielvorgabentextliste[4][460] = Text;
+      this.Zielvorgabentextliste[4][480] = Text;
+
       this.Zielvorgabentextliste[5] = [];
       this.Zielvorgabentextliste[6] = [];
       this.Zielvorgabentextliste[7] = [];
@@ -551,6 +620,20 @@ Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.
       Zielvorgabenteilaufgaben[3][0][460] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_abnahme" };
       Zielvorgabenteilaufgaben[3][0][480] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_abnahme" };
 
+      Text = 'Geprüfte Genehmigungsplanung';
+
+      Zielvorgabenteilaufgaben[4][0]      = [];
+      Zielvorgabenteilaufgaben[4][0][0]   = { AufgabenbereichID: "ziel", Beschreibung: "",   Bezeichnung: "Prüfung",     id: "ziel_pruefung" };
+      Zielvorgabenteilaufgaben[4][0][410] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_pruefung" };
+      Zielvorgabenteilaufgaben[4][0][475] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_pruefung" };
+      Zielvorgabenteilaufgaben[4][0][420] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_pruefung" };
+      Zielvorgabenteilaufgaben[4][0][430] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_pruefung" };
+      Zielvorgabenteilaufgaben[4][0][434] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_pruefung" };
+      Zielvorgabenteilaufgaben[4][0][440] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_pruefung" };
+      Zielvorgabenteilaufgaben[4][0][450] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_pruefung" };
+      Zielvorgabenteilaufgaben[4][0][460] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_pruefung" };
+      Zielvorgabenteilaufgaben[4][0][480] = { AufgabenbereichID: "ziel", Beschreibung: Text, Bezeichnung: "",            id: "ziel_pruefung" };
+
       this.Aufgabenbereicheliste.push({
         id:              'ziel',
         Bezeichnung:     "Zielvorgaben",
@@ -585,28 +668,40 @@ Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.
       Berechnungenteilaufgaben[1][0][480] = { AufgabenbereichID: "berech", Beschreibung: Text, Bezeichnung: "",            id: "berech_abschaetzung" };
 
       Berechnungenteilaufgaben[2][0]      = [];
-      Berechnungenteilaufgaben[2][0][0]   = { AufgabenbereichID: "berech", Beschreibung: "",   Bezeichnung: "Auslegung", id: "berech_ausegung" };
-      Berechnungenteilaufgaben[2][0][410] = { AufgabenbereichID: "berech", Beschreibung: "Verbrauchsmengen, Entsorgungsmengen", Bezeichnung: "",          id: "berech_ausegung" };
-      Berechnungenteilaufgaben[2][0][475] = { AufgabenbereichID: "berech", Beschreibung: "Verbrauchsmengen, Entsorgungsmengen", Bezeichnung: "",          id: "berech_ausegung" };
-      Berechnungenteilaufgaben[2][0][420] = { AufgabenbereichID: "berech", Beschreibung: "Heizlast, Gleichzeitigkeitsfaktoren", Bezeichnung: "",          id: "berech_ausegung" };
-      Berechnungenteilaufgaben[2][0][430] = { AufgabenbereichID: "berech", Beschreibung: "Luftwechsel Volumenströme für einzelne Anlagen. Heiz-, Kühl-, Befeuchtungs- und Elektroleistungen", Bezeichnung: "",          id: "berech_ausegung" };
-      Berechnungenteilaufgaben[2][0][434] = { AufgabenbereichID: "berech", Beschreibung: "stat. Kältebedarf, dyn. Kältebedarf, Gleichzeitigkeitsfaktoren", Bezeichnung: "",          id: "berech_ausegung" };
-      Berechnungenteilaufgaben[2][0][440] = { AufgabenbereichID: "berech", Beschreibung: "Leistungsbedarf. Aufgeschlüsselte Leistungsbilanz für Netz- und NEA dto. Hauptverbraucher (RLT, Kälte, Aufzüge, Beleuchtung). Gleichzeitigkeitsfaktoren", Bezeichnung: "",          id: "berech_ausegung" };
-      Berechnungenteilaufgaben[2][0][450] = { AufgabenbereichID: "berech", Beschreibung: "Leistungsbedarf", Bezeichnung: "",          id: "berech_ausegung" };
-      Berechnungenteilaufgaben[2][0][460] = { AufgabenbereichID: "berech", Beschreibung: "Förderleistungsberechnung", Bezeichnung: "",          id: "berech_ausegung" };
+      Berechnungenteilaufgaben[2][0][0]   = { AufgabenbereichID: "berech", Beschreibung: "",   Bezeichnung: "Auslegung", id: "berech_auslegung" };
+      Berechnungenteilaufgaben[2][0][410] = { AufgabenbereichID: "berech", Beschreibung: "Verbrauchsmengen, Entsorgungsmengen", Bezeichnung: "",          id: "berech_auslegung" };
+      Berechnungenteilaufgaben[2][0][475] = { AufgabenbereichID: "berech", Beschreibung: "Verbrauchsmengen, Entsorgungsmengen", Bezeichnung: "",          id: "berech_auslegung" };
+      Berechnungenteilaufgaben[2][0][420] = { AufgabenbereichID: "berech", Beschreibung: "Heizlast, Gleichzeitigkeitsfaktoren", Bezeichnung: "",          id: "berech_auslegung" };
+      Berechnungenteilaufgaben[2][0][430] = { AufgabenbereichID: "berech", Beschreibung: "Luftwechsel Volumenströme für einzelne Anlagen. Heiz-, Kühl-, Befeuchtungs- und Elektroleistungen", Bezeichnung: "",          id: "berech_auslegung" };
+      Berechnungenteilaufgaben[2][0][434] = { AufgabenbereichID: "berech", Beschreibung: "stat. Kältebedarf, dyn. Kältebedarf, Gleichzeitigkeitsfaktoren", Bezeichnung: "",          id: "berech_auslegung" };
+      Berechnungenteilaufgaben[2][0][440] = { AufgabenbereichID: "berech", Beschreibung: "Leistungsbedarf. Aufgeschlüsselte Leistungsbilanz für Netz- und NEA dto. Hauptverbraucher (RLT, Kälte, Aufzüge, Beleuchtung). Gleichzeitigkeitsfaktoren", Bezeichnung: "",          id: "berech_auslegung" };
+      Berechnungenteilaufgaben[2][0][450] = { AufgabenbereichID: "berech", Beschreibung: "Leistungsbedarf", Bezeichnung: "",          id: "berech_auslegung" };
+      Berechnungenteilaufgaben[2][0][460] = { AufgabenbereichID: "berech", Beschreibung: "Förderleistungsberechnung", Bezeichnung: "",          id: "berech_auslegung" };
       Berechnungenteilaufgaben[2][0][480] = { AufgabenbereichID: "berech", Beschreibung: "", Bezeichnung: "",          id: this.Const.NONE };
 
       Berechnungenteilaufgaben[3][0]      = [];
       Berechnungenteilaufgaben[3][0][0]   = { AufgabenbereichID: "berech", Beschreibung: "", Bezeichnung: "Allgemein", id: "berech_allgemein" };
       Berechnungenteilaufgaben[3][0][410] = { AufgabenbereichID: "berech", Beschreibung: "Medienbedarf", Bezeichnung: "",          id: "berech_allgemein" };
       Berechnungenteilaufgaben[3][0][475] = { AufgabenbereichID: "berech", Beschreibung: "Medienbedarf", Bezeichnung: "",          id: "berech_allgemein" };
-      Berechnungenteilaufgaben[3][0][420] = { AufgabenbereichID: "berech", Beschreibung: "Heizlast\nLeistungsbilanz\nthermische Gebäudesimulation für relevante Bereiche falls erforderlich", Bezeichnung: "",          id: "berech_allgemein" };
-      Berechnungenteilaufgaben[3][0][430] = { AufgabenbereichID: "berech", Beschreibung: "Volumenströme\nKühllast\nHeizlast\nThermische Gebäudesimulation\nbzw. Strömungssimulationen\nsind ggf.\nprojektspezifisch mit Zielsetzung\nder Untersuchung\nzu vereinbaren.", Bezeichnung: "",          id: "berech_allgemein" };
-      Berechnungenteilaufgaben[3][0][434] = { AufgabenbereichID: "berech", Beschreibung: "Kühlflächenauslegung\nLeistungsbilanz\nthermische Gebäudesimulation\nfür\nrelevante Bereiche\nfalls erforderlich", Bezeichnung: "",          id: "berech_allgemein" };
-      Berechnungenteilaufgaben[3][0][440] = { AufgabenbereichID: "berech", Beschreibung: "Beleuchtungsberech.\n Leistungsbilanz", Bezeichnung: "",          id: "berech_ausegung" };
+      Berechnungenteilaufgaben[3][0][420] = { AufgabenbereichID: "berech", Beschreibung: "Heizlast<br>Leistungsbilanz<br>thermische Gebäudesimulation für relevante Bereiche falls erforderlich", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[3][0][430] = { AufgabenbereichID: "berech", Beschreibung: "Volumenströme<br>Kühllast<br>Heizlast<br>Thermische Gebäudesimulation<br>bzw. Strömungssimulationen<br>sind ggf. projektspezifisch mit Zielsetzung<br>der Untersuchung<br>zu vereinbaren.", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[3][0][434] = { AufgabenbereichID: "berech", Beschreibung: "Kühlflächenauslegung<br>Leistungsbilanz<br>thermische Gebäudesimulation<br>für relevante Bereiche<br>falls erforderlich", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[3][0][440] = { AufgabenbereichID: "berech", Beschreibung: "Beleuchtungsberech<br>Leistungsbilanz", Bezeichnung: "",          id: "berech_allgemein" };
       Berechnungenteilaufgaben[3][0][450] = { AufgabenbereichID: "berech", Beschreibung: "", Bezeichnung: "",          id: this.Const.NONE };
-      Berechnungenteilaufgaben[3][0][460] = { AufgabenbereichID: "berech", Beschreibung: "Förderleistungsberech.\nin Vorplanung\nNachberechnung\nin Entwurf", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[3][0][460] = { AufgabenbereichID: "berech", Beschreibung: "Förderleistungsberechnung in Vorplanung<br>Nachberechnung in Entwurf", Bezeichnung: "",          id: "berech_allgemein" };
       Berechnungenteilaufgaben[3][0][480] = { AufgabenbereichID: "berech", Beschreibung: "", Bezeichnung: "",          id: this.Const.NONE };
+
+      Berechnungenteilaufgaben[4][0]      = [];
+      Berechnungenteilaufgaben[4][0][0]   = { AufgabenbereichID: "berech", Beschreibung: "", Bezeichnung: "Allgemein", id: "berech_allgemein" };
+      Berechnungenteilaufgaben[4][0][410] = { AufgabenbereichID: "berech", Beschreibung: "Medienbedarf<br>Anschlussleistung<br>Geräte der Zentralen<br>Rohrnetzberechnung<br>Abwasser", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[4][0][475] = { AufgabenbereichID: "berech", Beschreibung: "Leistungsbilanz<br>Geräte der Zentralen", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[4][0][420] = { AufgabenbereichID: "berech", Beschreibung: "Heizlast<br>Leistungsbilanz<br>thermische Gebäudesimulation für relevante Bereiche falls erforderlich", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[4][0][430] = { AufgabenbereichID: "berech", Beschreibung: "Volumenströme<br>Geräte der Zentralen<br>Heizlast", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[4][0][434] = { AufgabenbereichID: "berech", Beschreibung: "Leistungsbilanz<br>Geräte der Zentralen", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[4][0][440] = { AufgabenbereichID: "berech", Beschreibung: "Leistungsbilanz nach Netzarten getrennt<br>Gesamtenergiebedarf<br>Geräte der Zentralen", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[4][0][450] = { AufgabenbereichID: "berech", Beschreibung: "Medienbedarf<br>Geräte der Zentralen", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[4][0][460] = { AufgabenbereichID: "berech", Beschreibung: "Entleerungsberechnung<br>Förderleistungsberechnung", Bezeichnung: "",          id: "berech_allgemein" };
+      Berechnungenteilaufgaben[4][0][480] = { AufgabenbereichID: "berech", Beschreibung: "", Bezeichnung: "",          id: this.Const.NONE };
 
 
       this.Aufgabenbereicheliste.push(
@@ -615,7 +710,7 @@ Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.
           Bezeichnung:          "Berechnungen",
           Information:     ['', '', '', '', '', '', '', ''],
           Leistungsphasen:      [1, 2, 3, 4, 5, 6, 7, 8],
-          Nummer:               [2, 2, 2, 0, 2, 0, 0, 0],
+          Nummer:               [2, 2, 2, 2, 2, 0, 0, 0],
           Teilaufgabenbereiche: Berechnungenteilaufgaben
         });
 
@@ -681,12 +776,24 @@ Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.
       Bemessungenteilaufgaben[3][0][460] = { AufgabenbereichID: "bemess", Beschreibung: `Förderhöhe<br>Geschwindigkeit<br>Tragfähigkeit<br>Haltestellen<br>Antriebsart, Steuerung<br>Anzeigen`, Bezeichnung: "", id: "bemess_allgemein" };
       Bemessungenteilaufgaben[3][0][480] = { AufgabenbereichID: "bemess", Beschreibung: "", Bezeichnung: "", id: this.Const.NONE };
 
+      Bemessungenteilaufgaben[4][0]      = [];
+      Bemessungenteilaufgaben[4][0][0]   = { AufgabenbereichID: "bemess", Beschreibung: "", Bezeichnung: "Allgemein", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[4][0][410] = { AufgabenbereichID: "bemess", Beschreibung: `Medienbedarf<br>Anschlussleistung<br>Geräte der Zentralen<br>Rohrnetzberechnung<br>Abwasser`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[4][0][475] = { AufgabenbereichID: "bemess", Beschreibung: `Leistungsbilanz<br>Geräte der Zentralen`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[4][0][420] = { AufgabenbereichID: "bemess", Beschreibung: `Volumenströme<br>Geräte der Zentralen<br></br>Heizlast`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[4][0][430] = { AufgabenbereichID: "bemess", Beschreibung: `RLT-Geräte<br>Wärmetauscher<br>Luftdurchlässe`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[4][0][434] = { AufgabenbereichID: "bemess", Beschreibung: `Kältemaschine<br>Rückkühlung<br>Wämeübertrager<br>Pumpen<br>Behälter<br>Rohrleitungen`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[4][0][440] = { AufgabenbereichID: "bemess", Beschreibung: `Trafo, NEA<br>Zentralbatterie, USV,<br>Sicherheitsbeleuchtung<br>HS, MS, NSHV, Zählerund<br>Unterverteilungen<br>Kompensationsanlage<br>Blitzschutzanlage<br>Erdung<br>Kabel`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[4][0][450] = { AufgabenbereichID: "bemess", Beschreibung: `Zentrale Einrichtungen<br>Antenne, BMZ, ELA<br></br>Lichtruf, Datenverteiler<br>Kabel`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[4][0][460] = { AufgabenbereichID: "bemess", Beschreibung: `Förderhöhe<br>Geschwindigkeit<br>Tragfähigkeit<br>Haltestellen<br>Antriebsart, Steuerung<br>Anzeigen`, Bezeichnung: "", id: "bemess_allgemein" };
+      Bemessungenteilaufgaben[4][0][480] = { AufgabenbereichID: "bemess", Beschreibung: "", Bezeichnung: "", id: this.Const.NONE };
+
       this.Aufgabenbereicheliste.push({
         id:                   'bemess',
         Bezeichnung:          "Bemessungen",
         Information:          ['', '', '', '', '', '', '', ''],
         Leistungsphasen:      [   2, 3, 4, 5, 6, 7, 8],
-        Nummer:               [0, 3, 3, 0, 0, 0, 0, 0],
+        Nummer:               [0, 3, 3, 3, 0, 0, 0, 0],
         Teilaufgabenbereiche: Bemessungenteilaufgaben
       });
 
@@ -715,21 +822,33 @@ Planungsvorgaben zu prüfen, zu genehmigen und die Planungsleistung abzunehmen.
       Schematateilaufgabenliste[3][0]      = [];
       Schematateilaufgabenliste[3][0][0]   = { AufgabenbereichID: "schema", Beschreibung: "", Bezeichnung: "Funktionsschema<br>Stangschema",   id: "schema_funktion" };
       Schematateilaufgabenliste[3][0][410] = { AufgabenbereichID: "schema", Beschreibung: "Versorgung TWK<br>Versorgung TWW<br>Entsorgung SW<br>Entsorgung RW<br>Funktions- und Strangschema", Bezeichnung: "", id: "schema_funktion" };
-      Schematateilaufgabenliste[3][0][475] = { AufgabenbereichID: "schema", Beschreibung: "Versorgung TWK<br>Versorgung TWW<br>Entsorgung SW<br>Entsorgung RW<br>Funktions- und Strangschema", Bezeichnung: "", id: "schema_funktion" };
       Schematateilaufgabenliste[3][0][420] = { AufgabenbereichID: "schema", Beschreibung: "Wärmeversorgung<br>Wasseraufbereitung<br>Wärmeverteilung<br>Wärmeverbrauchseinrichtungen<br>kein Strangschema<br>Regelventile", Bezeichnung: "", id: "schema_funktion" };
       Schematateilaufgabenliste[3][0][430] = { AufgabenbereichID: "schema", Beschreibung: "für jede Anlage mit Funktion<br>Gerät und Prinzip der<br>Luftverteilung<br>alle Komponenten für einen<br>sicheren Betrieb aufzeigen", Bezeichnung: "", id: "schema_funktion" };
       Schematateilaufgabenliste[3][0][434] = { AufgabenbereichID: "schema", Beschreibung: "Kälteversorgung<br>Wasseraufbereitung<br>Kälteverteilung<br>kein Strangschema", Bezeichnung: "", id: "schema_funktion" };
       Schematateilaufgabenliste[3][0][440] = { AufgabenbereichID: "schema", Beschreibung: "Mittelspannung<br>Niederspannung<br>Netzersatzanlage<br>Energiereverteilung<br>bis Unterverteilung<br>Sicherheitsbeleucht.", Bezeichnung: "", id: "schema_funktion" };
       Schematateilaufgabenliste[3][0][450] = { AufgabenbereichID: "schema", Beschreibung: "für alle Anlagen, z.B.<br>ELA-Anlage,<br>BM-Anlagen,<br>TK-Anlagen,<br>Such- und Signalanlagen<br>EM-Anlagen etc.", Bezeichnung: "", id: "schema_funktion" };
       Schematateilaufgabenliste[3][0][460] = { AufgabenbereichID: "schema", Beschreibung: "Übersichtschema für Förderhöhe<br>Bericht<br>Haltestellen<br>Antriebsart", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[3][0][475] = { AufgabenbereichID: "schema", Beschreibung: "Versorgung TWK<br>Versorgung TWW<br>Entsorgung SW<br>Entsorgung RW<br>Funktions- und Strangschema", Bezeichnung: "", id: "schema_funktion" };
       Schematateilaufgabenliste[3][0][480] = { AufgabenbereichID: "schema", Beschreibung: "Regelschema<br>GA-Schema<br>Datenpunktlisten", Bezeichnung: "", id: "schema_funktion" };
+
+      Schematateilaufgabenliste[4][0]      = [];
+      Schematateilaufgabenliste[4][0][0]   = { AufgabenbereichID: "schema", Beschreibung: "", Bezeichnung: "Funktionsschema<br>Stangschema",   id: "schema_funktion" };
+      Schematateilaufgabenliste[4][0][410] = { AufgabenbereichID: "schema", Beschreibung: "Versorgung TWK<br>Versorgung TWW<br>Entsorgung SW<br>Entsorgung RW<br>Funktions- und Strangschema<br>Messstellen<br>Feuerlöschanlagen<br>Sprinkler, Gaslöschanlagen<br>Hydrantenanlagen", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[4][0][475] = { AufgabenbereichID: "schema", Beschreibung: "Versorgung TWK<br>Versorgung TWW<br>Entsorgung SW<br>Entsorgung RW<br>Funktions- und Strangschema<br>Messstellen<br>Feuerlöschanlagen<br>Sprinkler, Gaslöschanlagen<br>Hydrantenanlagen", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[4][0][420] = { AufgabenbereichID: "schema", Beschreibung: "Wärmeversorgung<br>Wasseraufbereitung<br>Wärmeverteilung<br>Wärmeverbrauchseinrichtungen<br>kein Strangschema<br>Regelventile<br>Messstellen", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[4][0][430] = { AufgabenbereichID: "schema", Beschreibung: "für jede Anlage mit Funktion<br>Gerät und Prinzip der<br>Luftverteilung<br>alle Komponenten für einen<br>sicheren Betrieb aufzeigen<br>Messstellen", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[4][0][434] = { AufgabenbereichID: "schema", Beschreibung: "Kälteversorgung<br>Wasseraufbereitung<br>Kälteverteilung<br>kein Strangschema", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[4][0][440] = { AufgabenbereichID: "schema", Beschreibung: "Mittelspannung<br>Niederspannung<br>Netzersatzanlage<br>Energiereverteilung<br>bis Unterverteilung<br>Sicherheitsbeleuchtung<br>Messtellen<br>Netzschema", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[4][0][450] = { AufgabenbereichID: "schema", Beschreibung: "für alle Anlagen, z.B.<br>ELA-Anlage,<br>BM-Anlagen,<br>TK-Anlagen,<br>Such- und Signalanlagen<br>EM-Anlagen<br>BOS-Funkanlagen", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[4][0][460] = { AufgabenbereichID: "schema", Beschreibung: "Übersichtschema für Förderhöhe<br>Bericht<br>Haltestellen<br>Antriebsart", Bezeichnung: "", id: "schema_funktion" };
+      Schematateilaufgabenliste[4][0][480] = { AufgabenbereichID: "schema", Beschreibung: "Regelschema<br>GA-Schema<br>Datenpunktlisten<br>Steuermatrix auf<br>Grundlage der<br>Brandschutzmatrix", Bezeichnung: "", id: "schema_funktion" };
 
       this.Aufgabenbereicheliste.push({
         id:                   'schema',
         Bezeichnung:          "Schemata",
         Information:          ['', '', '', '', '', '', '', ''],
         Leistungsphasen:      [   2, 3, 4, 5, 6, 7, 8],
-        Nummer:               [0, 4, 4, 0, 0, 0, 0, 0],
+        Nummer:               [0, 4, 4, 4, 0, 0, 0, 0],
         Teilaufgabenbereiche: Schematateilaufgabenliste
       });
 
@@ -813,12 +932,39 @@ inklusive Hinweis auf die Art des Brandschutzes`;
       Plaeneteilaufgabenliste[3][3][480] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
 
 
+      Plaeneteilaufgabenliste[4][0]      = [];
+      Plaeneteilaufgabenliste[4][0][0]   = { AufgabenbereichID: "plaene", Beschreibung: "",   Bezeichnung: "Grundrisse", id: "plaene_grundrisse" };
+      Plaeneteilaufgabenliste[4][0][410] = { AufgabenbereichID: "plaene", Beschreibung: "Darstellung mit Haupt-<br>imensionen<br>Objekte, Anschlusspunkte<br>Feuerlöscheinrichtungen<br>Hydranten, Sprinkler<br>Gaslöschdüsen", Bezeichnung: "",          id: "plaene_grundrisse" };
+      Plaeneteilaufgabenliste[4][0][475] = { AufgabenbereichID: "plaene", Beschreibung: "Darstellung mit Haupt-<br>imensionen<br>Objekte, Anschlusspunkte<br>Feuerlöscheinrichtungen<br>Hydranten, Sprinkler<br>Gaslöschdüsen", Bezeichnung: "",          id: "plaene_grundrisse" };
+      Plaeneteilaufgabenliste[4][0][420] = { AufgabenbereichID: "plaene", Beschreibung: "Darstellung mit Haupt-<br>Dimensionen<br>Heizflächen<br>Absperr- u.<br>Regeleinrichtungen", Bezeichnung: "",          id: "plaene_grundrisse" };
+      Plaeneteilaufgabenliste[4][0][430] = { AufgabenbereichID: "plaene", Beschreibung: "Darstellung mit Haupt-<br>Dimensionen<br>BSK, VSR, DK<br>Luftdurchlässe", Bezeichnung: "",          id: "plaene_grundrisse" };
+      Plaeneteilaufgabenliste[4][0][434] = { AufgabenbereichID: "plaene", Beschreibung: "Darstellung mit Haupt-<br>Dimensionen<br>Kühlflächen<br>Absperr- u.<br>Regeleinrichtungen", Bezeichnung: "",          id: "plaene_grundrisse" };
+      Plaeneteilaufgabenliste[4][0][440] = { AufgabenbereichID: "plaene", Beschreibung: "Darstellung mit Haupt-<br>Dimensionen<br>der Trassen- und<br>Schienensysteme<br>Schaltanlagen/-verteiler<br>Installationsgeräte<br>Beleuchtungskörper", Bezeichnung: "",          id: "plaene_grundrisse" };
+      Plaeneteilaufgabenliste[4][0][450] = { AufgabenbereichID: "plaene", Beschreibung: "Darstellung mit Haupt-<br>Dimensionen<br>der Trassen<br>Installationsgeräte\<br>Einbauteile<br>z.B. Lautsprecher,<br>Brandmelder etc.", Bezeichnung: "",          id: "plaene_grundrisse" };
+      Plaeneteilaufgabenliste[4][0][460] = { AufgabenbereichID: "plaene", Beschreibung: "Schachtzeichnung<br>Kabinenabmessungen", Bezeichnung: "",          id: "plaene_grundrisse" };
+      Plaeneteilaufgabenliste[4][0][480] = { AufgabenbereichID: "plaene", Beschreibung: "", Bezeichnung: "",          id: this.Const.NONE     };
+
+      Text = 'Möblierung<br>Hinweis auf die Art des Brandschutzes';
+
+      Plaeneteilaufgabenliste[4][1]      = [];
+      Plaeneteilaufgabenliste[4][1][0]   = { AufgabenbereichID: "plaene", Beschreibung: "",   Bezeichnung: "Schächte",  id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[4][1][410] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[4][1][475] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[4][1][420] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[4][1][430] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[4][1][434] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[4][1][440] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[4][1][450] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[4][1][460] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: "plaene_schaechte" };
+      Plaeneteilaufgabenliste[4][1][480] = { AufgabenbereichID: "plaene", Beschreibung: Text, Bezeichnung: "",          id: this.Const.NONE };
+
+
       this.Aufgabenbereicheliste.push({
         id:                   'plaene',
         Bezeichnung:          "Pläne",
         Information:          ['', 'Maßstab 1:200', 'Maßstab 1:100', '', '', '', '', ''],
         Leistungsphasen:      [   2, 3, 4, 5, 6, 7, 8],
-        Nummer:               [0, 5, 5, 0, 0, 0, 0, 0],
+        Nummer:               [0, 5, 5, 5, 0, 0, 0, 0],
         Teilaufgabenbereiche: Plaeneteilaufgabenliste
       });
 
@@ -865,7 +1011,7 @@ inklusive Hinweis auf die Art des Brandschutzes`;
         id:                     'koord',
         Bezeichnung:          "Koordination",
         Information:          ['', '', '', '', '', '', '', ''],
-        Leistungsphasen:      [   2, 3, 4, 5, 6, 7, 8],
+        Leistungsphasen:      [   2, 3,    5, 6, 7, 8],
         Nummer:               [0, 6, 6, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Koordinationteilaufgabenliste
       });
@@ -944,13 +1090,28 @@ gemacht werden. Die Angaben müssen jedoch eindeutig sein.`;
       Erlaeuterungteilaufgabenliste[3][0][480] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
 
 
+      Text = `Erläuterungsbericht`;
+
+      Erlaeuterungteilaufgabenliste[4][0]      = [];
+      Erlaeuterungteilaufgabenliste[4][0][0]   = { AufgabenbereichID: "erbe", Beschreibung: "",   Bezeichnung: "Allgemein", id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[4][0][410] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[4][0][475] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[4][0][420] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[4][0][430] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[4][0][434] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[4][0][440] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[4][0][450] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[4][0][460] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+      Erlaeuterungteilaufgabenliste[4][0][480] = { AufgabenbereichID: "erbe", Beschreibung: Text, Bezeichnung: "",          id: "erbe_allgemein" };
+
+
 
       this.Aufgabenbereicheliste.push({
         id: 'erbe',
         Bezeichnung: "Erläuterung",
         Information:     ['', '', '', '', '', '', '', ''],
         Leistungsphasen: [   2, 3, 4, 5, 6, 7, 8],
-        Nummer:          [0, 7, 8, 0, 0, 0, 0, 0],
+        Nummer:          [0, 7, 8, 6, 0, 0, 0, 0],
         Teilaufgabenbereiche: Erlaeuterungteilaufgabenliste
       });
 
@@ -997,7 +1158,7 @@ gemacht werden. Die Angaben müssen jedoch eindeutig sein.`;
         id:                   'kosten',
         Bezeichnung:          "Kosten",
         Information:          ['', '', '', '', '', '', '', ''],
-        Leistungsphasen:      [   2, 3, 4, 5, 6, 7, 8],
+        Leistungsphasen:      [   2, 3,    5, 6, 7, 8],
         Nummer:               [0, 8, 9, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Kostenteilaufgabenliste
       });
@@ -1063,7 +1224,21 @@ gemacht werden. Die Angaben müssen jedoch eindeutig sein.`;
       this.Schematatextliste[3][460] = Text;
       this.Schematatextliste[3][480] = Text;
 
-      this.Schematatextliste[4] = [];
+      Text = `Funktionsschemata zur Darstellung der Funktionen der geplanten Anlagen
+mit den relevanten Anlagenbauteilen sowie alle für das Brandschutzkonzept
+notwendigen Darstellungen falls erforderlich`;
+
+      this.Schematatextliste[4]   = [];
+      this.Schematatextliste[4][410] = Text;
+      this.Schematatextliste[4][475] = Text;
+      this.Schematatextliste[4][420] = Text;
+      this.Schematatextliste[4][430] = Text;
+      this.Schematatextliste[4][434] = Text;
+      this.Schematatextliste[4][440] = Text;
+      this.Schematatextliste[4][450] = Text;
+      this.Schematatextliste[4][460] = Text;
+      this.Schematatextliste[4][480] = Text;
+
       this.Schematatextliste[5] = [];
       this.Schematatextliste[6] = [];
       this.Schematatextliste[7] = [];

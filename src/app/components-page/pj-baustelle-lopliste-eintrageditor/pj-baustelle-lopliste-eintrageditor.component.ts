@@ -1087,9 +1087,11 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
     }
   }
 
-  PrioritaetChangedHandler(event: any) {
+  PrioritaetChangedHandler(prioritaet: any) {
 
     try {
+
+      this.DB.CurrentProjektpunkt.Prioritaet = prioritaet.detail.value;
 
     } catch (error) {
 

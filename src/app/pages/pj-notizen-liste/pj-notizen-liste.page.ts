@@ -38,13 +38,11 @@ export class PjNotizenListePage implements OnInit, OnDestroy {
   public Auswahltitel: string;
   public ShowAuswahl: boolean;
   private FavoritenProjektSubcription: Subscription;
-  public Projektschnellauswahlursprung: string;
   public ShowProjektschnellauswahl: boolean;
   private Projektschenllauswahltitel: string;
   public ShowEditor: boolean;
   private NotizenkapitelProjektSubcription: Subscription;
   public ContentHoehe: number;
-  public Editorconfig: any;
   private PageLoaded: boolean;
   private SaveTimer: any;
   public TextSaved: boolean;
@@ -77,36 +75,8 @@ export class PjNotizenListePage implements OnInit, OnDestroy {
       this.FavoritenProjektSubcription      = null;
       this.NotizenkapitelProjektSubcription = null;
       this.ShowProjektschnellauswahl        = false;
-      this.Auswahlhoehe        = 300;
+      this.Auswahlhoehe                     = 300;
 
-      this.Editorconfig = {
-
-        menubar:   false,
-        statusbar: false,
-        // selector: 'textarea',  // change this value according to your HTML
-        // plugins: 'autoresize',
-        // icons: 'material',
-        content_style: 'body { color: black; margin: 0; line-height: 0.9; }, ',
-        language: 'de',
-        browser_spellcheck: true,
-        height: '100',
-        auto_focus : true,
-        // content_style: `
-		    //   table, th, td {
-    		//     border: none !important;
-		    //   }`,
-        // theme: 'inlite',
-        // forced_root_block: 'span',
-        // base_url: 'assets/tinymce', // Root for resources
-        // suffix: '.min',        // Suffix to use when loading resources
-        toolbar: [
-          // { name: 'history', items: [ 'undo', 'redo' ] },
-          { name: 'styles',      items: [ 'forecolor', 'backcolor' ] }, // , 'fontfamily', 'fontsize'
-          { name: 'formatting',  items: [ 'bold', 'italic', 'underline', 'strikethrough' ] },
-          { name: 'alignment',   items: [ 'alignleft', 'aligncenter', 'alignright', 'alignjustify' ] },
-          { name: 'indentation', items: [ 'outdent', 'indent' ] }
-        ],
-      };
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Notizen Liste', 'constructor', this.Debug.Typen.Page);
@@ -121,8 +91,7 @@ export class PjNotizenListePage implements OnInit, OnDestroy {
 
       this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
 
-      this.ContentHoehe        = this.Basics.InnerContenthoehe - KapitelabschnitteHoehe;
-      this.Editorconfig.height = this.ContentHoehe;
+      this.ContentHoehe = this.Basics.InnerContenthoehe - KapitelabschnitteHoehe;
 
     } catch (error) {
 

@@ -123,7 +123,6 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
     try {
 
       let Mitarbeiter: Mitarbeiterstruktur;
-      let Standort: Standortestruktur;
 
       this.DB.Init();
       this.DB.CheckSetup();
@@ -233,7 +232,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
     }
   }
 
-  MitarebiterStandortfilterClickedHandler() {
+  MitarebiterStandortfilterClickedHandler(data: any) {
 
     try {
 
@@ -277,6 +276,8 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
       let Urlaub: Urlaubsstruktur;
 
+      debugger;
+
       switch (this.Auswahldialogorigin) {
 
         case 'Resturlaub':
@@ -304,12 +305,14 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
         case this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Standort_Filter:
 
-          this.DBStandort.CurrentStandortfilter = cloneDeep(data);
+          this.DBStandort.CurrentStandortfilter        = cloneDeep(data);
           this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
 
           this.DBMitarbeiterstettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null).then(() => {
 
             this.PrepareData();
+
+            this.DBStandort.StandortfilterChanged.emit();
           });
 
           break;

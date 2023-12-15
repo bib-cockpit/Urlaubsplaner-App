@@ -1153,4 +1153,19 @@ export class PjProjektpunktelisteComponent implements OnInit, OnDestroy, OnChang
       this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'SendeRuecklauferinnerungMail', this.Debug.Typen.Component);
     }
   }
+
+  public GetAufgabentext(Aufgabe: string): string {
+
+    try {
+
+      let Text:string = Aufgabe.replace('<p>', '<p style="margin: 0px; padding: 0px;">');
+
+      return Text;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkteliste', 'GetAufgabentext', this.Debug.Typen.Component);
+    }
+
+  }
 }
