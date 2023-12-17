@@ -1110,6 +1110,7 @@ export class DatabasePoolService {
         UrlaubShowFeiertage_DE:      true,
         UrlaubShowFerien_BG:         true,
         UrlaubShowFeiertage_BG:      true,
+        UrlaubShowMeinenUrlaub:      true,
 
         OberkostengruppeFilter: null,
         HauptkostengruppeFilter: null,
@@ -1192,6 +1193,7 @@ export class DatabasePoolService {
           if(lodash.isUndefined(Settings.UrlaubShowFerien_BG))            Settings.UrlaubShowFerien_BG            = true;
           if(lodash.isUndefined(Settings.UrlaubShowFeiertage_DE))         Settings.UrlaubShowFeiertage_DE         = true;
           if(lodash.isUndefined(Settings.UrlaubShowFeiertage_BG))         Settings.UrlaubShowFeiertage_BG         = true;
+          if(lodash.isUndefined(Settings.UrlaubShowMeinenUrlaub))         Settings.UrlaubShowMeinenUrlaub         = true;
 
           this.CurrentAufgabenansichten = this.GetAufgabenansichten(null);
 

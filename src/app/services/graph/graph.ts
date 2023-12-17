@@ -33,6 +33,9 @@ import {Outlookpresetcolorsstruktur} from "../../dataclasses/outlookpresetcolors
 import {Outlookkategoriesstruktur} from "../../dataclasses/outlookkategoriesstruktur";
 import {Notizenkapitelstruktur} from "../../dataclasses/notizenkapitelstruktur";
 import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
+import {BasicsProvider} from "../basics/basics";
+import {Outlookemailadressstruktur} from "../../dataclasses/outlookemailadressstruktur";
+import {EmitFlags} from "@angular/compiler-cli";
 
 @Injectable({
   providedIn: 'root'
@@ -66,6 +69,7 @@ export class Graphservice {
               private DBEmail: DatabaseOutlookemailService,
               private Http:  HttpClient,
               private Pool: DatabasePoolService,
+              public Basics: BasicsProvider,
               private domSanitizer: DomSanitizer,
   ) {
     try {
@@ -2244,7 +2248,7 @@ export class Graphservice {
     }
   }
 
-  public async SendMail(): Promise<any> {
+  public async SendMail(Empfaenger: Outlookemailadressstruktur[], Betreff: string, Nachricht: string): Promise<any> {
 
     try {
 
@@ -2258,43 +2262,32 @@ export class Graphservice {
         }
       });
 
-      // GET /me/joinedTeams
-      // GET /me/memberOf
+      if(this.Basics.DebugNoExternalEmail === true) {
+
+        for(let Eintrag of Empfaenger) {
+
+          Eintrag.emailAddress.address = 'p.hornburger@gmail.com';
+        }
+      }
 
       if(token !== null) {
 
         const sendMail = {
           message: {
-            subject: 'Hello World',
+            subject: Betreff,
             body: {
-              contentType: 'Text',
-              content: 'Ein erster Test.'
+              contentType: 'html',
+              content: Nachricht
             },
-            toRecipients: [
-              {
-                emailAddress: {
-                  address: 'p.hornburger@gmail.com'
-                }
-              }
-            ],
+            toRecipients: Empfaenger,
           },
           saveToSentItems: 'true'
         };
 
-        /*
-
-                    ccRecipients: [
-              {
-                /*
-                emailAddress: {
-                  address: 'danas@contoso.onmicrosoft.com'
-                }
-
-                 */
-
-
 
         data = await graphClient.api('/me/sendMail').post(sendMail);
+
+        return Promise.resolve(data);
 
         debugger;
       }

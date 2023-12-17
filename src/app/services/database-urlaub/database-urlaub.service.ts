@@ -19,6 +19,8 @@ import {Projektestruktur} from "../../dataclasses/projektestruktur";
 import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 import {FailedEmitResult} from "@angular/compiler-cli/src/ngtsc/imports";
 import {Urlaubprojektbeteiligtestruktur} from "../../dataclasses/urlaubprojektbeteiligtestruktur";
+import {Graphservice} from "../graph/graph";
+import {Outlookemailadressstruktur} from "../../dataclasses/outlookemailadressstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -101,6 +103,7 @@ export class DatabaseUrlaubService {
   constructor(private Debug: DebugProvider,
               private Pool: DatabasePoolService,
               private Const: ConstProvider,
+              private Graph: Graphservice,
               private http: HttpClient) {
     try {
 
@@ -355,17 +358,60 @@ export class DatabaseUrlaubService {
 
     try {
 
+      let Betreff: string = 'Urlaubsvertretungsanfrage von ' + this.Pool.Mitarbeiterdaten.Vorname + ' ' + this.Pool.Mitarbeiterdaten.Name;
+      let Nachricht: string;
+      let Empfaenger: Outlookemailadressstruktur[] = [];
+
+      Nachricht  = "Hallo " + Vertretung.Vorname + "<br><br> bitte prüfen, ob du für mich für folgende Zeiträume:<br><br>";
+      Nachricht += '<table border="1">';
+      Nachricht += '<tr>';
+      Nachricht += '<td style="width: 100px; text-align: center"><b>Von</b></td><td style="width: 100px; text-align: center"><b>Bis</b></td>';
+
+      for(let Zeitspanne of Zeitspannen) {
+
+        Nachricht += '<tr>';
+        Nachricht += '<td style="text-align: center">' + Zeitspanne.Startstring + '</td>';
+        Nachricht += '<td style="text-align: center">' + Zeitspanne.Endestring  + '</td>';
+        Nachricht += '</tr>';
+      }
+
+      Nachricht += '</table>';
+
+      Nachricht += '<br>Die Urlaubsvertretung für mich übernehmen kannst.<br><br>';
+      // Nachricht += 'Beste Grüße, <br><br>';
+      // Nachricht += this.Pool.Mitarbeiterdaten.Vorname;
+      Nachricht += '<br><br>' + this.Pool.GetFilledSignatur(true);
+
       return new Promise((resolve, reject) => {
 
-        if(this.CurrentUrlaub !== null) {
+        Empfaenger.push({
+
+          emailAddress: {
+
+            address: Vertretung.Email,
+            name: Vertretung.Vorname + ' ' + Vertretung.Name
+          }
+        });
+
+        this.Graph.SendMail(Empfaenger, Betreff, Nachricht).then(() => {
+
+          debugger;
+
+          if(this.CurrentUrlaub !== null) {
 
 
-          resolve(true);
-        }
-        else {
+            resolve(true);
+          }
+          else {
 
-          reject(false);
-        }
+            reject(false);
+          }
+        }).catch((error: any) => {
+
+          debugger;
+
+          reject(error);
+        });
       });
 
     } catch (error) {
@@ -711,6 +757,17 @@ export class DatabaseUrlaubService {
         if(lodash.isUndefined(this.CurrentUrlaub.FreigeberID))            this.CurrentUrlaub.FreigeberID            = null;
       }
 
+      for(let Zeitspanne of this.CurrentUrlaub.Zeitspannen) {
+
+        if(lodash.isUndefined(Zeitspanne.VertreterID) || Zeitspanne.VertreterID === '') Zeitspanne.VertreterID = null;
+
+        if(lodash.isUndefined(Zeitspanne.Planungmeldung))    Zeitspanne.Planungmeldung    = '';
+        if(lodash.isUndefined(Zeitspanne.Vertretungmeldung)) Zeitspanne.Vertretungmeldung = '';
+        if(lodash.isUndefined(Zeitspanne.Freigabemeldung))   Zeitspanne.Freigabemeldung   = '';
+
+          if(Zeitspanne.Status === 'Beantragt') Zeitspanne.Status = this.Urlaubstatusvarianten.Geplant;
+      }
+
       // Fremde Urlaube zur Einsicht vorbereiten
 
       this.UrlaublisteExtern = [];
@@ -1013,7 +1070,9 @@ export class DatabaseUrlaubService {
         Endestring:  "",
         VertreterID: null,
         Status: this.Urlaubstatusvarianten.Geplant,
-        Statusmeldung: '',
+        Planungmeldung: '',
+        Vertretungmeldung: '',
+        Freigabemeldung: '',
         Tageanzahl: 0,
         VertreterantwortSended: false,
         FreigabeantwortSended: false,

@@ -247,8 +247,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
         Datum = Datumsicherung.clone();
 
-        debugger;
-
         if(this.DB.CheckDisplayExternenUrlaub(this.DB.UrlaublisteExtern[i].MitarbeiterIDExtern)) {
 
           this.KalendertageExternliste[Mitarbeiterindex] = [];

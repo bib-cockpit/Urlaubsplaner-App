@@ -47,7 +47,9 @@
             <ng-container *ngIf="Tag.Hauptmonat === true && Pool.Mitarbeitersettings !== null">
               <div
                 (click)="TagClicked(Tag, Wocheindex, Tagindex)" class="tagrahmenclass">
-                <div class="tagdivclass" [style.background]="Tag.Background" [style.color]="Tag.Color">{{Tag.Tagnummer}}</div>
+                <div class="tagdivclass"
+                     [style.background]="Pool.Mitarbeitersettings.UrlaubShowMeinenUrlaub ? Tag.Background : 'none'"
+                     [style.color]="Pool.Mitarbeitersettings.UrlaubShowMeinenUrlaub ? Tag.Color : 'black'">{{Tag.Tagnummer}}</div>
                 <div *ngIf="DB.ShowFerientage_DE"
                      (mouseenter)="FerientagMouseOverEvent(Tag, 'DE')"
                      (mouseleave)="FerientagCrossedEvent.emit('')"

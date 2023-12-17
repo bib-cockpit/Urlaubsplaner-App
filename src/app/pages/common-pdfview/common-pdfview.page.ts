@@ -48,7 +48,7 @@ export class CommonPdfviewPage {
     }
     catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Common PDF Viewer', 'SendMailButtonCLicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error.message, 'Common PDF Viewer', 'BackButtonClicked', this.Debug.Typen.Component);
     }
   }
 }

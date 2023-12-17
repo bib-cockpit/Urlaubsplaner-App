@@ -221,7 +221,7 @@
                 <span       *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</span>
               </td>
               <td align="center"><div class="legendedivclass" [style.background]="DB.GetStatuscolor(Zeitspanne.Status)"></div></td>
-              <td [innerHTML]="Zeitspanne.Statusmeldung"></td>
+              <td [innerHTML]="Zeitspanne.Planungmeldung"></td>
               <td><ion-button size="small" color="rot" (click)="UrlaubLoeschen(Zeitspanne)"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button></td>
             </tr>
             <tr>

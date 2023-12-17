@@ -51,6 +51,7 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
   public AuswahlIDliste: string[];
   public MitarbeiterauswahlTitel: string;
   public MitarbeiterMultiselect: boolean;
+  public Message: string;
 
   constructor(public Menuservice: MenueService,
               public Basics: BasicsProvider,
@@ -74,6 +75,7 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
       this.AuswahlIDliste = [];
       this.MitarbeiterauswahlTitel = '';
       this.MitarbeiterMultiselect = true;
+      this.Message = '';
 
 
     } catch (error) {
@@ -381,6 +383,7 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
       let Gesamtanzahl: number = 1;
       let Heute: Moment = moment();
       let Freigebender: Mitarbeiterstruktur;
+      let Stellvertreter: Mitarbeiterstruktur;
 
       for(let Zeitspanne of Urlaub.Zeitspannen) {
 
@@ -392,24 +395,26 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
         if(Zeitspanne.Status !== this.DB.Urlaubstatusvarianten.Vertreteranfrage) {
 
+          Freigebender   = lodash.find(this.Pool.Mitarbeiterliste, {_id: Urlaub.FreigeberID});
+          Stellvertreter = lodash.find(this.Pool.Mitarbeiterliste, {_id: Zeitspanne.VertreterID});
+
           if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Vertreterfreigabe) {
 
             await this.DB.SendVertreterantworten(Mitarbeiter, Urlaub);
-
-            Zeitspanne.Statusmeldung += '<br>' + Heute.format('DD.MM.YYYY') + ' Vertretungszusage wurde an ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' gesendet.';
-
-            Freigebender = lodash.find(this.Pool.Mitarbeiterliste, {_id: Urlaub.FreigeberID});
-
             await this.DB.SendFreigabeanfrage(Mitarbeiter, Urlaub, Freigebender);
 
-            Zeitspanne.Statusmeldung += '<br>' + Heute.format('DD.MM.YYYY') + ' Urlaubsfreigabe Anfrage wurde an ' + Freigebender.Vorname + ' ' + Freigebender.Name + ' gesendet.';
+            Zeitspanne.Vertretungmeldung  = Heute.format('DD.MM.YYYY') + ' Vertretungszusage wurde an ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' gesendet.';
+            Zeitspanne.Vertretungmeldung += '<br>' + Heute.format('DD.MM.YYYY') + ' Urlaubsfreigabe Anfrage wurde an ' + Freigebender.Vorname + ' ' + Freigebender.Name + ' gesendet.';
+            Zeitspanne.Planungmeldung     = Heute.format('DD.MM.YYYY') + ' ' + Stellvertreter.Vorname + ' ' + Stellvertreter.Name + ' hat der Urlausvertretung zugestimmt.';
+            Zeitspanne.Planungmeldung    += '<br>' + Heute.format('DD.MM.YYYY') + 'Genehmigungsanfrage wurde an ' + Freigebender.Vorname + ' ' + Freigebender.Name + ' gesendet.';
           }
 
           if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Vertreterablehnung) {
 
             await this.DB.SendVertreterantworten(Mitarbeiter, Urlaub);
 
-            Zeitspanne.Statusmeldung += '<br>' + Heute.format('DD.MM.YYYY') + ' Vertretungsabsage wurde an ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' gesendet.';
+            Zeitspanne.Planungmeldung     = Heute.format('DD.MM.YYYY') + ' ' + Stellvertreter.Vorname + ' ' + Stellvertreter.Name + ' hat die Vertretung abgelehnt';
+            Zeitspanne.Vertretungmeldung  = Heute.format('DD.MM.YYYY') + ' Vertretungsabsage wurde an ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' gesendet.';
           }
         }
       }
@@ -454,16 +459,17 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
             await this.DB.SendMitarbeiterFreigabezusage(Mitarbeiter, Urlaub, Freigebender);
             await this.DB.SendOfficeFreigabezusage(Mitarbeiter, Urlaub, Vertretung, Freigebender);
 
-
-            Zeitspanne.Statusmeldung += '<br>' + Heute.format('DD.MM.YYYY') + ' Urlaubsfreigabe wurde an ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' gesendet.';
-            Zeitspanne.Statusmeldung += '<br>' + Heute.format('DD.MM.YYYY') + ' Urlaubsfreigabe wurde an das Office gesendet.';
+            Zeitspanne.Planungmeldung = Heute.format('DD.MM.YYYY') + ' Der Urlaub wurde durch ' + Freigebender.Vorname + ' ' + Freigebender.Name + ' genehmigt.';
+            Zeitspanne.Freigabemeldung  = Heute.format('DD.MM.YYYY') + ' Urlaubsfreigabe wurde an ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' gesendet.';
+            Zeitspanne.Freigabemeldung += '<br>' + Heute.format('DD.MM.YYYY') + ' Urlaubsfreigabe wurde an das Office gesendet.';
           }
 
           if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Abgelehnt) {
 
             await this.DB.SendMitarbeiterFreigabeablehnung(Mitarbeiter, Urlaub, Freigebender);
 
-            Zeitspanne.Statusmeldung += '<br>' + Heute.format('DD.MM.YYYY') + ' Urlaubsablehnung wurde an ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' gesendet.';
+            Zeitspanne.Planungmeldung  = Heute.format('DD.MM.YYYY') + ' Der Urlaub wurde durch ' + Freigebender.Vorname + ' ' + Freigebender.Name + ' abgelehnt.';
+            Zeitspanne.Freigabemeldung = Heute.format('DD.MM.YYYY') + ' Urlaubsablehnung wurde an ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' gesendet.';
           }
         }
       }
@@ -480,4 +486,196 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'SendFreigabeUpdate', this.Debug.Typen.Page);
     }
   }
+
+  FerientagCrossedEventHandler(event: string) {
+
+    try {
+
+      this.Message = event;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'FerientagCrossedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  DisplayExternCheckChanged(event: { status: boolean; index: number; event: any; value: string }, Urlaub: Urlaubsstruktur, i: number) {
+
+    try {
+
+      let Beteiligt: Urlaubprojektbeteiligtestruktur = lodash.find(this.DB.CurrentUrlaub.Projektbeteiligteliste, {MitarbeiterID: Urlaub.MitarbeiterIDExtern});
+
+      if(!lodash.isUndefined(Beteiligt)) Beteiligt.Display = event.status;
+
+      debugger;
+
+      let Urlaubindex = lodash.findIndex(this.Pool.Mitarbeiterdaten.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+      this.Pool.Mitarbeiterdaten.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
+
+      this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
+
+        this.DB.ExterneUrlaubeChanged.emit();
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'DisplayExternCheckChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  DisplayMeinenUrlaubCheckChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      this.Pool.Mitarbeitersettings.UrlaubShowMeinenUrlaub = event.status;
+
+      this.DBMitarbeiterstettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null).then(() => {
+
+        this.DB.ExterneUrlaubeChanged.emit();
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'DisplayMeinenUrlaubCheckChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  MonatBackButtonClicked() {
+
+    try {
+
+      if(this.DB.CurrentMonatindex > 0) {
+
+        this.DB.CurrentMonatindex--;
+
+        this.DB.SetPlanungsmonate();
+
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'MonatBackButtonClicked', this.Debug.Typen.Page);
+    }
+
+  }
+
+  MonatForwardButtonClicked() {
+
+    try {
+
+      if(this.DB.CurrentMonatindex < 11) {
+
+        this.DB.CurrentMonatindex++;
+
+        this.DB.SetPlanungsmonate();
+
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'MonatForwardButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+
+  FeiertagCrossedEventHandler(message: string) {
+
+    try {
+
+      this.Message = message;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'FeiertagCrossedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  MonatButtonClicked(Monatindex: number) {
+
+    try {
+
+      this.DB.CurrentMonatindex = Monatindex;
+      this.DB.SetPlanungsmonate();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'MonatButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  GetMonatButtonColor(Monatindex: number): string {
+
+    try {
+
+      if(this.DB.CurrentMonatindex === Monatindex) return 'orange';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'GetMonatButtonColor', this.Debug.Typen.Page);
+    }
+  }
+
+  AnsichtFerientageCheckChanged(event: { status: boolean; index: number; event: any; value: string }, landcode: string) {
+
+    try {
+
+      switch (landcode) {
+
+        case 'DE':
+
+          this.Pool.Mitarbeitersettings.UrlaubShowFerien_DE = event.status;
+          this.DB.ShowFerientage_DE = event.status;
+
+          break;
+
+        case 'BG':
+
+          this.Pool.Mitarbeitersettings.UrlaubShowFerien_BG = event.status;
+          this.DB.ShowFerientage_BG = event.status;
+
+          break;
+      }
+
+      this.DBMitarbeitersettings.SaveMitarbeitersettings().then(() => {
+
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'AnsichtFerientageCheckChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  AnsichtFeiertageCheckChanged(event: { status: boolean; index: number; event: any; value: string }, landcode: string) {
+
+    try {
+
+      switch (landcode) {
+
+        case 'DE':
+
+          this.Pool.Mitarbeitersettings.UrlaubShowFeiertage_DE = event.status;
+          this.DB.ShowFeiertage_DE = event.status;
+
+          break;
+
+        case 'BG':
+
+          this.Pool.Mitarbeitersettings.UrlaubShowFeiertage_BG = event.status;
+          this.DB.ShowFeiertage_BG = event.status;
+
+          break;
+      }
+
+      this.DBMitarbeitersettings.SaveMitarbeitersettings().then(() => {
+
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'AnsichtFeiertageCheckChanged', this.Debug.Typen.Page);
+    }
+  }
+
 }

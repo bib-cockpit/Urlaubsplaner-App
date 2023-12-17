@@ -501,7 +501,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     try {
 
-      this.GraphService.SendMail();
+      // this.GraphService.SendMail();
 
 
 
