@@ -15,7 +15,7 @@
               <ng-container *ngFor="let Directory of GraphService.TeamsSubdirectorylist; let i = index">
                 <td style="font-weight: bold;">&rang;</td>
                 <td>
-                  <div (click)="i < GraphService.TeamsSubdirectorylist.length - 1 ? SubFolderBackClicked(i, Directory) : null" class="folderdiv">
+                  <div (click)="i < GraphService.TeamsSubdirectorylist.length - 1 ? SubFolderBackClicked(i, Directory) : null"  class="folderdiv">
                     {{Directory.name}}
                   </div>
                 </td>
@@ -48,6 +48,9 @@
                 </td>
               </ng-container>
 
+            </tr>
+            <tr>
+              <td colspan="10" style="height: 100px;"></td>
             </tr>
           </table>
 

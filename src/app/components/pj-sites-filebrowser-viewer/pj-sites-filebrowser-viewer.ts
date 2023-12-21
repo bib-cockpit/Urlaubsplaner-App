@@ -117,6 +117,8 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
 
     try {
 
+
+
       this.Contenthoehe   = this.Browserhoehe - this.Headerhoehe;
       this.Filelistbreite = 500;
       this.Viewerbreite   = this.Browserbreite - this.Filelistbreite;
@@ -298,9 +300,6 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
       let Anzahl: number;
       let Index: number;
       let Liste: Thumbnailstruktur[] = [];
-      let Content: any;
-
-      debugger;
 
       let Imageliste: Teamsfilesstruktur[] = lodash.filter(this.GraphService.TeamsCurrentfilelist, (fileitem: Teamsfilesstruktur) => {
 
@@ -322,8 +321,6 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
         this.LoadThumbnailsRunning  = true;
 
         Thumb = await this.GraphService.GetSiteThumbnail(File);
-
-        debugger;
 
         if(Thumb !== null) {
 

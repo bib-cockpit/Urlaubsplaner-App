@@ -996,69 +996,6 @@ export class Graphservice {
     }
   }
 
-  /*
-
-  public async GetTeamsRootfilelist(teamsid: string, showfiles: boolean) {
-
-    try {
-
-      let token = await this.AuthService.RequestToken('user.read');
-      let Eintrag: Teamsfilesstruktur;
-
-      this.TeamsRootfilelist     = [];
-      this.TeamsSubdirectorylist = [];
-
-      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
-
-          done(null, token);
-        }
-      });
-
-      return new Promise((resolve, reject) => {
-
-        if(token !== null) {
-
-
-          // "/groups/' + teamsid + '/drive/items/' + folderid + ':/test.txt:/content
-
-          graphClient.api('/groups/' + teamsid + '/drive/items/root/children').get().then((result: any) => {
-
-            for(Eintrag of result.value) {
-
-              if(!lodash.isUndefined(Eintrag.folder)) Eintrag.isfolder = true;
-              else Eintrag.isfolder = false;
-
-              this.TeamsRootfilelist.push(Eintrag);
-            }
-
-
-            if(showfiles === false) this.TeamsRootfilelist = lodash.filter(this.TeamsRootfilelist, {isfolder : true});
-
-            this.TeamsCurrentfilelist = this.TeamsRootfilelist;
-
-            resolve(true);
-
-          }).catch((error: GraphError) => {
-
-            debugger;
-
-            reject(error);
-          });
-        }
-        else {
-
-          reject(false);
-        }
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Graph', 'GetTeamsRootfilelist', this.Debug.Typen.Service);
-    }
-  }
-
-   */
-
   public async GetSiteRootfilelist(showfiles: boolean) {
 
     try {
@@ -1282,7 +1219,7 @@ export class Graphservice {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'file', 'RemoveTeamsSubdirectory', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error, 'Graph', 'RemoveTeamsSubdirectory', this.Debug.Typen.Service);
     }
   }
 
@@ -1291,17 +1228,24 @@ export class Graphservice {
     try {
 
       let Liste: Teamsfilesstruktur[] = lodash.cloneDeep(this.TeamsSubdirectorylist);
+      let Result: Teamsfilesstruktur;
 
       this.TeamsSubdirectorylist = [];
 
       for(let Eintrag of Liste) {
 
-        if(Eintrag.id !== file.id) this.TeamsSubdirectorylist.push(file);
-        else break;
+        Result = lodash.find(this.TeamsSubdirectorylist, (eintrag: Teamsfilesstruktur) => {
+
+          return eintrag.id === Eintrag.id;
+        });
+
+        if(lodash.isUndefined(Result)) this.TeamsSubdirectorylist.push(Eintrag);
+
+        if(Eintrag.id === file.id) break;
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'file', 'RemoveSiteSubdirectory', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error, 'Graph', 'RemoveSiteSubdirectory', this.Debug.Typen.Service);
     }
   }
 
@@ -1452,8 +1396,6 @@ export class Graphservice {
               // this.TeamsRootfilelist.push(Eintrag);
             }
 
-            debugger;
-
             Verzeichnisliste.sort((a: Teamsfilesstruktur, b: Teamsfilesstruktur) => {
 
               if (a.name < b.name) return -1;
@@ -1484,7 +1426,18 @@ export class Graphservice {
 
             this.TeamsCurrentfilelist = this.TeamsRootfilelist;
 
-            this.TeamsSubdirectorylist.push(file);
+            if(lodash.isUndefined(lodash.find(this.TeamsSubdirectorylist, (eintrag: Teamsfilesstruktur) => {
+
+              return eintrag.id === file.id;
+
+            }))) {
+
+              this.TeamsSubdirectorylist.push(file);
+            }
+            else {
+
+            }
+
 
             resolve(true);
 

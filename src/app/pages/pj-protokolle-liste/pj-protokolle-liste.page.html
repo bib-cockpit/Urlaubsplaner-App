@@ -66,25 +66,35 @@
 
             <td style="width: 80px; text-align: center" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">{{Protokoll.ProjektpunkteIDListe.length !== 0 ? Protokoll.ProjektpunkteIDListe.length : 'leer'}}</td>
             <td style="width: 60px; text-align: center" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize" [style.color]="Protokoll.Punkteanzahl > 0 ? 'red' : 'green'">{{Protokoll.Punkteanzahl > 0 ? Protokoll.Punkteanzahl  : '0'}}</td>
-            <td style="width: 80px;">
-              <div *ngIf="Protokoll.ProjektpunkteIDListe.length > 0"class="maildivclass" (click)="SendMailButtonClicked($event, Protokoll)">
+            <td style="width: 80px;" align="center">
                 <table class="nobordersmalltable">
                   <tr>
                     <td align="center">
-                       <ion-icon  name="mail" [color]="Protokoll.GesendetZeitstempel !== null ? 'gruen' : 'rot'"></ion-icon>
+                      <div *ngIf="Protokoll.ProjektpunkteIDListe.length > 0" class="maildivclass" (click)="SendMailButtonClicked($event, Protokoll)">
+                        <ion-icon  name="mail" [color]="Protokoll.GesendetZeitstempel !== null ? 'gruen' : 'rot'"></ion-icon>
+                      </div>
                     </td>
+                    <ng-container *ngIf="Protokoll.GesendetZeitstempel !== null">
+                      <td style="width: 10px"></td>
+                      <td>
+                        <div (click)="ShowPdfButtonClicked($event, Protokoll)" class="mailclass">
+                          <ion-icon  name="document" [color]="Basics.Ionicfarben.BAEBlau"></ion-icon>
+                        </div>
+                      </td>
+
+                    </ng-container>
+
                   </tr>
                   <ng-container *ngIf="Protokoll.GesendetZeitstempel !== null">
                     <tr>
-                      <td style="text-align: center; font-size: 80%">{{Tools.GetDatumFromZeitstempel(Protokoll.GesendetZeitstempel)}}</td>
+                      <td style="text-align: center; font-size: 80%" colspan="3">{{Tools.GetDatumFromZeitstempel(Protokoll.GesendetZeitstempel)}}</td>
                     </tr>
                     <tr>
-                      <td style="text-align: center; font-size: 80%">{{Tools.GetZeitFromZeitstempel(Protokoll.GesendetZeitstempel)}}</td>
+                      <td style="text-align: center; font-size: 80%" colspan="3">{{Tools.GetZeitFromZeitstempel(Protokoll.GesendetZeitstempel)}}</td>
                     </tr>
                   </ng-container>
                 </table>
 
-              </div>
             </td>
           </tr>
         </table>
@@ -214,7 +224,7 @@
                               [ZIndex]="20000"
                               [Titel]="'Bilder auswählen'"
                               [Dialogbreite]="Dialogbreite"
-                              [PositionY]="100"
+                              [PositionY]="0"
                               (SelectedImagesChanged)="SelectedImagesChangedHandler($event)"
                               (OkClickedEvent)="BilderAuswahlOKClicked($event)"
                               (CancelClickedEvent)="BilderAuswahlCancelClicked($event)">

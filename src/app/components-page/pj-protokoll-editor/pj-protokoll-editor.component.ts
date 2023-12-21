@@ -34,6 +34,7 @@ import {Graphservice} from "../../services/graph/graph";
 import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
 import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
 import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
+import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
 
 @Component({
   selector:    'pj-protokoll-editor',
@@ -122,6 +123,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
               public DB: DatabaseProtokolleService,
               public DBProjekte: DatabaseProjekteService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
+              public DBMitarbeiter: DatabaseMitarbeiterService,
               public KostenService: KostengruppenService,
               public Displayservice: DisplayService,
               public GraphService: Graphservice,
@@ -230,6 +232,18 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
   }
 
+  GetAnmerkungDatum(Zeitstempel: number): string {
+
+    try {
+
+      return moment(Zeitstempel).format('DD.MM.YY');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetAnmerkungDatum', this.Debug.Typen.Component);
+    }
+  }
+
   ngOnDestroy(): void {
 
     try {
@@ -269,6 +283,21 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
       this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'ionViewDidEnter', this.Debug.Typen.Component);
     }
+  }
+
+  public GetAufgabentext(Aufgabe: string): string {
+
+    try {
+
+      let Text:string = Aufgabe.replace('<p>', '<p style="margin: 0px; padding: 0px;">');
+
+      return Text;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetAufgabentext', this.Debug.Typen.Component);
+    }
+
   }
 
   ionViewDidLeave() {
@@ -986,8 +1015,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
       event.preventDefault();
       event.stopPropagation();
 
-      debugger;
-
       this.ThumbnailClickedEvent.emit({
         Index:      Index,
         Thumbliste: Thumbliste
@@ -1149,7 +1176,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
         }
       }
 
-      debugger;
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'TeilnehmerInternCheckedChanged', this.Debug.Typen.Component);
@@ -1173,14 +1199,19 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     try {
 
       let Text: string = 'unbekannt';
-      let Kostengruppe: Kostengruppenstruktur = this.KostenService.GetKostengruppeByFestlegungskategorieID(Projektpunkt.FestlegungskategorieID);
-      let Festlegungskategorie: Festlegungskategoriestruktur = lodash.find(this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey], {_id: Projektpunkt.FestlegungskategorieID});
+      let Kostengruppe: Kostengruppenstruktur;
 
-      if(Kostengruppe !== null) {
+      if(!lodash.isUndefined(Projektpunkt.FestlegungskategorieID) && Projektpunkt.FestlegungskategorieID !== null) {
 
-        Text = Kostengruppe.Kostengruppennummer + ' ' + Kostengruppe.Bezeichnung;
+        Kostengruppe = this.KostenService.GetKostengruppeByFestlegungskategorieID(Projektpunkt.FestlegungskategorieID);
+        let Festlegungskategorie: Festlegungskategoriestruktur = lodash.find(this.Pool.Festlegungskategorienliste[this.DBProjekte.CurrentProjekt.Projektkey], {_id: Projektpunkt.FestlegungskategorieID});
 
-        if(!lodash.isUndefined(Festlegungskategorie)) Text += ' &rarr; ' + Festlegungskategorie.Beschreibung;
+        if(Kostengruppe !== null) {
+
+          Text = Kostengruppe.Kostengruppennummer + ' ' + Kostengruppe.Bezeichnung;
+
+          if(!lodash.isUndefined(Festlegungskategorie)) Text += ' &rarr; ' + Festlegungskategorie.Beschreibung;
+        }
       }
 
       return Text;
@@ -1189,15 +1220,6 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
       this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetKostengruppe', this.Debug.Typen.Component);
     }
-  }
-
-  TestClicked() {
-
-    let elem: Element = document.getElementById("ScrollDiv");
-
-    debugger;
-
-    elem.scrollTop = elem.scrollHeight;
   }
 
   GetLeistungsphase(Leistungsphase: string): string {

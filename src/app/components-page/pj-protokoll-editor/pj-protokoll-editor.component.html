@@ -284,12 +284,50 @@
                                     </tr>
                                     <tr>
                                       <td [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
-                                          [innerHTML]="Tools.FormatLinebreaks(Projektpunkt.Aufgabe) | safe: 'html'"></td>
+                                          [innerHTML]="GetAufgabentext(Projektpunkt.Aufgabe) | safe: 'html'"></td>
                                     </tr>
                                   </table>
 
 
                                 </div>
+
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+
+                                <table style="width: 100%;" class="nobordersmalltable">
+                                  <tr *ngFor="let Anmerkung of Projektpunkt.Anmerkungenliste;">
+                                    <td>
+
+                                      <table *ngIf="Pool.Mitarbeitersettings !== null"  style="width: 100%;">
+                                        <tr>
+                                          <td style="width: 100%;">
+                                            <table>
+                                              <tr>
+                                                <td style="color: orange" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">
+                                                  {{GetAnmerkungDatum(Anmerkung.Zeitstempel)}}
+                                                </td>
+                                                <td style="width: 3px"></td>
+                                                <td style="color: orange" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize" *ngIf="DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email)">
+                                                  {{DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email).Kuerzel}}:
+                                                </td>
+                                                <td>
+                                                  <div  [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"
+                                                        [innerHTML]="Anmerkung.Anmerkung | safe : 'html'" style="width: 100%" class="bemerkungdivclass">
+                                                  </div>
+                                                </td>
+                                              </tr>
+                                            </table>
+                                          </td>
+                                        </tr>
+
+                                      </table>
+
+                                    </td>
+                                  </tr>
+                                </table>
+
 
                               </td>
                             </tr>

@@ -417,6 +417,8 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           this.DBProtokolle.CurrentProtokoll.GesendetZeitstempel = NextProtokoll.GesendetZeitstempel;
           this.DBProtokolle.CurrentProtokoll.GesendetZeitstring  = NextProtokoll.GesendetZeitstring;
+          this.DBProtokolle.CurrentProtokoll.Filename            = NextProtokoll.Filename;
+          this.DBProtokolle.CurrentProtokoll.FileID              = NextProtokoll.FileID;
 
           await this.DBProtokolle.SaveProtokoll();
 

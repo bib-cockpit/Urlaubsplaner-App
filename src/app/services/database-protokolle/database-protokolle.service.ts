@@ -21,6 +21,9 @@ import {BasicsProvider} from "../basics/basics";
 import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
 import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
 import {DatabaseFestlegungenService} from "../database-festlegungen/database-festlegungen.service";
+import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
+import {KostengruppenService} from "../kostengruppen/kostengruppen.service";
+import {DatabaseMitarbeiterService} from "../database-mitarbeiter/database-mitarbeiter.service";
 
 @Injectable({
   providedIn: 'root'
@@ -65,11 +68,13 @@ export class DatabaseProtokolleService {
   constructor(private Debug: DebugProvider,
               private DBProjekt: DatabaseProjekteService,
               private DBBeteiligte: DatabaseProjektbeteiligteService,
+              private DBMitarbeiter: DatabaseMitarbeiterService,
               private Const: ConstProvider,
               private http: HttpClient,
               private Basics: BasicsProvider,
               private AuthService: DatabaseAuthenticationService,
               private DBFestlegungen: DatabaseFestlegungenService,
+              public KostenService: KostengruppenService,
               private GraphService: Graphservice,
               private Pool: DatabasePoolService) {
     try {
@@ -523,10 +528,10 @@ export class DatabaseProtokolleService {
       let ExternZustaendigListe: string[][];
       let InternZustaendigListe: string[][];
       let Kostengruppenliste: string[];
-      let Beteiligter: Projektbeteiligtestruktur;
+      let Festlegungskategorie: Festlegungskategoriestruktur;
+      let Kostengruppe: Kostengruppenstruktur;
+      let Text: string;
       let Mitarbeiter: Mitarbeiterstruktur;
-      let Kategortie: Festlegungskategoriestruktur;
-      let Firma: Projektfirmenstruktur;
       let CcEmpfaengerliste: {
         Name:  string;
         Firma: string;
@@ -605,20 +610,37 @@ export class DatabaseProtokolleService {
           InternZustaendigListe[Punkteindex].push(this.GetZustaendigInternName(InternID));
         }
 
-        if(Projektpunkt.Status === this.Const.Projektpunktstatustypen.Festlegung.Name) {
+        if(Projektpunkt.Status === this.Const.Projektpunktstatustypen.Festlegung.Name &&
+           !lodash.isUndefined(Projektpunkt.FestlegungskategorieID) &&
+           Projektpunkt.FestlegungskategorieID !== null) {
 
-          Kategortie = this.DBFestlegungen.GetFestlegungskategorieByID(Projektpunkt.FestlegungskategorieID);
+          Kostengruppe         = this.KostenService.GetKostengruppeByFestlegungskategorieID(Projektpunkt.FestlegungskategorieID);
+          Festlegungskategorie = lodash.find(this.Pool.Festlegungskategorienliste[this.DBProjekt.CurrentProjekt.Projektkey], {_id: Projektpunkt.FestlegungskategorieID});
 
-          if(!lodash.isUndefined(Kategortie) && Kategortie !== null) {
+          if(Kostengruppe !== null) {
 
-            Kostengruppenliste.push(Kategortie.Kostengruppennummer + ' ' + Kategortie.Beschreibung); // .KostenService.GetKostengruppennameByProjektpunkt(Projektpunkt));
+            Text = Kostengruppe.Kostengruppennummer + ' ' + Kostengruppe.Bezeichnung;
+
+            if(!lodash.isUndefined(Festlegungskategorie)) Text += ' &rarr; ' + Festlegungskategorie.Beschreibung;
+
+            Kostengruppenliste.push(Text);
           }
+          else {
 
-          // Kostengruppenliste.push(this.KostenService.GetKostengruppennameByProjektpunkt(Projektpunkt));
+            Kostengruppenliste.push(this.Const.NONE);
+          }
         }
         else {
 
           Kostengruppenliste.push(this.Const.NONE);
+        }
+
+        for(let Anmerkung of Projektpunkt.Anmerkungenliste) {
+
+          Mitarbeiter = this.DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email);
+
+          if(!lodash.isUndefined(Mitarbeiter)) Anmerkung.Verfasser.Kuerzel = Mitarbeiter.Kuerzel;
+          else Anmerkung.Verfasser.Kuerzel = '';
         }
 
         Punkteindex++;
@@ -632,78 +654,6 @@ export class DatabaseProtokolleService {
 
       Daten.Protokoll.ExterneTeilnehmerliste = this.GetExterneTeilnehmerliste(true, true);
       Daten.Protokoll.InterneTeilnehmerliste = this.GetInterneTeilnehmerliste(true, true);
-
-      debugger;
-
-      // Empfaenger bestimmen
-
-      /*
-
-      Empfaengerliste   = [];
-      CcEmpfaengerliste = [];
-
-      for(let ExternEmpfaengerID of Daten.Protokoll.EmpfaengerExternIDListe) {
-
-        Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: ExternEmpfaengerID});
-
-        if(!lodash.isUndefined(Beteiligter)) {
-
-          Firma = lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, {FirmenID: Beteiligter.FirmaID });
-
-          Empfaengerliste.push({
-
-            Name:  Beteiligter.Vorname + ' ' + Beteiligter.Name,
-            Firma: lodash.isUndefined(Firma) ? '' : Firma.Firma,
-            Email: Beteiligter.Email
-          });
-        }
-      }
-
-      for(let InternEmpfaengerID of Daten.Protokoll.EmpfaengerInternIDListe) {
-
-        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: InternEmpfaengerID});
-
-        if(!lodash.isUndefined(Mitarbeiter)) Empfaengerliste.push({
-
-          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
-          Firma: 'BAE',
-          Email: Mitarbeiter.Email
-        });
-      }
-
-      for(let CcExternEmpfaengerID of Daten.Protokoll.CcEmpfaengerExternIDListe) {
-
-        Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: CcExternEmpfaengerID});
-
-        if(!lodash.isUndefined(Beteiligter)) {
-
-          Firma = lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, {FirmenID: Beteiligter.FirmaID });
-
-          CcEmpfaengerliste.push({
-
-            Name: Beteiligter.Vorname + ' ' + Beteiligter.Name,
-            Firma: lodash.isUndefined(Firma) ? '' : Firma.Firma,
-            Email: Beteiligter.Email
-          });
-        }
-      }
-
-      for(let CcInternEmpfaengerID of Daten.Protokoll.CcEmpfaengerInternIDListe) {
-
-        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: CcInternEmpfaengerID});
-
-        if(!lodash.isUndefined(Mitarbeiter)) CcEmpfaengerliste.push({
-
-          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
-          Email: Mitarbeiter.Email,
-          Firma: 'BAE'
-        });
-      }
-
-      Daten.Protokoll.Empfaengerliste   = Empfaengerliste;
-      Daten.Protokoll.CcEmpfaengerliste = CcEmpfaengerliste;
-
-       */
 
       // Protokoll versenden
 

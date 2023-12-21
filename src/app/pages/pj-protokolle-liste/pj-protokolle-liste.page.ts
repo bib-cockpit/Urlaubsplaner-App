@@ -33,6 +33,7 @@ import {DatabaseAuthenticationService} from "../../services/database-authenticat
 import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
 import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
 import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
+import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 
 @Component({
   selector:    'pj-protokolle-liste-page',
@@ -374,6 +375,29 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Projekt Liste', 'MitarebiterStandortfilterClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  async ShowPdfButtonClicked($event: MouseEvent, Protokoll: Protokollstruktur) {
+
+    try {
+
+      let File: Teamsfilesstruktur;
+
+      File      = this.GraphService.GetEmptyTeamsfile();
+      File.id   = Protokoll.FileID;
+      File.name = Protokoll.Filename;
+
+      debugger;
+
+      await this.GraphService.DownloadPDFSiteFile(File);
+
+      this.Tools.PushPage(this.Const.Pages.PDFViewerPage);
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'ShowPdfButtonClicked', this.Debug.Typen.Page);
     }
   }
 
