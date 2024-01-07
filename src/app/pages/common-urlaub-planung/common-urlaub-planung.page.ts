@@ -208,7 +208,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
             this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
-            await this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter).then(() => {
+            await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
 
               this.ShowAuswahl = false;
             });
@@ -250,7 +250,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
           this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
-          await this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter).then(() => {
+          await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
 
             this.ShowAuswahl = false;
           });
@@ -493,7 +493,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
         this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
-        this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter).then(() => {
+        this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
 
           // debugger;
           // this.DB.CurrentZeitspanne = null;
@@ -749,7 +749,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
       this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
-      this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter).then(() => {
+      this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
 
         this.DB.ExterneUrlaubeChanged.emit();
       });

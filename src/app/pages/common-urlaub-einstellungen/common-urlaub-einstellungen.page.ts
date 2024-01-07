@@ -197,7 +197,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
             Urlaub.Projektbeteiligteliste = this.DB.CurrentUrlaub.Projektbeteiligteliste;
 
-            this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter).then(() => {
+            this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
 
               this.PrepareData();
             });
@@ -215,7 +215,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
             Urlaub.FreigeberID = lodash.isUndefined(idliste[0]) ? null : idliste[0];
 
-            this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter).then(() => {
+            this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
 
               this.PrepareData();
             });
@@ -290,7 +290,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
             Urlaub.Resturlaub = data;
 
-            this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter);
+            this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter);
           }
 
           break;
@@ -299,7 +299,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
           this.DB.CurrentMitarbeiter.Urlaub = data;
 
-          this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter);
+          this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter);
 
           break;
 
@@ -515,7 +515,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
         Urlaub.Ferienblockerliste = this.DB.CurrentUrlaub.Ferienblockerliste;
 
-        this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter);
+        this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter);
       }
 
     } catch (error) {
@@ -560,7 +560,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
         Urlaub.Feiertageblockerliste = this.DB.CurrentUrlaub.Feiertageblockerliste;
 
-        this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter);
+        this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter);
       }
 
     } catch (error) {

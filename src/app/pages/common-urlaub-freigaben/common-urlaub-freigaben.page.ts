@@ -383,7 +383,7 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
       this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
-      this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter).then(() => {
+      this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
 
         this.DB.ExterneUrlaubeChanged.emit();
       });
