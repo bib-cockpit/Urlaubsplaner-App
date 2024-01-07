@@ -43,16 +43,13 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
   public AddUrlaubRunning: boolean;
   private Auswahldialogorigin: string;
   private DataSubscription: Subscription;
-  public ShowMitarbeiterauswahl: boolean;
   public AuswahlIDliste: string[];
   public MitarbeiterauswahlTitel: string;
 
   constructor(public Menuservice: MenueService,
               public Basics: BasicsProvider,
-              private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public Pool: DatabasePoolService,
               public DB: DatabaseUrlaubService,
-              private DBMitarbeiter: DatabaseMitarbeiterService,
               public Const: ConstProvider,
               public DBStandort: DatabaseStandorteService,
               public Auswahlservice: AuswahlDialogService,
@@ -73,7 +70,6 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
       this.ShowMitarbeitereditor = false;
       this.Auswahldialogorigin   = this.Const.NONE;
       this.AddUrlaubRunning      = false;
-      this.ShowMitarbeiterauswahl = false;
       this.AuswahlIDliste         = [];
       this.MitarbeiterauswahlTitel = '';
 
@@ -122,13 +118,6 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
 
       switch (this.Auswahldialogorigin) {
 
-        case this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Editor_Anrede:
-
-          this.Pool.Mitarbeiterdaten.Anrede = data;
-          this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten);
-
-          break;
-
         case this.Auswahlservice.Auswahloriginvarianten.Urlaubsliste_Bundesland:
 
           this.DB.Bundeslandkuerzel = data;
@@ -162,7 +151,7 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
       this.DB.Init();
       this.DB.CheckSetup();
       this.DB.SetPlanungsmonate();
-      this.DB.GetAnfragenlisten();
+      this.DB.CountAnfragenanzahlen();
 
       this.BundeslandAuswahlliste  = [];
 
@@ -210,57 +199,6 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
     return moment(Anfangstempel).format('DD.MM.YYYY');
   }
 
-  MitarbeiterauswahlOkButtonClicked(idliste: string[]) {
-
-    try {
-
-      let Mitarbeiter: Mitarbeiterstruktur;
-
-      switch (this.Auswahldialogorigin) {
-
-        case this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Mitarbeiter_Wechseln:
-
-
-          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: idliste[0]});
-
-          this.Pool.Mitarbeiterdaten = Mitarbeiter;
-          this.PrepareData();
-
-          this.DB.PlanungsmonateChanged.emit();
-
-          break;
-
-        case this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Vertreter_Festlegen:
-
-          if(!lodash.isUndefined(idliste[0])) {
-
-            Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: idliste[0]});
-
-            this.DB.CurrentZeitspanne.VertreterID = Mitarbeiter._id;
-          }
-          else {
-
-            this.DB.CurrentZeitspanne.VertreterID = null;
-          }
-
-          this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
-
-            this.PrepareData();
-            this.DB.PlanungsmonateChanged.emit();
-
-          });
-
-          break;
-
-      }
-
-      this.ShowMitarbeiterauswahl = false;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Urlaubsplanung Page', 'MitarbeiterauswahlOkButtonClicked', this.Debug.Typen.Page);
-    }
-  }
 
   MitarebiterStandortfilterClickedHandler() {
 
@@ -293,21 +231,6 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Urlaubsplanung Page', 'MitarebiterStandortfilterClickedHandler', this.Debug.Typen.Page);
-    }
-  }
-
-  MitarbeiterWechselnClicked() {
-
-    try {
-
-      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Mitarbeiter_Wechseln;
-      this.ShowMitarbeiterauswahl = true;
-      this.AuswahlIDliste         = [];
-
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'MitarbeiterWechselnClicked', this.Debug.Typen.Page);
     }
   }
 }

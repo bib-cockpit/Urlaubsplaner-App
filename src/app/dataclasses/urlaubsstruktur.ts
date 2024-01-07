@@ -13,4 +13,5 @@ export type Urlaubsstruktur = {
   NameExtern?:  string;
   MitarbeiterIDExtern?: string;
   NameKuerzel?: string;
+  Text?: string;
 };

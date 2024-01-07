@@ -3,7 +3,7 @@ import {
   Component,
   EventEmitter, Input, OnDestroy,
   OnInit,
-  Output,
+  Output, ViewChild,
 } from '@angular/core';
 import {DebugProvider} from "../../services/debug/debug";
 import {DisplayService} from "../../services/diplay/display.service";
@@ -13,6 +13,7 @@ import {DatabasePoolService} from "../../services/database-pool/database-pool.se
 import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
 import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import {PageFooterComponent} from "../../components/page-footer/page-footer";
 
 @Component({
   selector: 'pj-projekte-selectfilefolder',
@@ -22,6 +23,8 @@ import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 
 export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, AfterViewInit {
 
+  @ViewChild('KeeperDiv', { static: true }) KeeperDiv: HTMLDivElement;
+
   public Valid: boolean;
 
   @Output() CancelClickedEvent    = new EventEmitter<any>();
@@ -30,7 +33,6 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
   @Input() Titel: string;
   @Input() Iconname: string;
   @Input() Dialogbreite: number;
-  @Input() Dialoghoehe: number;
   @Input() PositionY: number;
   @Input() ZIndex: number;
   @Input() ShowFiles: boolean;
@@ -38,6 +40,7 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
   @Input() InitialDirectoryID: string;
 
   public CurrentIndex: number;
+  public Browserhoehe: number;
   private Directory: Teamsfilesstruktur;
 
   constructor(public Debug: DebugProvider,
@@ -51,7 +54,6 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
       this.Titel               = this.Const.NONE;
       this.Iconname            = 'folder';
       this.Dialogbreite        = 700;
-      this.Dialoghoehe         = 300;
       this.PositionY           = 100;
       this.ZIndex              = 2000;
       this.CurrentIndex        = -1;
@@ -59,6 +61,7 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
       this.SelectedDirectoryID = this.Const.NONE;
       this.Directory           = null;
       this.InitialDirectoryID  = null;
+      this.Browserhoehe        = 600;
 
     } catch (error) {
 
@@ -86,6 +89,10 @@ export class PjProjeteSelectfilefolderComponent implements OnInit, OnDestroy, Af
 
 
       this.Displayservice.AddDialog(this.Displayservice.Dialognamen.Verzeichnisauswahl, this.ZIndex);
+
+      let xxxx = this.KeeperDiv;
+
+      debugger;
 
 
 

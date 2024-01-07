@@ -87,10 +87,47 @@
               <ion-col size="6">
                 <button-value [Buttontext]="'Urlaubstage'" [Wert_A]="DB.CurrentMitarbeiter.Urlaub + ' Tage'" (ButtonClicked)="UrlaubClickedEvent.emit()"></button-value>
               </ion-col>
-
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <table>
+                  <tr>
+                    <td><checkbox-clon [Checked]="DB.CurrentMitarbeiter.ShowUrlaubOnly" (CheckChanged)="ShowUrlaubOnlyCheckboxChanged($event)"></checkbox-clon></td>
+                    <td style="width: 6px"></td>
+                    <td>Nur Urlaubsplanung anzeigen</td>
+                  </tr>
+                </table>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <table>
+                  <tr>
+                    <td><checkbox-clon [Checked]="DB.CurrentMitarbeiter.Urlaubsadministrator" (CheckChanged)="UrlaubsadministratorCheckboxChanged($event)"></checkbox-clon></td>
+                    <td style="width: 6px"></td>
+                    <td>Administrator für Urlaub</td>
+                  </tr>
+                </table>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="DB.CurrentMitarbeiter._id !== null">
+              <ion-col>
+                <table>
+                  <tr>
+                    <td><checkbox-clon [Checked]="DB.CurrentMitarbeiter.Urlaubsfreigaben" (CheckChanged)="UrlaubsfreigabenCheckboxChanged($event)"></checkbox-clon></td>
+                    <td style="width: 6px"></td>
+                    <td>Urlaub Freigaben</td>
+                  </tr>
+                </table>
+              </ion-col>
             </ion-row>
             <ion-row>
               <ion-col size="12"></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-text color="baeblau"><b>Sonstiges</b></ion-text>
+              </ion-col>
             </ion-row>
             <ion-row *ngIf="DB.CurrentMitarbeiter._id !== null">
               <ion-col>

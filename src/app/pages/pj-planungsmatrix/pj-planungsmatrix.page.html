@@ -143,6 +143,16 @@
                       </ng-container>
                     </ng-container>
 
+                    <ng-container *ngSwitchCase="'fort'">
+                      <ng-container  *ngFor="let Kostengruppe of DB.Kostengruppenliste">
+                        <td *ngIf="Kostengruppe.Display === true" align="center">
+                          <ng-container *ngIf="DBProjekte.CurrentProjekt.DisplayBeschreibungen === true">
+                            {{DB.Fortschreibungtextliste[Leistungsphase][Kostengruppe.Kostengruppennummer]}}
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                    </ng-container>
+
                     <ng-container *ngSwitchCase="'kosten'">
                       <ng-container  *ngFor="let Kostengruppe of DB.Kostengruppenliste">
                         <td *ngIf="Kostengruppe.Display === true" align="center">

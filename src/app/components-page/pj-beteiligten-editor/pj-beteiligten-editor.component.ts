@@ -26,6 +26,7 @@ import {navigate} from "ionicons/icons";
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
 import {DatabaseProjektfirmenService} from "../../services/database-projektfirmen/database-projektfirmen.service";
 import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'pj-beteiligten-editor',
@@ -38,11 +39,6 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
   @Output() OkClickedEvent             = new EventEmitter<any>();
   @Output() DeleteClickedEvent         = new EventEmitter<any>();
   @Output() FirmaClickedEvent          = new EventEmitter<any>();
-  /*
-  @Output() FachbereichClickedEvent    = new EventEmitter<any>();
-  @Output() FachfirmaClickedEvent      = new EventEmitter<any>();
-
-   */
   @Output() ProjektClickedEvent        = new EventEmitter<any>();
 
   @Input() Titel: string;
@@ -56,9 +52,9 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
   public Valid: boolean;
   public DeleteEnabled: boolean;
   public CanDelete: boolean;
-  public Editorconfig: any;
   public Ablage: string;
   private DialogbreiteMerker: number;
+  private Beteiligtensubscription: Subscription;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -84,24 +80,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
       this.CanDelete         = false;
       this.Ablage            = '';
       this.Projekt           = null;
-
-      this.Editorconfig = {
-
-        menubar:   false,
-        statusbar: false,
-        content_style: 'body { color: black; margin: 0; line-height: 0.9; }, ',
-        language: 'de',
-        browser_spellcheck: true,
-        height: '600px',
-        auto_focus : true,
-        toolbar: [
-          // { name: 'history', items: [ 'undo', 'redo' ] },
-          { name: 'styles',      items: [ 'forecolor', 'backcolor' ] }, // , 'fontfamily', 'fontsize'
-          { name: 'formatting',  items: [ 'bold', 'italic', 'underline', 'strikethrough' ] },
-          { name: 'alignment',   items: [ 'alignleft', 'aligncenter', 'alignright', 'alignjustify' ] },
-          { name: 'indentation', items: [ 'outdent', 'indent' ] }
-        ],
-      };
+      this.Beteiligtensubscription = null;
 
     } catch (error) {
 
@@ -144,6 +123,11 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
 
       this.Displayservice.AddDialog(this.Displayservice.Dialognamen.Beteiligteneditor, this.ZIndex);
 
+      this.Beteiligtensubscription = this.Pool.CurrentBeteiligtenChanged.subscribe(() => {
+
+        this.ValidateInput();
+      });
+
       this.DialogbreiteMerker = this.Dialogbreite;
 
       this.SetupValidation();
@@ -160,6 +144,9 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
     try {
 
       this.Displayservice.RemoveDialog(this.Displayservice.Dialognamen.Beteiligteneditor);
+
+      this.Beteiligtensubscription.unsubscribe();
+      this.Beteiligtensubscription = null;
 
     } catch (error) {
 
@@ -218,6 +205,7 @@ export class PjBeteiligtenEditorComponent implements OnInit, OnDestroy, AfterVie
       else             this.Valid = true;
 
       if(this.Projekt === null) this.Valid = false;
+      if(this.DBBeteiligte.CurrentBeteiligte.FirmaID === null) this.Valid = false;
 
 
     } catch (error) {

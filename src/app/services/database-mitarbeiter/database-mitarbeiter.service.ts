@@ -254,6 +254,9 @@ export class DatabaseMitarbeiterService {
         Zeitstring: Zeit.format('HH:mm DD.MM.YYYY'),
         Zeitstempel: Zeit.valueOf(),
         Deleted: false,
+        Urlaubsadministrator: false,
+        Urlaubsfreigaben: false,
+        ShowUrlaubOnly: true,
         Favoritenliste: [],
         Meintagliste: [],
         Meinewocheliste: [],
@@ -343,6 +346,7 @@ export class DatabaseMitarbeiterService {
 
             if(Merker !== null) {
 
+
               this.CurrentMitarbeiter    = Merker;
               this.Pool.Mitarbeiterdaten = Merker;
               this.Pool.MitarbeiterdatenChanged.emit();
@@ -371,6 +375,71 @@ export class DatabaseMitarbeiterService {
     }
   }
 
+  public UpdateMitarbeiterUrlaub(mitarbeiter: Mitarbeiterstruktur) {
+
+    try {
+
+      let Observer: Observable<any>;
+      let Params = new HttpParams();
+      let Merker: Mitarbeiterstruktur;
+
+      delete mitarbeiter.__v;
+
+      Params.set('id', mitarbeiter._id);
+
+      for(let Urlaubsliste of mitarbeiter.Urlaubsliste) {
+
+        Urlaubsliste.Zeitspannen.sort((a: Urlauzeitspannenstruktur, b:Urlauzeitspannenstruktur) => {
+
+          if (a.Startstempel < b.Startstempel) return -1;
+          if (a.Startstempel > b.Startstempel) return 1;
+          return 0;
+        });
+      }
+
+      return new Promise<any>((resove, reject) => {
+
+        // PUT für update
+
+        Observer = this.http.put(this.ServerMitarbeiterUrl, mitarbeiter);
+
+        Observer.subscribe({
+
+          next: (ne) => {
+
+            Merker = ne.Mitarbeiter;
+          },
+          complete: () => {
+
+            debugger;
+
+            if(Merker !== null) {
+
+              this.UpdateMitarbeiterliste(Merker);
+              this.Pool.MitarbeiterlisteChanged.emit();
+
+              resove(true);
+            }
+            else {
+
+              reject(new Error('Mitarbeiter auf Server nicht gefunden.'));
+            }
+
+
+          },
+          error: (error: HttpErrorResponse) => {
+
+            reject(error);
+          }
+        });
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'UpdateMitarbeiterUrlaub', this.Debug.Typen.Page);
+    }
+  }
+
 
   private UpdateMitarbeiterliste(mitarbeiter: Mitarbeiterstruktur) {
 
@@ -383,6 +452,8 @@ export class DatabaseMitarbeiterService {
       if(Index !== -1) {
 
         this.Pool.Mitarbeiterliste[Index] = mitarbeiter; // aktualisieren
+
+        debugger;
 
         this.Debug.ShowMessage('Mitarbeiterliste updated: ' + mitarbeiter.Name, 'Database Mitarbeiter', 'UpdateMitarbeiter', this.Debug.Typen.Service);
       }

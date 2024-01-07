@@ -29,7 +29,7 @@
                       <input-clone [DisabledColor]="'#444444'"
                                    [Value]="Projekt !== null ? Projekt.Projektname : 'Unbekannt'" Titel="Projekt"
                                    [Enabled]="false"
-                                   [Clickable]="false"></input-clone>
+                                   [Clickable]="true" (click)="ProjektClickedEvent.emit()"></input-clone>
                     </ion-col>
                   </ion-row>
                   <ion-row>
@@ -142,7 +142,24 @@
               <td *ngIf="Ablage !== ''" [style.width.px]="Dialogbreite / 2"  valign="top">
                 <editor
                   [apiKey]="'7hvzif1s8dafhu40z0kjgpw1y4zwc2p5cokjkfox946qpfjc'"
-                  [init]="Editorconfig" [id]="'Maineditor'"
+                  [init]="{
+                            menubar:   false,
+                            statusbar: false,
+                            language: 'de',
+                            browser_spellcheck: true,
+                            newline_behavior: 'linebreak',
+                            height: 300,
+                            base_url: '/tinymce',
+                            suffix: '.min',
+                            auto_focus : true,
+                            content_style: 'body { color: black; margin: 0; line-height: 1.2; font-size: ' + Pool.Mitarbeitersettings.Textsize + 'px; }',
+                            toolbar: [
+                              { name: 'styles',      items: [ 'forecolor', 'backcolor' ] },
+                              { name: 'formatting',  items: [ 'bold', 'italic', 'underline', 'strikethrough' ] },
+                              { name: 'alignment',   items: [ 'alignleft', 'aligncenter', 'alignright', 'alignjustify' ] },
+                              { name: 'indentation', items: [ 'outdent', 'indent' ] }
+                            ],
+                          }"
                   [(ngModel)]="Ablage"
                   (onNodeChange)="NotizTextChangedHandler($event)"
                   (onChange)="NotizTextChangedHandler($event)"

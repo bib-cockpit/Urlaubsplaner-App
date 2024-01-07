@@ -208,7 +208,7 @@ export class DatabaseProjektpunkteService {
 
         Betreff:     this.CurrentProjektpunkt.Betreff,
         Nachricht:   this.CurrentProjektpunkt.Nachricht,
-        Signatur:    this.Pool.GetFilledSignatur(false), // this.Pool.Signatur,
+        Signatur:    this.Pool.GetFilledSignatur(this.Pool.Mitarbeiterdaten, false), // this.Pool.Signatur,
         UserID:      this.GraphService.Graphuser.id,
         FileID:      this.Const.NONE, // protokoll.FileID,
         Filename:    this.Const.NONE, // protokoll.Filename,

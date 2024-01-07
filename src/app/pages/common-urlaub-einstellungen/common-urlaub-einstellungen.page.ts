@@ -126,7 +126,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
       this.DB.Init();
       this.DB.CheckSetup();
-      this.DB.GetAnfragenlisten();
+      this.DB.CountAnfragenanzahlen();
 
       this.Projektbeteiligteliste = [];
 
@@ -191,13 +191,13 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
             });
           }
 
-          Urlaub = lodash.find(this.Pool.Mitarbeiterdaten.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
+          Urlaub = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
 
           if (!lodash.isUndefined(Urlaub)) {
 
             Urlaub.Projektbeteiligteliste = this.DB.CurrentUrlaub.Projektbeteiligteliste;
 
-            this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
+            this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter).then(() => {
 
               this.PrepareData();
             });
@@ -209,13 +209,13 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
           this.DB.CurrentUrlaub.FreigeberID = lodash.isUndefined(idliste[0]) ? null : idliste[0];
 
-          Urlaub = lodash.find(this.Pool.Mitarbeiterdaten.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
+          Urlaub = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
 
           if (!lodash.isUndefined(Urlaub)) {
 
             Urlaub.FreigeberID = lodash.isUndefined(idliste[0]) ? null : idliste[0];
 
-            this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten).then(() => {
+            this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter).then(() => {
 
               this.PrepareData();
             });
@@ -284,22 +284,22 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
           this.DB.CurrentUrlaub.Resturlaub = data;
 
-          Urlaub = lodash.find(this.Pool.Mitarbeiterdaten.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
+          Urlaub = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
 
           if (!lodash.isUndefined(Urlaub)) {
 
             Urlaub.Resturlaub = data;
 
-            this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten);
+            this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter);
           }
 
           break;
 
         case 'Urlaub':
 
-          this.Pool.Mitarbeiterdaten.Urlaub = data;
+          this.DB.CurrentMitarbeiter.Urlaub = data;
 
-          this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten);
+          this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter);
 
           break;
 
@@ -468,7 +468,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
       this.Auswahlindex = lodash.findIndex(this.Auswahlliste, (Eintrag: Auswahldialogstruktur) => {
 
-        return Eintrag.Data === this.Pool.Mitarbeiterdaten.Urlaub;
+        return Eintrag.Data === this.DB.CurrentMitarbeiter.Urlaub;
       });
 
       this.ShowAuswahl = true;
@@ -490,7 +490,6 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'CheckFerienBlocker', this.Debug.Typen.Page);
     }
-
   }
 
   FerienBlockedChanged(event: { status: boolean; index: number; event: any; value: string }, Anfangstempel: number) {
@@ -510,13 +509,13 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
         });
       }
 
-      Urlaub = lodash.find(this.Pool.Mitarbeiterdaten.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
+      Urlaub = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
 
       if (!lodash.isUndefined(Urlaub)) {
 
         Urlaub.Ferienblockerliste = this.DB.CurrentUrlaub.Ferienblockerliste;
 
-        this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten);
+        this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter);
       }
 
     } catch (error) {
@@ -555,13 +554,13 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
         });
       }
 
-      Urlaub = lodash.find(this.Pool.Mitarbeiterdaten.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
+      Urlaub = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
 
       if (!lodash.isUndefined(Urlaub)) {
 
         Urlaub.Feiertageblockerliste = this.DB.CurrentUrlaub.Feiertageblockerliste;
 
-        this.DBMitarbeiter.UpdateMitarbeiter(this.Pool.Mitarbeiterdaten);
+        this.DBMitarbeiter.UpdateMitarbeiter(this.DB.CurrentMitarbeiter);
       }
 
     } catch (error) {

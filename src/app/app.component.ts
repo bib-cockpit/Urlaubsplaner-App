@@ -291,6 +291,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         this.Pool.Mitarbeiterdaten = this.Pool.InitMitarbeiter(Mitarbeiter); // fehlende Mitarbeiterdaten initialisieren
         this.Pool.CheckMitarbeiterdaten();
+        this.UrlaubDB.SetMitarbeiter(this.Pool.Mitarbeiterdaten);
 
         this.Pool.ProgressMessage = 'Lade Feiertage Deutschland';
 
@@ -357,13 +358,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
           if(environment.production) {
 
-            Page = this.Const.Pages.HomePage;
-
-
+            if(this.Pool.CheckShowOnlyUrlaub() === true) Page = this.Const.Pages.UrlaubPlanungPage;
+            else Page = this.Const.Pages.HomePage;
           }
           else {
 
-            Page = this.Const.Pages.PjProtokolleListePage; // PjProtokolleListePage; // PjAufgabenlistePage; // UrlaubFreigabenPage; // UrlaubPlanungPage; // PjBaustelleLoplistePage; //
+            Page = this.Const.Pages.UrlaubPlanungPage; // PjProtokolleListePage; // PjProtokolleListePage; // PjAufgabenlistePage; // UrlaubFreigabenPage; // UrlaubPlanungPage; // PjBaustelleLoplistePage; //
             // PjBaustelleLoplistePage; // UrlaubEinstellungenPage; // UrlaubPlanungPage; // PjBaustelleLoplistePage; // FiMitarbeiterlistePage; // UrlaubsplanungPage; // FiStandortelistePage; // UrlaubsplanungPage; // UrlaubsplanungPage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
 
             this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden

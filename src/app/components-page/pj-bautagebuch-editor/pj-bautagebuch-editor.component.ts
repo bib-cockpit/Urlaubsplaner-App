@@ -13,6 +13,12 @@ import {BasicsProvider} from "../../services/basics/basics";
 import {Bautagebucheintragstruktur} from "../../dataclasses/bautagebucheintragstruktur";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 import {Subscription} from "rxjs";
+import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
+import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
+import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
+import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
+import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 
 @Component({
   selector: 'pj-bautagebuch-editor',
@@ -26,9 +32,7 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
   public CanDelete: boolean;
   private JoiShema: ObjectSchema;
   public DeleteEnabled: boolean;
-  public Gesamthoehe: number;
   public Headerhoehe: number;
-  public   Listehoehe: number;
   public LinesanzahlTeilnehmer: number;
 
   @Output() ValidChange = new EventEmitter<boolean>();
@@ -46,6 +50,8 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
   @Input() PositionY: number;
   @Input() ZIndex: number;
   private MitarbeiterSubscription: Subscription;
+  public  Beteiligtenliste: Projektbeteiligtestruktur[][];
+  public Mitarbeiterliste: Mitarbeiterstruktur[];
 
   constructor(public Debug: DebugProvider,
               public Displayservice: DisplayService,
@@ -53,6 +59,7 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
               private Tools: ToolsProvider,
               public Basics: BasicsProvider,
               public Pool: DatabasePoolService,
+              public DBProjekte: DatabaseProjekteService,
               public DB: DatabaseBautagebuchService) {
 
     try {
@@ -68,9 +75,9 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
       this.ZIndex            = 2000;
       this.CanDelete         = false;
       this.DeleteEnabled     = false;
-      this.Gesamthoehe       = 350;
       this.Headerhoehe       = 30;
-      this.Listehoehe        = this.Gesamthoehe - this.Headerhoehe;
+      this.Beteiligtenliste  = [];
+      this.Mitarbeiterliste  = [];
       this.MitarbeiterSubscription = null;
 
     } catch (error) {
@@ -115,15 +122,332 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
     }
   }
 
+  GetEmpfaengerInternChecked(id: string) {
+
+    try {
+
+      return lodash.indexOf(this.DB.CurrentTagebuch.EmpfaengerInternIDListe, id) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Bautagebuch Editor', 'GetEmpfaengerInternChecked', this.Debug.Typen.Component);
+    }
+  }
+
+  EmpfaengerInternCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      if(this.DB.CurrentTagebuch !== null) {
+
+        if(event.status === true) {
+
+          this.DB.CurrentTagebuch.EmpfaengerInternIDListe.push(event.value);
+        }
+        else {
+
+          this.DB.CurrentTagebuch.EmpfaengerInternIDListe = lodash.filter(this.DB.CurrentTagebuch.EmpfaengerInternIDListe, (id: any) => {
+
+            return id !== event.value;
+          });
+        }
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Bautagebuch Editor', 'EmpfaengerInternCheckedChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  /*
+
+  GetTeilnehmerInternChecked(FirmenID: string): boolean {
+
+    try {
+
+      return lodash.indexOf(this.DB.CurrentTagebuch.BeteiligtInternIDListe, FirmenID) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Bautagebuch Editor', 'GetTeilnehmerInternChecked', this.Debug.Typen.Component);
+    }
+  }
+
+   */
+
+  GetEmpfaengerExternChecked(FirmenID: string): boolean {
+
+    try {
+
+      return lodash.indexOf(this.DB.CurrentTagebuch.EmpfaengerExternIDListe, FirmenID) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Bautagebuch Editor', 'GetEmpfaengerExternChecked', this.Debug.Typen.Component);
+    }
+  }
+
   PrepareData() {
 
     try {
 
-      this.LinesanzahlTeilnehmer = this.DB.CurrentTagebuch.BeteiligtInternIDListe.length;
+      let Index: number;
+      let Beteiligteliste: Projektbeteiligtestruktur[];
+      let Mitarbeiter: Mitarbeiterstruktur;
+
+      this.Beteiligtenliste = [];
+      this.Mitarbeiterliste = [];
+
+      if(this.DB.CurrentTagebuch !== null && this.DBProjekte.CurrentProjekt !== null) {
+
+        // Mitarbeiter und Beteiligte
+
+        Index = 0;
+
+        for (let Firma of this.DBProjekte.CurrentProjekt.Firmenliste) {
+
+          this.Beteiligtenliste[Index] = [];
+
+          Beteiligteliste = lodash.filter(this.DBProjekte.CurrentProjekt.Beteiligtenliste, {FirmaID: Firma.FirmenID});
+
+          Beteiligteliste.sort((a: Projektbeteiligtestruktur, b: Projektbeteiligtestruktur) => {
+
+            if (a.Name > b.Name) return -1;
+            if (a.Name < b.Name) return 1;
+            return 0;
+          });
+
+          this.Beteiligtenliste[Index] = Beteiligteliste;
+
+          Index++;
+        }
+
+        for (let MitarbeiterID of this.DBProjekte.CurrentProjekt.MitarbeiterIDListe) {
+
+          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: MitarbeiterID});
+
+          if (!lodash.isUndefined(Mitarbeiter)) {
+
+            this.Mitarbeiterliste.push(Mitarbeiter);
+          }
+        }
+
+        this.Mitarbeiterliste.sort((a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
+
+          if (a.Name > b.Name) return -1;
+          if (a.Name < b.Name) return 1;
+          return 0;
+        });
+
+        // Projektpunkte
+
+        /*
+
+        for(let id of this.DB.CurrentProtokoll.ProjektpunkteIDListe) {
+
+          Projektpunkt = lodash.find(this.Pool.Projektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey], (punkt: Projektpunktestruktur) => {
+
+            return punkt._id === id && punkt.ProtokollID === this.DB.CurrentProtokoll._id;
+          });
+
+          if(lodash.isUndefined(Projektpunkt) === false) {
+
+            this.Punkteliste.push(Projektpunkt);
+          }
+        }
+
+        this.Punkteliste.sort((a: Projektpunktestruktur, b: Projektpunktestruktur) => {
+
+          if (a.Startzeitsptempel < b.Startzeitsptempel) return -1;
+          if (a.Startzeitsptempel > b.Startzeitsptempel) return 1;
+          return 0;
+        });
+
+        for(let Punkt of this.Punkteliste) {
+
+          Punkt.Nummer     = Nummer.toString();
+          Punkt.Sortnumber = Nummer;
+          Nummer++;
+        }
+
+        this.Punkteliste.sort((a: Projektpunktestruktur, b: Projektpunktestruktur) => {
+
+          if (a.Sortnumber > b.Sortnumber) return -1;
+          if (a.Sortnumber < b.Sortnumber) return  1;
+          return 0;
+        });
+
+        this.DBProjektpunkte.CurrentProjektpunkteliste = lodash.cloneDeep(this.Punkteliste);
+
+        // Bilder
+
+        this.Thumbnailliste = [];
+        this.Thumbbreite    = 140;
+        this.Spaltenanzahl  = 4;
+        Punktindex          = 0;
+
+        for(let Punkt of this.DBProjektpunkte.CurrentProjektpunkteliste) {
+
+          Imageliste = [];
+
+          for(let Bild of Punkt.Bilderliste) {
+
+            File        = this.GraphService.GetEmptyTeamsfile();
+            File.id     = Bild.FileID;
+            File.webUrl = Bild.WebUrl;
+
+            Imageliste.push(File);
+          }
+
+          Liste = [];
+
+          for(File of Imageliste) {
+
+            Thumb = await this.GraphService.GetSiteThumbnail(File);
+
+            if(Thumb !== null) {
+
+              Thumb.weburl = File.webUrl;
+              Merker       = lodash.find(Liste, {id: File.id});
+
+              if(lodash.isUndefined(Merker)) Liste.push(Thumb);
+            }
+            else {
+
+              Thumb        = this.DBProjektpunkte.GetEmptyThumbnail();
+              Thumb.id     = File.id;
+              Thumb.weburl = null;
+
+              Liste.push(Thumb);
+            }
+          }
+
+          Anzahl                          = Liste.length;
+          this.Zeilenanzahl               = Math.ceil(Anzahl / this.Spaltenanzahl);
+          this.Thumbnailliste[Punktindex] = [];
+          Index                           = 0;
+
+          for(let Zeilenindex = 0; Zeilenindex < this.Zeilenanzahl; Zeilenindex++) {
+
+            this.Thumbnailliste[Punktindex][Zeilenindex] = [];
+
+            for(let Spaltenindex = 0; Spaltenindex < this.Spaltenanzahl; Spaltenindex++) {
+
+              if(!lodash.isUndefined(Liste[Index])) {
+
+                this.Thumbnailliste[Punktindex][Zeilenindex][Spaltenindex] = Liste[Index];
+              }
+              else {
+
+                this.Thumbnailliste[Punktindex][Zeilenindex][Spaltenindex] = null;
+              }
+
+              Index++;
+            }
+          }
+
+          Punktindex++;
+        }
+
+         */
+      }
+
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Bautagebuch Editor', 'function', this.Debug.Typen.Component);
+    }
+  }
+
+  /*
+
+  TeilnehmerExternCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      if(this.DB.CurrentTagebuch !== null) {
+
+        if(event.status === true) {
+
+          this.DB.CurrentTagebuch.BeteiligtExternIDListe.push(event.value);
+        }
+        else {
+
+          this.DB.CurrentTagebuch.BeteiligtExternIDListe = lodash.filter(this.DB.CurrentTagebuch.BeteiligtExternIDListe, (id: any) => {
+
+            return id !== event.value;
+          });
+        }
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Bautagebuch Editor', 'TeilnehmerExternCheckedChanged', this.Debug.Typen.Component);
+    }
+  }
+
+   */
+
+  EmpfaengerExternCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      if(this.DB.CurrentTagebuch !== null) {
+
+        if(event.status === true) {
+
+          this.DB.CurrentTagebuch.EmpfaengerExternIDListe.push(event.value);
+        }
+        else {
+
+          this.DB.CurrentTagebuch.EmpfaengerExternIDListe = lodash.filter(this.DB.CurrentTagebuch.EmpfaengerExternIDListe, (id: any) => {
+
+            return id !== event.value;
+          });
+        }
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Bautagebuch Editor', 'EmpfaengerExternCheckedChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  /*
+
+  GetTeilnehmerExternChecked(FirmenID: string): boolean {
+
+    try {
+
+      return lodash.indexOf(this.DB.CurrentTagebuch.BeteiligtExternIDListe, FirmenID) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Bautagebuch Editor', 'GetTeilnehmerExternChecked', this.Debug.Typen.Component);
+    }
+  }
+
+   */
+
+  TeilnehmerInternCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      if(this.DB.CurrentTagebuch !== null) {
+
+        if(event.status === true) {
+
+          this.DB.CurrentTagebuch.BeteiligtInternIDListe.push(event.value);
+        }
+        else {
+
+          this.DB.CurrentTagebuch.BeteiligtInternIDListe = lodash.filter(this.DB.CurrentTagebuch.BeteiligtInternIDListe, (id: any) => {
+
+            return id !== event.value;
+          });
+        }
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Bautagebuch Editor', 'TeilnehmerInternCheckedChanged', this.Debug.Typen.Component);
     }
   }
 

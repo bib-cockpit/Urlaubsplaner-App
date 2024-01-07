@@ -61,8 +61,10 @@ export class PjSitesFilebrowserComponent implements OnInit {
     try {
 
         let File: Teamsfilesstruktur;
+        let Bigheaderhoehe: number = 52;
 
-        this.Contenthoehe = this.Browserhoehe - this.Headerhoehe;
+        this.Browserhoehe = this.Basics.Contenthoehe - 2 * Bigheaderhoehe;
+        this.Contenthoehe = this.Browserhoehe - 1 * this.Headerhoehe;
 
         if(this.InitialDirectoryID === null || this.InitialDirectoryID === this.Const.NONE) {
 
@@ -143,7 +145,7 @@ export class PjSitesFilebrowserComponent implements OnInit {
       if(index < this.GraphService.TeamsSubdirectorylist.length - 1) {
 
         await this.GraphService.GetSiteSubdirictoryfilelist(file, this.ShowFiles);
-        this.GraphService.RemoveTeamsSubdirectory(file);
+        await this.GraphService.RemoveSiteSubdirectory(file);
 
         this.SelectedDirectory   = null;
         this.SelectedDirectoryID = this.Const.NONE;

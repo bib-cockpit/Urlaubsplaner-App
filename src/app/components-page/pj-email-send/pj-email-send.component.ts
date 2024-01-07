@@ -440,7 +440,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           this.SaveFileFinished = true;
 
-          await this.DBTagebuch.SendBautagebuchFromSile(NextBautagebuch);
+          await this.DBTagebuch.SendBautagebuchFromSite(NextBautagebuch);
 
           this.SendMailFinished = true;
 

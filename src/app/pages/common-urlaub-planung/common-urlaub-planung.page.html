@@ -5,9 +5,9 @@
 </ion-header>
 <ion-content>
 
-  <table *ngIf="Pool.Mitarbeiterdaten !== null" class="paddingtable">
+  <table *ngIf="DB.RootMitarbeiter !== null && DB.RootMitarbeiter.Urlaubsadministrator === true" class="paddingtable">
     <tr>
-      <td>{{Pool.Mitarbeiterdaten.Vorname + ' ' + this.Pool.Mitarbeiterdaten.Name}}</td>
+      <td>{{DB.CurrentMitarbeiter.Vorname + ' ' + DB.CurrentMitarbeiter.Name}}</td>
       <td>
         <ion-button size="small" color="grau" (click)="MitarbeiterWechselnClicked()">Mitarbeiter wechseln</ion-button>
       </td>
@@ -68,6 +68,7 @@
               <td style="width: 500px" valign="top">
                 <urlaubsplanung-kalender
                   [Jahr]="DB.Jahr"
+                  [ShowYear]="true"
                   [Monatindex]="DB.CurrentMonatindex"
                   [AddUrlaubRunning]="AddUrlaubRunning"
                   (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
@@ -156,7 +157,7 @@
               <td>
                 <checkbox-clon [Checked]="DB.CheckDisplayExternenUrlaub(Urlaub.MitarbeiterIDExtern)" (CheckChanged)="DisplayExternCheckChanged($event, Urlaub, i)" [Enabled]="Urlaub.Zeitspannen.length > 0"></checkbox-clon>
               </td>
-              <td><div class="legendeexterndivclass">{{Urlaub.NameKuerzel}}</div></td><td>{{Urlaub.NameExtern}}</td>
+              <td><div class="legendeexterndivclass">{{Urlaub.NameKuerzel}}</div></td><td>{{Urlaub.NameExtern}} {{Urlaub.Text}}</td>
             </tr>
               <tr>
                 <td colspan="3" style="height: 40px">{{Message}}</td>
@@ -165,7 +166,7 @@
 
         </td>
       </tr>
-      <tr *ngIf="AddUrlaubRunning === false">
+      <tr *ngIf="AddUrlaubRunning === false && DB.CurrentUrlaub !== null">
         <td align="center">
 
           <table class="paddingsmalltable">
@@ -180,14 +181,33 @@
         <td></td>
       </tr>
       <tr>
-        <td *ngIf="AddUrlaubRunning === true" align="center">
+        <td *ngIf="AddUrlaubRunning === true" align="center" style="height: 100px;">
 
           <table class="paddingsmalltable">
             <tr>
-              <td>Startdatum</td><td>{{this.DB.CurrentZeitspanne !== null ? this.DB.CurrentZeitspanne.Startstring : 'Bitte festlegen'}}</td>
+              <td>
+                <!--Startdatum</td><td> -->
+                <div class="datumdivclass">
+                  {{this.DB.CurrentZeitspanne !== null && DB.CurrentZeitspanne.Startstempel !== null ? this.DB.CurrentZeitspanne.Startstring : 'Bitte Startdatum im Kalender oben anklicken'}}
+                </div>
+              </td>
+              <ng-container *ngIf="this.DB.CurrentZeitspanne !== null && DB.CurrentZeitspanne.Startstempel !== null">
+                <td style="width: 100px; text-align: center;">bis zum</td>
+                <td>
+                  <div class="datumdivclass">
+                    {{this.DB.CurrentZeitspanne !== null && DB.CurrentZeitspanne.Endestempel !== null ? this.DB.CurrentZeitspanne.Endestempel : 'Bitte Endedatum im Kalender oben anklicken'}}
+                  </div>
+                  <!--Endedatum</td><td>{{this.DB.CurrentZeitspanne !== null ? this.DB.CurrentZeitspanne.Endestring : 'Bitte festlegen'}} -->
+                </td>
+              </ng-container>
+
+              <td *ngIf="AddUrlaubRunning === true">
+                <div class="datumcanceldivclass" (click)="CancelDatumClicked()">
+                  <ion-icon name="close-outline" style="font-size: 36px" color="weiss"></ion-icon>
+                </div>
+              </td>
             </tr>
             <tr>
-              <td>Endedatum</td><td>{{this.DB.CurrentZeitspanne !== null ? this.DB.CurrentZeitspanne.Endestring : 'Bitte festlegen'}}</td>
             </tr>
           </table>
 
@@ -195,219 +215,62 @@
         <td></td>
       </tr>
 
-      <tr *ngIf="DB.CurrentUrlaub !== null" align="center">
+      <tr *ngIf="DB.CurrentUrlaub !== null && AddUrlaubRunning === false" align="center">
         <td>
           <table class="docinnertable">
             <tr>
-              <td></td>
               <td style="font-weight: bold;">Von</td>
               <td style="font-weight: bold;">Bis</td>
               <td style="font-weight: bold; text-align: center">Tage</td>
               <td style="font-weight: bold;">Stellvertreter</td>
               <td style="font-weight: bold;">Status</td>
               <td style="font-weight: bold; min-width: 600px">Statusmeldung</td>
-              <td></td>
+              <td style="width:30px"></td>
+              <td style="width: 30px"></td>
             </tr>
-            <tr *ngFor="let Zeitspanne of this.DB.CurrentUrlaub.Zeitspannen">
-
-              <td>
-                <ion-button size="small" color="grau" (click)="UrlaubSuchen(Zeitspanne)"><ion-icon name="search" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
-              </td>
-              <td>{{GetDatumlangtext(Zeitspanne.Startstempel)}}</td>
-              <td>{{GetDatumlangtext(Zeitspanne.Endestempel)}}</td>
-              <td style="text-align: center">{{Zeitspanne.Tageanzahl}}</td>
-              <td>
-                <ion-button *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant" size="small" color="grau" (click)="StellvertreterFestlegenClicked(Zeitspanne)">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</ion-button>
-                <span       *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</span>
-              </td>
-              <td align="center"><div class="legendedivclass" [style.background]="DB.GetStatuscolor(Zeitspanne.Status)"></div></td>
-              <td [innerHTML]="Zeitspanne.Planungmeldung"></td>
-              <td><ion-button size="small" color="rot" (click)="UrlaubLoeschen(Zeitspanne)"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button></td>
-            </tr>
+            <ng-container *ngIf="DB.CurrentUrlaub.Zeitspannen.length > 0">
+              <tr *ngFor="let Zeitspanne of DB.CurrentUrlaub.Zeitspannen">
+                <td>{{GetDatumlangtext(Zeitspanne.Startstempel)}}</td>
+                <td>{{GetDatumlangtext(Zeitspanne.Endestempel)}}</td>
+                <td style="text-align: center">{{Zeitspanne.Tageanzahl}}</td>
+                <td>
+                  <ion-button *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant || Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterablehnung" size="small" color="grau" (click)="StellvertreterFestlegenClicked(Zeitspanne)">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</ion-button>
+                  <span       *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant && Zeitspanne.Status !== DB.Urlaubstatusvarianten.Vertreterablehnung">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</span>
+                </td>
+                <td align="center">
+                  <div (click)="StatusClickedHandler(Zeitspanne)" class="legendedivclass"
+                       [style.cursor]="DB.RootMitarbeiter.Urlaubsadministrator === true ? 'pointer' : 'default'"
+                       [style.background]="DB.GetStatuscolor(Zeitspanne.Status)">
+                  </div>
+                </td>
+                <td [innerHTML]="Zeitspanne.Planungmeldung"></td>
+                <td>
+                  <ion-button size="small" color="grau" (click)="UrlaubSuchen(Zeitspanne)"><ion-icon name="search" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
+                </td>
+                <td><ion-button size="small" color="rot" (click)="UrlaubLoeschen(Zeitspanne)" [disabled]="CheckLoschenEnabled(Zeitspanne) === false"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button></td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="DB.CurrentUrlaub.Zeitspannen.length === 0">
+              <tr>
+                <td colspan="8">Momentan ist noch kein Urlaub eingetragen.</td>
+              </tr>
+            </ng-container>
             <tr>
-              <td colspan="3" style="text-align: right; font-weight: bold">Resturlaub</td>
+              <td colspan="2" style="text-align: right; font-weight: bold">Resturlaub</td>
               <td style="text-align: center">{{DB.CountResturlaub()}}</td>
-              <td colspan="4"></td>
+              <td colspan="5"></td>
             </tr>
-          </table>
-        </td>
-        <td></td>
-      </tr>
-      <tr>
-        <td align="center">
-
-          <table class="paddingsmalltable">
             <tr>
-              <td align="center">
-                <ion-button [disabled]="CheckUpdatesAvailable() === false"  size="small" (click)="SendUpdate()">Aktualisierung senden</ion-button>
+              <td align="center" colspan="8">
+                <ion-button [disabled]="CheckUpdatesAvailable() === false"  size="small" (click)="DB.UpdateVertreteranfragen()">Aktualisierung senden</ion-button>
               </td>
             </tr>
-          </table>
 
-        </td>
-        <td></td>
-      </tr>
-    </table>
-
-
-
-
-
-  <!--
-
-  </ng-container>
-
-  -->
-      <!--
-
-  <ng-container *ngIf="Modus === Modusvarianten.Uebersicht">
-    <table style="width: 100%" class="paddingsmalltable">
-      <tr *ngFor="let Zeile of Monateliste_Uebersicht">
-        <td style="width: 16%; height: inherit" valign="top" *ngFor="let Monat of Zeile">
-
-          <urlaubsplanung-kalender
-            [Jahr]="DB.Jahr"
-            [Monatindex]="Monat"
-            (FeirtagCrossedEvent)="FeiertagCrossedEventHandler($event)" (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
-          </urlaubsplanung-kalender>
-
-        </td>
-      </tr>
-    </table>
-
-  </ng-container>
-
-      -->
-  <!--
-  <ng-container *ngIf="Modus === Modusvarianten.Debug">
-
-    <table style="width: 400px;" class="paddingtable">
-      <tr>
-        <td>
-          <button-value [Buttontext]="'Bundesland'"
-                        [Wert_A]="DB.Bundesland" (ButtonClicked)="BundeslandClickedHandler()">
-          </button-value>
-        </td>
-      </tr>
-    </table>
-
-
-    <table>
-      <tr>
-        <td valign="top">
-          <table *ngIf="DB.Ferienliste['DE']" style="width: 400px;" class="paddingtable">
-            <tr>
-              <td colspan="3"><b>Ferien Deutschland</b></td>
-            </tr>
-            <tr *ngFor="let Ferien of DB.Ferienliste['DE']">
-              <td>
-                {{Ferien.Name}}
-              </td>
-              <td>
-                {{GetDatum(Ferien.Anfangstempel)}}
-              </td>
-              <td>
-                {{GetDatum(Ferien.Endestempel)}}
-              </td>
-            </tr>
-          </table>
-        </td>
-        <td valign="top">
-          <table *ngIf="DB.Feiertageliste['DE']" style="width: 400px;" class="paddingtable">
-            <tr>
-              <td colspan="4"><b>Feiertage Deutschland</b></td>
-            </tr>
-            <tr *ngFor="let Feiertag of DB.Feiertageliste['DE']">
-              <td>
-                {{Feiertag.Name}}
-              </td>
-              <td>
-                {{GetDatum(Feiertag.Anfangstempel)}}
-              </td>
-              <td>
-                {{GetDatum(Feiertag.Endestempel)}}
-              </td>
-              <td>
-                {{Feiertag.nationwide}}
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td valign="top">
-          <table *ngIf="DB.Ferienliste['BG']" style="width: 400px;" class="paddingtable">
-            <tr>
-              <td colspan="3"><b>Ferien Bulgarien</b></td>
-            </tr>
-            <tr *ngFor="let Ferien of DB.Ferienliste['BG']">
-              <td>
-                {{Ferien.Name}}
-              </td>
-              <td>
-                {{GetDatum(Ferien.Anfangstempel)}}
-              </td>
-              <td>
-                {{GetDatum(Ferien.Endestempel)}}
-              </td>
-            </tr>
-          </table>
-        </td>
-        <td valign="top">
-          <table *ngIf="DB.Feiertageliste['BG']" style="width: 400px;" class="paddingtable">
-            <tr>
-              <td colspan="4"><b>Feiertage Bulgarien</b></td>
-            </tr>
-            <tr *ngFor="let Feiertag of DB.Feiertageliste['BG']">
-              <td>
-                {{Feiertag.Name}}
-              </td>
-              <td>
-                {{GetDatum(Feiertag.Anfangstempel)}}
-              </td>
-              <td>
-                {{GetDatum(Feiertag.Endestempel)}}
-              </td>
-              <td>
-                {{Feiertag.nationwide}}
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td valign="top">
-          <table style="width: 400px;" class="paddingtable">
-            <tr>
-              <td colspan="2"><b>Bundesländer</b></td>
-            </tr>
-            <tr *ngFor="let Region of DB.Regionenliste">
-              <td>
-                {{Region.name[0].text}}
-              </td>
-              <td>
-                {{Region.isoCode}}
-              </td>
-            </tr>
           </table>
         </td>
         <td></td>
       </tr>
     </table>
-    <table *ngIf="DB.Laendercode === 'DE'" style="width: 400px;" class="paddingtable">
-      <tr>
-        <td style="font-size: 160%; color: #444444; height: 40px">{{Message}}</td>
-      </tr>
-      <tr>
-        <td>
-          <button-value [Buttontext]="'Bundesland'"
-                        [Wert_A]="DB.Bundesland" (ButtonClicked)="BundeslandClickedHandler()">
-          </button-value>
-        </td>
-      </tr>
-    </table>
-  </ng-container>
-  -->
 
 </ion-content>
 <ion-footer>

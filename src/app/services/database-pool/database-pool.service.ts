@@ -79,6 +79,7 @@ export class DatabasePoolService {
   public LOPListeChanged: EventEmitter<any> = new EventEmitter<any>();
   public MitarbeiterAuswahlChanged: EventEmitter<any> = new EventEmitter<any>();
   public BeteiligteAuswahlChanged: EventEmitter<any> = new EventEmitter<any>();
+  public CurrentBeteiligtenChanged: EventEmitter<any> = new EventEmitter<any>();
   public NotizenkapitellisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public CurrentLOPGewerkelisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public FestlegungskategorienlisteChanged: EventEmitter<any> = new EventEmitter<any>();
@@ -172,17 +173,34 @@ export class DatabasePoolService {
     }
   }
 
-  public GetFilledSignatur(local: boolean): string {
+  public CheckShowOnlyUrlaub(): boolean {
+
+    try {
+
+      if(this.Mitarbeiterdaten === null) return true;
+      else {
+
+        if(this.Mitarbeiterdaten.Email === 'peter.hornburger@b-a-e.eu') return false;
+        else return this.Mitarbeiterdaten.ShowUrlaubOnly;
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Pool', 'CheckShowOnlyUrlaub', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetFilledSignatur(Mitarbeiterdaten: Mitarbeiterstruktur, local: boolean): string {
 
     try {
 
       let Signatur: string = this.Signatur;
-      let Telefon: string  = this.Mitarbeiterdaten.Telefon;
-      let Mobil: string    = this.Mitarbeiterdaten.Mobil;
-      let Email: string    = this.Mitarbeiterdaten.Email;
-      let Name: string     = this.Mitarbeiterdaten.Vorname + ' ' + this.Mitarbeiterdaten.Name;
-      let Jobtitel: string = this.Mitarbeiterdaten.Jobtitel;
-      let Standort: Standortestruktur = lodash.find(this.Standorteliste, {_id: this.Mitarbeiterdaten.StandortID });
+      let Telefon: string  = Mitarbeiterdaten.Telefon;
+      let Mobil: string    = Mitarbeiterdaten.Mobil;
+      let Email: string    = Mitarbeiterdaten.Email;
+      let Name: string     = Mitarbeiterdaten.Vorname + ' ' + Mitarbeiterdaten.Name;
+      let Jobtitel: string = Mitarbeiterdaten.Jobtitel;
+      let Standort: Standortestruktur = lodash.find(this.Standorteliste, {_id: Mitarbeiterdaten.StandortID });
       let Strasse: string;
       let Ort: string;
 
@@ -210,8 +228,6 @@ export class DatabasePoolService {
 
 
       }
-
-
 
       return Signatur;
 
@@ -935,6 +951,21 @@ export class DatabasePoolService {
       if(lodash.isUndefined(mitarbeiter.Urlaubsliste)) {
 
         mitarbeiter.Urlaubsliste = [];
+      }
+
+      if(lodash.isUndefined(mitarbeiter.Urlaubsfreigaben)) {
+
+        mitarbeiter.Urlaubsfreigaben = false;
+      }
+
+      if(lodash.isUndefined(mitarbeiter.Urlaubsadministrator)) {
+
+        mitarbeiter.Urlaubsadministrator = false;
+      }
+
+      if(lodash.isUndefined(mitarbeiter.ShowUrlaubOnly)) {
+
+        mitarbeiter.ShowUrlaubOnly = true;
       }
 
       for(let Eintrag of mitarbeiter.Meinewocheliste) {

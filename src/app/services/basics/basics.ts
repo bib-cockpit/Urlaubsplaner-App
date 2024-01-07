@@ -17,11 +17,12 @@ export class BasicsProvider {
   public InnerContenthoehe: number    = 0;
   public Waittime: number             = 300;
   public Svgpath: string              = 'assets/svgs/';
-  public AppBuild: string             = '13.12.2023 17:35';
+  public AppBuild: string             = '07.01.2024 17:45';
   public ShowHomeScreenInfos          = true;
   public DebugNoExternalEmail         = true;
   public AppVersionName               = 'none';
   public AppVersionDatum              = 'none';
+  public WebAppUrl                    = 'https://nice-glacier-0c9ec7703.3.azurestaticapps.net';
 
 
   public Farben = {

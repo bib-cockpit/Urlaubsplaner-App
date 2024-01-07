@@ -796,6 +796,7 @@ export class PjAufgabenListePage implements OnInit, OnDestroy {
       this.SetProjektindexAndUrsprung(projektindex, ursprung);
 
       this.ShowProjektpunktEditor              = true;
+      this.Dialogbreite                        = 1200;
       this.DBProjektpunkte.CurrentProjektpunkt = this.DBProjektpunkte.GetNewProjektpunkt(this.DBProjekte.CurrentProjekt, Anzahl);
 
     } catch (error) {

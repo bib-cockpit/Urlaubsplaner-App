@@ -44,6 +44,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
   @Input() Monatindex: number;
   @Input() Jahr: number;
   @Input() AddUrlaubRunning: boolean;
+  @Input() ShowYear: boolean;
 
   @Output() FeiertagCrossedEvent  = new EventEmitter<string>();
   @Output() FerientagCrossedEvent = new EventEmitter<string>();
@@ -52,7 +53,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
   public Kalendertageliste: Kalendertagestruktur[][];
   public KalendertageExternliste: Kalendertagestruktur[][][];
   private DataSubscription: Subscription;
-  private MitarbeiterSubscription: Subscription;
   private MonateSubscription: Subscription;
   public Monatname: string;
   private ExterneUrlaubSubscription: Subscription;
@@ -76,10 +76,10 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
       this.Monatname = 'none';
       this.AddUrlaubRunning = false;
       this.Monatindex = 0;
+      this.ShowYear   = false;
       this.Monatname = this.DB.Monateliste[this.Monatindex];
 
       this.DataSubscription = null;
-      this.MitarbeiterSubscription = null;
       this.MonateSubscription = null;
       this.ExterneUrlaubSubscription = null;
       this.UrlaubStatusSubscription = null;
@@ -314,10 +314,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
         this.PrepareData();
       });
 
-      this.MitarbeiterSubscription = this.Pool.MitarbeiterdatenChanged.subscribe(() => {
-
-        // this.PrepareData();
-      });
 
       this.MonateSubscription = this.DB.PlanungsmonateChanged.subscribe(() => {
 
@@ -349,9 +345,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
       this.DataSubscription.unsubscribe();
       this.DataSubscription = null;
-
-      this.MitarbeiterSubscription.unsubscribe();
-      this.MitarbeiterSubscription = null;
 
       this.MonateSubscription.unsubscribe();
       this.MonateSubscription = null;
@@ -437,8 +430,8 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
           this.DB.CurrentZeitspanne.Startstempel = Tag.Tagstempel;
           this.DB.CurrentZeitspanne.Startstring  = Tag.Datumstring;
 
-          this.DB.CurrentZeitspanne.Endestempel = Tag.Tagstempel;
-          this.DB.CurrentZeitspanne.Endestring  = Tag.Datumstring;
+          // this.DB.CurrentZeitspanne.Endestempel = Tag.Tagstempel;
+          // this.DB.CurrentZeitspanne.Endestring  = Tag.Datumstring;
 
           Tag.Background = this.DB.Urlaubsfaben.Geplant;
           Tag.IsUrlaub   = true;
@@ -517,6 +510,22 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Kalender', 'TagClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  GetMonatname(): string {
+
+    try {
+
+      let Text: string = this.Monatname;
+
+      if(this.ShowYear) Text += ' ' + this.Jahr;
+
+      return Text;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Kalender', 'GetMonatname', this.Debug.Typen.Component);
     }
   }
 }

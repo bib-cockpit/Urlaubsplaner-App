@@ -103,6 +103,7 @@ export class DatabaseBautagebuchService {
         Auftraggeber: "",
         Gewerk: this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten.Fachbereich : 'unbekannt',
         BeteiligtInternIDListe: this.Pool.Mitarbeiterdaten !== null ? [this.Pool.Mitarbeiterdaten._id] : [],
+        BeteiligtExternIDListe: this.Pool.Mitarbeiterdaten !== null ? [this.Pool.Mitarbeiterdaten._id] : [],
         Verfasser: {
           Name:    this.Pool.Mitarbeiterdaten      !== null ? this.Pool.Mitarbeiterdaten.Name : 'unbekannt',
           Vorname: this.Pool.Mitarbeiterdaten      !== null ? this.Pool.Mitarbeiterdaten.Vorname : 'unbekannt',
@@ -405,7 +406,7 @@ export class DatabaseBautagebuchService {
   }
 
 
-  public async SendBautagebuchFromSile(bautagebuch: Bautagebuchstruktur): Promise<any> {
+  public async SendBautagebuchFromSite(bautagebuch: Bautagebuchstruktur): Promise<any> {
 
     try {
 
@@ -482,7 +483,7 @@ export class DatabaseBautagebuchService {
       });
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Database Bautagebuch', 'SaveProtokollInTeams', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Bautagebuch', 'SendBautagebuchFromSite', this.Debug.Typen.Service);
     }
   }
 

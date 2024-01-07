@@ -47,7 +47,7 @@
     </ion-row>
     <ion-row>
       <ion-col size="6">
-        <button-value [Buttontext]="'Urlaubsanspruch ' + DB.Jahr.toString()" [Wert_A]="Pool.Mitarbeiterdaten.Urlaub.toString() + ' Tage'" (ButtonClicked)="UrlaubClickedEvent()"></button-value>
+        <button-value [Buttontext]="'Urlaubsanspruch ' + DB.Jahr.toString()" [Wert_A]="DB.CurrentMitarbeiter.Urlaub.toString() + ' Tage'" (ButtonClicked)="UrlaubClickedEvent()"></button-value>
       </ion-col>
     </ion-row>
     <ion-row>

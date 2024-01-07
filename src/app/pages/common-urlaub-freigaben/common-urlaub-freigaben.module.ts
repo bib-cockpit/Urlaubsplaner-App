@@ -13,6 +13,7 @@ import {AuswahlDialogModule} from "../../components/auswahl-dialog/auswahl-dialo
 import {CheckboxClonModule} from "../../components/checkbox-clon/checkbox-clon.module";
 import {FiMitarbeiterEditorModule} from "../../components-page/fi-mitarbeiter-editor/fi-mitarbeiter-editor.module";
 import {FiMitarbeiterAuswahlModule} from "../../components-page/fi-mitarbeiter-auswahl/fi-mitarbeiter-auswahl.module";
+import {AbstandElementFixedModule} from "../../components/abstand-element-fixed/abstand-element-fixed.module";
 
 const routes: Routes = [
   {
@@ -36,6 +37,7 @@ const routes: Routes = [
         CheckboxClonModule,
         FiMitarbeiterEditorModule,
         FiMitarbeiterAuswahlModule,
+        AbstandElementFixedModule,
     ],
   declarations: [CommonUrlaubFreigabenPage]
 })

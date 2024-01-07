@@ -11,25 +11,28 @@
         <table>
           <tr>
             <td style="width: 10px"></td>
-            <td>
-              <div class="menubuttonclass"
-                   (mouseenter)="HomeMouseOver = true"
-                   (mouseleave)="HomeMouseOver = false"
-                   (click)="MainMenueButtonClicked(Menuservice.MainMenuebereiche.Home)">
-                <table class="paddingsmalltable">
-                  <tr>
-                    <td>
-                      <ion-icon name="home-outline"
-                                [color]="HomeMouseOver ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Weiss">
-                      </ion-icon>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </td>
-            <td align="center" class="trennertdclass">
-              <div [class]="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte ? 'trennerbigdivclass' : 'trennerdivclass'"></div>
-            </td>
+            <ng-container *ngIf="Pool.CheckShowOnlyUrlaub() === false">
+              <td>
+                <div class="menubuttonclass"
+                     (mouseenter)="HomeMouseOver = true"
+                     (mouseleave)="HomeMouseOver = false"
+                     (click)="MainMenueButtonClicked(Menuservice.MainMenuebereiche.Home)">
+                  <table class="paddingsmalltable">
+                    <tr>
+                      <td>
+                        <ion-icon name="home-outline"
+                                  [color]="HomeMouseOver ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Weiss">
+                        </ion-icon>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+              <td align="center" class="trennertdclass">
+                <div [class]="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte ? 'trennerbigdivclass' : 'trennerdivclass'"></div>
+              </td>
+            </ng-container>
+
             <td *ngIf="Menuservice.MainMenuebereich !== Menuservice.MainMenuebereiche.Email && Menuservice.MainMenuebereich !== Menuservice.MainMenuebereiche.Urlaubsplanung">
               <div class="menubuttonclass"
                    (mouseenter)="EmailMouseOver = true"
@@ -95,6 +98,10 @@
                     </div>
                   </td>
                   <td *ngIf="DBUrlaub.CorrectSetup === false"><img src="assets/svgs/alert.svg" style="width: 24px"></td>
+                  <td style="width: 60px;"></td>
+                  <td *ngIf="DBUrlaub.RootMitarbeiter !== null && DBUrlaub.RootMitarbeiter.Urlaubsadministrator === true" style="font-size: 90%; color: white;">
+                    Administrator<br>{{DBUrlaub.RootMitarbeiter.Vorname + ' ' + DBUrlaub.RootMitarbeiter.Name}}
+                  </td>
                 </tr>
               </table>
             </td>

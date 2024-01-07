@@ -92,6 +92,7 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
   public ShowAllEmpfaenger: boolean;
   public Projekt: Projektestruktur;
   public Postfachbuttonbreite: number;
+  public Attachmentliste: Outlookemailattachmentstruktur[];
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -145,9 +146,10 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
       this.SortierteEmailliste = [];
       this.ProjektSubscription = null;
       this.BeteiligteSubscription = null;
-      this.ShowAllEmpfaenger = false;
-      this.Projekt = null;
+      this.ShowAllEmpfaenger    = false;
+      this.Projekt              = null;
       this.Postfachbuttonbreite = 40;
+      this.Attachmentliste      = [];
 
       this.Editorconfig = {
 
@@ -452,7 +454,11 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
         HTML             = Email.body.content;
         this.CurrentMail = Email;
 
+        this.Attachmentliste = [];
+
         Attachments = await this.Graph.GetOwnEmailAttachemntlist(this.CurrentMail.id);
+
+        debugger;
 
         for(let Attachment of Attachments) {
 
@@ -464,6 +470,10 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
             Data = 'data:' + Mimetype + ';base64,' + Attachment.contentBytes;
 
             HTML = HTML.replace('cid:' + ImageID, Data);
+          }
+          else {
+
+            this.Attachmentliste.push(Attachment);
           }
         }
 
@@ -825,28 +835,21 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
 
         case this.Auswahlservice.Auswahloriginvarianten.Emailliste_Beteiligteneditor_Projektauswahl:
 
-          this.Projekt = data;
+          if(!lodash.isUndefined(data) && data !== null) this.Projekt = data;
+          else this.Projekt = null;
+
+          this.Pool.CurrentBeteiligtenChanged.emit();
 
           break;
 
-          /*
         case this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachfirma:
 
-          this.DBBeteiligte.CurrentBeteiligte.FirmaID = data;
+          if(!lodash.isUndefined(data) && data !== null) this.DBBeteiligte.CurrentBeteiligte.FirmaID = data;
+          else this.DBBeteiligte.CurrentBeteiligte.FirmaID = null;
+
+          this.Pool.CurrentBeteiligtenChanged.emit();
 
           break;
-
-           */
-
-          /*
-        case this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachbereich:
-
-          this.DBBeteiligte.CurrentBeteiligte.Beteiligtentyp = data.Typnummer;
-
-          break;
-
-           */
-
 
         default:
 
@@ -861,31 +864,41 @@ export class CommonEmaillistePage implements OnInit, OnDestroy{
     }
   }
 
-  BeteiligteFachfirmaClickedEventHandler() {
+  BeteiligtenEditorFirmaClickedEventHandler() {
 
     try {
 
       let Index: number = 0;
 
-      /*
+      if(this.Projekt !== null) {
 
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachfirma;
+        this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Projekte_Editor_Beteiligteneditor_Fachfirma;
 
-      this.Auswahltitel  = 'Fachfirmentypen festlegen';
-      this.Auswahlliste  = [];
-      this.Auswahlindex  = -1;
+        this.Auswahltitel  = 'Firma festlegen';
+        this.Auswahlliste  = [];
+        this.Auswahlindex  = -1;
 
-      this.AuswahlDialogBreite = 300;
-      this.AuswahlDialogHoehe  = 300;
+        this.AuswahlDialogBreite = 300;
+        this.AuswahlDialogHoehe  = 800;
 
-      for(let Eintrag of this.DBBeteiligte.Fachfirmentypenliste) {
+        debugger;
 
-        this.Auswahlliste.push({ Index: Index, FirstColumn: Eintrag.Name, SecoundColumn: '', Data: Eintrag });
-        Index++;
+        for(let Firmeneintrag of this.Projekt.Firmenliste) {
+
+          this.Auswahlliste.push({ Index: Index, FirstColumn: Firmeneintrag.Firma, SecoundColumn: '', Data: Firmeneintrag.FirmenID });
+          Index++;
+        }
+
+        this.Auswahlindex = lodash.findIndex(this.Projekt.Firmenliste, {FirmenID : this.DBBeteiligte.CurrentBeteiligte.FirmaID } );
+        this.ShowAuswahl  = true;
+      }
+      else {
+
+        this.Tools.ShowHinweisDialog('Bitte erst Projekt festlegen.');
       }
 
-      this.Auswahlindex = -1; // lodash.findIndex(this.DBBeteiligte.Fachfirmentypenliste, { Typnummer: this.DBBeteiligte.CurrentBeteiligte.Fachfirmentyp } );
-      this.ShowAuswahl  = true;
+      /*
+
 
 
        */

@@ -52,6 +52,7 @@
             <td style="width: 500px" valign="top">
               <urlaubsplanung-kalender
                 [Jahr]="DB.Jahr"
+                [ShowYear]="true"
                 [Monatindex]="DB.CurrentMonatindex"
                 [AddUrlaubRunning]="false"
                 (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
@@ -148,7 +149,7 @@
             <td>
               <checkbox-clon [Checked]="DB.CheckDisplayExternenUrlaub(Urlaub.MitarbeiterIDExtern)" (CheckChanged)="DisplayExternCheckChanged($event, Urlaub, i)" [Enabled]="Urlaub.Zeitspannen.length > 0"></checkbox-clon>
             </td>
-            <td><div class="legendeexterndivclass">{{Urlaub.NameKuerzel}}</div></td><td>{{Urlaub.NameExtern}}</td>
+            <td><div class="legendeexterndivclass">{{Urlaub.NameKuerzel}}</div></td><td>{{Urlaub.NameExtern}} {{Urlaub.Text}}</td>
           </tr>
           <tr>
             <td colspan="3" style="height: 40px">{{Message}}</td>
@@ -160,21 +161,7 @@
   </table>
 
   <ion-grid>
-    <ng-container *ngIf="DB.Anfragenanzahl === 0">
-      <ion-row>
-        <ion-col>
-          <table style="width: 100%">
-            <tr>
-              <td style="text-align: center; height: 80px">
-                Keine Anfragen vorhanden
-              </td>
-            </tr>
-          </table>
-        </ion-col>
-      </ion-row>
 
-    </ng-container>
-    <ng-container *ngIf="DB.Vertretungenanzahl > 0">
       <ion-row>
         <ion-col>
           <table width="100%">
@@ -198,7 +185,7 @@
             </table>
           </ion-col>
         </ion-row>
-        <ion-row>
+        <ion-row *ngIf="DB.Vertretungsanfragenanzahl !== 0 || DB.Vertretungsantwortenanzahl !== 0">
           <ion-col>
 
             <table width="100%">
@@ -213,12 +200,15 @@
                       <td style="font-weight: bold; text-align: center">Tage</td>
                       <td style="font-weight: bold;">Status</td>
                       <td style="font-weight: bold; min-width: 600px">Statusmeldung</td>
+                      <td></td>
                       <td style="font-weight: bold;">Anfrage beantworten</td>
                     </tr>
                     <ng-container *ngFor="let Urlaub of Mitarbeiter.Urlaubsliste">
                       <ng-container *ngIf="Urlaub.Jahr === DB.Jahr">
                         <ng-container *ngFor="let Zeitspanne of Urlaub.Zeitspannen">
-                          <tr *ngIf="Zeitspanne.VertreterID === Pool.Mitarbeiterdaten._id &&
+
+                          <tr *ngIf="DB.CheckVertretungsanwortAge(Zeitspanne) === true &&
+                           Zeitspanne.VertreterID === DB.CurrentMitarbeiter._id &&
                           (Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreteranfrage ||
                            Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterfreigabe ||
                            Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterablehnung)">
@@ -227,9 +217,13 @@
                             <td>{{GetDatumlangtext(Zeitspanne.Endestempel)}}</td>
                             <td style="text-align: center">{{Zeitspanne.Tageanzahl}}</td>
                             <td align="center">
-                              <div class="legendedivclass" [style.background]="DB.GetStatuscolor(Zeitspanne.Status)"></div>
+                              <div class="legendedivclass" style="color: black;" [style.background]="DB.GetStatuscolor(Zeitspanne.Status)"></div>
                             </td>
                             <td [innerHTML]="Zeitspanne.Vertretungmeldung"></td>
+                            <td>
+                              <ion-button size="small" color="grau" (click)="UrlaubSuchen(Zeitspanne, Mitarbeiter)"><ion-icon name="search" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
+                            </td>
+
                             <td>
                               <ng-container *ngIf="Zeitspanne.VertreterantwortSended === false">
                                 <ion-radio-group [value]="Zeitspanne.Status" (ionChange)="VerteretungStatusChangedHandler($event, Zeitspanne, Mitarbeiter._id)">
@@ -244,8 +238,14 @@
                               <ng-container *ngIf="Zeitspanne.VertreterantwortSended === true">
                                 <table class="nobordertable">
                                   <tr>
-                                    <td *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterfreigabe"  style="color: green">Vertretung angenommen</td>
-                                    <td *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterablehnung" style="color: red">Vertretung abgelehnt</td>
+                                    <td *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterfreigabe"  style="color: green">
+                                      Vertretung angenommen<br>
+                                      vor {{DB.GetVertretungsanwortAge(Zeitspanne).toFixed(2)}} Minuten
+                                    </td>
+                                    <td *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterablehnung" style="color: red">
+                                      Vertretung abgelehnt<br>
+                                      vor {{DB.GetVertretungsanwortAge(Zeitspanne).toFixed(2)}} Minuten
+                                    </td>
                                   </tr>
                                 </table>
                               </ng-container>
@@ -253,11 +253,21 @@
                           </tr>
 
                         </ng-container>
-                        <tr *ngIf="CheckVertretungUpdateButtonVisible(Mitarbeiter, Urlaub)">
-                          <td colspan="6">
+                        <!--
+                         *ngIf="CheckVertretungUpdateButtonVisible(Mitarbeiter, Urlaub)"
+                         -->
+                        <tr>
+                          <td colspan="7" align="center">
                             <ion-button [disabled]="CheckVertretungUpdateButtonEnabled(Mitarbeiter, Urlaub) === false" size="small" (click)="SendVertretungUpdate(Mitarbeiter, Urlaub)">Aktualisierung senden</ion-button>
                           </td>
                         </tr>
+                        <!--
+                        <tr>
+                          <td colspan="7" align="center">
+                            <ion-button  (click)="DB.ResetRequest(Mitarbeiter, Urlaub)">Reset</ion-button>
+                          </td>
+                        </tr>
+                        -->
                         <tr *ngIf="Urlaub.FreigeberID === null">
                           <td colspan="6" style="color: red;">
                             Bitte Person für Urlaubsfreigaben festlegen
@@ -270,6 +280,11 @@
 
                 </td>
               </tr>
+              <tr>
+                <td>
+
+                </td>
+              </tr>
             </table>
 
 
@@ -277,13 +292,27 @@
         </ion-row>
 
       </ng-container>
-
-
+      <ng-container *ngIf="DB.Vertretungsanfragenanzahl === 0 && DB.Vertretungsantwortenanzahl === 0">
+        <ion-row>
+          <ion-col>
+            <table style="width: 100%">
+              <tr>
+                <td style="text-align: center; height: 30px">
+                  Keine Vertretungsanfragen vorhanden
+                </td>
+              </tr>
+            </table>
+          </ion-col>
+        </ion-row>
+      </ng-container>
+    <ng-container *ngIf="DB.Vertretungsanfragenanzahl !== 0 || DB.Vertretungsantwortenanzahl !== 0">
+      <ion-row>
+        <ion-col>
+          <div style="height: 20px;"></div>
+        </ion-col>
+      </ion-row>
     </ng-container>
-
-    <ng-container *ngIf="DB.Freigabenanzahl > 0">
-
-      <ion-row *ngIf="DB.Freigabenliste.length > 0">
+      <ion-row>
         <ion-col>
           <table width="100%">
             <tr>
@@ -306,7 +335,7 @@
             </table>
           </ion-col>
         </ion-row>
-        <ion-row *ngIf="Pool.Mitarbeiterdaten">
+        <ion-row *ngIf="DB.Freigabenanfragenanzahl > 0 || DB.Freigabenantwortenanzahl > 0">
           <ion-col>
 
             <table width="100%">
@@ -317,27 +346,36 @@
                       <td style="font-weight: bold;">Von</td>
                       <td style="font-weight: bold;">Bis</td>
                       <td style="font-weight: bold; text-align: center">Tage</td>
+                      <td style="font-weight: bold;">Vertretung</td>
                       <td style="font-weight: bold;">Status</td>
                       <td style="font-weight: bold; min-width: 600px">Statusmeldung</td>
+                      <td></td>
                       <td style="font-weight: bold;">Anfrage beantworten</td>
                     </tr>
                     <ng-container *ngFor="let Urlaub of Mitarbeiter.Urlaubsliste">
-                      <ng-container *ngIf="Urlaub.Jahr === DB.Jahr && Urlaub.FreigeberID === Pool.Mitarbeiterdaten._id">
+                      <ng-container *ngIf="Urlaub.Jahr === DB.Jahr && Urlaub.FreigeberID === DB.CurrentMitarbeiter._id">
                         <ng-container *ngFor="let Zeitspanne of Urlaub.Zeitspannen">
-                          <tr *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterfreigabe ||
+
+
+
+
+                          <tr *ngIf="DB.CheckFreigabeanwortAge(Zeitspanne) === true &&
+                                     Zeitspanne.VertreterantwortSended === true &&
+                                    (Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterfreigabe ||
                                      Zeitspanne.Status === DB.Urlaubstatusvarianten.Genehmigt ||
-                                     Zeitspanne.Status === DB.Urlaubstatusvarianten.Abgelehnt">
+                                     Zeitspanne.Status === DB.Urlaubstatusvarianten.Abgelehnt)">
+
                             <td>{{GetDatumlangtext(Zeitspanne.Startstempel)}}</td>
                             <td>{{GetDatumlangtext(Zeitspanne.Endestempel)}}</td>
                             <td style="text-align: center">{{Zeitspanne.Tageanzahl}}</td>
+                            <td>{{GetVertetungName(Zeitspanne)}}</td>
                             <td align="center">
                               <div class="legendedivclass" [style.background]="DB.GetStatuscolor(Zeitspanne.Status)"></div>
-                              <!--
-                              <br>
-                              {{Zeitspanne.Status}}
-                              -->
                             </td>
                             <td [innerHTML]="Zeitspanne.Freigabemeldung"></td>
+                            <td>
+                              <ion-button [disabled]="Zeitspanne.Status === DB.Urlaubstatusvarianten.Abgelehnt" size="small" color="grau" (click)="UrlaubSuchen(Zeitspanne, Mitarbeiter)"><ion-icon name="search" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
+                            </td>
                             <td>
                               <ng-container *ngIf="Zeitspanne.FreigabeantwortSended === false">
                                 <ion-radio-group [value]="Zeitspanne.Status" (ionChange)="FreigabeStatusChangedHandler($event, Zeitspanne, Mitarbeiter._id)">
@@ -360,8 +398,11 @@
                             </td>
                           </tr>
                         </ng-container>
-                        <tr *ngIf="CheckFreigabeUpdateButtonVisible(Mitarbeiter, Urlaub)">
-                          <td colspan="6">
+                        <!--
+                         *ngIf="CheckFreigabeUpdateButtonVisible(Mitarbeiter, Urlaub)"
+                         -->
+                        <tr>
+                          <td colspan="7" align="center">
                             <ion-button [disabled]="CheckFreigabeUpdateButtonEnabled(Mitarbeiter, Urlaub) === false" size="small" (click)="SendFreigabeUpdate(Mitarbeiter, Urlaub)">Aktualisierung senden</ion-button>
                           </td>
                         </tr>
@@ -376,8 +417,20 @@
           </ion-col>
         </ion-row>
       </ng-container>
-
+    <ng-container *ngIf="DB.Freigabenanfragenanzahl === 0 && DB.Freigabenantwortenanzahl === 0">
+      <ion-row>
+        <ion-col>
+          <table style="width: 100%">
+            <tr>
+              <td style="text-align: center; height: 30px">
+                Keine Freigabeanfragen vorhanden
+              </td>
+            </tr>
+          </table>
+        </ion-col>
+      </ion-row>
     </ng-container>
+
 
   </ion-grid>
 </ion-content>

@@ -1,5 +1,10 @@
 <div [style.width.px]="Browserbreite" [style.height.px]="Browserhoehe" class="filebrowserdiv">
 
+  <!--
+
+  [style.height.px]="Browserhoehe"
+  -->
+
   <div class="headerdiv" [style.height.px]="Headerhoehe">
     <table class="paddingtable" style="font-size: 120%">
       <tr>
@@ -27,6 +32,7 @@
       </tr>
     </table>
   </div>
+
   <div class="contentdiv" [style.top.px]="Headerhoehe" [style.height.px]="Contenthoehe">
     <ion-radio-group [value]="SelectedDirectoryID" (ionChange)="FileSelectedChanged($event)">
 

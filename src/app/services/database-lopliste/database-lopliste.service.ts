@@ -791,7 +791,7 @@ export class DatabaseLoplisteService {
 
         Betreff:     lopliste.Betreff,
         Nachricht:   lopliste.Nachricht,
-        Signatur:    this.Pool.GetFilledSignatur(false),
+        Signatur:    this.Pool.GetFilledSignatur(this.Pool.Mitarbeiterdaten, false),
         UserID:      this.GraphService.Graphuser.id,
         FileID:      lopliste.FileID,
         Filename:    lopliste.Filename,

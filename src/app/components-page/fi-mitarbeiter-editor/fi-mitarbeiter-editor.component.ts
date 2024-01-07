@@ -320,6 +320,42 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
     }
   }
 
+  ShowUrlaubOnlyCheckboxChanged(event: {status: boolean; index: number; event: any}) {
+
+    try {
+
+      this.DB.CurrentMitarbeiter.ShowUrlaubOnly = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'ShowUrlaubOnlyCheckboxChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  UrlaubsadministratorCheckboxChanged(event: {status: boolean; index: number; event: any}) {
+
+    try {
+
+      this.DB.CurrentMitarbeiter.Urlaubsadministrator = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'UrlaubsadministratorCheckboxChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  UrlaubsfreigabenCheckboxChanged(event: {status: boolean; index: number; event: any}) {
+
+    try {
+
+      this.DB.CurrentMitarbeiter.Urlaubsfreigaben = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'UrlaubsfreigabenCheckboxChanged', this.Debug.Typen.Component);
+    }
+  }
+
   CheckForNewProjects(): boolean {
 
     try {

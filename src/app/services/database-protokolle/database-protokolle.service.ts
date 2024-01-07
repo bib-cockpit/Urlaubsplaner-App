@@ -470,7 +470,7 @@ export class DatabaseProtokolleService {
 
         Betreff:     protokoll.Betreff,
         Nachricht:   protokoll.Nachricht,
-        Signatur:    this.Pool.GetFilledSignatur(false),
+        Signatur:    this.Pool.GetFilledSignatur(this.Pool.Mitarbeiterdaten, false),
         DirectoryID: this.DBProjekt.CurrentProjekt.ProtokolleFolderID,
         UserID:      this.GraphService.Graphuser.id,
         FileID:      protokoll.FileID,

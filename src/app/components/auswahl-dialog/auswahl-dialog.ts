@@ -15,10 +15,8 @@ import {ToolsProvider} from '../../services/tools/tools';
 import {ConstProvider} from '../../services/const/const';
 import {IonSelect} from "@ionic/angular";
 import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
-import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
-import {Standortestruktur} from "../../dataclasses/standortestruktur";
-import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
 import {DisplayService} from "../../services/diplay/display.service";
+import * as lodash from "lodash-es";
 
 @Component({
   selector: 'auswahl-dialog',
@@ -175,8 +173,14 @@ export class AuswahlDialogComponent implements OnInit, OnDestroy, OnChanges {
 
   OkButtonClicked() {
 
-    this.OkClickedEvent.emit(this.Auswahlliste[this.Auswahlindex].Data);
+    if(!lodash.isUndefined(this.Auswahlliste[this.Auswahlindex])) {
 
+      this.OkClickedEvent.emit(this.Auswahlliste[this.Auswahlindex].Data);
+    }
+    else {
+
+      this.OkClickedEvent.emit(null);
+    }
     try {
 
     } catch (error) {

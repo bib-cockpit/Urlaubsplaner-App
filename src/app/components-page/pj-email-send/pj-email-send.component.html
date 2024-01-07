@@ -132,7 +132,7 @@
             </ion-row>
             <ion-row *ngIf="ShowSignatur === true">
               <ion-col>
-                <div style="border: 1px solid black; padding: 4px;" [innerHTML]="Pool.GetFilledSignatur(true) | safe: 'html'"></div>
+                <div style="border: 1px solid black; padding: 4px;" [innerHTML]="Pool.GetFilledSignatur(Pool.Mitarbeiterdaten, true) | safe: 'html'"></div>
               </ion-col>
             </ion-row>
             <ng-container *ngIf="SendAttachment">

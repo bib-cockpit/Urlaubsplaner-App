@@ -11,6 +11,7 @@ export type Bautagebuchstruktur = {
   Auftraggeber: string;
   Verfasser: Verfasserstruktur;
   BeteiligtInternIDListe: string[];
+  BeteiligtExternIDListe: string[];
   Gewerk: string;
   Bezeichnung: string;
   Leistung: string;

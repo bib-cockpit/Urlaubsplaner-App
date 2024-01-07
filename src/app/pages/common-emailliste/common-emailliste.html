@@ -155,7 +155,8 @@
 
     </div>
     <div class="rightdivclass" [style.width.px]="Mailcontentbreite">
-      <div class="titledivclass" [style.height.px]="MailTitlehoehe">
+      <div class="titledivclass">
+        <!--  [style.height.px]="MailTitlehoehe" -->
         <table class="paddingtable" *ngIf="CurrentMail !== null" style="font-size: 100%; width: 100%; background: white; font-weight: bold;">
 
           <tr>
@@ -237,6 +238,22 @@
           </tr>
           <tr>
             <td style="color: #c7d304">Datum/Uhrzeit: </td><td></td><td [innerHTML]="CurrentMail.Zeitstring"></td>
+          </tr>
+          <tr *ngIf="Attachmentliste.length > 0">
+            <td style="color: #c7d304">Anhänge: </td><td></td><td>
+
+            <table>
+              <tr>
+                <td *ngFor="let Attachment of Attachmentliste">
+                  {{Attachment.name}}
+                  <br>
+                  {{Attachment.size / 1000}} kB
+                </td>
+              </tr>
+            </table>
+
+
+          </td>
           </tr>
         </table>
       </div>
@@ -341,6 +358,7 @@
                        (CancelClickedEvent)="ShowBeteiligteneditor = false"
                        (OkClickedEvent)="ShowBeteiligteneditor = false"
                        (DeleteClickedEvent)="ShowBeteiligteneditor = false"
+                       (FirmaClickedEvent)="BeteiligtenEditorFirmaClickedEventHandler()"
                        (ProjektClickedEvent)="BeteiligtenEditorProjektClickedEventHandler()">
 </pj-beteiligten-editor>
 

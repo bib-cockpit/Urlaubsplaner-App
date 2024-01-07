@@ -314,6 +314,10 @@ export class DatabaseProjekteService {
               if(lodash.isUndefined(Projekt.Firmenliste))           Projekt.Firmenliste           = [];
               if(lodash.isUndefined(Projekt.Projektmailadresse))    Projekt.Projektmailadresse    = "";
 
+              if(Projekt.BautagebuchFolderID    === '') Projekt.BautagebuchFolderID   = this.Const.NONE;
+              if(Projekt.ProtokolleFolderID     === '') Projekt.ProtokolleFolderID    = this.Const.NONE;
+              if(Projekt.BaustellenLOPFolderID  === '') Projekt.BaustellenLOPFolderID = this.Const.NONE;
+
               for(let Beteiligter of Projekt.Beteiligtenliste) {
 
                 if(lodash.isUndefined(Beteiligter.FirmaID))   Beteiligter.FirmaID   = null;
@@ -461,9 +465,11 @@ export class DatabaseProjekteService {
 
           for(let Projekt of this.Projektliste) {
 
+            debugger;
+
             let Beteiligter = lodash.find(Projekt.Beteiligtenliste, (eintrag: Projektbeteiligtestruktur) => {
 
-              return eintrag.Email === email;
+              return eintrag.Email.toLowerCase() === email.toLowerCase();
 
             });
 
