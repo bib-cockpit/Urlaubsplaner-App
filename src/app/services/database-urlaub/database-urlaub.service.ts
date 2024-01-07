@@ -65,7 +65,6 @@ export class DatabaseUrlaubService {
   public Antwortenanzahl: number;
   public CorrectSetup: boolean;
   public Officeemailadress: string;
-  public RootMitarbeiter: Mitarbeiterstruktur;
   public CurrentMitarbeiter: Mitarbeiterstruktur;
 
   public Urlaubstatusvarianten = {
@@ -132,7 +131,6 @@ export class DatabaseUrlaubService {
       this.Vertretungsantwortenanzahl = 0;
       this.Freigabenanfragenanzahl    = 0;
       this.Freigabenantwortenanzahl   = 0;
-      this.RootMitarbeiter         = null;
       this.CurrentMitarbeiter      = null;
       this.CorrectSetup            = false;
       this.Officeemailadress       = 'office@b-a-e.eu';
@@ -148,14 +146,12 @@ export class DatabaseUrlaubService {
 
     try {
 
-      this.RootMitarbeiter = lodash.cloneDeep(mitarbeiter);
       this.CurrentMitarbeiter = lodash.cloneDeep(mitarbeiter);
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'SetMitarbeiter', this.Debug.Typen.Service);
     }
-
   }
 
   public CheckSetup() {

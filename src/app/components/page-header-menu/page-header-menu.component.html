@@ -99,8 +99,8 @@
                   </td>
                   <td *ngIf="DBUrlaub.CorrectSetup === false"><img src="assets/svgs/alert.svg" style="width: 24px"></td>
                   <td style="width: 60px;"></td>
-                  <td *ngIf="DBUrlaub.RootMitarbeiter !== null && DBUrlaub.RootMitarbeiter.Urlaubsadministrator === true" style="font-size: 90%; color: white;">
-                    Administrator<br>{{DBUrlaub.RootMitarbeiter.Vorname + ' ' + DBUrlaub.RootMitarbeiter.Name}}
+                  <td *ngIf="Pool.Mitarbeiterdaten !== null && Pool.Mitarbeiterdaten.Urlaubsadministrator === true" style="font-size: 90%; color: white;">
+                    Administrator<br>{{Pool.Mitarbeiterdaten.Vorname + ' ' + Pool.Mitarbeiterdaten.Name}}
                   </td>
                 </tr>
               </table>

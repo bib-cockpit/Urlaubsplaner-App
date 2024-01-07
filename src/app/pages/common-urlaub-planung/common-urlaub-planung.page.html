@@ -5,7 +5,7 @@
 </ion-header>
 <ion-content>
 
-  <table *ngIf="DB.RootMitarbeiter !== null && DB.RootMitarbeiter.Urlaubsadministrator === true" class="paddingtable">
+  <table *ngIf="Pool.Mitarbeiterdaten !== null && Pool.Mitarbeiterdaten.Urlaubsadministrator === true" class="paddingtable">
     <tr>
       <td>{{DB.CurrentMitarbeiter.Vorname + ' ' + DB.CurrentMitarbeiter.Name}}</td>
       <td>
@@ -239,7 +239,7 @@
                 </td>
                 <td align="center">
                   <div (click)="StatusClickedHandler(Zeitspanne)" class="legendedivclass"
-                       [style.cursor]="DB.RootMitarbeiter.Urlaubsadministrator === true ? 'pointer' : 'default'"
+                       [style.cursor]="Pool.Mitarbeiterdaten.Urlaubsadministrator === true ? 'pointer' : 'default'"
                        [style.background]="DB.GetStatuscolor(Zeitspanne.Status)">
                   </div>
                 </td>

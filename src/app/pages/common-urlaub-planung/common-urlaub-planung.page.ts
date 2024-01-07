@@ -802,7 +802,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
     try {
 
-      if(this.DB.RootMitarbeiter !== null && this.DB.RootMitarbeiter.Urlaubsadministrator === true) {
+      if(this.Pool.Mitarbeiterdaten !== null && this.Pool.Mitarbeiterdaten.Urlaubsadministrator === true) {
 
         return true;
       }
