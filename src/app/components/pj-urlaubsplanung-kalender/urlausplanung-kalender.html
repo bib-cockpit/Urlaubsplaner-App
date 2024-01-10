@@ -52,25 +52,25 @@
                      [style.color]="Pool.Mitarbeitersettings.UrlaubShowMeinenUrlaub ? Tag.Color : 'black'">{{Tag.Tagnummer}}</div>
                 <div *ngIf="DB.ShowFerientage_DE"
                      (mouseenter)="FerientagMouseOverEvent(Tag, 'DE')"
-                     (mouseleave)="FerientagCrossedEvent.emit('')"
+                     (mouseleave)="FerientagCrossedEvent.emit({Name: '', Laendercode: ''})"
                      class="feriendivclass" [style.background]="Tag.IsFerientag_DE ? DB.Ferienfarbe_DE : Tag.Background">
                   <ion-icon *ngIf="Tag.IsFerientag_DE" name="school-outline" color="weiss" style="font-size: 18px"></ion-icon>
                 </div>
                 <div *ngIf="DB.ShowFerientage_BG"
                      (mouseenter)="FerientagMouseOverEvent(Tag, 'BG')"
-                     (mouseleave)="FerientagCrossedEvent.emit('')"
+                     (mouseleave)="FerientagCrossedEvent.emit({Name: '', Laendercode: ''})"
                      class="feriendivclass" [style.background]="Tag.IsFerientag_BG ? DB.Ferienfarbe_BG : Tag.Background">
                   <ion-icon *ngIf="Tag.IsFerientag_BG" name="school-outline" color="gelb" style="font-size: 18px"></ion-icon>
                 </div>
                 <div *ngIf="DB.ShowFeiertage_DE"
                      (mouseenter)="FeietragMouseOverEvent(Tag, 'DE')"
-                     (mouseleave)="FeiertagCrossedEvent.emit('')"
+                     (mouseleave)="FeiertagCrossedEvent.emit({Name: '', Laendercode: ''})"
                      class="feiertagdivclass" [style.background]="Tag.IsFeiertag_DE ? DB.Feiertagefarbe_DE : Tag.Background">
                   <ion-icon *ngIf="Tag.IsFeiertag_DE" name="flag-outline" color="weiss" style="font-size: 18px"></ion-icon>
                 </div>
                 <div *ngIf="DB.ShowFeiertage_BG"
                      (mouseenter)="FeietragMouseOverEvent(Tag, 'BG')"
-                     (mouseleave)="FeiertagCrossedEvent.emit('')"
+                     (mouseleave)="FeiertagCrossedEvent.emit({Name: '', Laendercode: ''})"
                      class="feiertagdivclass" [style.background]="Tag.IsFeiertag_BG ? DB.Feiertagefarbe_BG : Tag.Background">
                   <ion-icon *ngIf="Tag.IsFeiertag_BG" name="flag-outline" color="gelb" style="font-size: 18px"></ion-icon>
                 </div>

@@ -37,7 +37,6 @@ export class DatabaseUrlaubService {
   public Ferienliste: Ferienstruktur[];
   public CurrentUrlaub: Urlaubsstruktur;
   public UrlaublisteExtern: Urlaubsstruktur[];
-  public UrlaublisteFreigaben: Urlaubsstruktur[];
   public CurrentMonatindex: number;
   public LastMonatIndex: number;
   public FirstMonatIndex: number;
@@ -112,7 +111,7 @@ export class DatabaseUrlaubService {
       this.Feiertageliste          = [];
       this.Ferienliste             = [];
       this.Freigabenliste          = [];
-      this.CurrentMonatindex       = 8; // moment().month();
+      this.CurrentMonatindex       = moment().month();
       this.FirstMonatIndex         = this.CurrentMonatindex - 1;
       this.LastMonatIndex          = this.CurrentMonatindex + 1;
       this.CurrentZeitspanne       = null;
@@ -523,7 +522,9 @@ export class DatabaseUrlaubService {
       let Vertretung: Mitarbeiterstruktur;
       let Heute: Moment = moment();
       let VertreterIDListe: string[] = [];
-      let Zeitspannen: Urlauzeitspannenstruktur[]= [];
+      let CurrentZeitspannen: Urlauzeitspannenstruktur[] = [];
+      let UpdatedZeitspannen: Urlauzeitspannenstruktur[] = [];
+      let Index;
 
       for(let Zeitspanne of this.CurrentUrlaub.Zeitspannen) {
 
@@ -536,10 +537,12 @@ export class DatabaseUrlaubService {
         }
       }
 
+      debugger;
+
       for(let VertreterID of VertreterIDListe) {
 
-        Zeitspannen = [];
-        Vertretung  = lodash.find(this.Pool.Mitarbeiterliste, {_id: VertreterID});
+        CurrentZeitspannen = [];
+        Vertretung         = lodash.find(this.Pool.Mitarbeiterliste, {_id: VertreterID});
 
         if(!lodash.isUndefined(Vertretung)) {
 
@@ -547,22 +550,30 @@ export class DatabaseUrlaubService {
 
             if(Zeitspanne.Status === this.Urlaubstatusvarianten.Geplant && Zeitspanne.VertreterID === VertreterID) {
 
-              Zeitspannen.push(Zeitspanne);
+              CurrentZeitspannen.push(Zeitspanne);
 
               Zeitspanne.Status         = this.Urlaubstatusvarianten.Vertreteranfrage;
               Zeitspanne.Planungmeldung = Heute.format('DD.MM.YYYY') + ' Vertretungsanfrage wurde an ' + Vertretung.Vorname + ' ' + Vertretung.Name + ' gesendet.';
             }
           }
 
-          this.CurrentUrlaub.Zeitspannen = await this.SendVertreteranfragen(this.CurrentMitarbeiter, Vertretung, Zeitspannen);
+          CurrentZeitspannen = await this.SendVertreteranfragen(this.CurrentMitarbeiter, Vertretung, CurrentZeitspannen);
+          UpdatedZeitspannen = UpdatedZeitspannen.concat(CurrentZeitspannen);
         }
+      }
+
+      for(let Zeitspanne of UpdatedZeitspannen) {
+
+        Index = lodash.findIndex(this.CurrentUrlaub.Zeitspannen, {ZeitspannenID: Zeitspanne.ZeitspannenID});
+
+        this.CurrentUrlaub.Zeitspannen[Index] = Zeitspanne;
       }
 
       let Urlaubindex = lodash.findIndex(this.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.Jahr });
 
       this.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.CurrentUrlaub;
 
-      await this.DBMitarbeiter.UpdateMitarbeiter(this.CurrentMitarbeiter);
+      await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.CurrentMitarbeiter);
 
       this.UrlaubStatusChanged.emit();
 
@@ -619,8 +630,6 @@ export class DatabaseUrlaubService {
       Mitarbeiter.Urlaubsliste[Urlaubindex] = Urlaub;
 
       await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(Mitarbeiter);
-
-
 
     } catch (error) {
 
@@ -1817,7 +1826,7 @@ export class DatabaseUrlaubService {
 
           Feiertag = moment(Eintrag.Anfangstempel);
 
-          if(Feiertag.isSame(CurrentTag, 'day')) {
+          if(Feiertag.isSame(CurrentTag, 'day') && lodash.findIndex(this.CurrentUrlaub.Feiertageblockerliste, Tag.Tagstempel) === -1) {
 
             IsFeiertag = true;
 

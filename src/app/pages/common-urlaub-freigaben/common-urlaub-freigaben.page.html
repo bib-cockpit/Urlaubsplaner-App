@@ -1,9 +1,11 @@
 <ion-header class="ion-no-border" xmlns="http://www.w3.org/1999/html">
   <page-header #PageHeader>
-    <page-header-menu></page-header-menu>
+    <page-header-menu (UrlaubMitarbeiterClicked)="MitarbeiterWechselnClicked()"></page-header-menu>
   </page-header>
 </ion-header>
 <ion-content>
+
+  <div class="contentdivclass">
 
   <table style="width: 100%">
     <tr>
@@ -31,7 +33,6 @@
         </table>
 
       </td>
-      <td></td>
     </tr>
     <tr>
       <td align="center" valign="top">
@@ -74,94 +75,11 @@
         </table>
 
       </td>
-      <td valign="top">
-        <!-- Legende -->
 
-        <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
-          <ng-container *ngIf="DB.Laendercode === 'DE'">
-            <tr>
-              <td><checkbox-clon [Checked]="DB.ShowFeiertage_DE" (CheckChanged)="AnsichtFeiertageCheckChanged($event, 'DE')"></checkbox-clon></td><td>
-              <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage_DE">
-                <ion-icon name="flag-outline" color="weiss" style="font-size: 18px"></ion-icon>
-              </div>
-            </td><td>Feiertage Deutschland</td>
-            </tr>
-            <tr>
-              <td><checkbox-clon [Checked]="DB.ShowFerientage_DE" (CheckChanged)="AnsichtFerientageCheckChanged($event, 'DE')"></checkbox-clon></td><td>
-              <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien_DE">
-                <ion-icon name="school-outline" color="weiss" style="font-size: 18px"></ion-icon>
-              </div>
-            </td><td>Schulferien Deutschland</td>
-            </tr>
-          </ng-container>
-          <ng-container> <!--  *ngIf="DB.Laendercode === 'BG'" -->
-            <tr>
-              <td><checkbox-clon [Checked]="DB.ShowFeiertage_BG" (CheckChanged)="AnsichtFeiertageCheckChanged($event,  'BG')"></checkbox-clon></td><td>
-              <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage_BG">
-                <ion-icon name="flag-outline" color="gelb" style="font-size: 18px"></ion-icon>
-              </div>
-            </td><td>Feiertage Bulgarien</td>
-            </tr>
-            <tr>
-              <td><checkbox-clon [Checked]="DB.ShowFerientage_BG" (CheckChanged)="AnsichtFerientageCheckChanged($event, 'BG')"></checkbox-clon></td><td>
-              <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien_BG">
-                <ion-icon name="school-outline" color="gelb" style="font-size: 18px"></ion-icon>
-              </div>
-            </td><td>Schulferien Bulgarien</td>
-            </tr>
-          </ng-container>
-          <tr>
-            <td>
-              <checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowMeinenUrlaub" (CheckChanged)="DisplayMeinenUrlaubCheckChanged($event)"></checkbox-clon>
-            </td>
-            <td>
-              <!--
-              <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Geplant"</div>
-              -->
-              </td><td>meinen Urlaub anzeigen</td>
-          </tr>
-          <tr>
-            <td>
-            </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Geplant"></div></td><td>geplanter Urlaub</td>
-          </tr>
-          <tr>
-            <td>
-            </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreteranfrage"></div></td><td>Vertretung angefragt</td>
-          </tr>
-          <tr>
-            <td>
-            </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Urlaub mit Vertreterfreigabe</td>
-          </tr>
-          <tr>
-            <td>
-            </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterablehnung"></div></td><td>Vertretung wurde abgelehnt</td>
-          </tr>
-          <tr>
-            <td>
-            </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Genehmigt"></div></td><td>Genehmigter Urlaub</td>
-          </tr>
-          <tr>
-            <td>
-            </td>
-            <td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
-          </tr>
-          <tr *ngFor="let Urlaub of DB.UrlaublisteExtern; let i = index">
-            <td>
-              <checkbox-clon [Checked]="DB.CheckDisplayExternenUrlaub(Urlaub.MitarbeiterIDExtern)" (CheckChanged)="DisplayExternCheckChanged($event, Urlaub, i)" [Enabled]="Urlaub.Zeitspannen.length > 0"></checkbox-clon>
-            </td>
-            <td><div class="legendeexterndivclass">{{Urlaub.NameKuerzel}}</div></td><td>{{Urlaub.NameExtern}} {{Urlaub.Text}}</td>
-          </tr>
-          <tr>
-            <td colspan="3" style="height: 40px">{{Message}}</td>
-          </tr>
-        </table>
-
-      </td>
     </tr>
   </table>
 
   <ion-grid>
-
       <ion-row>
         <ion-col>
           <table width="100%">
@@ -431,14 +349,195 @@
       </ion-row>
     </ng-container>
 
+    <div class="legendekeeperdivclass" [style.height.px]="Legendehoehe" [style.width.px]="Legendebreite" [style.right.px]="LegendeVisible ? 0 : -(Legendebreite - 14)">
+
+      <table>
+        <tr>
+          <td>
+            <div (click)="LegendeVisible = !LegendeVisible" class="legendebuttonclass" [style.height.px]="Legendehoehe">
+              <ion-icon color="weiss" [name]="LegendeVisible ? 'caret-forward-outline' : 'caret-back-outline'"></ion-icon>
+            </div>
+          </td>
+          <td valign="top">
+
+            <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
+              <ng-container *ngIf="DB.Laendercode === 'DE'">
+                <tr>
+                  <td><checkbox-clon [Checked]="DB.ShowFeiertage_DE" (CheckChanged)="AnsichtFeiertageCheckChanged($event, 'DE')"></checkbox-clon></td><td>
+                  <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage_DE">
+                    <ion-icon name="flag-outline" color="weiss" style="font-size: 18px"></ion-icon>
+                  </div>
+                </td><td>Feiertage Deutschland</td>
+                </tr>
+                <tr>
+                  <td><checkbox-clon [Checked]="DB.ShowFerientage_DE" (CheckChanged)="AnsichtFerientageCheckChanged($event, 'DE')"></checkbox-clon></td><td>
+                  <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien_DE">
+                    <ion-icon name="school-outline" color="weiss" style="font-size: 18px"></ion-icon>
+                  </div>
+                </td><td>Schulferien Deutschland</td>
+                </tr>
+              </ng-container>
+              <ng-container>
+                <tr>
+                  <td><checkbox-clon [Checked]="DB.ShowFeiertage_BG" (CheckChanged)="AnsichtFeiertageCheckChanged($event,  'BG')"></checkbox-clon></td><td>
+                  <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage_BG">
+                    <ion-icon name="flag-outline" color="gelb" style="font-size: 18px"></ion-icon>
+                  </div>
+                </td><td>Feiertage Bulgarien</td>
+                </tr>
+                <tr>
+                  <td><checkbox-clon [Checked]="DB.ShowFerientage_BG" (CheckChanged)="AnsichtFerientageCheckChanged($event, 'BG')"></checkbox-clon></td><td>
+                  <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien_BG">
+                    <ion-icon name="school-outline" color="gelb" style="font-size: 18px"></ion-icon>
+                  </div>
+                </td><td>Schulferien Bulgarien</td>
+                </tr>
+              </ng-container>
+              <tr>
+                <td>
+                </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Geplant"></div></td><td>geplanter Urlaub</td>
+              </tr>
+              <tr>
+                <td>
+                </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreteranfrage"></div></td><td>Vertretung angefragt</td>
+              </tr>
+              <tr>
+                <td>
+                </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Urlaub mit Vertreterfreigabe</td>
+              </tr>
+              <tr>
+                <td>
+                </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterablehnung"></div></td><td>Vertretung wurde abgelehnt</td>
+              </tr>
+              <tr>
+                <td>
+                </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Genehmigt"></div></td><td>Genehmigter Urlaub</td>
+              </tr>
+              <tr>
+                <td>
+                </td>
+                <td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
+              </tr>
+              <tr *ngFor="let Urlaub of DB.UrlaublisteExtern; let i = index">
+                <td>
+                  <checkbox-clon [Checked]="DB.CheckDisplayExternenUrlaub(Urlaub.MitarbeiterIDExtern)" (CheckChanged)="DisplayExternCheckChanged($event, Urlaub, i)" [Enabled]="Urlaub.Zeitspannen.length > 0"></checkbox-clon>
+                </td>
+                <td><div class="legendeexterndivclass">{{Urlaub.NameKuerzel}}</div></td><td>{{Urlaub.NameExtern}} {{Urlaub.Text}}</td>
+              </tr>
+            </table>
+
+          </td>
+        </tr>
+      </table>
+
+    </div>
 
   </ion-grid>
+
+
+
+
+
+  </div>
 </ion-content>
 <ion-footer>
   <page-footer #PageFooter>
-
+    <table style="width: 100%;">
+      <tr>
+        <td align="left">
+          <table class="paddingtable">
+            <tr>
+              <td *ngIf="Flagsource !== ''"><img [src]="Flagsource"></td>
+              <td *ngIf="Message    !== ''" style="height: 40px; font-size: 110%; font-weight: bold; color: white; text-align: left">{{Message}}</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   </page-footer>
 </ion-footer>
+
+
+<!--
+
+
+<table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
+  <ng-container *ngIf="DB.Laendercode === 'DE'">
+    <tr>
+      <td><checkbox-clon [Checked]="DB.ShowFeiertage_DE" (CheckChanged)="AnsichtFeiertageCheckChanged($event, 'DE')"></checkbox-clon></td><td>
+      <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage_DE">
+        <ion-icon name="flag-outline" color="weiss" style="font-size: 18px"></ion-icon>
+      </div>
+    </td><td>Feiertage Deutschland</td>
+    </tr>
+    <tr>
+      <td><checkbox-clon [Checked]="DB.ShowFerientage_DE" (CheckChanged)="AnsichtFerientageCheckChanged($event, 'DE')"></checkbox-clon></td><td>
+      <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien_DE">
+        <ion-icon name="school-outline" color="weiss" style="font-size: 18px"></ion-icon>
+      </div>
+    </td><td>Schulferien Deutschland</td>
+    </tr>
+  </ng-container>
+  <ng-container>
+    <tr>
+      <td><checkbox-clon [Checked]="DB.ShowFeiertage_BG" (CheckChanged)="AnsichtFeiertageCheckChanged($event,  'BG')"></checkbox-clon></td><td>
+      <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage_BG">
+        <ion-icon name="flag-outline" color="gelb" style="font-size: 18px"></ion-icon>
+      </div>
+    </td><td>Feiertage Bulgarien</td>
+    </tr>
+    <tr>
+      <td><checkbox-clon [Checked]="DB.ShowFerientage_BG" (CheckChanged)="AnsichtFerientageCheckChanged($event, 'BG')"></checkbox-clon></td><td>
+      <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien_BG">
+        <ion-icon name="school-outline" color="gelb" style="font-size: 18px"></ion-icon>
+      </div>
+    </td><td>Schulferien Bulgarien</td>
+    </tr>
+  </ng-container>
+  <tr>
+    <td>
+      <checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowMeinenUrlaub" (CheckChanged)="DisplayMeinenUrlaubCheckChanged($event)"></checkbox-clon>
+    </td>
+    <td>
+
+    </td><td>meinen Urlaub anzeigen</td>
+  </tr>
+  <tr>
+    <td>
+    </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Geplant"></div></td><td>geplanter Urlaub</td>
+  </tr>
+  <tr>
+    <td>
+    </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreteranfrage"></div></td><td>Vertretung angefragt</td>
+  </tr>
+  <tr>
+    <td>
+    </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Urlaub mit Vertreterfreigabe</td>
+  </tr>
+  <tr>
+    <td>
+    </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterablehnung"></div></td><td>Vertretung wurde abgelehnt</td>
+  </tr>
+  <tr>
+    <td>
+    </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Genehmigt"></div></td><td>Genehmigter Urlaub</td>
+  </tr>
+  <tr>
+    <td>
+    </td>
+    <td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
+  </tr>
+  <tr *ngFor="let Urlaub of DB.UrlaublisteExtern; let i = index">
+    <td>
+      <checkbox-clon [Checked]="DB.CheckDisplayExternenUrlaub(Urlaub.MitarbeiterIDExtern)" (CheckChanged)="DisplayExternCheckChanged($event, Urlaub, i)" [Enabled]="Urlaub.Zeitspannen.length > 0"></checkbox-clon>
+    </td>
+    <td><div class="legendeexterndivclass">{{Urlaub.NameKuerzel}}</div></td><td>{{Urlaub.NameExtern}} {{Urlaub.Text}}</td>
+  </tr>
+</table>
+
+
+
+-->
 
 
 <auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"
@@ -447,5 +546,16 @@
                 (OkClickedEvent)="AuswahlOkButtonClicked($event)"
                 (CancelClickedEvent)="ShowAuswahl = false">
 </auswahl-dialog>
+
+<fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
+                        [Titel]="MitarbeiterauswahlTitel"
+                        [Dialogbreite]="600" [ZIndex]="4000"
+                        [Multiselect]="false"
+                        [OnlyProjektmitarbeiter]="false"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
+                        (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
+                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
 
 

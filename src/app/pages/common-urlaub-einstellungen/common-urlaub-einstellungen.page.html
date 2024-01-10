@@ -1,6 +1,6 @@
 <ion-header class="ion-no-border">
   <page-header #PageHeader>
-    <page-header-menu></page-header-menu>
+    <page-header-menu (UrlaubMitarbeiterClicked)="MitarbeiterWechselnClicked()"></page-header-menu>
   </page-header>
 </ion-header>
 <ion-content>
@@ -129,15 +129,15 @@
                         [OnlyProjektmitarbeiter]="false"
                         (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
                         (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
-                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler($event)"></fi-mitarbeiter-auswahl>
+                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
 
-
-<!--
-<fi-mitarbeiter-editor *ngIf="ShowMitarbeitereditor" [Dialogbreite]="600" [Titel]="'Mitarbeiter bearbeiten'" Iconname="people-outline"
-                       (StandortClickedEvent)="StandortClickedHandler()"
-                       (CancelClickedEvent)="ShowMitarbeitereditor = false"
-                       (OkClickedEvent)="ShowMitarbeitereditor = false"
-                       (AnredeClickedEvent)="AnredeClickedEventHandler()" (UrlaubClickedEvent)="UrlaubClickedEventHandler()"
-                       (FachbereichClickedEvent)="FachbereichClickedHandler()">
-</fi-mitarbeiter-editor>
--->
+<fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
+                        [Titel]="MitarbeiterauswahlTitel"
+                        [Dialogbreite]="600" [ZIndex]="4000"
+                        [Multiselect]="false"
+                        [OnlyProjektmitarbeiter]="false"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
+                        (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
+                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>

@@ -18,15 +18,10 @@ import {DatabasePoolService} from "../../services/database-pool/database-pool.se
 import {DisplayService} from "../../services/diplay/display.service";
 import 'moment-duration-format';
 import * as lodash from "lodash-es";
-import {Feiertagestruktur} from "../../dataclasses/feiertagestruktur";
-import {Ferienstruktur} from "../../dataclasses/ferienstruktur";
 import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
-import {Urlauzeitspannenstruktur} from "../../dataclasses/urlauzeitspannenstruktur";
 import {Kalendertagestruktur} from "../../dataclasses/kalendertagestruktur";
 import {Subscription} from "rxjs";
 import {ToolsProvider} from "../../services/tools/tools";
-import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
-import {Urlaubprojektbeteiligtestruktur} from "../../dataclasses/urlaubprojektbeteiligtestruktur";
 
 @Component({
   selector: 'urlaubsplanung-kalender',
@@ -46,9 +41,9 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
   @Input() AddUrlaubRunning: boolean;
   @Input() ShowYear: boolean;
 
-  @Output() FeiertagCrossedEvent  = new EventEmitter<string>();
-  @Output() FerientagCrossedEvent = new EventEmitter<string>();
-  @Output() AddUrlaubFinished = new EventEmitter<boolean>();
+  @Output() FeiertagCrossedEvent  = new EventEmitter<{Name: string; Laendercode: string}>();
+  @Output() FerientagCrossedEvent = new EventEmitter<{Name: string; Laendercode: string}>();
+  @Output() AddUrlaubFinished     = new EventEmitter<boolean>();
 
   public Kalendertageliste: Kalendertagestruktur[][];
   public KalendertageExternliste: Kalendertagestruktur[][][];
@@ -172,10 +167,10 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
           Tag.IsFeiertag_DE  = this.DB.CheckIsFeiertag(Tag, 'DE');
           Tag.IsFeiertag_BG  = this.DB.CheckIsFeiertag(Tag, 'BG');
 
-          if(Tag.IsFeiertag_DE) Tag.Feiertagname_DE = 'DE: ' + this.DB.GetFeiertag(Tag, 'DE').Feiertagname_DE;
+          if(Tag.IsFeiertag_DE) Tag.Feiertagname_DE = this.DB.GetFeiertag(Tag, 'DE').Feiertagname_DE; // 'DE: ' +
           else Tag.Feiertagname_DE = '';
 
-          if(Tag.IsFeiertag_BG) Tag.Feiertagname_BG = 'BG: ' + this.DB.GetFeiertag(Tag, 'BG').Feiertagname_BG;
+          if(Tag.IsFeiertag_BG) Tag.Feiertagname_BG = this.DB.GetFeiertag(Tag, 'BG').Feiertagname_BG; // 'BG: ' +
           else Tag.Feiertagname_BG = '';
 
           // Ferientage eintragen
@@ -183,10 +178,10 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
           Tag.IsFerientag_DE = this.DB.CheckIsFerientag(Tag, 'DE');
           Tag.IsFerientag_BG = this.DB.CheckIsFerientag(Tag, 'BG');
 
-          if(Tag.IsFerientag_DE) Tag.Ferienname_DE = 'DE: ' + this.DB.GetFerientag(Tag, 'DE').Ferienname_DE;
+          if(Tag.IsFerientag_DE) Tag.Ferienname_DE = this.DB.GetFerientag(Tag, 'DE').Ferienname_DE; // 'DE: ' +
           else Tag.Ferienname_DE = '';
 
-          if(Tag.IsFerientag_BG) Tag.Ferienname_BG = 'BG: ' + this.DB.GetFerientag(Tag, 'BG').Ferienname_BG;
+          if(Tag.IsFerientag_BG) Tag.Ferienname_BG = this.DB.GetFerientag(Tag, 'BG').Ferienname_BG; // 'BG: ' +
           else Tag.Ferienname_BG = '';
 
           // Urlaube eintragen
@@ -365,20 +360,24 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
     try {
 
-      this.FeiertagCrossedEvent.emit(laendercode === 'DE' ? Tag.Feiertagname_DE : Tag.Feiertagname_BG);
+      let Name: string = '';
+      let Datum: Moment = moment(Tag.Tagstempel).locale(laendercode === 'DE' ? 'de' : 'en');
 
-      /*
-      let Feiertag: Feiertagestruktur = lodash.find(this.DB.Feiertageliste[laendercode], (feiertag: Feiertagestruktur) => {
+      if(Tag.IsFeiertag_DE || Tag.IsFeiertag_BG) {
 
-        return moment(Tag.Tagstempel).isSame(moment(feiertag.Anfangstempel), 'day');
-      });
+        if(laendercode === 'DE' && Tag.IsFeiertag_DE) {
 
-      if(!lodash.isUndefined(Feiertag)) {
+          Name = Tag.Feiertagname_DE + ' / ' + Datum.format('D. MMMM YYYY');
 
+          this.FeiertagCrossedEvent.emit({Name: Name, Laendercode: laendercode});
+        }
+        else if (laendercode === 'BG' && Tag.IsFeiertag_BG){
+
+          Name = Tag.Feiertagname_BG + ' / ' + Datum.format('D. MMMM YYYY');
+
+          this.FeiertagCrossedEvent.emit({Name: Name, Laendercode: laendercode});
+        }
       }
-
-       */
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Kalender', 'FeietragMouseOverEvent', this.Debug.Typen.Component);
@@ -389,20 +388,9 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
     try {
 
-      this.FerientagCrossedEvent.emit(laendercode === 'DE' ? Tag.Ferienname_DE : Tag.Ferienname_BG);
+      let Name: string = laendercode === 'DE' ? Tag.Ferienname_DE : Tag.Ferienname_BG;
 
-      /*
-      let Ferientag: Ferienstruktur = lodash.find(this.DB.Ferienliste[laendercode], (ferientag: Ferienstruktur) => {
-
-        return moment(Tag.Tagstempel).isBetween(moment(ferientag.Anfangstempel), moment(ferientag.Endestempel), 'day');
-      });
-
-      if(!lodash.isUndefined(Ferientag)) {
-
-        this.FerientagCrossedEvent.emit(Ferientag.Name);
-      }
-
-       */
+      this.FerientagCrossedEvent.emit({Name: Name, Laendercode: laendercode});
 
     } catch (error) {
 

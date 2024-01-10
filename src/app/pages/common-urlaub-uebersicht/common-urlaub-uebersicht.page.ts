@@ -10,14 +10,17 @@ import moment, {Moment} from "moment/moment";
 import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 import {Subscription} from "rxjs";
+import {ConstProvider} from "../../services/const/const";
+import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
+import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
+import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
+import {cloneDeep} from "lodash-es";
 import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
-import {ConstProvider} from "../../services/const/const";
-import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
+import {Urlaubsstruktur} from "../../dataclasses/urlaubsstruktur";
+import {Urlaubprojektbeteiligtestruktur} from "../../dataclasses/urlaubprojektbeteiligtestruktur";
 import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
-import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
-import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 
 @Component({
   selector: 'common-urlaub-uebersicht-page',
@@ -29,14 +32,21 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
   @ViewChild('PageHeader', { static: false }) PageHeader: PageHeaderComponent;
   @ViewChild('PageFooter', { static: false }) PageFooter: PageFooterComponent;
 
-  public Monateliste_Uebersicht: string[][];
-  public Monateliste_Mounseover: boolean[];
+  public Ansichtenvarinaten = {
+
+    Gesamtjahr:   'Gesamtjahr',
+    HalbjahrEins: 'HalbjahrEins',
+    HalbjahrZwei: 'HalbjahrZwei'
+  };
+
+  public Monateliste_Gesamtjahr: string[][];
   public Auswahlliste: Auswahldialogstruktur[];
   public BundeslandAuswahlliste: Auswahldialogstruktur[];
   public Auswahlindex: number;
   public Auswahltitel: string;
   public ShowAuswahl: boolean;
   public Auswahlhoehe: number;
+  public Ansichtvariante: string;
 
   public Message: string;
   public ShowMitarbeitereditor: boolean;
@@ -45,22 +55,32 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
   private DataSubscription: Subscription;
   public AuswahlIDliste: string[];
   public MitarbeiterauswahlTitel: string;
+  public ShowMitarbeiterauswahl: boolean;
+  public LegendeVisible: boolean;
+  public Legendehoehe: number;
+  public Legendebreite: number;
+  public Flagsource: string;
+  public Monateliste_HalbjahrEins: string[];
+  public Monateliste_HalbjahrZwei: string[];
 
   constructor(public Menuservice: MenueService,
               public Basics: BasicsProvider,
               public Pool: DatabasePoolService,
               public DB: DatabaseUrlaubService,
               public Const: ConstProvider,
+              private DBMitarbeiter: DatabaseMitarbeiterService,
+              private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public DBStandort: DatabaseStandorteService,
               public Auswahlservice: AuswahlDialogService,
               public Debug: DebugProvider) {
     try {
 
-      this.Monateliste_Uebersicht = [];
-      this.Monateliste_Uebersicht.push(['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni']);
-      this.Monateliste_Uebersicht.push(['Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']);
+      this.Monateliste_Gesamtjahr = [];
+      this.Monateliste_Gesamtjahr.push(['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni']);
+      this.Monateliste_Gesamtjahr.push(['Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']);
 
-      this.Monateliste_Mounseover = [false, false, false, false, false, false, false, false, false, false, false, false ];
+      this.Monateliste_HalbjahrEins = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni'];
+      this.Monateliste_HalbjahrZwei = ['Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
 
       this.Auswahlliste          = [{ Index: 0, FirstColumn: '', SecoundColumn: '', Data: null}];
       this.Auswahlindex          = 0;
@@ -72,11 +92,32 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
       this.AddUrlaubRunning      = false;
       this.AuswahlIDliste         = [];
       this.MitarbeiterauswahlTitel = '';
+      this.ShowMitarbeiterauswahl  = false;
+      this.LegendeVisible          = false;
+      this.Legendehoehe            = 0;
+      this.Legendebreite           = 0;
+      this.Flagsource              = '';
+      this.Ansichtvariante         = this.Ansichtenvarinaten.Gesamtjahr;
 
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Urlaubsplanung Page', 'constructor', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Urlaubsuebersicht Page', 'constructor', this.Debug.Typen.Page);
+    }
+  }
+
+  MitarbeiterWechselnClicked() {
+
+    try {
+
+      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Mitarbeiter_Wechseln;
+      this.ShowMitarbeiterauswahl = true;
+      this.AuswahlIDliste         = [];
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'MitarbeiterWechselnClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -89,7 +130,7 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'OnDestroy', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'OnDestroy', this.Debug.Typen.Page);
     }
   }
 
@@ -97,7 +138,16 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
 
     try {
 
+      let Heute: Moment = moment().locale('de');
+      let Monat: number = Heute.month() + 1;
+
+      if(Monat <= 6) this.Ansichtvariante = this.Ansichtenvarinaten.HalbjahrEins;
+      else           this.Ansichtvariante = this.Ansichtenvarinaten.HalbjahrZwei;
+
       this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
+
+      this.Legendebreite = 400;
+      this.Legendehoehe  = this.Basics.InnerContenthoehe + 20;
 
       this.DataSubscription = this.Pool.LoadingAllDataFinished.subscribe(() => {
 
@@ -108,7 +158,37 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'OnInit', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'OnInit', this.Debug.Typen.Page);
+    }
+  }
+
+
+  MitarbeiterauswahlOkButtonClicked(idliste: string[]) {
+
+    try {
+
+      let Mitarbeiter: Mitarbeiterstruktur;
+
+      switch (this.Auswahldialogorigin) {
+
+        case this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Mitarbeiter_Wechseln:
+
+          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: idliste[0]});
+
+          this.DB.CurrentMitarbeiter = Mitarbeiter;
+
+
+          this.PrepareData();
+
+          break;
+
+      }
+
+      this.ShowMitarbeiterauswahl = false;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Urlaubsplanung Page', 'MitarbeiterauswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -129,7 +209,24 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
           debugger;
 
           break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.UrlaubUebersicht_Standort_Filter:
+
+
+          this.DBStandort.CurrentStandortfilter        = cloneDeep(data);
+          this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
+
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null).then(() => {
+
+            this.ShowAuswahl = false;
+
+            this.DBStandort.StandortfilterChanged.emit();
+          });
+
+          break;
       }
+
+
 
       this.ShowAuswahl = false;
 
@@ -137,9 +234,10 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Urlaubsplanung Page', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Urlaubsuebersicht Page', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
+
 
 
   private async PrepareData() {
@@ -166,31 +264,51 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'PrepareData', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'PrepareData', this.Debug.Typen.Page);
     }
   }
 
-  FeiertagCrossedEventHandler(event: string) {
+  FeiertagCrossedEventHandler(Daten: {Name: string; Laendercode: string}) {
 
     try {
 
-      this.Message = event;
+      this.Message = Daten.Name;
+
+      if(Daten.Laendercode !== '') {
+
+        this.Flagsource  = 'assets/images/';
+        this.Flagsource += Daten.Laendercode === 'DE' ? 'de.png' : 'bg.png';
+      }
+      else {
+
+        this.Flagsource = '';
+      }
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'FeiertagCrossedEventHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'FeiertagCrossedEventHandler', this.Debug.Typen.Page);
     }
   }
 
-  FerientagCrossedEventHandler(event: string) {
+  FerientagCrossedEventHandler(Daten: {Name: string; Laendercode: string}) {
 
     try {
 
-      this.Message = event;
+      this.Message = Daten.Name;
+
+      if(Daten.Laendercode !== '') {
+
+        this.Flagsource  = 'assets/images/';
+        this.Flagsource += Daten.Laendercode === 'DE' ? 'de.png' : 'bg.png';
+      }
+      else {
+
+        this.Flagsource = '';
+      }
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'FerientagCrossedEventHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'FerientagCrossedEventHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -204,7 +322,7 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
 
     try {
 
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Editor_Standortfilter;
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.UrlaubUebersicht_Standort_Filter;
 
       let Index = 0;
 
@@ -230,7 +348,130 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Urlaubsplanung Page', 'MitarebiterStandortfilterClickedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Urlaubsuebersicht Page', 'MitarebiterStandortfilterClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  DisplayExternCheckChanged(event: { status: boolean; index: number; event: any; value: string }, Urlaub: Urlaubsstruktur, i: number) {
+
+    try {
+
+      let Beteiligt: Urlaubprojektbeteiligtestruktur = lodash.find(this.DB.CurrentUrlaub.Projektbeteiligteliste, {MitarbeiterID: Urlaub.MitarbeiterIDExtern});
+
+      if(!lodash.isUndefined(Beteiligt)) Beteiligt.Display = event.status;
+
+      debugger;
+
+      let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+      this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
+
+      this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
+
+        this.DB.ExterneUrlaubeChanged.emit();
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'DisplayExternCheckChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  AnsichtFeiertageCheckChanged(event: { status: boolean; index: number; event: any; value: string }, landcode: string) {
+
+    try {
+
+      switch (landcode) {
+
+        case 'DE':
+
+          this.Pool.Mitarbeitersettings.UrlaubShowFeiertage_DE = event.status;
+          this.DB.ShowFeiertage_DE = event.status;
+
+          break;
+
+        case 'BG':
+
+          this.Pool.Mitarbeitersettings.UrlaubShowFeiertage_BG = event.status;
+          this.DB.ShowFeiertage_BG = event.status;
+
+          break;
+      }
+
+      this.DBMitarbeitersettings.SaveMitarbeitersettings().then(() => {
+
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'AnsichtFeiertageCheckChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  AnsichtFerientageCheckChanged(event: { status: boolean; index: number; event: any; value: string }, landcode: string) {
+
+    try {
+
+      switch (landcode) {
+
+        case 'DE':
+
+          this.Pool.Mitarbeitersettings.UrlaubShowFerien_DE = event.status;
+          this.DB.ShowFerientage_DE = event.status;
+
+          break;
+
+        case 'BG':
+
+          this.Pool.Mitarbeitersettings.UrlaubShowFerien_BG = event.status;
+          this.DB.ShowFerientage_BG = event.status;
+
+          break;
+      }
+
+      this.DBMitarbeitersettings.SaveMitarbeitersettings().then(() => {
+
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'AnsichtFerientageCheckChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  JahrButtonClicked() {
+
+    try {
+
+      this.Ansichtvariante = this.Ansichtenvarinaten.Gesamtjahr;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'JahrButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  HalbjahrEinsButtonClicked() {
+
+    try {
+
+      this.Ansichtvariante = this.Ansichtenvarinaten.HalbjahrEins;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'HalbjahrEinsButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  HalbjahrZweiButtonClicked() {
+
+    try {
+
+      this.Ansichtvariante = this.Ansichtenvarinaten.HalbjahrZwei;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'HalbjahrZweiButtonClicked', this.Debug.Typen.Page);
     }
   }
 }

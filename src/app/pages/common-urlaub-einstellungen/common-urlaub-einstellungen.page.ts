@@ -171,6 +171,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
       let Urlaub: Urlaubsstruktur;
       let Eintrag: Urlaubprojektbeteiligtestruktur;
+      let Mitarbeiter: Mitarbeiterstruktur;
 
       switch (this.Auswahldialogorigin) {
 
@@ -222,6 +223,16 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
           }
 
           break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Mitarbeiter_Wechseln:
+
+          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: idliste[0]});
+
+          this.DB.CurrentMitarbeiter = Mitarbeiter;
+
+          this.PrepareData();
+
+          break;
       }
 
       this.ShowMitarbeiterauswahl = false;
@@ -232,7 +243,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
     }
   }
 
-  MitarebiterStandortfilterClickedHandler(data: any) {
+  MitarebiterStandortfilterClickedHandler() {
 
     try {
 
@@ -566,6 +577,21 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'FereinBlockedChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  MitarbeiterWechselnClicked() {
+
+    try {
+
+      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Mitarbeiter_Wechseln;
+      this.ShowMitarbeiterauswahl = true;
+      this.AuswahlIDliste         = [];
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'MitarbeiterWechselnClicked', this.Debug.Typen.Page);
     }
   }
 

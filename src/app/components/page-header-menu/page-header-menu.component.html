@@ -100,8 +100,9 @@
                   <td *ngIf="DBUrlaub.CorrectSetup === false"><img src="assets/svgs/alert.svg" style="width: 24px"></td>
                   <td style="width: 60px;"></td>
                   <td *ngIf="Pool.Mitarbeiterdaten !== null && Pool.Mitarbeiterdaten.Urlaubsadministrator === true" style="font-size: 90%; color: white;">
-                    Administrator<br>{{Pool.Mitarbeiterdaten.Vorname + ' ' + Pool.Mitarbeiterdaten.Name}}
+                    <ion-button size="small" color="grau" (click)="UrlaubMitarbeiterClicked.emit()">{{DBUrlaub.CurrentMitarbeiter !== null ? DBUrlaub.CurrentMitarbeiter.Vorname + ' ' + DBUrlaub.CurrentMitarbeiter.Name : 'unbekannt'}}</ion-button>
                   </td>
+                  <td style="width: 120px;"></td>
                 </tr>
               </table>
             </td>

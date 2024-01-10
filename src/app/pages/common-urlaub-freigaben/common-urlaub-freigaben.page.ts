@@ -6,11 +6,9 @@ import {PageHeaderComponent} from "../../components/page-header/page-header";
 import {PageFooterComponent} from "../../components/page-footer/page-footer";
 import * as lodash from "lodash-es";
 import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import moment, {Moment} from "moment/moment";
 import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
-import {Mitarbeitersettingsstruktur} from "../../dataclasses/mitarbeitersettingsstruktur";
 import {Subscription} from "rxjs";
 import {
   DatabaseMitarbeitersettingsService
@@ -18,15 +16,11 @@ import {
 import {ConstProvider} from "../../services/const/const";
 import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
 import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
-import {backspace, languageSharp} from "ionicons/icons";
 import {Urlauzeitspannenstruktur} from "../../dataclasses/urlauzeitspannenstruktur";
 import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {Urlaubsstruktur} from "../../dataclasses/urlaubsstruktur";
 import {cloneDeep} from "lodash-es";
-import {Ferienstruktur} from "../../dataclasses/ferienstruktur";
-import {Standortestruktur} from "../../dataclasses/standortestruktur";
-import {Feiertagestruktur} from "../../dataclasses/feiertagestruktur";
 import {Urlaubprojektbeteiligtestruktur} from "../../dataclasses/urlaubprojektbeteiligtestruktur";
 
 @Component({
@@ -52,6 +46,10 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
   public MitarbeiterauswahlTitel: string;
   public MitarbeiterMultiselect: boolean;
   public Message: string;
+  public Flagsource: string;
+  public LegendeVisible: boolean;
+  public Legendehoehe: number;
+  public Legendebreite: number;
 
   constructor(public Menuservice: MenueService,
               public Basics: BasicsProvider,
@@ -76,7 +74,10 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
       this.MitarbeiterauswahlTitel = '';
       this.MitarbeiterMultiselect = true;
       this.Message = '';
-
+      this.Flagsource = '';
+      this.LegendeVisible          = false;
+      this.Legendehoehe            = 0;
+      this.Legendebreite           = 0;
 
     } catch (error) {
 
@@ -100,6 +101,9 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
     try {
 
       this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
+
+      this.Legendebreite = 400;
+      this.Legendehoehe  = this.Basics.InnerContenthoehe + 20;
 
       this.DataSubscription = this.Pool.LoadingAllDataFinished.subscribe(() => {
 
@@ -146,12 +150,19 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
     try {
 
-      let Urlaub: Urlaubsstruktur;
-      let Eintrag: Urlaubprojektbeteiligtestruktur;
+      let Mitarbeiter: Mitarbeiterstruktur;
 
       switch (this.Auswahldialogorigin) {
 
+        case this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Mitarbeiter_Wechseln:
 
+          Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: idliste[0]});
+
+          this.DB.CurrentMitarbeiter = Mitarbeiter;
+
+          this.PrepareData();
+
+          break;
       }
 
       this.ShowMitarbeiterauswahl = false;
@@ -166,7 +177,7 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
     try {
 
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Standort_Filter;
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.UrlaubAnfargen_Standort_Filter;
 
       let Index = 0;
 
@@ -204,11 +215,22 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
     try {
 
-      let Urlaub: Urlaubsstruktur;
-
       switch (this.Auswahldialogorigin) {
 
+        case this.Auswahlservice.Auswahloriginvarianten.UrlaubAnfargen_Standort_Filter:
 
+
+          this.DBStandort.CurrentStandortfilter        = cloneDeep(data);
+          this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
+
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null).then(() => {
+
+            this.ShowAuswahl = false;
+
+            this.DBStandort.StandortfilterChanged.emit();
+          });
+
+          break;
       }
 
       this.ShowAuswahl = false;
@@ -221,25 +243,18 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
     }
   }
 
-  MitarbeiterAuswahlClicked() {
+  MitarbeiterWechselnClicked() {
 
     try {
 
-      this.Auswahldialogorigin     = this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Projektbeteiligte_Auswahl;
-      this.MitarbeiterauswahlTitel = 'Mitarbeiter/innen auswählen';
-      this.ShowMitarbeiterauswahl  = true;
-      this.AuswahlIDliste          = [];
-      this.MitarbeiterMultiselect  = true;
-
-      for(let eintrag of this.DB.CurrentUrlaub.Projektbeteiligteliste) {
-
-        this.AuswahlIDliste.push(eintrag.MitarbeiterID);
-      }
+      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Mitarbeiter_Wechseln;
+      this.ShowMitarbeiterauswahl = true;
+      this.AuswahlIDliste         = [];
 
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'MitarbeiterWechselnClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'MitarbeiterWechselnClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -359,11 +374,21 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
     }
   }
 
-  FerientagCrossedEventHandler(event: string) {
+  FerientagCrossedEventHandler(Daten: {Name: string; Laendercode: string}) {
 
     try {
 
-      this.Message = event;
+      this.Message = Daten.Name;
+
+      if(Daten.Laendercode !== '') {
+
+        this.Flagsource  = 'assets/images/';
+        this.Flagsource += Daten.Laendercode === 'DE' ? 'de.png' : 'bg.png';
+      }
+      else {
+
+        this.Flagsource = '';
+      }
 
     } catch (error) {
 
@@ -449,11 +474,21 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
   }
 
 
-  FeiertagCrossedEventHandler(message: string) {
+  FeiertagCrossedEventHandler(Daten: {Name: string; Laendercode: string}) {
 
     try {
 
-      this.Message = message;
+      this.Message = Daten.Name;
+
+      if(Daten.Laendercode !== '') {
+
+        this.Flagsource  = 'assets/images/';
+        this.Flagsource += Daten.Laendercode === 'DE' ? 'de.png' : 'bg.png';
+      }
+      else {
+
+        this.Flagsource = '';
+      }
 
     } catch (error) {
 

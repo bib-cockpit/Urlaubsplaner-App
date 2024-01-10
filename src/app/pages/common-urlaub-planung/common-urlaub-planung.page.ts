@@ -54,6 +54,10 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
   public ShowMitarbeiterauswahl: boolean;
   public AuswahlIDliste: string[];
   public MitarbeiterauswahlTitel: string;
+  public LegendeVisible: boolean;
+  public Legendehoehe: number;
+  public Legendebreite: number;
+  public Flagsource: string;
 
   constructor(public Menuservice: MenueService,
               public Basics: BasicsProvider,
@@ -85,9 +89,10 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
       this.ShowMitarbeiterauswahl = false;
       this.AuswahlIDliste         = [];
       this.MitarbeiterauswahlTitel = '';
-
-
-
+      this.LegendeVisible          = false;
+      this.Legendehoehe            = 0;
+      this.Legendebreite           = 0;
+      this.Flagsource              = '';
 
     } catch (error) {
 
@@ -113,6 +118,9 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     try {
 
       this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
+
+      this.Legendebreite = 400;
+      this.Legendehoehe  = this.Basics.InnerContenthoehe + 20;
 
       this.DataSubscription = this.Pool.LoadingAllDataFinished.subscribe(() => {
 
@@ -220,8 +228,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
           break;
 
-        case this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Standort_Filter:
-
+        case this.Auswahlservice.Auswahloriginvarianten.UrlaubPlanung_Standort_Filter:
 
           this.DBStandort.CurrentStandortfilter        = cloneDeep(data);
           this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
@@ -312,11 +319,21 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     }
   }
 
-  FeiertagCrossedEventHandler(message: string) {
+  FeiertagCrossedEventHandler(Daten: {Name: string; Laendercode: string}) {
 
     try {
 
-      this.Message = message;
+      this.Message = Daten.Name;
+
+      if(Daten.Laendercode !== '') {
+
+        this.Flagsource  = 'assets/images/';
+        this.Flagsource += Daten.Laendercode === 'DE' ? 'de.png' : 'bg.png';
+      }
+      else {
+
+        this.Flagsource = '';
+      }
 
     } catch (error) {
 
@@ -324,12 +341,21 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     }
   }
 
-  FerientagCrossedEventHandler(event: string) {
+  FerientagCrossedEventHandler(Daten: {Name: string; Laendercode: string}) {
 
     try {
 
-      this.Message = event;
+      this.Message = Daten.Name;
 
+      if(Daten.Laendercode !== '') {
+
+        this.Flagsource  = 'assets/images/';
+        this.Flagsource += Daten.Laendercode === 'DE' ? 'de.png' : 'bg.png';
+      }
+      else {
+
+        this.Flagsource = '';
+      }
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'FerientagCrossedEventHandler', this.Debug.Typen.Page);
@@ -639,7 +665,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
     try {
 
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Standort_Filter;
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.UrlaubPlanung_Standort_Filter;
 
       let Index = 0;
 
@@ -758,23 +784,8 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'DisplayExternCheckChanged', this.Debug.Typen.Page);
     }
-
   }
 
-
-
-  async SendUpdate() {
-
-    try {
-
-
-
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'SendUpdate', this.Debug.Typen.Page);
-    }
-  }
 
   CheckUpdatesAvailable(): boolean {
 

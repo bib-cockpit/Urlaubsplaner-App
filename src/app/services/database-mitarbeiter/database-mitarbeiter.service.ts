@@ -411,8 +411,6 @@ export class DatabaseMitarbeiterService {
           },
           complete: () => {
 
-            debugger;
-
             if(Merker !== null) {
 
               this.UpdateMitarbeiterliste(Merker);
@@ -452,8 +450,6 @@ export class DatabaseMitarbeiterService {
       if(Index !== -1) {
 
         this.Pool.Mitarbeiterliste[Index] = mitarbeiter; // aktualisieren
-
-        debugger;
 
         this.Debug.ShowMessage('Mitarbeiterliste updated: ' + mitarbeiter.Name, 'Database Mitarbeiter', 'UpdateMitarbeiter', this.Debug.Typen.Service);
       }
