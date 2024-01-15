@@ -35,6 +35,8 @@ import {Teilaufgabeestruktur} from "../../dataclasses/teilaufgabeestruktur";
 import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 import {DatabaseMitarbeitersettingsService} from "../database-mitarbeitersettings/database-mitarbeitersettings.service";
+import {forEach} from "lodash-es";
+import {JSX} from "ionicons";
 
 @Injectable({
   providedIn: 'root'
@@ -250,8 +252,6 @@ export class DatabaseProjektpunkteService {
 
             }).catch((errora) => {
 
-              debugger;
-
               reject(errora);
             });
 
@@ -404,6 +404,50 @@ export class DatabaseProjektpunkteService {
     }
   }
 
+  RemoveProjektpunkteliste(punkteliste: Projektpunktestruktur[]): Promise<any> {
+
+    try {
+
+      let Observer: Observable<any>;
+      let IDListe: string[] = [];
+
+      for(let Punkt of punkteliste) {
+
+        IDListe.push(Punkt._id);
+      }
+
+      return new Promise((resolve, reject) => {
+
+        // DELETE
+
+        Observer = this.http.put(this.ServerProjektpunkteUrl, {Projektpunkt: null, Delete: true, IDListe: JSON.stringify(IDListe)});
+
+        Observer.subscribe({
+
+          next: (ne) => {
+
+          },
+          complete: () => {
+
+
+              resolve(true);
+
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'DeleteProjektpunkt', this.Debug.Typen.Service);
+    }
+  }
+
   public AddProjektpunkt(projektpunkt: Projektpunktestruktur) {
 
     try {
@@ -452,12 +496,9 @@ export class DatabaseProjektpunkteService {
     try {
 
       let Observer: Observable<any>;
-      let Params = new HttpParams();
       let Merker: Projektpunktestruktur;
 
       return new Promise((resolve, reject) => {
-
-        Params.set('id', punkt._id);
 
         // PUT für update
 
@@ -477,7 +518,7 @@ export class DatabaseProjektpunkteService {
         delete punkt.Text_C;
         delete punkt.ThumbID;
 
-        Observer = this.http.put(this.ServerProjektpunkteUrl, punkt);
+        Observer = this.http.put(this.ServerProjektpunkteUrl, {Projektpunkt: punkt, Delete: false, IDListe: JSON.stringify([])});
 
         Observer.subscribe({
 
@@ -656,6 +697,10 @@ export class DatabaseProjektpunkteService {
         Unterkostengruppe:  null,
         Bilderliste:        [],
         Ruecklaufreminderliste: [],
+        LV_relevant: false,
+        LV_Eintrag: false,
+        Planung_relevant: false,
+        Planung_Eintrag: false,
 
         Verfasser: {
 
@@ -753,6 +798,10 @@ export class DatabaseProjektpunkteService {
         Unterkostengruppe:  null,
         Bilderliste:        [],
         Ruecklaufreminderliste: [],
+        LV_relevant: false,
+        LV_Eintrag: false,
+        Planung_relevant: false,
+        Planung_Eintrag: false,
 
         Verfasser: {
 
@@ -850,6 +899,10 @@ export class DatabaseProjektpunkteService {
         Unterkostengruppe:  null,
         Bilderliste:        [],
         Ruecklaufreminderliste: [],
+        LV_relevant: true,
+        LV_Eintrag: false,
+        Planung_relevant: true,
+        Planung_Eintrag: false,
 
         Verfasser: {
 
@@ -953,6 +1006,10 @@ export class DatabaseProjektpunkteService {
         Unterkostengruppe:  null,
         Bilderliste:        [],
         Ruecklaufreminderliste: [],
+        LV_relevant: false,
+        LV_Eintrag: false,
+        Planung_relevant: false,
+        Planung_Eintrag: false,
 
         Verfasser: {
 
@@ -1296,6 +1353,10 @@ export class DatabaseProjektpunkteService {
         Unterkostengruppe:  null,
         Bilderliste:        [],
         Ruecklaufreminderliste: [],
+        LV_relevant: false,
+        LV_Eintrag: false,
+        Planung_relevant: false,
+        Planung_Eintrag: false,
 
         Verfasser: {
 

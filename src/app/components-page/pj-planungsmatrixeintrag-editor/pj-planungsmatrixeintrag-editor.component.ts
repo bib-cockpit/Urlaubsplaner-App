@@ -30,6 +30,7 @@ export class PjPlanungsmatrixeintragEditorComponent implements OnInit, OnDestroy
   @Output() DeleteClickedEvent         = new EventEmitter<any>();
   @Output() FortschrittClickedEvent    = new EventEmitter<any>();
   @Output() TerminButtonClicked        = new EventEmitter<any>();
+  @Output() KostengruppeButtonClicked  = new EventEmitter<any>();
 
   @Input() Titel: string;
   @Input() Iconname: string;

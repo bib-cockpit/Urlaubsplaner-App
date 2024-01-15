@@ -213,20 +213,43 @@ export class DatabaseProtokolleService {
     }
   }
 
-  DeleteProtokoll(protokoll: Protokollstruktur): Promise<any> {
+
+  RemoveProtokoll(protokoll: Protokollstruktur): Promise<any> {
 
     try {
 
+      let Observer: Observable<any>;
+
       return new Promise((resolve, reject) => {
 
-        resolve(true);
+        // DELETE
+
+        Observer = this.http.put(this.ServerProtokollUrl, {Protokoll: protokoll, Delete: true });
+
+        Observer.subscribe({
+
+          next: (ne) => {
+
+          },
+          complete: () => {
+
+
+            resolve(true);
+
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
       });
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Database Protokolle', 'DeleteProtokoll', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error.message, 'Database Projektpunkte', 'DeleteProjektpunkt', this.Debug.Typen.Service);
     }
-
   }
 
   public SetZeitspannenfilter(event: any) {
@@ -387,7 +410,7 @@ export class DatabaseProtokolleService {
 
         delete protokoll.__v;
 
-        Observer = this.http.put(this.ServerProtokollUrl, protokoll);
+        Observer = this.http.put(this.ServerProtokollUrl, { Protokoll: protokoll, Delete: false });
 
         Observer.subscribe({
 

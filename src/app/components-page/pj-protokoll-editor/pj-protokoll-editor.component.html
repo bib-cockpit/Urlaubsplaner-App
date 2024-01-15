@@ -123,6 +123,25 @@
                             <input-clone [(Value)]="DB.CurrentProtokoll.Notizen" [Titel]="'Notizen'" [Lines]="6" (TextChanged)="TextChangedHandler()"></input-clone>
                           </ion-col>
                         </ion-row>
+                        <ion-row *ngIf="DB.CurrentProtokoll._id !== null">
+                          <ion-col>
+                            <table>
+                              <tr>
+                                <td colspan="2" style="height: 40px;"></td>
+                              </tr>
+                              <tr>
+                                <td><checkbox-clon [Checked]="CanDelete" (CheckChanged)="CanDeleteCheckChanged($event)"></checkbox-clon></td>
+                                <td style="width: 6px"></td>
+                                <td>
+                                  <ion-button size="small" color="rot" [disabled]="!CanDelete" (click)="DeleteProtokollClicked()">
+                                    <ion-icon name="trash-outline" style="font-size: 20px"></ion-icon>
+                                    <ion-text>Eintrag löschen</ion-text>
+                                  </ion-button>
+                                </td>
+                              </tr>
+                            </table>
+                          </ion-col>
+                        </ion-row>
                       </ion-grid>
                   </td>
                   <td style="width: 50%" valign="top">

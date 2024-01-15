@@ -1332,7 +1332,7 @@ Bemaßung mit eindeutigen Bezugsmaßen zum Gebäude`;
         id:                     'koord',
         Bezeichnung:          "Koordination",
         Information:          ['', '', '', '', '', '', '', ''],
-        Leistungsphasen:      [   2, 3,    5, 6, 7, 8],
+        Leistungsphasen:      [   2, 3,     , 6, 7, 8],
         Nummer:               [0, 6, 6, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Koordinationteilaufgabenliste
       });
@@ -1431,7 +1431,7 @@ gemacht werden. Die Angaben müssen jedoch eindeutig sein.`;
         id: 'erbe',
         Bezeichnung: "Erläuterung",
         Information:     ['', '', '', '', '', '', '', ''],
-        Leistungsphasen: [   2, 3, 4, 5, 6, 7, 8],
+        Leistungsphasen: [   2, 3, 4,  , 6, 7, 8],
         Nummer:          [0, 7, 8, 6, 0, 0, 0, 0],
         Teilaufgabenbereiche: Erlaeuterungteilaufgabenliste
       });
@@ -1479,7 +1479,7 @@ gemacht werden. Die Angaben müssen jedoch eindeutig sein.`;
         id:                   'kosten',
         Bezeichnung:          "Kosten",
         Information:          ['', '', '', '', '', '', '', ''],
-        Leistungsphasen:      [   2, 3,    5, 6, 7, 8],
+        Leistungsphasen:      [   2, 3,     , 6, 7, 8],
         Nummer:               [0, 8, 9, 0, 0, 0, 0, 0],
         Teilaufgabenbereiche: Kostenteilaufgabenliste
       });

@@ -434,7 +434,7 @@
             <ng-container *ngIf="ShowSuchleiste">
               <td style="width: 20px"></td>
               <td>
-                <ion-searchbar #Suchleiste placeholder="Suche"></ion-searchbar>
+                <ion-searchbar  #Suchleiste placeholder="Suche"></ion-searchbar>
               </td>
             </ng-container>
             <ng-container *ngIf="ShowSandortfilter">
@@ -586,7 +586,12 @@
                   <ion-button (click)="ExpandFestlegungeEvent.emit(false)" color="burnicklbraun"><ion-icon name="remove-circle-outline"></ion-icon></ion-button>
                 </td>
                 <td style="width: 280px">
-                  <ion-searchbar #Suchleiste2 placeholder="Suche"></ion-searchbar>
+                  <ng-content>
+
+                  </ng-content>
+                  <!--
+                  <ion-searchbar #Suchleiste2 id="searchbar2" placeholder="Suche"></ion-searchbar>
+                  -->
                 </td>
                 <td style="width: auto">
                   <table class="paddingtable">

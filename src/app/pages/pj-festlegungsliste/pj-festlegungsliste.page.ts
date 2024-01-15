@@ -27,6 +27,9 @@ import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur
 import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
 import {KostengruppenService} from "../../services/kostengruppen/kostengruppen.service";
 import {Kostengruppenstruktur} from "../../dataclasses/kostengruppenstruktur";
+import {Projektpunktanmerkungstruktur} from "../../dataclasses/projektpunktanmerkungstruktur";
+import moment from "moment/moment";
+import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
 
 @Component({
   selector: 'pj-festlegungsliste',
@@ -74,6 +77,7 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
   public NoKostengruppePunkteliste: Projektpunktestruktur[];
   public NoKostengruppePunktelisteExpand: boolean;
   public Eintraegeanzahl: number;
+  private Inputtimer: any;
 
   constructor(public Menuservice: MenueService,
               public Basics: BasicsProvider,
@@ -87,6 +91,7 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
               public Pool: DatabasePoolService,
               public Const: ConstProvider,
               public KostenService: KostengruppenService,
+              public DBMitarbeiter: DatabaseMitarbeiterService,
               public DBFestlegungskategorie: DatabaseFestlegungenService,
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public Debug: DebugProvider) {
@@ -114,6 +119,7 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
       this.KategorieSubscription    = null;
       this.Auswahlbreite            = 300;
       this.NoKostengruppePunktelisteExpand = true;
+      this.Inputtimer                   = null;
 
       this.ShowProjektpunktEditor    = false;
       this.ShowMitarbeiterauswahl    = false;
@@ -246,6 +252,8 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
 
         // Filter nach Leistungsphase
 
+        debugger;
+
         if(this.Pool.Mitarbeitersettings.LeistungsphaseFilter !== null && this.Pool.Mitarbeitersettings.LeistungsphaseFilter !== this.Const.Leistungsphasenvarianten.UNBEKANNT) {
 
           Projektpunkteliste = lodash.filter(Projektpunkteliste, (punkt: Projektpunktestruktur) => {
@@ -312,6 +320,15 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
               Punkt.Text_A   = TeilA;
               Punkt.Text_B   = TeilB;
               Punkt.Text_C   = TeilC;
+
+              Punkt.Text_A   = Punkt.Text_A.replace('<p>', '');
+              Punkt.Text_A   = Punkt.Text_A.replace('</p>', '');
+
+              Punkt.Text_B   = Punkt.Text_B.replace('<p>', '');
+              Punkt.Text_B   = Punkt.Text_B.replace('</p>', '');
+
+              Punkt.Text_C   = Punkt.Text_C.replace('<p>', '');
+              Punkt.Text_C   = Punkt.Text_C.replace('</p>', '');
 
               Projektpunkteliste.push(Punkt);
             }
@@ -810,6 +827,7 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
 
     try {
 
+      this.Dialogbreite                       = 1100;
       this.ShowProjektpunktEditor             = true;
       this.DBProjektpunkte.CurrentProjektpunkt = lodash.cloneDeep(Punkt);
     } catch (error) {
@@ -818,13 +836,29 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
     }
   }
 
-  SucheChangedHandler(text: string) {
+  SucheChangedHandler(event: any) {
 
     try {
 
-      this.Festlegungfiltertext = text;
+      let Text = event.detail.value;
 
-      this.PrepareData();
+      if(this.Inputtimer !== null) {
+
+        window.clearTimeout(this.Inputtimer);
+
+        this.Inputtimer = null;
+      }
+
+      if(Text.length >= 3 || Text.length === 0) {
+
+        this.Inputtimer = window.setTimeout(()  => {
+
+          this.Festlegungfiltertext = event.detail.value;
+
+          this.PrepareData();
+
+        }, 600);
+      }
 
     } catch (error) {
 
@@ -943,6 +977,18 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
     }
   }
 
+  GetAnmerkungDatum(Anmerkung: Projektpunktanmerkungstruktur): string {
+
+    try {
+
+      return moment(Anmerkung.Zeitstempel).format('DD.MM.YY');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Festlegungen Liste', 'GetAnmerkungDatum', this.Debug.Typen.Page);
+    }
+  }
+
   NeueFetslegungskategorieButtonClicked() {
 
     try {
@@ -1012,6 +1058,56 @@ export class PjFestlegungslistePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Festlegungen Liste', 'ExpandFestlegungskategorie', this.Debug.Typen.Page);
+    }
+  }
+
+  GetFilteredText(Punkt: Projektpunktestruktur): string {
+
+    try {
+
+      let Inhalt: string = '';
+      const Text_A: string = Punkt.Text_A;
+      const Text_B: string = Punkt.Text_B;
+      const Text_C: string = Punkt.Text_C;
+
+      Inhalt += '<span>' + Text_A + '</span>';
+      Inhalt += '<span style="color: orange">' + Text_B + '</span>';
+      Inhalt += '<span>' + Text_C + '</span>';
+
+
+      return '<p> ' + Inhalt + '</p>';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Festlegungen Liste', 'GetFilteredText', this.Debug.Typen.Page);
+    }
+  }
+
+  LVEintragCheckChanged(event: { status: boolean; index: number; event: any; value: string }, Punkt: Projektpunktestruktur) {
+
+    try {
+
+      Punkt.LV_Eintrag = event.status;
+
+      this.DBProjektpunkte.UpdateProjektpunkt(Punkt, false);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Festlegungen Liste', 'LVEintragCheckChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  PlanungEintragCheckChanged(event: { status: boolean; index: number; event: any; value: string }, Punkt: Projektpunktestruktur) {
+
+    try {
+
+      Punkt.Planung_Eintrag = event.status;
+
+      this.DBProjektpunkte.UpdateProjektpunkt(Punkt, false);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Festlegungen Liste', 'PlanungEintragCheckChanged', this.Debug.Typen.Page);
     }
   }
 }

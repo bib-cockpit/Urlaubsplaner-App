@@ -2,12 +2,21 @@
   <page-header #PageHeader>
     <page-header-menu [SendFestlegungenEnabled]="DB.Displayliste.length > 0"
                       (ShowProjektfilesEvent)="ShowProjektfilesHandler()"
-                      (SucheChanged)="SucheChangedHandler($event)"
                       (LeistungsphaseFilterClicked)="LeistungsphaseClickedHandler('Filter')"
                       (ShowOpenFestlegungOnlyEvent)="ShowOpenFestlegungOnlyHandler($event)"
                       (SendFestlegungenClicked)="SendFestlegungenClickedHandler()"
                       (ExpandFestlegungeEvent)="ExpandFestlegungeEventHandler($event)"
                       (ShowProjektauswahlEvent)="ShowProjektauswahlEventHandler()">
+                      <!--
+                      (SucheChanged)="SucheChangedHandler($event)"
+                      -->
+      <table>
+        <tr>
+          <td style="width: 280%">
+            <ion-searchbar (ionInput)="SucheChangedHandler($event)" placeholder="Suche"></ion-searchbar>
+          </td>
+        </tr>
+      </table>
     </page-header-menu>
   </page-header>
 </ion-header>
@@ -34,6 +43,8 @@
           <td class="tableborderone" style="width: 40px;"><b>Nr.</b></td>
           <td class="tableborderone" style="width: 80px; text-align: center"><b>Datum</b></td>
           <td class="tableborderone" style="width: auto"><b>Beschreibung</b></td>
+          <td class="tableborderone" style="width: 80px; text-align: center"><b>LV</b></td>
+          <td class="tableborderone" style="width: 80px; text-align: center"><b>Planung</b></td>
           <td class="tableborderone" style="width: 80px; text-align: center"><b>Phase</b></td>
           <td class="tableborderone" style="width: 80px; text-align: center"><b>Ursprung</b></td>
         </tr>
@@ -44,15 +55,15 @@
                 <table class="paddingtable">
                   <tr>
                     <td><ion-icon (click)="ExpandFestlegungskategorie($event, Kategorie)" [name]="Kategorie.Expanded ? 'remove-circle-outline' : 'add-circle-outline'"></ion-icon></td>
-                    <td>{{Kategorie.Kostengruppennummer}}</td>
+                    <td [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">{{Kategorie.Kostengruppennummer}}</td>
                   </tr>
                 </table>
 
               </div>
             </td>
-            <td class="tableborderright" colspan="5" [style.background]="Kategorie.Kostengruppecolor" style="color: white;">
+            <td class="tableborderright" colspan="7" [style.background]="Kategorie.Kostengruppecolor" style="color: white;">
 
-              <div class="festlegunglisteheader">
+              <div class="festlegunglisteheader" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">
                 {{KostenService.GetKostengruppennameByFestlegungskategorie(Kategorie)}}
               </div>
             </td>
@@ -60,8 +71,8 @@
 
           <tr *ngIf="Kategorie.Expanded">
             <td></td>
-            <td class="tableborderfull" colspan="5" [style.background]="'silver'">
-              <div class="festlegunglistesubheader" (click)="FestlegungskategorieClicked(Kategorie)">
+            <td class="tableborderfull" colspan="7" [style.background]="'silver'">
+              <div class="festlegunglistesubheader" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize" (click)="FestlegungskategorieClicked(Kategorie)">
                 {{Kategorie.Beschreibung}}
               </div>
             </td>
@@ -70,8 +81,8 @@
             <ng-container  *ngFor="let Punkt of DB.Displayliste[Kategorieindex];  let Punktindex = index">
               <tr>
                 <td></td>
-                <td class="tableborderfull">{{(Punktindex + 1).toString()}}</td>
-                <td class="tableborderfull" style="text-align: center">{{Punkt.Startzeitstring}}</td>
+                <td class="tableborderfull" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">{{(Punktindex + 1).toString()}}</td>
+                <td class="tableborderfull" style="text-align: center" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">{{Punkt.Startzeitstring}}</td>
                 <td class="tableborderfull">
                   <div class="festlegungdivclass" (click)="FestlegungClicked(Punkt)">
                     <table class="nobordertable">
@@ -79,17 +90,34 @@
                         <td *ngIf="Punkt.OpenFestlegung">
                           <div style="width: 10px; height: 10px; background: red; border-radius: 50%"></div>
                         </td>
-                        <td *ngIf="!Punkt.Filtered">
-                          {{Punkt.Aufgabe}}
-                        </td>
-                        <td *ngIf="Punkt.Filtered">
-                          <span>{{Punkt.Text_A}}</span><span style="color: orange">{{Punkt.Text_B}}</span><span>{{Punkt.Text_C}}</span>
-                        </td>
+                        <td *ngIf="!Punkt.Filtered" [innerHTML]="Punkt.Aufgabe | safe: 'html'" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"></td>
+                        <td *ngIf="Punkt.Filtered" [innerHTML]="GetFilteredText(Punkt) | safe: 'html'" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"></td>
                       </tr>
                     </table>
                   </div>
+
+                  <table>
+                    <tr *ngFor="let Anmerkung of Punkt.Anmerkungenliste">
+                      <td style="width: 60px; color: orange; padding-left: 4px;" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">
+                        {{GetAnmerkungDatum(Anmerkung)}}
+                      </td>
+                      <td style="width: 40px; color: orange" *ngIf="DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email)" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">
+                        {{DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email).Name}}:
+                      </td>
+                      <td [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">
+                        {{Anmerkung.Anmerkung}}
+                      </td>
+                    </tr>
+                  </table>
+
                 </td>
-                <td class="tableborderfull" style="text-align: center;">{{Punkt.Leistungsphase}}</td>
+                <td class="tableborderfull" align="center">
+                  <checkbox-clon *ngIf="Punkt.LV_relevant === true" [Checked]="Punkt.LV_Eintrag" (CheckChanged)="LVEintragCheckChanged($event, Punkt)"></checkbox-clon>
+                </td>
+                <td class="tableborderfull" align="center">
+                  <checkbox-clon *ngIf="Punkt.Planung_relevant === true" [Checked]="Punkt.Planung_Eintrag" (CheckChanged)="PlanungEintragCheckChanged($event, Punkt)"></checkbox-clon>
+                </td>
+                <td class="tableborderfull" style="text-align: center;" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">{{Punkt.Leistungsphase}}</td>
                 <td class="tableborderfull" align="center">
                   <ion-button *ngIf="Punkt.ProtokollID !== null" size="small" [color]="Basics.Ionicfarben.BurnicklBraun" (click)="ProtokollButtonClicked(Punkt)">P</ion-button>
                 </td>
@@ -97,7 +125,7 @@
             </ng-container>
             <tr>
               <td></td>
-              <td class="tableborderfull" colspan="5">
+              <td class="tableborderfull" colspan="7">
                 <ion-button size="small" color="burnicklbraun" (click)="AddFestlegungClicked(Kategorie)">
                   <ion-icon name="add-circle-outline" color="weiss"  slot="icon-only"></ion-icon>
                 </ion-button>
@@ -123,7 +151,7 @@
             <!--
             [style.background]="Kategorie.Kostengruppecolor
             -->
-            <td class="tableborderright" colspan="5" style="color: white;">
+            <td class="tableborderright" colspan="7" style="color: white;">
               <div class="festlegunglisteheader" [style.background]="'orange'">
                 Festlegungen ohne Kostengruppenzuordnung
               </div>
@@ -142,17 +170,34 @@
                         <td *ngIf="Punkt.OpenFestlegung">
                           <div style="width: 10px; height: 10px; background: red; border-radius: 50%"></div>
                         </td>
-                        <td *ngIf="!Punkt.Filtered">
-                          {{Punkt.Aufgabe}}
-                        </td>
-                        <td *ngIf="Punkt.Filtered">
-                          <span>{{Punkt.Text_A}}</span><span style="color: orange">{{Punkt.Text_B}}</span><span>{{Punkt.Text_C}}</span>
-                        </td>
+                        <td *ngIf="!Punkt.Filtered" [innerHTML]="Punkt.Aufgabe | safe: 'html'" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"></td>
+                        <td *ngIf="Punkt.Filtered" [innerHTML]="GetFilteredText(Punkt) | safe: 'html'" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize"></td>
                       </tr>
                     </table>
                   </div>
+
+                  <table>
+                    <tr *ngFor="let Anmerkung of Punkt.Anmerkungenliste">
+                      <td style="width: 60px; color: orange; padding-left: 4px;"[style.font-size.px]="Pool.Mitarbeitersettings.Textsize">
+                        {{GetAnmerkungDatum(Anmerkung)}}
+                      </td>
+                      <td style="width: 40px; color: orange" *ngIf="DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email)" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">
+                        {{DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email).Name}}:
+                      </td>
+                      <td [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">
+                        {{Anmerkung.Anmerkung}}
+                      </td>
+                    </tr>
+                  </table>
+
                 </td>
-                <td class="tableborderfull" style="text-align: center;">{{Punkt.Leistungsphase}}</td>
+                <td class="tableborderfull" align="center">
+                  <checkbox-clon *ngIf="Punkt.LV_relevant === true" [Checked]="Punkt.LV_Eintrag" (CheckChanged)="LVEintragCheckChanged($event, Punkt)"></checkbox-clon>
+                </td>
+                <td class="tableborderfull" align="center">
+                  <checkbox-clon *ngIf="Punkt.Planung_relevant === true" [Checked]="Punkt.Planung_Eintrag" (CheckChanged)="PlanungEintragCheckChanged($event, Punkt)"></checkbox-clon>
+                </td>
+                <td class="tableborderfull" style="text-align: center;" [style.font-size.px]="Pool.Mitarbeitersettings.Textsize">{{Punkt.Leistungsphase}}</td>
                 <td class="tableborderfull" align="center">
                   <ion-button *ngIf="Punkt.ProtokollID !== null" size="small" [color]="Basics.Ionicfarben.BurnicklBraun" (click)="ProtokollButtonClicked(Punkt)">P</ion-button>
                 </td>
@@ -205,7 +250,11 @@
 </ion-footer>
 
 
-<pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor && DBProjektpunkte.CurrentProjektpunkt !== null" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="DialogPosY"
+<pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor && DBProjektpunkte.CurrentProjektpunkt !== null"
+                        [Dialogbreite]="Dialogbreite"
+                        [Dialoghoehe]="Dialoghoehe"
+                        [PositionY]="DialogPosY"
+                        [ShowLVandPlanung]="true"
                         [ZIndex]="3000" [Titel]="DBProjektpunkte.CurrentProjektpunkt._id !== null ? 'Festlegung bearbeiten' : 'Neue Festlegung'" Iconname="book-outline"
                         (FachbereichClicked)="FachbereichClickedHandler()"
                         (KostengruppeClicked)="KostengruppeClickedHandler('Editor')"

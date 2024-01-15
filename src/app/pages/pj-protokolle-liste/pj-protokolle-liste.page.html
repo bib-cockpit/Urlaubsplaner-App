@@ -135,6 +135,7 @@
                      (BeteiligteteilnehmerClicked)="BeteiligteteilnehmerClickedHandler()"
                      (ProtokollpunktClicked)="ProtokollpunktClickedHandler($event)"
                      (ThumbnailClickedEvent)="ThumbnailClickedEventHandler($event)"
+                     (ProtokollDeletedEvent)="ProtokollDeletedEventHandler()"
                      (AddProtokollpunktClicked)="AddProtokollpunktClickedHandler()"></pj-protokoll-editor>
 
 <pj-projektpunkt-editor *ngIf="ShowProjektpunktEditor" [Dialogbreite]="Dialogbreite" [Dialoghoehe]="Dialoghoehe" [PositionY]="0"

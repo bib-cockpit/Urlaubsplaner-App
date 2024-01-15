@@ -1,4 +1,15 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  QueryList,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import {DebugProvider} from "../../services/debug/debug";
 import {BasicsProvider} from "../../services/basics/basics";
 import {MenueService} from "../../services/menue/menue.service";
@@ -32,8 +43,9 @@ import {DatabaseUrlaubService} from "../../services/database-urlaub/database-url
 })
 export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  @ViewChild('Suchleiste', { static: false }) Suchleiste: IonSearchbar;
+  @ViewChild('Suchleiste',  { static: false }) Suchleiste:  IonSearchbar;
   @ViewChild('Suchleiste2', { static: false }) Suchleiste2: IonSearchbar;
+  @ViewChildren('ion-searchbar') Sucheiste3: QueryList<any>;
 
   @Input()  ShowSandortfilter: boolean;
   @Input()  ShowSuchleiste:    boolean;
@@ -196,13 +208,22 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     try {
 
+      this.Tagbreite = (this.Basics.Contentbreite - 4 - this.Timelinebreite) / 5;
+
+      /*
+
       let Text: string;
 
-      this.Tagbreite = (this.Basics.Contentbreite - 4 - this.Timelinebreite) / 5;
+
+      let test = this.Sucheiste3;
+
+
 
       if(this.Suchleiste) { // Muss hier stehen / funktioniert in OnInit() nicht
 
         this.SuchleisteInputSubscription = this.Suchleiste.ionInput.subscribe((data: any) => {
+
+          debugger;
 
           Text = data.target.value;
 
@@ -237,6 +258,8 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
         this.Suchleiste2InputSubscription = this.Suchleiste2.ionInput.subscribe((data: any) => {
 
+          debugger;
+
           Text = data.target.value;
 
           if(this.Inputtimer !== null) {
@@ -265,6 +288,9 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
       }
       else this.Suchleiste2 = null;
+
+
+       */
 
     } catch (error) {
 

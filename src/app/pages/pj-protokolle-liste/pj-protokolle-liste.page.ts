@@ -1118,5 +1118,28 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'BilderAuswahlCancelClicked', this.Debug.Typen.Page);
     }
   }
+
+  ProtokollDeletedEventHandler() {
+
+    try {
+
+      if(!lodash.isUndefined(this.Pool.Protokollliste[this.DBProjekte.CurrentProjekt.Projektkey])) {
+
+        this.Pool.Protokollliste[this.DBProjekte.CurrentProjekt.Projektkey] = lodash.filter(this.Pool.Protokollliste[this.DBProjekte.CurrentProjekt.Projektkey], (protokoll: Protokollstruktur) => {
+
+          return protokoll._id !== this.DB.CurrentProtokoll._id;
+        });
+      }
+
+      this.ShowProtokollEditor = false;
+      this.DB.CurrentProtokoll = null;
+
+      this.PrepareData();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'ProtokollDeletedEventHandler', this.Debug.Typen.Page);
+    }
+  }
 }
 

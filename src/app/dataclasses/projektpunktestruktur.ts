@@ -72,6 +72,10 @@ export type Projektpunktestruktur = {
   Hauptkostengruppe: number;
   Unterkostengruppe: number;
   Deleted:           boolean;
+  LV_relevant:       boolean;
+  Planung_relevant:  boolean;
+  LV_Eintrag:        boolean;
+  Planung_Eintrag:   boolean;
   Ruecklaufreminderliste: Ruecklaufreminderstruktur[];
 
   ZustaendigeExternIDListe: string[];

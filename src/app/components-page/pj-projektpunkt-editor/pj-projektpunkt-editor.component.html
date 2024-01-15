@@ -366,6 +366,50 @@
 
               </ion-col>
             </ion-row>
+
+            <ng-container *ngIf="ShowLVandPlanung">
+              <ion-row>
+                <ion-col>
+                  <ion-text color="baeblau"><b>Leistungsverzeichnis + Planung</b></ion-text>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <table *ngIf="DB.CurrentProjektpunkt !== null" class="paddingtable">
+                    <tr>
+                      <td>
+                        <checkbox-clon [Checked]="DB.CurrentProjektpunkt.LV_relevant" (CheckChanged)="LVRelevantCheckChanged($event)"></checkbox-clon>
+                      </td>
+                      <td style="width: 320px;">Eintrag ist relevant für das Leistungsverzeichnis</td>
+                      <td [style.color]="DB.CurrentProjektpunkt.LV_relevant === true ? 'black' : 'gray'" style="font-weight: bold; font-size: 140%">&rarr;</td>
+                      <td>
+                        <checkbox-clon [Enabled]="DB.CurrentProjektpunkt.LV_relevant === true" [Checked]="DB.CurrentProjektpunkt.LV_Eintrag" (CheckChanged)="LVEintragCheckChanged($event)"></checkbox-clon>
+                      </td>
+                      <td [style.color]="DB.CurrentProjektpunkt.LV_relevant === true ? 'black' : 'gray'">Eintrag wurde im Leistungsverzeichnis berücksichtigt</td>
+                    </tr>
+                  </table>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <table *ngIf="DB.CurrentProjektpunkt !== null" class="paddingtable">
+                    <tr>
+                      <td>
+                        <checkbox-clon [Checked]="DB.CurrentProjektpunkt.Planung_relevant" (CheckChanged)="PlanungRelevantCheckChanged($event)"></checkbox-clon>
+                      </td>
+                      <td style="width: 320px;">Eintrag ist relevant für die Planunterlagen</td>
+                      <td [style.color]="DB.CurrentProjektpunkt.Planung_relevant === true ? 'black' : 'gray'" style="font-weight: bold; font-size: 140%">&rarr;</td>
+                      <td>
+                        <checkbox-clon [Enabled]="DB.CurrentProjektpunkt.Planung_relevant === true" [Checked]="DB.CurrentProjektpunkt.Planung_Eintrag" (CheckChanged)="PlanungEintragCheckChanged($event)"></checkbox-clon>
+                      </td>
+                      <td [style.color]="DB.CurrentProjektpunkt.Planung_relevant === true ? 'black' : 'gray'">Eintrag wurde in den Planungsunterlagen berücksichtigt</td>
+                    </tr>
+                  </table>
+                </ion-col>
+              </ion-row>
+            </ng-container>
+
+
             <ion-row>
               <ion-col>
                 <ion-text color="baeblau"><b>{{DB.CurrentProjektpunkt.Anmerkungenliste.length > 1 ? 'Anmerkungen' : 'Anmerkung'}}</b></ion-text>

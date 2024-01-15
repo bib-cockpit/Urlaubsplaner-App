@@ -49,6 +49,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
   @Output() BeteiligteteilnehmerClicked = new EventEmitter();
   @Output() AddProtokollpunktClicked    = new EventEmitter();
   @Output() ProtokollpunktClicked       = new EventEmitter();
+  @Output() ProtokollDeletedEvent       = new EventEmitter();
   @Output() ValidChanged                = new EventEmitter<boolean>();
   @Output() ThumbnailClickedEvent       = new EventEmitter<{
     Index: number;
@@ -635,7 +636,7 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
   }
 
-  DeleteProtokollClicked() {
+  async DeleteProtokollClicked() {
 
     try {
 
@@ -643,24 +644,13 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
         this.StopSaveProtokollTimer();
 
-        this.DBProjektpunkte.DeleteProjektpunkteliste(this.Punkteliste, this.DBProjekte.CurrentProjekt).then(() => {
+        await this.DBProjektpunkte.RemoveProjektpunkteliste(this.Punkteliste);
+        await this.DB.RemoveProtokoll(this.DB.CurrentProtokoll);
 
-          this.Punkteliste = [];
+        this.Punkteliste = [];
 
-          this.DB.DeleteProtokoll(this.DB.CurrentProtokoll).then(() => {
-
-            this.Tools.PopPage();
-
-          }).catch((error: any) => {
-
-            this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'DeleteProtokollClicked', this.Debug.Typen.Component);
-          });
-        }).catch((error: any) => {
-
-          this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'DeleteProtokollClicked', this.Debug.Typen.Component);
-        });
+        this.ProtokollDeletedEvent.emit();
       }
-
 
     } catch (error) {
 
@@ -1232,6 +1222,18 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'GetLeistungsphase', this.Debug.Typen.Component);
+    }
+  }
+
+  CanDeleteCheckChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      this.CanDelete = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Editor', 'CanDeleteCheckChanged', this.Debug.Typen.Component);
     }
   }
 }

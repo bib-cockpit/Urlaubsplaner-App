@@ -21,6 +21,8 @@ import {
 import {
     PjKostengruppenFestlegungskategorieAuswahlModule
 } from "../../components-page/pj-kostengruppen-festlegungkategorie-auswahl/pj-kostengruppen-festlegungskategorie-auswahl.module";
+import {CheckboxClonModule} from "../../components/checkbox-clon/checkbox-clon.module";
+import {SafePipeModule} from "../../pipes/safe.pipe.module";
 
 const routes: Routes = [
   {
@@ -48,6 +50,8 @@ const routes: Routes = [
         PjBeteiligtenAuswahlModule,
         PjFestlegungskategorieEditorModule,
         PjKostengruppenFestlegungskategorieAuswahlModule,
+        CheckboxClonModule,
+        SafePipeModule,
     ],
   declarations: [PjFestlegungslistePage]
 })

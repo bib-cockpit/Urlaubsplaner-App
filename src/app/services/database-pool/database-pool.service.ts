@@ -35,6 +35,7 @@ export class DatabasePoolService {
   public Standorteliste:          Standortestruktur[];
   public Mitarbeiterliste:        Mitarbeiterstruktur[];
   public Projektpunkteliste:      Projektpunktestruktur[][];
+  public DeletedProjektpunkteliste: Projektpunktestruktur[][];
   public Protokollliste:          Protokollstruktur[][];
   public Bautagebuchliste:        Bautagebuchstruktur[][];
   public LOPListe:                LOPListestruktur[][];
@@ -127,6 +128,7 @@ export class DatabasePoolService {
       this.Fachbereich              = new Fachbereiche();
       this.CurrentAufgabenansichten = null;
       this.Festlegungskategorienliste = [];
+      this.DeletedProjektpunkteliste = [];
       this.ProjektdatenLoaded         = false;
 
       this.Signatur                 =
@@ -278,14 +280,12 @@ export class DatabasePoolService {
       let Params: HttpParams;
       let Headers: HttpHeaders;
       let ProjektpunkteObservable: Observable<any>;
-      let Gewerk: Fachbereichestruktur;
-      let Index: number;
 
       this.Projektpunkteliste[projekt.Projektkey] = [];
 
       return new Promise((resolve, reject) => {
 
-        Params  = new HttpParams({ fromObject: { projektkey: projekt.Projektkey }} );
+        Params  = new HttpParams({ fromObject: { projektkey: projekt.Projektkey, deleted: false }} );
         Headers = new HttpHeaders({
 
           'content-type': 'application/json',
@@ -326,6 +326,10 @@ export class DatabasePoolService {
               if(lodash.isUndefined(Projektpunkt.ProtokollShowBilder))    Projektpunkt.ProtokollShowBilder    = true;
               if(lodash.isUndefined(Projektpunkt.Thumbnailsize))          Projektpunkt.Thumbnailsize          = 'small';
               if(lodash.isUndefined(Projektpunkt.Ruecklaufreminderliste)) Projektpunkt.Ruecklaufreminderliste = [];
+              if(lodash.isUndefined(Projektpunkt.LV_relevant))            Projektpunkt.LV_relevant            = true;
+              if(lodash.isUndefined(Projektpunkt.Planung_relevant))       Projektpunkt.Planung_relevant       = true;
+              if(lodash.isUndefined(Projektpunkt.LV_Eintrag))             Projektpunkt.LV_Eintrag             = false;
+              if(lodash.isUndefined(Projektpunkt.Planung_Eintrag))        Projektpunkt.Planung_Eintrag        = false;
 
               Projektpunkt.Anmerkungenliste.forEach((Anmerkung: Projektpunktanmerkungstruktur) => {
 
@@ -346,6 +350,53 @@ export class DatabasePoolService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadProjektpunkteliste', this.Debug.Typen.Service);
+    }
+  }
+
+  public ReadDeletedProjektpunkteliste(projekt: Projektestruktur): Promise<any> {
+
+    try {
+
+      let Params: HttpParams;
+      let Headers: HttpHeaders;
+      let ProjektpunkteObservable: Observable<any>;
+
+      this.DeletedProjektpunkteliste[projekt.Projektkey] = [];
+
+      return new Promise((resolve, reject) => {
+
+        Params  = new HttpParams({ fromObject: { projektkey: projekt.Projektkey, deleted: true }} );
+        Headers = new HttpHeaders({
+
+          'content-type': 'application/json',
+        });
+
+        ProjektpunkteObservable = this.Http.get(this.CockpitserverURL + '/projektpunkte', { headers: Headers, params: Params } );
+
+        ProjektpunkteObservable.subscribe({
+
+          next: (data) => {
+
+
+            this.DeletedProjektpunkteliste[projekt.Projektkey] = <Projektpunktestruktur[]>data;
+          },
+          complete: () => {
+
+            this.Debug.ShowMessage('Read gelöschte Projektpunkte liste von ' + projekt.Projektkurzname + ' fertig.', 'Database Pool', 'ReadDeletedProjektpunkteliste', this.Debug.Typen.Service);
+
+            resolve(true);
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadDeletedProjektpunkteliste', this.Debug.Typen.Service);
     }
   }
 
@@ -1010,7 +1061,7 @@ export class DatabasePoolService {
 
     try {
 
-      let Steps: number           = 7;
+      let Steps: number           = 8;
       this.ShowProgress           = true;
       this.MaxProgressValue       = projektliste.length * Steps;
       this.CurrentProgressValue   = 0;
@@ -1028,6 +1079,10 @@ export class DatabasePoolService {
           this.ProgressMessage = 'Projektpunkte ' + Projekt.Projektkurzname;
 
           await this.ReadProjektpunkteliste(Projekt);
+
+          this.CurrentProgressValue++;
+
+          await this.ReadDeletedProjektpunkteliste(Projekt);
 
           this.CurrentProgressValue++;
 

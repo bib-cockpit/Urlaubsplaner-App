@@ -287,7 +287,8 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
                   return punkt.Oberkostengruppe      === Kostengruppe.Kostengruppennummer &&
                          punkt.AufgabenbereichID     === Bereich.id &&
                          punkt.AufgabenteilbereichID === Teilaufgabe[Kostengruppe.Kostengruppennummer].id &&
-                         punkt.Leistungsphase        === this.Leistungsphase.toString();
+                         punkt.Leistungsphase        === this.Leistungsphase.toString() &&
+                         punkt.Deleted               === false;
                 });
 
                 if(Punkteliste.length > 0) {
@@ -441,6 +442,13 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
         case 'Fortschritt':
 
           this.DBProjektpunkte.CurrentProjektpunkt.Fortschritt = data;
+
+          break;
+
+        case 'Kostengruppe':
+
+          this.DBProjektpunkte.CurrentProjektpunkt.Oberkostengruppe = data;
+
 
           break;
       }
@@ -669,6 +677,47 @@ export class PjPlanungsmatrixPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'FortschrittClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  DeleteClickedEventHandler() {
+
+    try {
+
+      this.ShowEditor = false;
+
+      this.PrepareDaten();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'DeleteClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  KostengruppeButtonClickedHandler() {
+
+    try {
+
+      this.Auswahldialogorigin = 'Kostengruppe';
+
+      this.Auswahltitel  = 'Kostengruppe festlegen';
+      this.Auswahlliste  = [];
+      this.Auswahlliste.push({ Index:  0, FirstColumn:  'KG 410', SecoundColumn: '', Data: 410 });
+      this.Auswahlliste.push({ Index:  1, FirstColumn:  'KG 420', SecoundColumn: '', Data: 420 });
+      this.Auswahlliste.push({ Index:  2, FirstColumn:  'KG 430', SecoundColumn: '', Data: 430 });
+      this.Auswahlliste.push({ Index:  3, FirstColumn:  'KG 434', SecoundColumn: '', Data: 434 });
+      this.Auswahlliste.push({ Index:  4, FirstColumn:  'KG 440', SecoundColumn: '', Data: 440 });
+      this.Auswahlliste.push({ Index:  5, FirstColumn:  'KG 450', SecoundColumn: '', Data: 450 });
+      this.Auswahlliste.push({ Index:  6, FirstColumn:  'KG 460', SecoundColumn: '', Data: 460 });
+      this.Auswahlliste.push({ Index:  7, FirstColumn:  'KG 475', SecoundColumn: '', Data: 475 });
+      this.Auswahlliste.push({ Index:  8, FirstColumn:  'KG 480', SecoundColumn: '', Data: 480 });
+
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.DBProjektpunkte.CurrentProjektpunkt.Oberkostengruppe });
+      this.ShowAuswahl  = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Planungsmatrix', 'KostengruppeButtonClickedHandler', this.Debug.Typen.Page);
     }
   }
 }

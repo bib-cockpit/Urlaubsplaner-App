@@ -10,7 +10,7 @@ import {Observable} from "rxjs";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
-
+import * as lodash from "lodash-es";
 
 @Component({
   selector: 'common-debug-page',
@@ -28,7 +28,7 @@ export class CommonDebugPage implements OnInit, OnDestroy {
               public Const: ConstProvider,
               public fb: FormBuilder,
               private http: HttpClient,
-              private Pool: DatabasePoolService,
+              public Pool: DatabasePoolService,
               public DBProjekte: DatabaseProjekteService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public AuthService: DatabaseAuthenticationService,
@@ -50,6 +50,7 @@ export class CommonDebugPage implements OnInit, OnDestroy {
 
     try {
 
+      if(lodash.isUndefined(this.DBProjektpunkte.CurrentProjektpunkt)) this.DBProjektpunkte.CurrentProjektpunkt = null;
 
 
     } catch (error) {
@@ -174,6 +175,27 @@ export class CommonDebugPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Debug', 'DebugNoExternalEmailChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  ProjektpunkteLoeschenClicked() {
+
+    try {
+
+      this.DBProjektpunkte.RemoveProjektpunkteliste(this.Pool.DeletedProjektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey]).then(() => {
+
+        debugger;
+
+        this.Pool.DeletedProjektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey] = [];
+
+      }).catch((error) => {
+
+        debugger;
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Debug', 'ProjektpunkteLoeschenClicked', this.Debug.Typen.Page);
     }
   }
 }

@@ -213,10 +213,9 @@
                     </table>
                   </td>
                 </tr>
-                <tr>
+                <tr *ngIf="Punkt.Anmerkungenliste.length > 0">
                   <td>
                     <table>
-                      <ng-container *ngIf="Punkt.Anmerkungenliste.length > 0">
                         <tr *ngFor="let Anmerkung of Punkt.Anmerkungenliste">
                           <td style="width: 60px; color: orange">
                             {{GetAnmerkungDatum(Anmerkung)}}
@@ -228,7 +227,6 @@
                             {{Anmerkung.Anmerkung}}
                           </td>
                         </tr>
-                      </ng-container>
                     </table>
 
                   </td>

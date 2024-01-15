@@ -75,6 +75,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
   @Input() PositionY: number;
   @Input() ZIndex: number;
   @Input() TerminValueBreite: number;
+  @Input() ShowLVandPlanung: boolean;
 
   public Valid: boolean;
   public DeleteEnabled: boolean;
@@ -145,6 +146,7 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
       this.Mitarbeiterspalten = 3;
       this.Mitarbeiterzeilen  = 0;
       this.Mitarbeiterliste   = [];
+      this.ShowLVandPlanung   = false;
 
 
       this.StatusbuttonEnabled = this.DB.CurrentProjektpunkt.Status !== this.Const.Projektpunktstatustypen.Festlegung.Name;
@@ -1212,6 +1214,54 @@ export class PjProjektpunktEditorComponent implements OnInit, OnDestroy, AfterVi
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'StatusChangedHandler', this.Debug.Typen.Component);
+    }
+  }
+
+  LVRelevantCheckChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      this.DB.CurrentProjektpunkt.LV_relevant = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'LVRelevantCheckChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  LVEintragCheckChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      this.DB.CurrentProjektpunkt.LV_Eintrag = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'LVEintragCheckChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  PlanungRelevantCheckChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      this.DB.CurrentProjektpunkt.Planung_relevant = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'PlanungRelevantCheckChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  PlanungEintragCheckChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      this.DB.CurrentProjektpunkt.Planung_Eintrag = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projektpunkt Editor', 'PlanungEintragCheckChanged', this.Debug.Typen.Component);
     }
   }
 }

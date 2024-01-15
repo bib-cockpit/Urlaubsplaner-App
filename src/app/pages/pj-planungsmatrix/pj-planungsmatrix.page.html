@@ -284,6 +284,8 @@
                                  [Dialoghoehe]="600"
                                  [PositionY]="100"
                                  [Titel]="GetEditortitel()"
+                                 (KostengruppeButtonClicked)="KostengruppeButtonClickedHandler()"
+                                 (DeleteClickedEvent)="DeleteClickedEventHandler()"
                                  (FortschrittClickedEvent)="FortschrittClickedEventHandler()"
                                  (TerminButtonClicked)="ShowDateKkPicker = true"
                                  (CancelClickedEvent)="ShowEditor = false"
