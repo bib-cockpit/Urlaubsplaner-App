@@ -32,39 +32,55 @@
     </div>
 
     <div [style.height.px]="Listenhoehe" style="width: 100%; height: 100%; overflow: auto;">
-
-      <div  *ngFor="let Tagebuch of Tagebuchliste; let i = index" (click)="TagebuchClicked(Tagebuch)" style="width: 100%; cursor: pointer; padding-left: 8px; padding-right: 8px">
+      <div   style="width: 100%; padding-left: 8px; padding-right: 8px; padding-top: 8px">
         <table width="100%" class="docinnertablenew">
-          <tr>
+          <tr *ngFor="let Tagebuch of Tagebuchliste; let i = index">
             <td style="width: 60px; height: 40px">{{Tagebuch.Nummer}}</td>
             <td style="width: 100px;">{{Tagebuch.Zeitstring}}</td>
-            <td style="width: auto;">Bautagebuch {{Tagebuch.Nummer}}</td>
+            <td style="width: auto;">
+              <div  (click)="TagebuchClicked($event, Tagebuch)" class="tagebuchdivclass">
+                Bautagebuch {{Tagebuch.Nummer}}
+              </div>
+            </td>
             <td style="width: 80px; text-align: center">{{Tagebuch.Eintraegeliste.length}}</td>
             <td style="width: 80px;">
 
-              <div *ngIf="Tagebuch.Eintraegeliste.length > 0"class="maildivclass" (click)="SendMailButtonClicked($event, Tagebuch)">
                 <table class="nobordersmalltable" width="100%">
                   <tr>
                     <td align="center">
-                      <ion-icon  name="mail" [color]="Tagebuch.GesendetZeitstempel !== null ? 'gruen' : 'rot'"></ion-icon>
+                      <div *ngIf="Tagebuch.Eintraegeliste.length > 0" class="maildivclass" (click)="SendMailButtonClicked($event, Tagebuch)">
+                        <ion-icon  name="mail" [color]="Tagebuch.GesendetZeitstempel !== null ? 'gruen' : 'rot'"></ion-icon>
+                      </div>
                     </td>
+
+                    <ng-container *ngIf="Tagebuch.GesendetZeitstempel !== null">
+                      <td style="width: 10px"></td>
+                      <td>
+                        <div (click)="ShowPdfButtonClicked($event, Tagebuch)" class="maildivclass">
+                          <ion-icon  name="document" [color]="Basics.Ionicfarben.BAEBlau"></ion-icon>
+                        </div>
+                      </td>
+
+                    </ng-container>
+
                   </tr>
                   <ng-container *ngIf="Tagebuch.GesendetZeitstempel !== null">
                     <tr>
-                      <td style="text-align: center; font-size: 80%">{{Tools.GetDatumFromZeitstempel(Tagebuch.GesendetZeitstempel)}}</td>
+                      <td colspan="3" style="text-align: center; font-size: 80%">{{Tools.GetDatumFromZeitstempel(Tagebuch.GesendetZeitstempel)}}</td>
                     </tr>
                     <tr>
-                      <td style="text-align: center; font-size: 80%">{{Tools.GetZeitFromZeitstempel(Tagebuch.GesendetZeitstempel)}}</td>
+                      <td colspan="3" style="text-align: center; font-size: 80%">{{Tools.GetZeitFromZeitstempel(Tagebuch.GesendetZeitstempel)}}</td>
                     </tr>
                   </ng-container>
                 </table>
 
-              </div>
+
 
             </td>
           </tr>
         </table>
       </div>
+
 
       <div *ngIf="Tagebuchliste.length === 0"  class="keineintragclass">
         <table   width="100%" class="docinnertable">
@@ -101,9 +117,8 @@
 </pj-email-send>
 
 <pj-bautagebuch-editor *ngIf="ShowTagebucheditor"
-                       [Dialoghoehe]="900"
                        [Dialogbreite]="1400"
-                       [PositionY]="90"
+                       [PositionY]="0"
                        (BeteiligteteilnehmerClicked)="BeteiligteteilnehmerClickedHandler()"
                        (EintragClickedEvent)="ShowTagebucheintrageditor = true"
                        (AddTaetigkeiteintragEvent)="ShowTagebucheintrageditor = true"

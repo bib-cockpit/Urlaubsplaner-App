@@ -26,6 +26,7 @@ import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 
 @Component({
   selector: 'pj-baustelle-tagebuchliste',
@@ -224,9 +225,12 @@ export class PjBaustelleTagebuchlistePage implements OnInit, OnDestroy {
     }
   }
 
-  TagebuchClicked(Tagebuch: Bautagebuchstruktur) {
+  TagebuchClicked(event, Tagebuch: Bautagebuchstruktur) {
 
     try {
+
+      event.stopPropagation();
+      event.preventDefault();
 
       this.DB.CurrentTagebuch = lodash.cloneDeep(Tagebuch);
       this.ShowTagebucheditor = true;
@@ -260,8 +264,8 @@ export class PjBaustelleTagebuchlistePage implements OnInit, OnDestroy {
       Nachricht  = 'Sehr geehrte Damen und Herren,\n\n';
       Nachricht += 'anbei übersende ich Ihnen das Bautagebuch vom ' + moment(this.DB.CurrentTagebuch.Zeitstempel).format('DD.MM.YYYY') + '\n';
 
-      this.DB.CurrentTagebuch.EmpfaengerExternIDListe   = [];
-      this.DB.CurrentTagebuch.CcEmpfaengerInternIDListe = [];
+      // this.DB.CurrentTagebuch.EmpfaengerExternIDListe   = [];
+      // this.DB.CurrentTagebuch.CcEmpfaengerInternIDListe = [];
       this.DB.CurrentTagebuch.Betreff                   = Betreff;
       this.DB.CurrentTagebuch.Nachricht                 = Nachricht;
       this.DB.CurrentTagebuch.Filename                  = Filename;
@@ -520,6 +524,28 @@ export class PjBaustelleTagebuchlistePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Bautagebuch Liste', 'BeteiligteteilnehmerClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  async ShowPdfButtonClicked($event: MouseEvent, Tagebuch: Bautagebuchstruktur) {
+
+    try {
+
+      let File: Teamsfilesstruktur;
+
+      File      = this.GraphService.GetEmptyTeamsfile();
+      File.id   = Tagebuch.FileID;
+      File.name = Tagebuch.Filename;
+
+      debugger;
+
+      await this.GraphService.DownloadPDFSiteFile(File);
+
+      this.Tools.PushPage(this.Const.Pages.PDFViewerPage);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Bautagebuch Liste', 'ShowPdfButtonClicked', this.Debug.Typen.Page);
     }
   }
 }

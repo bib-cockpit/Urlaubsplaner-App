@@ -34,8 +34,21 @@
                         <input-clone Titel="Auftraggeber" [(Value)]="DB.CurrentTagebuch.Auftraggeber" [Required]="true"  [MaxLength]="100" (TextChanged)="TextChanged($event)"></input-clone>
                       </ion-col>
                       <ion-col>
+                        <div class="objektueberwacherdiv" (click)="BeteiligteteilnehmerClicked.emit()">
+                          <table class="paddingsmalltable">
+                            <tr>
+                              <td style="font-size: 80%">Objektüberwachung</td>
+                            </tr>
+                            <tr *ngFor="let Mitarbeiter of Objektueberwacherliste">
+                              <td>{{Mitarbeiter}} / BAE</td>
+                            </tr>
+                          </table>
+
+                        </div>
+                        <!--
                         <input-clone [MinHeight]="44" [Lines]="LinesanzahlTeilnehmer"
-                                       [Clickable]="true" [Enabled]="false" Titel="Objektüberwachung" [Value]="GetInterneTeilnehmerliste()" (click)="BeteiligteteilnehmerClicked.emit()"></input-clone>
+                                       [Clickable]="true" [Enabled]="false" Titel="" [Value]="GetInterneTeilnehmerliste()"></input-clone>
+                                       -->
                       </ion-col>
                     </ion-row>
                     <ion-row>
@@ -48,7 +61,7 @@
                     </ion-row>
                     <ion-row>
                       <ion-col>
-                        <input-clone Titel="Bezeichnung der Baumaßnahme" [(Value)]="DB.CurrentTagebuch.Bezeichnung" [Required]="true" [MinLength]="3" [MaxLength]="200" (TextChanged)="TextChanged($event)"></input-clone>
+                        <input-clone Titel="Bezeichnung der Baumaßnahme" [Inputtype]="'text'"  [(Value)]="DB.CurrentTagebuch.Bezeichnung" [Required]="true" [MinLength]="3" [MaxLength]="200" (TextChanged)="TextChanged($event)"></input-clone>
                       </ion-col>
                       <ion-col>
                         <input-clone Titel="Leistung" [(Value)]="DB.CurrentTagebuch.Leistung" [Required]="true" [MinLength]="3" [MaxLength]="200" (TextChanged)="TextChanged($event)"></input-clone>

@@ -16,9 +16,6 @@ import {Subscription} from "rxjs";
 import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
-import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
-import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
-import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 
 @Component({
   selector: 'pj-bautagebuch-editor',
@@ -34,6 +31,7 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
   public DeleteEnabled: boolean;
   public Headerhoehe: number;
   public LinesanzahlTeilnehmer: number;
+  public Objektueberwacherliste: string[];
 
   @Output() ValidChange = new EventEmitter<boolean>();
   @Output() CancelClickedEvent         = new EventEmitter<any>();
@@ -46,7 +44,6 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
   @Input() Titel: string;
   @Input() Iconname: string;
   @Input() Dialogbreite: number;
-  @Input() Dialoghoehe: number;
   @Input() PositionY: number;
   @Input() ZIndex: number;
   private MitarbeiterSubscription: Subscription;
@@ -69,7 +66,6 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
       this.Titel             = this.Const.NONE;
       this.Iconname          = 'book-outline';
       this.Dialogbreite      = 400;
-      this.Dialoghoehe       = 300;
       this.LinesanzahlTeilnehmer    = 1;
       this.PositionY         = 100;
       this.ZIndex            = 2000;
@@ -79,6 +75,7 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
       this.Beteiligtenliste  = [];
       this.Mitarbeiterliste  = [];
       this.MitarbeiterSubscription = null;
+      this.Objektueberwacherliste = [];
 
     } catch (error) {
 
@@ -193,6 +190,8 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
       let Index: number;
       let Beteiligteliste: Projektbeteiligtestruktur[];
       let Mitarbeiter: Mitarbeiterstruktur;
+
+      this.Objektueberwacherliste = this.DB.GetInterneTeilnehmerliste(true, true);
 
       this.Beteiligtenliste = [];
       this.Mitarbeiterliste = [];
@@ -389,6 +388,8 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
   EmpfaengerExternCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
 
     try {
+
+      debugger;
 
       if(this.DB.CurrentTagebuch !== null) {
 
@@ -817,26 +818,5 @@ export class PjBautagebuchEditorComponent implements OnInit, OnDestroy, AfterVie
 
       this.Debug.ShowErrorMessage(error, 'Bautagebuch Editor', 'DatumChangedHandler', this.Debug.Typen.Component);
     }
-  }
-
-  GetInterneTeilnehmerliste(): string {
-
-    try {
-
-      let Liste: string[] = this.DB.GetInterneTeilnehmerliste();
-      let html: string = '';
-
-      for(let eintrag of Liste) {
-
-        html += eintrag + '<br>';
-      }
-
-      return html;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Bautagebuch Editor', 'GetInterneTeilnehmerliste', this.Debug.Typen.Component);
-    }
-
   }
 }

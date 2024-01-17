@@ -579,6 +579,8 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
     try {
 
+      debugger;
+
       if(this.DB.CurrentProtokoll._id === null) {
 
         this.DB.SaveProtokoll().then(() => {
@@ -595,33 +597,6 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'AddProtokollpunktClickedHandler', this.Debug.Typen.Page);
-    }
-  }
-
-  StatusClickedHandler() {
-
-    try {
-
-      this.Auswahltitel = 'Stataus festlegen';
-      this.Auswahlliste = [];
-
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Protokollliste_Projektpunkteditor_Status;
-
-      this.Auswahlliste  = [];
-      this.Auswahlliste.push({ Index: 0, FirstColumn: this.Const.Projektpunktstatustypen.Protokollpunkt.Displayname, SecoundColumn:  '',  Data: this.Const.Projektpunktstatustypen.Protokollpunkt.Name });
-      this.Auswahlliste.push({ Index: 1, FirstColumn: this.Const.Projektpunktstatustypen.Offen.Displayname,          SecoundColumn:  '',  Data: this.Const.Projektpunktstatustypen.Offen.Name });
-      this.Auswahlliste.push({ Index: 2, FirstColumn: this.Const.Projektpunktstatustypen.Bearbeitung.Displayname,    SecoundColumn:  '',  Data: this.Const.Projektpunktstatustypen.Bearbeitung.Name });
-      this.Auswahlliste.push({ Index: 3, FirstColumn: this.Const.Projektpunktstatustypen.Geschlossen.Displayname,    SecoundColumn: '',   Data: this.Const.Projektpunktstatustypen.Geschlossen.Name });
-      this.Auswahlliste.push({ Index: 4, FirstColumn: this.Const.Projektpunktstatustypen.Ruecklauf.Displayname,      SecoundColumn:   '', Data: this.Const.Projektpunktstatustypen.Ruecklauf.Name });
-      this.Auswahlliste.push({ Index: 5, FirstColumn: this.Const.Projektpunktstatustypen.Festlegung.Displayname,     SecoundColumn:  '',  Data: this.Const.Projektpunktstatustypen.Festlegung.Name });
-
-
-      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.DBProjektpunkte.CurrentProjektpunkt.Status});
-      this.ShowAuswahl  = true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Protokoll Liste', 'StatusClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -881,6 +856,8 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
 
       this.DBProjektpunkte.CurrentProjektpunkt = lodash.cloneDeep(projetpunkt);
       this.ShowProjektpunktEditor              = true;
+
+      debugger;
 
     } catch (error) {
 

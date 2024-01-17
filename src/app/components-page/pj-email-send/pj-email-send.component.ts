@@ -256,6 +256,8 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
           break;
 
         case this.Pool.Emailcontentvarinaten.Bautagebuch:
+
+          this.DBTagebuch.PrepareBautagebuchEmaildata();
           /*
 
           AnzahlExtern   = this.DBTagebuch.CurrentTagebuch.EmpfaengerExternIDListe.length;
@@ -446,6 +448,8 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           this.DBTagebuch.CurrentTagebuch.GesendetZeitstempel = NextBautagebuch.GesendetZeitstempel;
           this.DBTagebuch.CurrentTagebuch.GesendetZeitstring  = NextBautagebuch.GesendetZeitstring;
+          this.DBTagebuch.CurrentTagebuch.Filename            = NextBautagebuch.Filename;
+          this.DBTagebuch.CurrentTagebuch.FileID              = NextBautagebuch.FileID;
 
           await this.DBTagebuch.UpdateBautagebuch();
 
@@ -547,6 +551,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  /*
   GetExternTeilnehmerliste(cc: boolean) {
 
     try {
@@ -597,16 +602,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           Value += this.DBBeteiligte.GetBeteiligtenvorname(Beteiligte) + ' ' + Beteiligte.Name + '\n';
 
-          /*
-          if(Beteiligte.Beteiligteneintragtyp === this.Const.Beteiligteneintragtypen.Person) {
 
-            Value += this.DBBeteiligte.GetBeteiligtenvorname(Beteiligte) + ' ' + Beteiligte.Name + '\n';
-          }
-          else {
-            Value += Beteiligte.Firma + '\n';
-          }
-
-           */
         }
       }
 
@@ -617,6 +613,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
       this.Debug.ShowErrorMessage(error.message, 'Protokoll Editor', 'GetBeteiligteteilnehmerliste', this.Debug.Typen.Component);
     }
   }
+    */
 
 
   GetBrunicklteilnehmerliste(cc: boolean) {

@@ -8,6 +8,37 @@
   transform: translateY(-50%);
 }
 
+.tagebuchdivclass:hover {
+
+  background: silver;
+}
+
+.maildivclass {
+
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+}
+
+.tagebuchdivclass {
+
+  // padding: 4px;
+  background: white;
+  border-radius: 3px;
+  width: 100%;
+  min-height: 36px;
+  height: 100%;
+  display: flex;
+  justify-content: flex-start; // horizontal
+  align-items: center; // vertikal
+  cursor: pointer;
+  padding: 4px;
+  // border-radius: 3px;
+}
+
 .projecticonclass {
 
   height: 34px;

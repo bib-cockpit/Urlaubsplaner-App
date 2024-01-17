@@ -1115,6 +1115,8 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
 
     try {
 
+      debugger;
+
       return lodash.indexOf(this.DB.CurrentProtokoll.EmpfaengerExternIDListe, FirmenID) !== -1;
 
     } catch (error) {

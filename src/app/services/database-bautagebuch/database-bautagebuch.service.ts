@@ -19,6 +19,8 @@ import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestru
 import {Graphservice} from "../graph/graph";
 import {BasicsProvider} from "../basics/basics";
 import {DatabaseAuthenticationService} from "../database-authentication/database-authentication.service";
+import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
+import {DatabaseProjektbeteiligteService} from "../database-projektbeteiligte/database-projektbeteiligte.service";
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +41,7 @@ export class DatabaseBautagebuchService {
               private DBProjekt: DatabaseProjekteService,
               private GraphService: Graphservice,
               private Basics: BasicsProvider,
+              private DBBeteiligte: DatabaseProjektbeteiligteService,
               private AuthService: DatabaseAuthenticationService,
               private http: HttpClient) {
     try {
@@ -55,6 +58,156 @@ export class DatabaseBautagebuchService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Bautagebuch', 'constructor', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetExterneTeilnehmerliste(getliste: boolean, addfirma: boolean): any {
+
+    try {
+
+      let Beteiligte: Projektbeteiligtestruktur;
+      let Value: string = '';
+      let Eintrag;
+      let Liste: string[] = [];
+      let Firma: Projektfirmenstruktur;
+
+
+      debugger;
+
+      for(let id of this.CurrentTagebuch.BeteiligtExternIDListe) {
+
+        Beteiligte = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: id});
+
+        if(!lodash.isUndefined(Beteiligte)) {
+
+          Eintrag = this.DBBeteiligte.GetBeteiligtenvorname(Beteiligte) + ' ' + Beteiligte.Name;
+
+          if(addfirma && this.DBProjekt.CurrentProjekt !== null) {
+
+            Firma = lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, {FirmenID: Beteiligte.FirmaID });
+
+            if(lodash.isUndefined(Firma)) Firma = null;
+          }
+
+          if(Firma !== null) Eintrag += ' (' + Firma.Firma + ')';
+
+          Value +=  Eintrag + '\n';
+
+          Liste.push(Eintrag);
+        }
+      }
+
+      return getliste ? Liste : Value;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Bautagebuch', 'GetBeteiligteteilnehmerliste', this.Debug.Typen.Service);
+    }
+  }
+
+  public PrepareBautagebuchEmaildata() {
+
+    try {
+
+      let Beteiligter: Projektbeteiligtestruktur;
+      let Mitarbeiter: Mitarbeiterstruktur;
+      let Name: string;
+      let Firma: Projektfirmenstruktur;
+      let CcEmpfaengerliste: {
+        Name:  string;
+        Firma: string;
+        Email: string;
+      }[];
+      let Empfaengerliste: {
+        Name:  string;
+        Firma: string;
+        Email: string;
+      }[];
+
+      // Teilnehmer bestimmen
+
+      debugger;
+
+      this.CurrentTagebuch.ExterneTeilnehmerliste = this.GetExterneTeilnehmerliste(true, true);
+      this.CurrentTagebuch.InterneTeilnehmerliste = this.GetInterneTeilnehmerliste(true, true);
+
+      // Empfaenger bestimmen
+
+      Empfaengerliste   = [];
+      CcEmpfaengerliste = [];
+
+      // Externe Teilnehmer der Firmen hinzufügen
+
+      debugger;  // EmpfaengerExternIDListe
+
+      for(let ExternEmpfaengerID of this.CurrentTagebuch.EmpfaengerExternIDListe) {
+
+        Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: ExternEmpfaengerID});
+
+        if(!lodash.isUndefined(Beteiligter)) {
+
+          Name  = Beteiligter.Vorname + ' ' + Beteiligter.Name;
+          Firma = lodash.find(this.DBProjekt.CurrentProjekt.Firmenliste, {FirmenID: Beteiligter.FirmaID });
+
+          Empfaengerliste.push({
+
+            Name: Name,
+            Email: Beteiligter.Email,
+            Firma: lodash.isUndefined(Firma) ? '' : Firma.Firma
+          });
+        }
+      }
+
+      // Projektemailadressen der Externen r Firmen hinzufügen
+
+      for(Firma of this.DBProjekt.CurrentProjekt.Firmenliste) {
+
+        if(lodash.indexOf(this.CurrentTagebuch.EmpfaengerExternIDListe, Firma.FirmenID) !== -1) {
+
+          Empfaengerliste.push({
+
+            Name: 'Projektemailadresse',
+            Email: Firma.Email,
+            Firma: Firma.Firma
+          });
+        }
+      }
+
+      // Mitarbeiter zu Cc Liste hinzufügen
+
+
+      for(let InternEmpfaengerID of this.CurrentTagebuch.EmpfaengerInternIDListe) {
+
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: InternEmpfaengerID});
+
+        if(!lodash.isUndefined(Mitarbeiter)) CcEmpfaengerliste.push({
+
+          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
+          Email: Mitarbeiter.Email,
+          Firma: 'BAE'
+        });
+      }
+
+      // Projektemailadresse zu Cc Liste hinzufügen
+
+      if(this.DBProjekt.CurrentProjekt.Projektmailadresse !== '' && lodash.indexOf(this.CurrentTagebuch.EmpfaengerInternIDListe, this.DBProjekt.CurrentProjekt._id) !== -1) {
+
+        CcEmpfaengerliste.push({
+
+          Name: 'Projektemailadresse',
+          Email: this.DBProjekt.CurrentProjekt.Projektmailadresse,
+          Firma: 'BAE'
+        });
+      }
+
+      this.CurrentTagebuch.Empfaengerliste   = Empfaengerliste;
+      this.CurrentTagebuch.CcEmpfaengerliste = CcEmpfaengerliste;
+
+      debugger;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Protkoll', 'PrepareBautagebuchEmaildata', this.Debug.Typen.Service);
     }
   }
 
@@ -173,11 +326,12 @@ export class DatabaseBautagebuchService {
   }
 
 
-  public GetInterneTeilnehmerliste(): any {
+  public GetInterneTeilnehmerliste(getliste: boolean, addfirma: boolean): any {
 
     try {
 
       let Teammitglied: Mitarbeiterstruktur;
+      let Value: string = '';
       let Liste:string[] = [];
       let Eintrag: string;
 
@@ -187,13 +341,17 @@ export class DatabaseBautagebuchService {
 
         if(!lodash.isUndefined(Teammitglied)) {
 
-          Eintrag = Teammitglied.Vorname + ' ' + Teammitglied.Name + ' ( ' + Teammitglied.Fachbereich + ')';
+          Eintrag = Teammitglied.Vorname + ' ' + Teammitglied.Name;
+
+          if(addfirma) Eintrag += ' (BAE)';
+
+          Value +=  Eintrag + '\n';
 
           Liste.push(Eintrag);
         }
       }
 
-      return Liste;
+      return getliste ? Liste : Value;
 
     } catch (error) {
 
@@ -436,7 +594,8 @@ export class DatabaseBautagebuchService {
 
           bautagebuch.Empfaengerliste.push({
             Email: 'p.hornburger@gmail.com',
-            Name:  'Peter Hornburger'
+            Name:  'Peter Hornburger',
+            Firma: 'BAE'
           });
         }
       }
@@ -527,14 +686,7 @@ export class DatabaseBautagebuchService {
       let Mitarbeiter: Mitarbeiterstruktur;
       let Liste: string[] = [];
       let Name: string;
-      let CcEmpfaengerliste: {
-        Name:  string;
-        Email: string;
-      }[];
-      let Empfaengerliste: {
-        Name:  string;
-        Email: string;
-      }[];
+
 
       for(let InternID of bautagebuch.BeteiligtInternIDListe) {
 
@@ -564,69 +716,10 @@ export class DatabaseBautagebuchService {
         BeteiligtInternListe: Liste,
       };
 
-      debugger;
+      // Teilnehmer bestimmen
 
-      // Empfaenger bestimmen
-
-      Empfaengerliste   = [];
-      CcEmpfaengerliste = [];
-
-      for(let ExternEmpfaengerID of Daten.Bautagebuch.EmpfaengerExternIDListe) {
-
-        Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: ExternEmpfaengerID});
-
-        if(!lodash.isUndefined(Beteiligter)) {
-
-          Name = Beteiligter.Vorname + ' ' + Beteiligter.Name;
-
-          Empfaengerliste.push({
-
-            Name: Name,
-            Email: Beteiligter.Email
-          });
-        }
-      }
-
-      for(let InternEmpfaengerID of Daten.Bautagebuch.EmpfaengerInternIDListe) {
-
-        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: InternEmpfaengerID});
-
-        if(!lodash.isUndefined(Mitarbeiter)) Empfaengerliste.push({
-
-          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
-          Email: Mitarbeiter.Email
-        });
-      }
-
-      for(let CcExternEmpfaengerID of Daten.Bautagebuch.CcEmpfaengerExternIDListe) {
-
-        Beteiligter = lodash.find(this.DBProjekt.CurrentProjekt.Beteiligtenliste, {BeteiligtenID: CcExternEmpfaengerID});
-
-        if(!lodash.isUndefined(Beteiligter)) {
-
-          Name = Beteiligter.Vorname + ' ' + Beteiligter.Name;
-
-          CcEmpfaengerliste.push({
-
-            Name: Name,
-            Email: Beteiligter.Email
-          });
-        }
-      }
-
-      for(let CcInternEmpfaengerID of Daten.Bautagebuch.CcEmpfaengerInternIDListe) {
-
-        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: CcInternEmpfaengerID});
-
-        if(!lodash.isUndefined(Mitarbeiter)) CcEmpfaengerliste.push({
-
-          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
-          Email: Mitarbeiter.Email
-        });
-      }
-
-      Daten.Bautagebuch.Empfaengerliste   = Empfaengerliste;
-      Daten.Bautagebuch.CcEmpfaengerliste = CcEmpfaengerliste;
+      Daten.Bautagebuch.Empfaengerliste   = this.GetExterneTeilnehmerliste(true, true);
+      Daten.Bautagebuch.CcEmpfaengerliste = this.GetInterneTeilnehmerliste(true, true);
 
       // Bautagebuch versenden
 
@@ -643,6 +736,8 @@ export class DatabaseBautagebuchService {
             Teamsfile = ne;
           },
           complete: () => {
+
+            debugger;
 
             Daten.Bautagebuch.FileID              = Teamsfile.id;
             Daten.Bautagebuch.GesendetZeitstempel = Teamsfile.GesendetZeitstempel;

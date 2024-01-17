@@ -555,16 +555,7 @@ export class DatabaseProtokolleService {
       let Kostengruppe: Kostengruppenstruktur;
       let Text: string;
       let Mitarbeiter: Mitarbeiterstruktur;
-      let CcEmpfaengerliste: {
-        Name:  string;
-        Firma: string;
-        Email: string;
-      }[];
-      let Empfaengerliste: {
-        Name:  string;
-        Firma: string;
-        Email: string;
-      }[];
+
       let Daten: {
 
         DirectoryID: string;

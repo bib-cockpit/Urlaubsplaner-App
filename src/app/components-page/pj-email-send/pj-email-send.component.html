@@ -54,6 +54,13 @@
                           <td>{{Empfaenger.Email}}</td>
                         </tr>
                       </ng-container>
+                      <ng-container *ngSwitchCase="Pool.Emailcontentvarinaten.Bautagebuch">
+                        <tr *ngFor="let Empfaenger of DBTagebuch.CurrentTagebuch.Empfaengerliste" style="font-size: 90%;">
+                          <td>{{Empfaenger.Name}}</td>
+                          <td>{{Empfaenger.Firma}}</td>
+                          <td>{{Empfaenger.Email}}</td>
+                        </tr>
+                      </ng-container>
                     </ng-container>
 
                   </table>
@@ -79,6 +86,13 @@
                       </ng-container>
                       <ng-container *ngSwitchCase="Pool.Emailcontentvarinaten.Protokoll">
                         <tr *ngFor="let CcEmpfaenger of DBProtokolle.CurrentProtokoll.CcEmpfaengerliste" style="font-size: 90%;">
+                          <td>{{CcEmpfaenger.Name}}</td>
+                          <td>{{CcEmpfaenger.Firma}}</td>
+                          <td>{{CcEmpfaenger.Email}}</td>
+                        </tr>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="Pool.Emailcontentvarinaten.Bautagebuch">
+                        <tr *ngFor="let CcEmpfaenger of DBTagebuch.CurrentTagebuch.CcEmpfaengerliste" style="font-size: 90%;">
                           <td>{{CcEmpfaenger.Name}}</td>
                           <td>{{CcEmpfaenger.Firma}}</td>
                           <td>{{CcEmpfaenger.Email}}</td>

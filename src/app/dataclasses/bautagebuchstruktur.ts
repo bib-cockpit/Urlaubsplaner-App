@@ -38,6 +38,10 @@ export type Bautagebuchstruktur = {
   EmpfaengerInternIDListe: string[];
   CcEmpfaengerExternIDListe: string[];
   CcEmpfaengerInternIDListe: string[];
+
+  ExterneTeilnehmerliste?: string[];
+  InterneTeilnehmerliste?: string[];
+
   Betreff: string;
   Nachricht: string;
   Filename: string;
@@ -46,10 +50,12 @@ export type Bautagebuchstruktur = {
   GesendetZeitstring: string;
   CcEmpfaengerliste?: {
     Name:  string;
+    Firma: string;
     Email: string;
   }[];
   Empfaengerliste?: {
     Name:  string;
+    Firma: string;
     Email: string;
   }[];
 };
