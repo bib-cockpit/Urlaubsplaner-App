@@ -519,27 +519,29 @@ export class PjProtokollEditorComponent implements OnDestroy, OnInit, AfterViewI
     }
   }
 
-  DatumChanged(currentmoment: Moment) {
+  DatumChanged(Datum: Moment) {
 
     try {
 
-      let Startzeitpunkt: Moment;
-      let Endezeitpunkt: Moment;
-      let Dauer: number;
+      let Startzeit: Moment;
+      let Endezeit: Moment;
+
 
       this.StopSaveProtokollTimer();
 
-      /*
+      Datum.locale('de');
 
+      this.DB.CurrentProtokoll.Zeitstempel = Datum.valueOf();
+      this.DB.CurrentProtokoll.Zeitstring  = Datum.format('DD.MM.YYYY');
 
-      Startzeitpunkt = moment(this.DB.CurrentProtokoll.Startstempel);
-      Endezeitpunkt  = moment(this.DB.CurrentProtokoll.Endestempel);
-      Dauer          = moment.duration(Endezeitpunkt.diff(Startzeitpunkt)).asMinutes();
+      Startzeit = moment(this.DB.CurrentProtokoll.Startstempel).locale('de');
+      Endezeit  = moment(this.DB.CurrentProtokoll.Endestempel).locale('de');
 
-       */
+      Startzeit.set({day: Datum.day(), month: Datum.month(), year: Datum.year()});
+      Endezeit.set ({day: Datum.day(), month: Datum.month(), year: Datum.year()});
 
-      this.DB.CurrentProtokoll.Zeitstempel = currentmoment.valueOf();
-      this.DB.CurrentProtokoll.Zeitstring  = currentmoment.format('DD.MM.YYYY');
+      this.DB.CurrentProtokoll.Startstempel = Startzeit.valueOf();
+      this.DB.CurrentProtokoll.Endestempel  = Endezeit.valueOf();
 
 
       this.StartSaveProtokollTimer();

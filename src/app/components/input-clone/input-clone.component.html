@@ -7,10 +7,11 @@
     <tr *ngIf="Titel !== null && Titel !== '' && Enabled === false" [style.color]="Titelcolor">
       <td class="uppercellclass">{{Titel}}</td>
       <td style="text-align: right" [hidden]="Clickable === false"><ion-icon color="burnicklgruen" name="list-outline" style="font-size: 20px"></ion-icon></td>
+      <td *ngIf="Einheit !== null"></td>
     </tr>
 
     <tr *ngIf="Lines === 1">
-      <td class="lowercellclass" colspan="2">
+      <td style="width: auto;" class="lowercellclass" colspan="2">
         <ion-input *ngIf="Enabled === true" [style.font-size.px]="Textsize" [inputmode]="Inputtype" class="inputclass"  [label]="Titel" labelPlacement="stacked"
                    [debounce]="Debouncetime"
                     autocomplete="off"
@@ -19,12 +20,14 @@
                    (ionInput)= "TextChangedHandler($event)"></ion-input>
         <ion-label *ngIf="Enabled === false">{{Value}}</ion-label>
       </td>
+      <td *ngIf="Einheit !== null" style="width: 20px; text-align: center;">{{Einheit}}</td>
     </tr>
     <tr *ngIf="Lines !== 1">
       <td class="lowercellclass" colspan="2">
         <ion-textarea  *ngIf="Enabled === true" [label]="Titel" labelPlacement="stacked"  [debounce]="Debouncetime" [value]="Value" [rows]="Lines" (ionChange)="TextChangedHandler($event)"></ion-textarea>
         <div *ngIf="Enabled === false" [style.height.px]="Lines * 18" [innerHTML]="Tools.FormatLinebreaks(Value)"></div>
       </td>
+      <td *ngIf="Einheit !== null"></td>
     </tr>
   </table>
 </div>

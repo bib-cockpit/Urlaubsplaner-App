@@ -47,7 +47,9 @@ export class DisplayService {
     LOPListeEintragEditor: 'LOPListeEintragEditor',
     Planungsmatrixeintrageditor: 'Planungsmatrixeintrageditor',
     Notizenkapiteleditor: 'Notizenkapiteleditor',
-    Festlegungkategorieneditor: 'Festlegungkategorieneditor'
+    Festlegungkategorieneditor: 'Festlegungkategorieneditor',
+    Simontabelleeditor: 'Simontabelleeditor',
+    Simontabellelesitungeditor: 'Simontabellelesitungeditor',
 
   };
 

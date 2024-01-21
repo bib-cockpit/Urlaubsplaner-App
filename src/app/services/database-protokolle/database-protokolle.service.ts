@@ -378,8 +378,8 @@ export class DatabaseProtokolleService {
 
           Liste.sort((punktA: Protokollstruktur, punktB: Protokollstruktur) => {
 
-            if (punktA.Startstempel < punktB.Startstempel) return 1;
-            if (punktA.Startstempel > punktB.Startstempel) return -1;
+            if (punktA.Zeitstempel < punktB.Zeitstempel) return 1;
+            if (punktA.Zeitstempel > punktB.Zeitstempel) return -1;
             return 0;
           });
 

@@ -1,0 +1,248 @@
+
+<div [style.z-index]="ZIndex" style="position: absolute; top: 0px; left: 0px; background: none; width: 100%; height: 100%">
+  <div  class="keeperdivclass" [style.background]="Displayservice.ShowOpacity(Displayservice.Dialognamen.Simontabelleeditor) ? 'rgba(0, 0, 0, 0.5)' : 'none'" (click)="ContentClicked($event)">
+    <div class="contentdivclass"
+         [style.width.px]="Dialogbreite"
+         [style.top.px]="PositionY"  [style.bottom.px]="PositionY"  (click)="ContentClicked($event)">
+      <ion-header>
+        <page-header>
+
+          <table class="paddingsmalltable">
+            <tr>
+              <td style="width: 4px"></td>
+              <td><ion-icon [name]="Iconname" color="weiss"></ion-icon></td>
+              <td [style.color]="'white'">{{Titel}}</td>
+              <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
+              <td>
+                <div class="menubuttonclass" (click)="AllgemeinMenuButtonClicked()">
+                  <table class="paddingsmalltable">
+                    <tr>
+                      <td><ion-icon name="reader-outline" [color]="Bereich === Bereiche.Allgemein ? 'schwarz' : 'weiss'"></ion-icon></td>
+                      <td [style.color]="Bereich === Bereiche.Allgemein ? 'black' : 'white'">Allgemein</td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+              <td style="width: 20px"></td>
+              <td>
+                <div class="menubuttonclass" (click)="LeistungenMenuButtonClicked()">
+                  <table class="paddingsmalltable">
+                    <tr>
+                      <td><ion-icon name="reader-outline" [color]="Bereich === Bereiche.Leistungen ? 'schwarz' : 'weiss'"></ion-icon></td>
+                      <td [style.color]="Bereich === Bereiche.Leistungen ? 'black' : 'white'">Besondere Leistungen</td>
+                      <td>
+                        <ion-badge  [color]="DB.CurrentSimontabelle.Besondereleistungenliste.length > 0 ? 'rot' : 'grau'">{{DB.CurrentSimontabelle.Besondereleistungenliste.length.toString()}}</ion-badge>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </page-header>
+      </ion-header>
+      <ion-content>
+
+        <ng-container *ngIf="Bereich === Bereiche.Allgemein">
+          <div class="contentinnerclass" *ngIf="DB.CurrentSimontabelle">
+
+            <table width="100%">
+              <tr>
+                <td style="width: 400px;" valign="top">
+
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col size="12">
+                        <ion-text color="baeblau" style="font-size: 120%"><b>Honorarberechnung</b></ion-text>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="12">
+                        <input-clone (TextChanged)="KostenTextChanged($event)" [ParseToFloat]="true" [Inputtype]="'numeric'" [Value]="DB.CurrentSimontabelle.Kosten.toString()" [Einheit]="'€'" [Titel]="'Anrechenbare Kosten (netto)'"></input-clone>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="12">
+                        <input-clone (TextChanged)="HonorarTextChanged($event)" [ParseToFloat]="true" [Inputtype]="'numeric'" [Value]="DB.CurrentSimontabelle.Honorar.toString()" [Einheit]="'€'" [Titel]="'Honorar (netto)'"></input-clone>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="12">
+                        <input-clone (TextChanged)="UmbauzuschlagTextChanged($event)" [ParseToFloat]="true" [Inputtype]="'numeric'" [Value]="DB.CurrentSimontabelle.Umbauzuschlag.toString()" [Einheit]="'%'" [Titel]="'Umbauzuschlag'"></input-clone>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="12">
+                        <input-clone  [Inputtype]="'numeric'" [Enabled]="false" [ParseToFloat]="true" [DisabledColor]="'blue'" [Value]="CalculateHonorarMitUmbauzuschlag().toFixed(2)" [Einheit]="'€'" [Titel]="'Honorar mit Umbauzuschlag'"></input-clone>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="12">
+                        <input-clone  [ParseToFloat]="true" [Inputtype]="'numeric'" [Enabled]="false" [Value]="CalculateBesondereleistungen().toFixed(2)" [DisabledColor]="'blue'" [Einheit]="'€'" [Titel]="'Besondere Leistungen'"></input-clone>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="12">
+                        <input-clone  [Inputtype]="'numeric'" [Enabled]="false" [ParseToFloat]="true" [DisabledColor]="'blue'" [Value]="CalculateZwischensumme().toFixed(2)" [Einheit]="'€'" [Titel]="'Honorar Zwischensumme'"></input-clone>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="12">
+                        <input-clone (TextChanged)="NebenkostenTextChanged($event)" [ParseToFloat]="true" [Inputtype]="'numeric'" [Value]="DB.CurrentSimontabelle.Nebenkosten.toString()" [Einheit]="'%'" [Titel]="'Nebenkostenzuschlag'"></input-clone>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="12">
+                        <input-clone  [Inputtype]="'numeric'" [Enabled]="false" [ParseToFloat]="true" [DisabledColor]="'blue'" [Value]="CalculateNebenkosten().toFixed(2)" [Einheit]="'€'" [Titel]="'Nebenkosten'"></input-clone>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="12">
+                        <input-clone  [Inputtype]="'numeric'" [Enabled]="false" [ParseToFloat]="true" [DisabledColor]="'blue'" [Value]="CalculateGesamthonorarNetto().toFixed(2)" [Einheit]="'€'" [Titel]="'Gesamthonorar (netto)'"></input-clone>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="12">
+                        <input-clone  [Inputtype]="'numeric'" [Enabled]="false" [ParseToFloat]="true" [DisabledColor]="'blue'" [Value]="CalculateMehrwertsteuer().toFixed(2)" [Einheit]="'€'" [Titel]="'MwSt.'"></input-clone>
+                      </ion-col>
+                    </ion-row>                  <ion-row>
+                    <ion-col size="12">
+                      <input-clone  [Inputtype]="'numeric'" [Enabled]="false" [ParseToFloat]="true" [DisabledColor]="'blue'" [Value]="CalculateGesamthonorarBrutto().toFixed(2)" [Einheit]="'€'" [Titel]="'MwSt.'"></input-clone>
+                    </ion-col>
+                  </ion-row>
+                  </ion-grid>
+                </td>
+                <td style="width:auto" valign="top">
+
+
+
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col size="12">
+                        <ion-text color="baeblau" style="font-size: 120%"><b>Tabelle</b></ion-text>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="6">
+                        <button-value [Buttontext]="'Anlagengruppe'" [Enabled]="DB.CurrentSimontabelle._id === null"
+                                      [Wert_B]="GetAnlagengruppennamen(DB.CurrentSimontabelle)"
+                                      [Wert_A]="DB.CurrentSimontabelle.Anlagengruppe !== null ? DB.CurrentSimontabelle.Anlagengruppe.toString() : ''"
+                                      (ButtonClicked)="AnlagengruppeClickedEvent.emit()"></button-value>
+                      </ion-col>
+                      <ion-col size="6">
+                        <button-value [Buttontext]="'Leistungsphase'" [Enabled]="DB.CurrentSimontabelle._id === null"
+                                      [Wert_A]="DB.CurrentSimontabelle.Leistungsphase !== null ? DB.CurrentSimontabelle.Leistungsphase : 'unbekannt'"
+                                      (ButtonClicked)="LeistungsphaseClickedEvent.emit()"></button-value>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="6">
+                        Anrechnebare Kosten {{Bruttonkosten.toFixed(2)}} € brutto
+                      </ion-col>
+                      <ion-col size="6">
+                        Honorar {{Bruttohonorar.toFixed(2)}} € brutto
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="12">
+                        <table class="docinnertable" style="width: 100%;">
+                          <tr>
+                            <td style="width: 100px; text-align: center"><b>Position</b></td>
+                            <td style="width: auto"><b>Beschreibung</b></td>
+                            <td style="width: 100px; text-align: center"><b>Von</b></td>
+                            <td style="width: 100px; text-align: center"><b>Bis</b></td>
+                            <td style="width: 100px; text-align: center"><b>Vertrag</b></td>
+                          </tr>
+                          <tr *ngFor="let Eintrag of DB.CurrentSimontabelle.Eintraegeliste; let i = index">
+                            <td style="text-align: center;">{{Eintrag.Buchstabe}}</td>
+                            <td>{{Eintrag.Beschreibung}}</td>
+                            <td style="text-align: center">{{Eintrag.Von.toFixed(1)}} %</td>
+                            <td style="text-align: center">{{Eintrag.Bis.toFixed(1)}} %</td>
+                            <td>
+                              <table class="nobordertable" style="width: 100%;">
+                                <tr>
+                                  <td>
+                                    <ion-input *ngIf="Eintrag.Bis !== 0" [value]="Eintrag.Vertrag" (ionInput)="VertragswertChanged($event, i)" [style.border]="VertragValid[i] ? '1px solid green' : '1px solid red'" class="inputclass"></ion-input>
+                                  </td>
+                                  <td style="width: 20px"><span *ngIf="Eintrag.Bis !== 0">%</span></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2" style="font-weight: bold; text-align: center">{{DB.CurrentSimontabelle.Durchschnittswert.toFixed(2)}} %</td>
+                            <td style="font-weight: bold; text-align: center">
+                              <span *ngIf="CalculateVertrag() !== 0">{{CalculateVertrag().toFixed(2)}} %</span>
+                              <span *ngIf="CalculateVertrag() === 0">---</span>
+                            </td>
+                          </tr>
+                        </table>
+
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+
+                </td>
+              </tr>
+            </table>
+
+          </div>
+        </ng-container>
+        <ng-container *ngIf="Bereich === Bereiche.Leistungen">
+
+          <div style="padding: 4px;">
+
+            <table class="docinnertable">
+              <tr>
+                <td style="font-weight: bold">Nummer</td>
+                <td style="font-weight: bold">Titel</td>
+                <td style="font-weight: bold; width: 400px">Beschreibung</td>
+                <td style="font-weight: bold;">Honorar</td>
+              </tr>
+              <tr *ngFor="let Leistung of this.DB.CurrentSimontabelle.Besondereleistungenliste">
+                <td>{{Leistung.Nummer}}</td>
+                <td>
+                  <div class="titledivclass" (click)="EditLeistungClickedEvent.emit(Leistung)">
+                    {{Leistung.Titel}}
+                  </div>
+                </td>
+                <td>{{Leistung.Beschreibung}}</td>
+                <td style="text-align: right;">{{Leistung.Honorar}} €</td>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <ion-button (click)="AddLeistungClicked()" [color]="Basics.Ionicfarben.BurnicklBraun" size="small">Neuer Eintrag</ion-button>
+                </td>
+              </tr>
+            </table>
+
+          </div>
+
+        </ng-container>
+      </ion-content>
+      <ion-footer>
+        <page-footer>
+
+          <table class="paddingsmalltable" width="100%">
+            <tr>
+              <td>
+                <div class="rootbuttonclass" (click)="CancelButtonClicked()">
+                  <ion-icon style="font-size: 28px" color="weiss" name="close-outline"></ion-icon>
+                </div>
+              <td style="width: 100%"></td>
+              <td>
+
+                <div class="rootbuttonclass" (click)="Valid === true ? OkButtonClicked() : null">
+                  <ion-icon style="font-size: 28px" [color]="Valid === true ? 'weiss' : 'grau'" name="checkmark-outline"></ion-icon>
+                </div>
+              </td>
+            </tr>
+          </table>
+
+        </page-footer>
+      </ion-footer>
+
+    </div>
+  </div>
+</div>

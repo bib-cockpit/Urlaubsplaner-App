@@ -7,6 +7,7 @@ import {
 import {
   CommonUrlaubEinstellungenPageModule
 } from "./pages/common-urlaub-einstellungen/common-urlaub-einstellungen.module";
+import {PjSimontabelleListePageModule} from "./pages/pj-simontabelle-liste/pj-simontabelle-liste.module";
 
 const routes: Routes = [
   {
@@ -103,6 +104,10 @@ const routes: Routes = [
   {
     path: 'PjNotizenListePage',
     loadChildren: () => import('./pages/pj-notizen-liste/pj-notizen-liste.module').then(m => m.PjNotizenListePageModule)
+  },
+  {
+    path: 'PjSimontabellelistePage',
+    loadChildren: () => import('./pages/pj-simontabelle-liste/pj-simontabelle-liste.module').then(m => m.PjSimontabelleListePageModule)
   },
   {
     path: 'PDFViewerPage',

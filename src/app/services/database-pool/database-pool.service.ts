@@ -26,6 +26,7 @@ import {Fachbereiche, Fachbereichestruktur} from "../../dataclasses/fachbereiche
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
 import {Urlaubsstruktur} from "../../dataclasses/urlaubsstruktur";
+import {Simontabellestruktur} from "../../dataclasses/simontabellestruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +61,7 @@ export class DatabasePoolService {
   public Festlegungskategorienliste: Festlegungskategoriestruktur[][];
   public ProjektdatenLoaded: boolean;
   public Emailcontentvarinaten: any;
+  public Simontabellenliste: Simontabellestruktur[][];
 
   public StandortelisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public MitarbeiterlisteChanged: EventEmitter<any> = new EventEmitter<any>();
@@ -85,6 +87,8 @@ export class DatabasePoolService {
   public CurrentLOPGewerkelisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public FestlegungskategorienlisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public CurrentFestlegungskategorieChanged: EventEmitter<any> = new EventEmitter<any>();
+  public SimontabelleChanged: EventEmitter<any> = new EventEmitter<any>();
+  public SimontabellenlisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public Signatur: string;
 
   constructor(private Debug: DebugProvider,
@@ -121,6 +125,7 @@ export class DatabasePoolService {
       this.LOPListe                 = [];
       this.Notizenkapitelliste      = [];
       this.Outlookkatekorien        = [];
+      this.Simontabellenliste       = [];
       this.CockpitserverURL         = environment.production === true ? 'https://bae-cockpit-server.azurewebsites.net' : 'http://localhost:8080';
       this.CockpitdockerURL         = environment.production === true ? 'https://bae-cockpit-docker.azurewebsites.net' : 'http://localhost:80';
       this.Emailcontent             = this.Emailcontentvarinaten.NONE;
@@ -619,6 +624,55 @@ export class DatabasePoolService {
     }
   }
 
+  public ReadSimontabellen(projekt: Projektestruktur): Promise<any> {
+
+    try {
+
+      let Params: HttpParams;
+      let Headers: HttpHeaders;
+      let SimontabellenObservable: Observable<any>;
+
+      // debugger;
+
+      this.Simontabellenliste[projekt.Projektkey] = [];
+
+      return new Promise((resolve, reject) => {
+
+        Params  = new HttpParams({ fromObject: { projektkey: projekt.Projektkey }} );
+        Headers = new HttpHeaders({
+
+          'content-type': 'application/json',
+        });
+
+        SimontabellenObservable = this.Http.get(this.CockpitserverURL + '/simontabellen', { headers: Headers, params: Params } );
+
+        SimontabellenObservable.subscribe({
+
+          next: (data) => {
+
+            this.Simontabellenliste[projekt.Projektkey] = <Simontabellestruktur[]>data;
+
+          },
+          complete: () => {
+
+            this.Debug.ShowMessage('Read Simontabellenliste von ' + projekt.Projektkurzname + ' fertig.', 'Database Pool', 'ReadSimontabellen', this.Debug.Typen.Service);
+
+            resolve(true);
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadSimontabellen', this.Debug.Typen.Service);
+    }
+  }
+
   public ReadBautagebuchliste(projekt: Projektestruktur): Promise<any> {
 
     try {
@@ -923,6 +977,7 @@ export class DatabasePoolService {
   }
 
 
+
   public ReadSettingsliste(): Promise<any> {
 
     try {
@@ -1061,7 +1116,7 @@ export class DatabasePoolService {
 
     try {
 
-      let Steps: number           = 8;
+      let Steps: number           = 9;
       this.ShowProgress           = true;
       this.MaxProgressValue       = projektliste.length * Steps;
       this.CurrentProgressValue   = 0;
@@ -1115,6 +1170,12 @@ export class DatabasePoolService {
           await this.ReadFestlegungskategorieliste(Projekt);
 
           this.CurrentProgressValue++;
+
+          this.ProgressMessage = 'Simontabellen Liste ' + Projekt.Projektkurzname;
+
+          await this.ReadSimontabellen(Projekt);
+
+          this.CurrentProgressValue++;
         }
       } catch (error) {
 
@@ -1128,6 +1189,7 @@ export class DatabasePoolService {
       this.BautagebuchlisteChanged.emit();
       this.LOPListeChanged.emit();
       this.NotizenkapitellisteChanged.emit();
+      this.SimontabellenlisteChanged.emit();
 
       this.CurrentProgressValue = this.MaxProgressValue;
       this.ShowProgress = false;

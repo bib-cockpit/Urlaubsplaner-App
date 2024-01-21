@@ -44,6 +44,18 @@ export class ToolsProvider {
     }
   }
 
+  IsNumeric(n): boolean {
+
+    try {
+
+      return !isNaN(parseFloat(n)) && isFinite(n);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Tools', 'IsNumeric', this.Debug.Typen.Service);
+    }
+  }
+
   public GetButtonvalueSize() {
 
     try {

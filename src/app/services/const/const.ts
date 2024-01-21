@@ -243,7 +243,9 @@ const _Pages = {
   PjBaustelleTagebuchlistePage: 'PjBaustelleTagebuchlistePage',
   PjFestlegungslistePage: 'PjFestlegungslistePage',
 
-  PjPlanungsmatrixPage: 'PjPlanungsmatrixPage'
+  PjPlanungsmatrixPage: 'PjPlanungsmatrixPage',
+
+  PjSimontabellelistePage: 'PjSimontabellelistePage'
 };
 
 const _Treeitemtypvarianten = {
@@ -449,6 +451,50 @@ const _Fachfirmentypen: any = {
     Name: 'Förderanlagenbauer',
     Color: '#ff6600'
   },
+};
+
+const _Anlagengruppen: any = {
+
+  Anlagengruppe_1:  {
+
+    Nummer: 1,
+    Name: 'Abwasser-, Wasser-, Gasanlagen',
+  },
+  Anlagengruppe_2:  {
+
+    Nummer: 2,
+    Name: 'Wärmeversorgungsanlagen',
+  },
+  Anlagengruppe_3:  {
+
+    Nummer: 3,
+    Name: 'Luftechnische Anlagen',
+  },
+  Anlagengruppe_4:  {
+
+    Nummer: 4,
+    Name: 'Starkstromanlage',
+  },
+  Anlagengruppe_5:  {
+
+    Nummer: 5,
+    Name: 'Fernmelde- und informationstechnische Anlagen',
+  },
+  Anlagengruppe_6:  {
+
+    Nummer: 6,
+    Name: 'Förderanlagen',
+  },
+  Anlagengruppe_7:  {
+
+    Nummer: 7,
+    Name: 'Nutzerspezifische und verfahrenstechnische Anlagen',
+  },
+  Anlagengruppe_8:  {
+
+    Nummer: 8,
+    Name: 'Gebäude- und Anlagenautomation'
+  }
 };
 
 const _Leistungsphasenvarianten = {
@@ -1004,6 +1050,7 @@ export class ConstProvider {
   public readonly AufgabenSortiermodusvarianten     = _AufgabenSortiermodusvarianten;
   public readonly Projektpunktprioritaetstypen      = _Projektpunktprioritaetstypen;
   public readonly Leistungsphasenvarianten          = _Leistungsphasenvarianten;
+  public readonly Anlagengruppen                    = _Anlagengruppen;
 
   constructor() {
 

@@ -892,12 +892,12 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       this.EmailDialoghoehe    = this.Basics.InnerContenthoehe - 200;
       this.DB.CurrentProtokoll = lodash.cloneDeep(Protokoll);
 
-      Filename = moment(this.DB.CurrentProtokoll.Endestempel).format('YYMMDD_') + this.Tools.GenerateFilename(this.DB.CurrentProtokoll.Titel, 'pdf', this.DB.CurrentProtokoll.Protokollnummer);
+      Filename = moment(this.DB.CurrentProtokoll.Zeitstempel).format('YYMMDD_') + this.Tools.GenerateFilename(this.DB.CurrentProtokoll.Titel, 'pdf', this.DB.CurrentProtokoll.Protokollnummer);
 
-      Betreff    = 'Protokoll zur ' + this.DB.CurrentProtokoll.Titel + ' vom ' + moment(this.DB.CurrentProtokoll.Endestempel).format('DD.MM.YYYY');
+      Betreff    = 'Protokoll zur ' + this.DB.CurrentProtokoll.Titel + ' vom ' + moment(this.DB.CurrentProtokoll.Zeitstempel).format('DD.MM.YYYY');
 
       Nachricht  = 'Sehr geehrte Damen und Herren,\n\n';
-      Nachricht += 'anbei übersende ich Ihnen das Protokoll "' + this.DB.CurrentProtokoll.Titel + '" vom ' + moment(this.DB.CurrentProtokoll.Endestempel).format('DD.MM.YYYY') + '\n';
+      Nachricht += 'anbei übersende ich Ihnen das Protokoll "' + this.DB.CurrentProtokoll.Titel + '" vom ' + moment(this.DB.CurrentProtokoll.Zeitstempel).format('DD.MM.YYYY') + '\n';
       Nachricht += 'mit der Protokollnummer ' + this.DB.CurrentProtokoll.Protokollnummer + '.\n\n';
 
       this.DB.CurrentProtokoll.EmpfaengerExternIDListe   = this.DB.CurrentProtokoll.BeteiligExternIDListe;

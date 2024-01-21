@@ -19,6 +19,7 @@ import {Graphservice} from "./services/graph/graph";
 import {Mitarbeiterstruktur} from "./dataclasses/mitarbeiterstruktur";
 import {environment} from "../environments/environment";
 import {DatabaseUrlaubService} from "./services/database-urlaub/database-urlaub.service";
+import {DatabaseSimontabelleService} from "./services/database-simontabelle/database-simontabelle.service";
 
 @Component({
   selector: 'app-root',
@@ -48,6 +49,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
               private MitarbeitersettingsDB: DatabaseMitarbeitersettingsService,
               private StandortDB: DatabaseStandorteService,
               private ProjekteDB: DatabaseProjekteService,
+              private SimontabelllenDB: DatabaseSimontabelleService,
               private UrlaubDB: DatabaseUrlaubService,
               public GraphService: Graphservice,
               private Debug: DebugProvider) {
@@ -363,13 +365,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           }
           else {
 
-            Page = this.Const.Pages.PjBaustelleTagebuchlistePage; // PjProtokolleListePage; // PjProtokolleListePage; // PjAufgabenlistePage; // UrlaubFreigabenPage; // UrlaubPlanungPage; // PjBaustelleLoplistePage; //
+            Page = this.Const.Pages.PjSimontabellelistePage; // PjProtokolleListePage; // PjProtokolleListePage; // PjAufgabenlistePage; // UrlaubFreigabenPage; // UrlaubPlanungPage; // PjBaustelleLoplistePage; //
             // PjBaustelleLoplistePage; // UrlaubEinstellungenPage; // UrlaubPlanungPage; // PjBaustelleLoplistePage; // FiMitarbeiterlistePage; // UrlaubsplanungPage; // FiStandortelistePage; // UrlaubsplanungPage; // UrlaubsplanungPage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
 
             this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
             this.ProjekteDB.SetCurrentFavoritenprojekt();
 
             await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
+
+            this.SimontabelllenDB.InitSimontabellenlistedata();
 
             this.Pool.ProjektdatenLoaded = true;
           }
@@ -488,6 +492,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
         case this.Const.Pages.PjPlanungsmatrixPage:
 
           this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Planungsmatrix;
+
+          break;
+
+        case this.Const.Pages.PjSimontabellelistePage:
+
+          this.Menuservice.ProjekteMenuebereich = this.Menuservice.ProjekteMenuebereiche.Simontabelle;
 
           break;
 

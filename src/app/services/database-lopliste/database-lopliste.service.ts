@@ -324,7 +324,7 @@ export class DatabaseLoplisteService {
         _id: null,
         Projektkey: this.DBProjekt.CurrentProjekt.Projektkey,
         ProjektID: this.DBProjekt.CurrentProjekt._id,
-        Titel: "Baustelle LOP - Liste",
+        Titel: "Baustellenbericht",
         LOPListenummer: "",
         BeteiligExternIDListe: [],
         BeteiligtInternIDListe: [this.Pool.Mitarbeiterdaten._id],

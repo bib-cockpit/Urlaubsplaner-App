@@ -287,6 +287,23 @@
                 <table>
                   <tr>
                     <td>
+                      <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Simontabelle)">
+                        <table class="paddingsmalltable">
+                          <tr>
+                            <td><ion-icon name="newspaper-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Simontabelle)"></ion-icon></td>
+                            <td [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Simontabelle)">Simontabelle</td>
+                          </tr>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td>
+
+                <table>
+                  <tr>
+                    <td>
                       <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Notizen)">
                         <table class="paddingsmalltable">
                           <tr>

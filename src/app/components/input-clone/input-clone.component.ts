@@ -49,6 +49,7 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() public ParseToFloat: boolean;
   @Input() public Textcolor: string;
   @Input() public Textsize: number;
+  @Input() public Einheit: string;
 
   @Output() TextChanged = new EventEmitter<{ Titel: string; Text: string; Valid: boolean }>();
 
@@ -89,6 +90,7 @@ export class InputCloneComponent implements OnInit, OnChanges, AfterViewInit {
       this.Titelcolor      = 'black';
       this.ParseToFloat    = false;
       this.Textsize        = 14;
+      this.Einheit         = null;
       this.Textcolor       = this.Basics.Ionicfarben.Schwarz;
 
     } catch (error) {

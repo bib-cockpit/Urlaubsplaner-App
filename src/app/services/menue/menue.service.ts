@@ -40,6 +40,7 @@ export class MenueService {
     Bautagebuch:   'Bautagebuch',
     Festlegungen:  'Festlegungen',
     Planungsmatrix: 'Planungsmatrix',
+    Simontabelle: 'Simontabelle',
     Fileliste:     'Fileliste',
     Notizen:       'Notizen'
   };
@@ -72,6 +73,7 @@ export class MenueService {
     LOPListe:      'LOP Liste',
     Bautagebuch:   'Bautagebuch',
     Festlegungen:  'Festlegungen',
+    Simontabelle:  'Simontabelle',
     ImageZoom:     'ImageZoom'
   };
 
@@ -230,6 +232,12 @@ export class MenueService {
             case this.ProjekteMenuebereiche.Planungsmatrix:
 
               this.Tools.SetRootPage(this.Const.Pages.PjPlanungsmatrixPage);
+
+              break;
+
+            case this.ProjekteMenuebereiche.Simontabelle:
+
+              this.Tools.SetRootPage(this.Const.Pages.PjSimontabellelistePage);
 
               break;
           }
