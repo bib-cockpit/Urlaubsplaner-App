@@ -1,6 +1,7 @@
 import {Simontabelleeintragstruktur} from "./simontabelleeintragstruktur";
 import {Verfasserstruktur} from "./verfasserstruktur";
 import {Simontabellebesondereleistungstruktur} from "./simontabellebesondereleistungstruktur";
+import {Rechnungstruktur} from "./rechnungstruktur";
 
 
 export type Simontabellestruktur = {
@@ -18,5 +19,8 @@ export type Simontabellestruktur = {
   Umbauzuschlag: number;
   Nebenkosten: number;
   Besondereleistungenliste: Simontabellebesondereleistungstruktur[];
+  Rechnungen: Rechnungstruktur[];
+  Nettonebenkosten?: number;
+  Bruttonebenkosten?: number;
   __v?: any;
 };

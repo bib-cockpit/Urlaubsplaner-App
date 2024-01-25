@@ -10,6 +10,9 @@ import {DatabasePoolService} from "../database-pool/database-pool.service";
 import {DatabaseProjekteService} from "../database-projekte/database-projekte.service";
 import * as lodash from "lodash-es";
 import {Simontabellebesondereleistungstruktur} from "../../dataclasses/simontabellebesondereleistungstruktur";
+import {Rechnungstruktur} from "../../dataclasses/rechnungstruktur";
+import {Rechnungseintragstruktur} from "../../dataclasses/rechnungseintragstruktur";
+import moment, {Moment} from "moment";
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +23,9 @@ export class DatabaseSimontabelleService {
   private ServerSimontabelleUrl: string;
   public readonly Steuersatz: number = 19;
   public CurrentBesondereleistung: Simontabellebesondereleistungstruktur;
+  public CurrentRechnung: Rechnungstruktur;
+  public CurrrentRechnungseintrag: Rechnungseintragstruktur;
+  public CurrentRechnungsindex: number;
 
   constructor(private Debug: DebugProvider,
               private Const: ConstProvider,
@@ -30,11 +36,65 @@ export class DatabaseSimontabelleService {
 
       this.CurrentSimontabelle      = null;
       this.CurrentBesondereleistung = null;
+      this.CurrentRechnung          = null;
+      this.CurrrentRechnungseintrag = null;
+      this.CurrentRechnungsindex    = null;
       this.ServerSimontabelleUrl    = this.Pool.CockpitserverURL + '/simontabellen';
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'constructor', this.Debug.Typen.Service);
+    }
+  }
+
+  public async AddNewRechnung() {
+
+    try {
+
+      let Rechnung: Rechnungstruktur;
+      let RechnungID: string;
+      let Heute: Moment = moment();
+
+      if(this.CurrentSimontabelle !== null) {
+
+        RechnungID = this.Pool.GetNewUniqueID();
+
+        Rechnung = {
+
+          RechnungID: RechnungID,
+          Zeitstempel: Heute.valueOf()
+        };
+
+        debugger;
+
+        for(let Eintrag of this.CurrentSimontabelle.Eintraegeliste) {
+
+          Eintrag.Rechnungseintraege.push({
+
+            RechnungID: RechnungID,
+            Honoraranteil: 0
+          });
+        }
+
+        for(let Leistung of this.CurrentSimontabelle.Besondereleistungenliste) {
+
+          Leistung.Rechnungseintraege.push({
+
+            RechnungID: RechnungID,
+            Honoraranteil: 0
+          });
+        }
+
+        this.CurrentSimontabelle.Rechnungen.push(Rechnung);
+
+        await this.UpdateSimontabelle(this.CurrentSimontabelle);
+
+        this.CurrentRechnungsindex = this.CurrentSimontabelle.Rechnungen.length - 1;
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'AddNewRechnung', this.Debug.Typen.Service);
     }
   }
 
@@ -48,7 +108,8 @@ export class DatabaseSimontabelleService {
         Nummer: '',
         Titel: '',
         Beschreibung: '',
-        Honorar: 0
+        Honorar: 0,
+        Rechnungseintraege: [],
       };
 
     } catch (error) {
@@ -74,7 +135,7 @@ export class DatabaseSimontabelleService {
             Beschreibung: `Erarbeiten der Ausführungsplanung auf Grundlage der Ergebnisse der Leistungsphasen 3 und 4
             (stufenweise Erarbeitung und Darstellung der Lösung) unter Beachtung der durch die Objektplanung
             integrierten Fachplanungen bis zur ausführungsreifen Lösung`,
-            Von: 4, Bis: 6, Vertrag: 0 });
+            Von: 4, Bis: 6, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'B',
             Beschreibung: `Fortschreiben der Berechnungen und Bemessungen zur Auslegung der technischen Anlagen und
@@ -82,24 +143,24 @@ export class DatabaseSimontabelleService {
             und Detaillierungsgrad einschließlich Dimensionen (keine Montage- oder Werkstattpläne) Anpassen und Detaillieren
             der Funktions- und Strangschemata der Anlagen bzw. der GA Funktionslisten, Abstimmen der Ausführungszeichnungen
             mit dem Objektplaner und den übrigen Fachplanern.`,
-            Von: 8, Bis: 11, Vertrag: 0 });
+            Von: 8, Bis: 11, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'C',
             Beschreibung: `Anfertigen von Schlitz- und Durchbruchsplänen.`,
-            Von: 2, Bis: 4, Vertrag: 0 });
+            Von: 2, Bis: 4, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'D',
             Beschreibung: `Fortschreibung des Terminplans.`,
-            Von: 0.1, Bis: 0.5, Vertrag: 0 });
+            Von: 0.1, Bis: 0.5, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'E',
             Beschreibung: `Fortschreiben der Ausführungsplanung auf den Stand der Ausschreibungsergebnisse und der dann vorliegenden
             Ausführungsplanung des Objektplaners, Übergeben der fortgeschriebenen Ausführungsplanung an die ausführenden Unternehmen.`,
-            Von: 0.5, Bis: 1, Vertrag: 0 });
+            Von: 0.5, Bis: 1, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'F',
             Beschreibung: `Prüfen und Anerkennen der Montage- und Werkstattpläne der ausführenden Unternehmen auf Übereinstimmung mit der Ausführungsplanung.`,
-            Von: 2, Bis: 4, Vertrag: 0 });
+            Von: 2, Bis: 4, Vertrag: 0, Rechnungseintraege: [] });
 
           break;
 
@@ -110,29 +171,29 @@ export class DatabaseSimontabelleService {
           Liste.push({ Buchstabe: 'A',
             Beschreibung: `Ermitteln von Mengen als Grundlage für das Aufstellen von Leistungsverzeichnissen in Abstimmung
             mit Beiträgen anderer an der Planung fachlich Beteiligter.`,
-            Von: 2.25, Bis: 3, Vertrag: 0 });
+            Von: 2.25, Bis: 3, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'B',
             Beschreibung: `Aufstellen der Vergabeunterlagen, insbesondere mit Leistungsverzeichnissen nach
             Leistungsbereichen, inklusive der Wartungsleistungen auf Grundlage bestehender Regelwerke.`,
-            Von: 2.5, Bis: 3.5, Vertrag: 0 });
+            Von: 2.5, Bis: 3.5, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'C',
             Beschreibung: `Mitwirken beim Abstimmen der Schnittstellen zu den Leistungsbeschreibungen
             der anderen an der Planung fachlich Beteiligten.`,
-            Von: 0, Bis: 1, Vertrag: 0 });
+            Von: 0, Bis: 1, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'D',
             Beschreibung: `Ermitteln der Kosten auf Grundlage der vom Planer bepreisten Leistungsverzeichnisse.`,
-            Von: 0, Bis: 2, Vertrag: 0 });
+            Von: 0, Bis: 2, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'E',
             Beschreibung: `Kostenkontrolle durch Vergleich der vom Planer bepreisten Leistungsverzeichnisse mit der Kostenberechnung.`,
-            Von: 0, Bis: 1, Vertrag: 0 });
+            Von: 0, Bis: 1, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'F',
             Beschreibung: `Zusammenstellen der Vergabeunterlagen.`,
-            Von: 0, Bis: 1, Vertrag: 0 });
+            Von: 0, Bis: 1, Vertrag: 0, Rechnungseintraege: [] });
 
           break;
 
@@ -142,29 +203,29 @@ export class DatabaseSimontabelleService {
 
           Liste.push({ Buchstabe: 'A',
             Beschreibung: `Einholen von Angeboten.`,
-            Von: 0, Bis: 0.1, Vertrag: 0 });
+            Von: 0, Bis: 0.1, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'B',
             Beschreibung: `Prüfen und Werten der Angebote, Aufstellen der Preisspiegel nach Einzelpositionen,
             Prüfen und Werten der Angebote für zusätzliche oder geänderte Leistungen der ausführenden Unternehmen
             und der Angemessenheit der Preise.`,
-            Von: 0, Bis: 4.25, Vertrag: 0 });
+            Von: 0, Bis: 4.25, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'C',
             Beschreibung: `Führen von Bietergesprächen.`,
-            Von: 0, Bis: 1, Vertrag: 0 });
+            Von: 0, Bis: 1, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'D',
             Beschreibung: `Vergleichen der Ausschreibungsergebnisse mit den vom Planer bepreisten Leistungsverzeichnissen und der Kostenberechnung.`,
-            Von: 0, Bis: 1, Vertrag: 0 });
+            Von: 0, Bis: 1, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'E',
             Beschreibung: `Erstellen der Vergabevorschläge, Mitwirken bei der Dokumentation der Vergabeverfahren.`,
-            Von: 0, Bis: 1, Vertrag: 0 });
+            Von: 0, Bis: 1, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'F',
             Beschreibung: `Zusammenstellen der Vertragsunterlagen und bei der Auftragserteilung.`,
-            Von: 0, Bis: 0.25, Vertrag: 0 });
+            Von: 0, Bis: 0.25, Vertrag: 0, Rechnungseintraege: [] });
 
           break;
 
@@ -176,69 +237,69 @@ export class DatabaseSimontabelleService {
             Beschreibung: `Überwachen der Ausführung des Objekts auf Übereinstimmung mit der öffentlich-rechtlichen Genehmigung
             oder Zustimmung, den Verträgen mit den ausführenden Unternehmen, den Ausführungsunterlagen, den Montage- und
             Werkstattplänen, den einschlägigen Vorschriften und den allgemein anerkannten Regeln der Technik.`,
-            Von: 16, Bis: 22, Vertrag: 0 });
+            Von: 16, Bis: 22, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'B',
             Beschreibung: `Mitwirken bei der Koordination der am Projekt Beteiligten.`,
-            Von: 0.3, Bis: 1, Vertrag: 0 });
+            Von: 0.3, Bis: 1, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'C',
             Beschreibung: `Aufstellen, Fortschreiben und Überwachen des Terminplans (Balkendiagramm).`,
-            Von: 0.25, Bis: 0.65, Vertrag: 0 });
+            Von: 0.25, Bis: 0.65, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'D',
             Beschreibung: `Dokumentation des Bauablaufs (Bautagebuch).`,
-            Von: 0.25, Bis: 0.5, Vertrag: 0 });
+            Von: 0.25, Bis: 0.5, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'E',
             Beschreibung: `Prüfen und Bewerten der Notwendigkeit geänderter oder zusätzlicher Leistungen der Unternehmer und der Angemessenheit der Preise.`,
-            Von: 0, Bis: 1, Vertrag: 0 });
+            Von: 0, Bis: 1, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'F',
             Beschreibung: `Gemeinsames Aufmaß mit den ausführenden Unternehmen.`,
-            Von: 0, Bis: 3, Vertrag: 0 });
+            Von: 0, Bis: 3, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'G',
             Beschreibung: `Rechnungsprüfung in rechnerischer und fachlicher Hinsicht mit Prüfen und Bescheinigen des Leistungsstandes anhand nachvollziehbarer Leistungsnachweise.`,
-            Von: 6.5, Bis: 10, Vertrag: 0 });
+            Von: 6.5, Bis: 10, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'H',
             Beschreibung: `Kostenkontrolle durch Überprüfen der Leistungsabrechnungen der ausführenden Unternehmen im Vergleich zu den Vertragspreisen und dem Kostenanschlag.`,
-            Von: 0.75, Bis: 1.25, Vertrag: 0 });
+            Von: 0.75, Bis: 1.25, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'I',
             Beschreibung: ` Kostenfeststellung`,
-            Von: 0, Bis: 1, Vertrag: 0 });
+            Von: 0, Bis: 1, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'J',
             Beschreibung: `Mitwirken bei Leistungs- u. Funktionsprüfungen`,
-            Von: 0, Bis: 1, Vertrag: 0 });
+            Von: 0, Bis: 1, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'K',
             Beschreibung: `Fachtechnische Abnahme der Leistungen auf Grundlage der vorgelegten Dokumentation, Erstellung eines Abnahmeprotokolls,
             Feststellen von Mängeln und Erteilen einer Abnahmeempfehlung.`,
-            Von: 2, Bis: 4, Vertrag: 0 });
+            Von: 2, Bis: 4, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'L',
             Beschreibung: ` Antrag auf behördliche Abnahmen und Teilnahme daran`,
-            Von: 0, Bis: 1, Vertrag: 0 });
+            Von: 0, Bis: 1, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'M',
             Beschreibung: `Prüfung der übergebenen Revisionsunterlagen auf Vollzähligkeit, Vollständigkeit und stichprobenartige
             Prüfung auf Übereinstimmung mit dem Stand der Ausführung`,
-            Von: 0.5, Bis: 0.75, Vertrag: 0 });
+            Von: 0.5, Bis: 0.75, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'N',
             Beschreibung: `Auflisten der Verjährungsfristen der Ansprüche auf Mängelbeseitigung.`,
-            Von: 0, Bis: 1, Vertrag: 0 });
+            Von: 0, Bis: 1, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'O',
             Beschreibung: `Überwachen der Beseitigung der bei der Abnahme festgestellten Mängel.`,
-            Von: 0.25, Bis: 1.5, Vertrag: 0 });
+            Von: 0.25, Bis: 1.5, Vertrag: 0, Rechnungseintraege: [] });
 
           Liste.push({ Buchstabe: 'P',
             Beschreibung: `Systematische Zusammenstellung der Dokumentation, der zeichnerischen Darstellungen und rechnerischen Ergebnisse des Objekts.`,
-            Von: 0.1, Bis: 0.25, Vertrag: 0 });
+            Von: 0.1, Bis: 0.25, Vertrag: 0, Rechnungseintraege: [] });
 
           break;
       }
@@ -257,6 +318,7 @@ export class DatabaseSimontabelleService {
         Umbauzuschlag: 0,
         Besondereleistungenliste: [],
         Deleted: false,
+        Rechnungen: [],
         Verfasser: {
 
           Email:    this.Pool.Mitarbeiterdaten !== null ? this.Pool.Mitarbeiterdaten.Email   : this.Const.NONE,
@@ -523,6 +585,8 @@ export class DatabaseSimontabelleService {
 
           return eintrag.LeistungID === CurrentBesondereleistung.LeistungID;
         });
+
+        debugger;
 
         if(Index !== -1) this.CurrentSimontabelle.Besondereleistungenliste[Index] = CurrentBesondereleistung;
 

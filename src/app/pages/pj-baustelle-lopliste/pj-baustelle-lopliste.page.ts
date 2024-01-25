@@ -33,10 +33,9 @@ import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestru
 import ImageViewer from "awesome-image-viewer";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 import {DatabaseAuthenticationService} from "../../services/database-authentication/database-authentication.service";
-import {codeSharp} from "ionicons/icons";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {Projektpunktanmerkungstruktur} from "../../dataclasses/projektpunktanmerkungstruktur";
-import {Projektauswahlmenuestruktur} from "../../dataclasses/projektauswahlmenuestruktur";
+
 
 @Component({
   selector: 'pj-baustelle-lopliste',
@@ -243,6 +242,10 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       let Imageliste: Teamsfilesstruktur[] = [];
       let File: Teamsfilesstruktur;
       let Faktor: number;
+      let LOPListenMerker: LOPListestruktur[];
+      let CurrentPunktelisteMerker: Projektpunktestruktur[][];
+      let LOPListe: LOPListestruktur;
+      let LOPListeMerker: LOPListestruktur;
 
       if(this.Pool.Mitarbeitersettings !== null) Stichtag = Heute.clone().subtract(this.Pool.Mitarbeitersettings.LOPListeGeschlossenZeitfilter, 'days');
       else                                       Stichtag = Heute.clone().subtract(10, 'days');
@@ -253,6 +256,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.Thumbhoehe              = [];
       this.BigThumbnailliste       = [];
       this.BigThumbnailnumernliste = [];
+      this.LOPListen               = [];
 
       if(this.DBProjekte.CurrentProjekt !== null) {
 
@@ -282,7 +286,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
           this.DB.CurrentPunkteliste = [];
           this.DB.CurrentInfoliste   = [];
 
-          for(let LOPListe of this.LOPListen) {
+          for(LOPListe of this.LOPListen) {
 
             LOPListe.Zeitstring = moment(LOPListe.Zeitstempel).format('DD.MM.YY');
 
@@ -348,6 +352,7 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
               return 0;
             });
+
 
             // Bilder
 
@@ -445,7 +450,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
                 else {
 
                   Faktor = 1;
-
                 }
 
                 switch (Punkt.Thumbnailsize) {
@@ -502,8 +506,24 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
 
               Punkteindex++;
             }
+          }
+
+          // Alte Tagebücher aus der LOP Liste entfernen;
 
 
+          LOPListenMerker  = lodash.cloneDeep(this.LOPListen);
+          this.LOPListen   = [];
+
+          for(let i = 0; i < LOPListenMerker.length; i++) {
+
+            LOPListeMerker = LOPListenMerker[i];
+
+            // Letzte LOP Liste und alle anderen mit offenen Punkten einfügen
+
+            if (i === 0 || this.DB.CurrentPunkteliste[LOPListeMerker._id].length > 0) {
+
+              this.LOPListen.push(LOPListeMerker);
+            }
           }
         }
         else {

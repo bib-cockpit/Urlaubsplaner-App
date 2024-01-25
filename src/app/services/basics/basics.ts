@@ -17,7 +17,7 @@ export class BasicsProvider {
   public InnerContenthoehe: number    = 0;
   public Waittime: number             = 300;
   public Svgpath: string              = 'assets/svgs/';
-  public AppBuild: string             = '21.01.2024 18:55';
+  public AppBuild: string             = '25.01.2024 21:00';
   public ShowHomeScreenInfos          = true;
   public DebugNoExternalEmail         = true;
   public AppVersionName               = 'none';
@@ -27,7 +27,7 @@ export class BasicsProvider {
 
   public Farben = {
 
-    BAEBlau:       '#307ac1', // '#2190df',
+    BAEBlau:       '#307ac1',
     BAEHellgrau:   '#dfe5eb',
     Gruen:         '#006400',
     Burnicklgruen: '#c7d304',

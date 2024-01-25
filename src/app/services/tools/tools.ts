@@ -448,6 +448,29 @@ export class ToolsProvider {
 
   }
 
+  public FormatCurrency(amount, decimalCount = 2, decimal = ",", thousands = "."): string {
+
+    try {
+
+      decimalCount = Math.abs(decimalCount);
+      decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
+
+      const negativeSign = amount < 0 ? "-" : "";
+
+      let i: any = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
+      let j = (i.length > 3) ? i.length % 3 : 0;
+
+      return negativeSign +
+        (j ? i.substr(0, j) + thousands : '') +
+        i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) +
+        (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "") + ' ' + '€';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Tools', 'FormatCurrency', this.Debug.Typen.Service);
+    }
+  }
+
   public FormatValue(wert: number, einheit, kommastellen: number)
   {
     try {

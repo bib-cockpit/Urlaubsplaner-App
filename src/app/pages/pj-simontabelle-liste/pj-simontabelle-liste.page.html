@@ -12,43 +12,185 @@
 
   <div *ngIf="DBProjekte.CurrentProjekt !== null" style="padding: 4px; width: 100%">
 
-    <table class="docinnertable" width="100%">
+    <table *ngIf="Leistungsphasenliste.length > 0" class="docinnertable" width="100%">
       <tr>
-        <td style="width: 400px; height: 32px;"><b>Anlagengruppe</b></td>
-        <td style="width: 120px; text-align: center"><b>Leistungsphase</b></td>
-        <td style="width: 200px;"><b>Anrechenbare Kosten</b></td>
-        <td style="width: 140px;"><b>Honorar</b></td>
-        <td style="width: 140px; text-align: center;"><b>Besondere<br>Leistung</b></td>
+        <td style="width: 100px; height: 32px;"><b>Leistungsphase</b></td>
+        <td style="width: 500px;"><b>Anlagengruppe</b></td>
+        <td style="width: 180px;"><b>Anrechenbare Kosten</b></td>
+        <td style="width: 260px;"><b>Honorar</b></td>
+        <td style="width: 500px;"><b>Besondere Leistung</b></td>
+        <td style="width: 260px;"><b>Nebenkosten</b></td>
         <td style="width: auto"></td>
 
       </tr>
-      <ng-container *ngFor="let Anlagegruppennummer of Anlagengruppenliste;">
+      <ng-container *ngFor="let Leistungsphase of Leistungsphasenliste; let phasenindex = index">
         <tr>
-          <td colspan="5" style="padding: 0px; !important;">
+          <td colspan="7" style="padding: 0px; !important;">
             <div class="anlagengruppeheader">
-              {{Anlagegruppennummer}}. {{DB.GetAnlagengruppeByNummer(Anlagegruppennummer).Name}}
+              {{Leistungsphase}}
             </div>
           </td>
         </tr>
-        <ng-container *ngFor="let Tabelle of Pool.Simontabellenliste[DBProjekte.CurrentProjekt.Projektkey]">
-          <tr *ngIf="Tabelle.Anlagengruppe === Anlagegruppennummer">
-            <td></td>
+        <ng-container *ngFor="let Tabelle of Pool.Simontabellenliste[DBProjekte.CurrentProjekt.Projektkey]; let i = index">
+          <tr *ngIf="Tabelle.Leistungsphase === Leistungsphase">
+            <td>
+            </td>
             <td>
               <div (click)="SimontabelleClicked($event, Tabelle)" class="simontabelleeintragdiv">
-                {{Tabelle.Leistungsphase}}
+                {{Tabelle.Anlagengruppe}}. {{DB.GetAnlagengruppeByNummer(Tabelle.Anlagengruppe).Name}}
               </div>
             </td>
             <td style="text-align: right">
-              {{Tabelle.Kosten.toFixed(2)}} €
+              {{Tools.FormatCurrency(Tabelle.Kosten)}}
             </td>
             <td style="text-align: right">
-              {{Tabelle.Honorar.toFixed(2)}} €
+
+              <table class="nobordersmalltable" style="width: 100%">
+                <tr>
+                  <td style="text-align: right; width: 50%">
+                    {{Tools.FormatCurrency(Tabelle.Honorar)}}
+                  </td>
+                  <td style="text-align: right; color: green; width: 50%">
+                    {{Tools.FormatCurrency(Tabelle.Honorar * (1 + DB.Steuersatz / 100))}}
+                  </td>
+                </tr>
+              </table>
+
+
             </td>
-            <td style="text-align: center" [style.color]="Tabelle.Besondereleistungenliste.length > 0 ? 'red' : 'black'">{{Tabelle.Besondereleistungenliste.length}}</td>
+            <td style="text-align: center">
+              <div (click)="SimontabelleClicked($event, Tabelle)" class="simontabelleeintragdiv">
+
+                <table class="nobordersmalltable" style="width: 100%">
+                  <tr *ngFor="let Leistung of Tabelle.Besondereleistungenliste">
+                    <td style="width: auto; text-align: left">
+                      {{Leistung.Titel}}
+                    </td>
+                    <td style="text-align:right; width: 120px;">
+                      {{Tools.FormatCurrency(Leistung.Honorar)}}
+                    </td>
+                    <td style="text-align:right; width: 120px; color: green;">
+                      {{Tools.FormatCurrency(Leistung.Honorar * (1 + DB.Steuersatz / 100))}}
+                    </td>
+                  </tr>
+                </table>
+
+              </div>
+
+            </td>
+            <td>
+
+              <table class="nobordersmalltable" style="width: 100%">
+                <tr>
+                  <td style="width: auto; text-align: left"></td>
+                  <td style="text-align:right; width: 120px;">
+                    {{Tools.FormatCurrency(Tabelle.Nettonebenkosten)}}
+                  </td>
+                  <td style="text-align:right; width: 120px; color: green;">
+                    {{Tools.FormatCurrency(Tabelle.Bruttonebenkosten)}}
+                  </td>
+                </tr>
+              </table>
+
+
+            </td>
             <td style="width: auto;"></td>
           </tr>
+
+          <ng-container *ngIf="Summenliste[phasenindex] && Tabelle.Leistungsphase === Leistungsphase && Anzahlliste[Leistungsphase] === i">
+            <tr style="background: #D7DBDD">
+              <td style="text-align: right; font-weight: bold;" colspan="2">
+                Summen
+              </td>
+              <td style="text-align: right">
+                {{Tools.FormatCurrency(Summenliste[phasenindex].Nettokostensumme)}}
+              </td>
+              <td style="text-align: right">
+
+                <table class="nobordersmalltable" style="width: 100%">
+                  <tr>
+                    <td style="text-align: right; width: 50%">
+                      {{Tools.FormatCurrency(Summenliste[phasenindex].Nettohonorar)}}
+                    </td>
+                    <td style="text-align: right; color: green; width: 50%">
+                      {{Tools.FormatCurrency(Summenliste[phasenindex].Bruttohonorar)}}
+                    </td>
+                  </tr>
+                </table>
+
+
+              </td>
+              <td style="text-align: center">
+                <div (click)="SimontabelleClicked($event, Tabelle)" class="simontabelleeintragdiv">
+
+                  <table class="nobordersmalltable" style="width: 100%">
+                    <tr>
+                      <td style="width: auto; text-align: left"></td>
+                      <td style="text-align:right; width: 120px;">
+                        {{Tools.FormatCurrency(Summenliste[phasenindex].Nettoleistungssumme)}}
+                      </td>
+                      <td style="text-align:right; width: 120px; color: green;">
+                        {{Tools.FormatCurrency(Summenliste[phasenindex].Bruttoleistungssumme)}}
+                      </td>
+                    </tr>
+                  </table>
+
+                </div>
+
+              </td>
+              <td>
+
+                <table class="nobordersmalltable" style="width: 100%">
+                  <tr>
+                    <td style="width: auto; text-align: left"></td>
+                    <td style="text-align:right; width: 120px;">
+                      {{Tools.FormatCurrency(Summenliste[phasenindex].Nettonebenkosten)}}
+                    </td>
+                    <td style="text-align:right; width: 120px; color: green;">
+                      {{Tools.FormatCurrency(Summenliste[phasenindex].Bruttonebenkosten)}}
+                    </td>
+                  </tr>
+                </table>
+
+              </td>
+              <td style="width: auto;"></td>
+            </tr>
+            <tr style="background: #D7DBDD">
+              <td style="text-align: right; font-weight: bold;" colspan="2">
+                Gesamtsumme
+              </td>
+              <td colspan="4" style="text-align: center">
+                <div (click)="SimontabelleClicked($event, Tabelle)" class="simontabelleeintragdiv">
+
+                  <table class="nobordersmalltable" style="width: 100%">
+                    <tr>
+                      <td style="width: auto; text-align: left"></td>
+                      <td style="text-align:right; width: 120px;">
+                        {{Tools.FormatCurrency(Summenliste[phasenindex].Nettogesamtsumme)}}
+                      </td>
+                      <td style="text-align:right; width: 120px; color: green;">
+                        {{Tools.FormatCurrency(Summenliste[phasenindex].Bruttogesamtsumme)}}
+                      </td>
+                    </tr>
+                  </table>
+
+                </div>
+
+              </td>
+              <td style="width: auto;"></td>
+            </tr>
+
+          </ng-container>
+
+
         </ng-container>
       </ng-container>
+    </table>
+
+    <table *ngIf="Leistungsphasenliste.length === 0" style="width: 100%">
+      <tr>
+        <td style="text-align: center; height: 80px">Für dieses Projekt sind keine Simon Tabellen hinterlegt.</td>
+      </tr>
     </table>
   </div>
 
@@ -67,7 +209,7 @@
 <pj-simontabelle-editor *ngIf="ShowEditor === true"
                         [ZIndex]="3000"
                         [PositionY]="0"
-                        [Dialogbreite]="1400"
+                        [Dialogbreite]="1800"
                         (CancelClickedEvent)="ShowEditor = false" (OkClickedEvent)="ShowEditor = false"
                         (AnlagengruppeClickedEvent)="AnlagengruppeClickedEventHandler()"
                         (AddLeistungClickedEvent)="AddLeistungClickedEventHandler()"

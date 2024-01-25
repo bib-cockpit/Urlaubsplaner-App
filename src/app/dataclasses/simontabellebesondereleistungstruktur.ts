@@ -1,3 +1,4 @@
+import {Rechnungseintragstruktur} from "./rechnungseintragstruktur";
 
 
 export type Simontabellebesondereleistungstruktur = {
@@ -7,4 +8,5 @@ export type Simontabellebesondereleistungstruktur = {
   Titel:        string;
   Beschreibung: string;
   Honorar:      number;
+  Rechnungseintraege: Rechnungseintragstruktur[];
 };

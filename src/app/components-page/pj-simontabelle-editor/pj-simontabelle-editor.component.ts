@@ -21,6 +21,9 @@ import {Simontabellestruktur} from "../../dataclasses/simontabellestruktur";
 import {Subscription} from "rxjs";
 import {Simontabelleeintragstruktur} from "../../dataclasses/simontabelleeintragstruktur";
 import {Simontabellebesondereleistungstruktur} from "../../dataclasses/simontabellebesondereleistungstruktur";
+import { Rechnungstruktur } from 'src/app/dataclasses/rechnungstruktur';
+import moment from "moment";
+import {Rechnungseintragstruktur} from "../../dataclasses/rechnungseintragstruktur";
 
 @Component({
   selector: 'pj-simontabelle-editor',
@@ -47,8 +50,9 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
 
   public Bereiche = {
 
-    Allgemein: 'Allgemein',
-    Leistungen: 'Leistungen'
+    Tabelle:    'Tabelle',
+    Leistungen: 'Leistungen',
+    Rechnungen: 'Rechnungen'
   };
 
   private JoiShema: ObjectSchema;
@@ -86,7 +90,7 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
       this.Bruttonkosten       = 0;
       this.Bruttohonorar       = 0;
       this.Vertragsprozente    = 0;
-      this.Bereich             = this.Bereiche.Allgemein;
+      this.Bereich             = this.Bereiche.Rechnungen;
 
 
     } catch (error) {
@@ -163,9 +167,16 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
       this.Bruttonkosten = this.DB.CurrentSimontabelle.Kosten * Steuerfaktor;
       this.Bruttohonorar = this.DB.CurrentSimontabelle.Honorar * Steuerfaktor;
 
+      this.DB.CurrentRechnungsindex = this.DB.CurrentSimontabelle.Rechnungen.length - 1;
+
       for(let Eintrag of this.DB.CurrentSimontabelle.Eintraegeliste) {
 
         this.VertragValid.push(this.CheckVertragswert(Eintrag.Vertrag, Eintrag));
+
+        for(let Rechnungseintrag of Eintrag.Rechnungseintraege) {
+
+          this.CheckRechnungswert(Rechnungseintrag, Eintrag);
+        }
       }
 
     } catch (error) {
@@ -398,12 +409,36 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
         Valid = true;
       }
 
-
       return Valid;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'CheckVertragswert', this.Debug.Typen.Component);
+    }
+  }
+
+  GetVertragswert(Eintrag: Simontabelleeintragstruktur): number {
+
+    try {
+
+      let Valid: boolean;
+      let Wert: number;
+
+      Valid = !isNaN(parseFloat(Eintrag.Vertrag.toString())) && isFinite(Eintrag.Vertrag);
+
+      if(Valid === true) {
+
+        Wert = parseFloat(Eintrag.Vertrag.toString());
+
+        Eintrag.Vertrag = Wert;
+      }
+      else Wert = 0;
+
+      return Wert;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'GetVertragswert', this.Debug.Typen.Component);
     }
   }
 
@@ -660,15 +695,15 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
-  AllgemeinMenuButtonClicked() {
+  TabelleMenuButtonClicked() {
 
     try {
 
-      this.Bereich = this.Bereiche.Allgemein;
+      this.Bereich = this.Bereiche.Tabelle;
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'AllgemeinMenuButtonClicked', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'TabelleMenuButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -714,6 +749,149 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
 
       this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'AddLeistungClicked', this.Debug.Typen.Component);
     }
+  }
 
+  CheckRechnungswert(Rechnungseintrag: Rechnungseintragstruktur, Tabelleneintrag: Simontabelleeintragstruktur) {
+
+    try {
+
+      let Valid: boolean;
+      let Wert: number;
+
+      Valid = !isNaN(parseFloat(Rechnungseintrag.Honoraranteil.toString())) && isFinite(Rechnungseintrag.Honoraranteil);
+
+      if(Valid === true) {
+
+        Wert = parseFloat(Rechnungseintrag.Honoraranteil.toString());
+
+        Rechnungseintrag.Honoraranteil = Wert;
+
+        Wert = 0;
+
+        for(let Eintrag of Tabelleneintrag.Rechnungseintraege) {
+
+          Wert += Eintrag.Honoraranteil;
+        }
+
+        if(Wert > Tabelleneintrag.Vertrag) {
+
+          Rechnungseintrag.Valid = false;
+        }
+        else {
+
+          Rechnungseintrag.Valid = true;
+        }
+      }
+      else {
+
+        Rechnungseintrag.Valid = false;
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'CheckRechnungswert', this.Debug.Typen.Component);
+    }
+  }
+
+  RechnungMenuButtonClicked() {
+
+    try {
+
+      this.Bereich = this.Bereiche.Rechnungen;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'RechnungMenuButtonClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  async AddRechnungClicked() {
+
+    try {
+
+      await this.DB.AddNewRechnung();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'AddRechnungClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  GetRechnungsdatum(Rechnung: Rechnungstruktur): string {
+
+    try {
+
+      return moment(Rechnung.Zeitstempel).format('DD.MM.YY');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'GetRechnungsdatum', this.Debug.Typen.Component);
+    }
+  }
+
+  RechnungswertChanged(event: any, Eintrag: Simontabelleeintragstruktur, Rechnung: Rechnungseintragstruktur, i: number) {
+
+    try {
+
+      let Valid: boolean;
+      let Wert: number;
+
+      Valid = !isNaN(parseFloat(event.detail.value.toString())) && isFinite(event.detail.value);
+
+      if(Valid === true) {
+
+        Wert = parseFloat(event.detail.value.toString());
+
+        Rechnung.Honoraranteil = Wert;
+
+        this.CheckRechnungswert(Rechnung, Eintrag);
+
+      }
+      else {
+
+        Rechnung.Valid = false;
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'RechnungswertChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  RechnungsIndexChanged(event: any) {
+
+    try {
+
+      this.DB.CurrentRechnungsindex = event.detail.value;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'RechnungsIndexChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  CalculateRechnung(Rechnung: Rechnungstruktur): number {
+
+    try {
+
+      let Summe: number = 0;
+
+      if(this.DB.CurrentSimontabelle !== null) {
+
+        for(let Eintrag of this.DB.CurrentSimontabelle.Eintraegeliste) {
+
+          for(let Rechnungseintrag of Eintrag.Rechnungseintraege) {
+
+            if(Rechnungseintrag.RechnungID === Rechnung.RechnungID) Summe += Rechnungseintrag.Honoraranteil;
+          }
+        }
+      }
+
+      return Summe;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'CalculateRechnung', this.Debug.Typen.Component);
+    }
   }
 }

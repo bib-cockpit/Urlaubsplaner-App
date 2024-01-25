@@ -91,224 +91,233 @@
       <div  *ngFor="let LOP of LOPListen; let o = odd"  style="width: 100%; padding-left: 8px; padding-right: 8px">
         <table width="100%" class="docinnertablespezial">
         -->
-        <ng-container *ngFor="let LOP of LOPListen; let o = odd">
-          <tr>
-            <td colspan="11"  [style.background]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun" style="border-right: none !important;">
-              <div class="loplisteheader" (click)="LOPListeClicked(LOP)">
-                {{LOP.Titel + ' ' + LOP.LOPListenummer + ' vom ' + LOP.Zeitstring + ' / KW ' + GetKalenderwoche(LOP.Zeitstempel)}}
-              </div>
-            </td>
-            <td style="border-left: none !important;" align="center" [style.background]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun">
+        <ng-container *ngFor="let LOP of LOPListen; let o = odd;">
 
-              <div style="background: white; padding: 4px; border-radius: 3px; width: 110px">
-                <table class="nobordersmalltable">
+
+            <tr>
+              <td colspan="11"  [style.background]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun" style="border-right: none !important;">
+                <div class="loplisteheader" (click)="LOPListeClicked(LOP)">
+                  {{LOP.Titel + ' ' + LOP.LOPListenummer + ' vom ' + LOP.Zeitstring + ' / KW ' + GetKalenderwoche(LOP.Zeitstempel)}}
+                </div>
+              </td>
+              <td style="border-left: none !important;" align="center" [style.background]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun">
+
+                <div style="background: white; padding: 4px; border-radius: 3px; width: 110px">
+                  <table class="nobordersmalltable">
+                    <tr>
+                      <td align="center">
+                        <table>
+                          <tr>
+                            <td>
+                              <div *ngIf="LOP.ProjektpunkteIDListe.length > 0" (click)="SendMailButtonClicked($event, LOP)" class="mailclass">
+                                <ion-icon  name="mail" [color]="LOP.GesendetZeitstempel !== null ? 'gruen' : 'rot'"></ion-icon>
+                              </div>
+                            </td>
+                            <td *ngIf="LOP.GesendetZeitstempel !== null">
+                              <div (click)="ShowPdfButtonClicked($event, LOP)" class="mailclass">
+                                <ion-icon  name="document" [color]="Basics.Ionicfarben.BAEBlau"></ion-icon>
+                              </div>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <ng-container *ngIf="LOP.GesendetZeitstempel !== null">
+                      <tr>
+                        <td style="text-align: center; font-size: 80%">{{Tools.GetDatumFromZeitstempel(LOP.GesendetZeitstempel)}} / {{Tools.GetZeitFromZeitstempel(LOP.GesendetZeitstempel)}}</td>
+                      </tr>
+                    </ng-container>
+                  </table>
+                </div>
+
+
+
+              </td>
+            </tr>
+            <tr>
+              <td colspan="">Punkteanzahl: {{DB.CurrentPunkteliste[LOP._id].length}}</td>
+            </tr>
+            <tr style="cursor: pointer" *ngFor="let Punkt of DB.CurrentPunkteliste[LOP._id]; let Punktindex = index">
+
+              <!--
+              <td style="width: 34px; font-size: 160%; font-weight: bold" [style.color]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun">
+                <span *ngIf="CurrentLOPListeID === LOP._id && CurrentPunktID === Punkt._id">&rarr;</span>
+              </td>
+              -->
+
+              <td style="width: 30px; text-align: center; color: white;"
+                  [style.border.color]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun"
+                  [style.background]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun">
+                {{Punkt.Nummer}}
+              </td>
+              <td style="width: 180px;">{{GetBauteilnamen(Punkt)}}</td>
+              <td style="width: 80px; text-align: center;">
+                {{Pool.Fachbereich.GetFachbereichbyKey(Punkt.Fachbereich).Kuerzel}}
+              </td>
+              <td style="width: 180px;">
+                {{Punkt.Thematik}}
+              </td>
+              <td style="width: auto">
+
+                <table class="nobordersmalltable" width="100%">
                   <tr>
-                    <td align="center">
-                      <table>
-                        <tr>
-                          <td>
-                            <div *ngIf="LOP.ProjektpunkteIDListe.length > 0" (click)="SendMailButtonClicked($event, LOP)" class="mailclass">
-                              <ion-icon  name="mail" [color]="LOP.GesendetZeitstempel !== null ? 'gruen' : 'rot'"></ion-icon>
-                            </div>
-                          </td>
-                          <td *ngIf="LOP.GesendetZeitstempel !== null">
-                            <div (click)="ShowPdfButtonClicked($event, LOP)" class="mailclass">
-                              <ion-icon  name="document" [color]="Basics.Ionicfarben.BAEBlau"></ion-icon>
-                            </div>
-                          </td>
+                    <td>
+                      <div class="aufgabedivclass" (click)="LOPListepunktClickedHandler(Punkt, LOP)" [innerHTML]="GetAufgabentext(Punkt) | safe: 'html'"></div>
+                    </td>
+                  </tr>
+                  <tr *ngIf="CheckThumbnailliste(Thumbnailliste, LOP._id, Punktindex) && Punkt.ProtokollShowBilder">
+                    <td>
+
+                      <span *ngIf="Punkt.ProtokollShowBilder && Punkt.Bilderliste.length > 0 && Punkt.Thumbnailsize === 'large'" style="color: #307ac1">Siehe Bilder im Anhang</span>
+
+                      <table *ngIf="Thumbnailliste[LOP._id][Punktindex];">
+                        <tr *ngFor="let Zeilenliste of Thumbnailliste[LOP._id][Punktindex];  let Zeilenindex = index">
+                          <ng-container *ngFor="let Thumb of Zeilenliste; let Thumbnailindex = index">
+                            <td style="cursor: pointer;">
+                              <ng-container *ngIf="Thumb !== null">
+
+                                <table *ngIf="Thumb.weburl !== null">
+                                  <tr>
+                                    <td style="padding: 2px" (click)="ThumbnailClicked($event, Zeilenliste, Thumbnailindex)">
+                                      <div class="imageclass">
+                                        <img  [src]="GetThumbSource(Punkt, Thumb)"
+                                              [style.width.px]="Thumbbreite[LOP._id][Punktindex]" [style.height.px]="Thumbhoehe[LOP._id][Punktindex]"/>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </table>
+
+                                <table *ngIf="Thumb.weburl === null">
+                                  <tr>
+                                    <td style="padding: 2px">
+                                      <div class="imageclass">
+                                        <div style="border: 1px solid gray; font-size: 80%; min-height: 120px;" [style.width.px]="Thumbbreite[LOP._id][Punktindex]" [style.height.px]="Thumbhoehe[LOP._id][Punktindex]">
+                                          <table width="100%">
+                                            <tr>
+                                              <td style="text-align: center">
+                                                Bild nicht<br>gefunden
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td align="center">
+                                                <ion-icon (click)="DeleteThumbnailClicked($event, Punkt, Thumb, LOP._id, Punktindex, Zeilenindex, Thumbnailindex)" name="trash" color="rot" slot="icon-only"></ion-icon>
+                                              </td>
+                                            </tr>
+                                          </table>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </table>
+
+                              </ng-container>
+
+                            </td>
+                          </ng-container>
                         </tr>
                       </table>
                     </td>
                   </tr>
-                  <ng-container *ngIf="LOP.GesendetZeitstempel !== null">
-                    <tr>
-                      <td style="text-align: center; font-size: 80%">{{Tools.GetDatumFromZeitstempel(LOP.GesendetZeitstempel)}} / {{Tools.GetZeitFromZeitstempel(LOP.GesendetZeitstempel)}}</td>
-                    </tr>
-                  </ng-container>
+                  <tr *ngIf="Punkt.Anmerkungenliste.length > 0">
+                    <td>
+                      <table>
+                          <tr *ngFor="let Anmerkung of Punkt.Anmerkungenliste">
+                            <td style="width: 60px; color: orange">
+                              {{GetAnmerkungDatum(Anmerkung)}}
+                            </td>
+                            <td style="width: 40px; color: orange" *ngIf="DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email)">
+                              {{DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email).Name}}:
+                            </td>
+                            <td>
+                              {{Anmerkung.Anmerkung}}
+                            </td>
+                          </tr>
+                      </table>
+
+                    </td>
+                  </tr>
                 </table>
-              </div>
 
+              </td>
+              <td align="center" style="width: 90px">
+                <ng-container *ngIf="Punkt.Bilderliste.length >  0">
 
+                  <table class="nobordersmalltable">
+                    <tr>
+                      <td>
+                        <div class="thumbsizedivlass" (click)="ThumsizeClicked(Punkt)">
+                          {{GetTumbnailgroessetext(Punkt.Thumbnailsize)}}
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center">
+                        <checkbox-clon [Checked]="Punkt.ProtokollShowBilder" (CheckChanged)="ShowBilderCheckChanged($event, Punkt)"></checkbox-clon>
+                      </td>
+                    </tr>
+                  </table>
 
-            </td>
-          </tr>
-          <tr style="cursor: pointer" *ngFor="let Punkt of DB.CurrentPunkteliste[LOP._id]; let Punktindex = index">
+                </ng-container>
 
-            <!--
-            <td style="width: 34px; font-size: 160%; font-weight: bold" [style.color]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun">
-              <span *ngIf="CurrentLOPListeID === LOP._id && CurrentPunktID === Punkt._id">&rarr;</span>
-            </td>
-            -->
-
-            <td style="width: 30px; text-align: center; color: white;"
-                [style.border.color]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun"
-                [style.background]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun">
-              {{Punkt.Nummer}}
-            </td>
-            <td style="width: 180px;">{{GetBauteilnamen(Punkt)}}</td>
-            <td style="width: 80px; text-align: center;">
-              {{Pool.Fachbereich.GetFachbereichbyKey(Punkt.Fachbereich).Kuerzel}}
-            </td>
-            <td style="width: 180px;">
-              {{Punkt.Thematik}}
-            </td>
-            <td style="width: auto">
-
-              <table class="nobordersmalltable" width="100%">
-                <tr>
-                  <td>
-                    <div class="aufgabedivclass" (click)="LOPListepunktClickedHandler(Punkt, LOP)" [innerHTML]="GetAufgabentext(Punkt) | safe: 'html'"></div>
-                  </td>
-                </tr>
-                <tr *ngIf="CheckThumbnailliste(Thumbnailliste, LOP._id, Punktindex) && Punkt.ProtokollShowBilder">
-                  <td>
-
-                    <span *ngIf="Punkt.ProtokollShowBilder && Punkt.Bilderliste.length > 0 && Punkt.Thumbnailsize === 'large'" style="color: #307ac1">Siehe Bilder im Anhang</span>
-
-                    <table *ngIf="Thumbnailliste[LOP._id][Punktindex];">
-                      <tr *ngFor="let Zeilenliste of Thumbnailliste[LOP._id][Punktindex];  let Zeilenindex = index">
-                        <ng-container *ngFor="let Thumb of Zeilenliste; let Thumbnailindex = index">
-                          <td style="cursor: pointer;">
-                            <ng-container *ngIf="Thumb !== null">
-
-                              <table *ngIf="Thumb.weburl !== null">
-                                <tr>
-                                  <td style="padding: 2px" (click)="ThumbnailClicked($event, Zeilenliste, Thumbnailindex)">
-                                    <div class="imageclass">
-                                      <img  [src]="GetThumbSource(Punkt, Thumb)"
-                                            [style.width.px]="Thumbbreite[LOP._id][Punktindex]" [style.height.px]="Thumbhoehe[LOP._id][Punktindex]"/>
-                                    </div>
-                                  </td>
-                                </tr>
-                              </table>
-
-                              <table *ngIf="Thumb.weburl === null">
-                                <tr>
-                                  <td style="padding: 2px">
-                                    <div class="imageclass">
-                                      <div style="border: 1px solid gray; font-size: 80%; min-height: 120px;" [style.width.px]="Thumbbreite[LOP._id][Punktindex]" [style.height.px]="Thumbhoehe[LOP._id][Punktindex]">
-                                        <table width="100%">
-                                          <tr>
-                                            <td style="text-align: center">
-                                              Bild nicht<br>gefunden
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <td align="center">
-                                              <ion-icon (click)="DeleteThumbnailClicked($event, Punkt, Thumb, LOP._id, Punktindex, Zeilenindex, Thumbnailindex)" name="trash" color="rot" slot="icon-only"></ion-icon>
-                                            </td>
-                                          </tr>
-                                        </table>
-                                      </div>
-                                    </div>
-                                  </td>
-                                </tr>
-                              </table>
-
-                            </ng-container>
-
-                          </td>
-                        </ng-container>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-                <tr *ngIf="Punkt.Anmerkungenliste.length > 0">
-                  <td>
-                    <table>
-                        <tr *ngFor="let Anmerkung of Punkt.Anmerkungenliste">
-                          <td style="width: 60px; color: orange">
-                            {{GetAnmerkungDatum(Anmerkung)}}
-                          </td>
-                          <td style="width: 40px; color: orange" *ngIf="DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email)">
-                            {{DBMitarbeiter.GetMitarbeiterByEmail(Anmerkung.Verfasser.Email).Name}}:
-                          </td>
-                          <td>
-                            {{Anmerkung.Anmerkung}}
-                          </td>
-                        </tr>
-                    </table>
-
-                  </td>
-                </tr>
-              </table>
-
-            </td>
-            <td align="center" style="width: 90px">
-              <ng-container *ngIf="Punkt.Bilderliste.length >  0">
-
-                <table class="nobordersmalltable">
+              </td>
+              <td style="width: 90px">{{GetTermindatum(Punkt)}}</td>
+              <td style="width: 120px">
+                <table class="nobordersmalltable" style="width: 100%">
                   <tr>
                     <td>
-                      <div class="thumbsizedivlass" (click)="ThumsizeClicked(Punkt)">
-                        {{GetTumbnailgroessetext(Punkt.Thumbnailsize)}}
+                      <div class="statusdivclass"
+                           [style.background]="DBProjektpunkte.GetProjektpunktstusByName(Punkt.Status).LOPColor">
+                        {{DBProjektpunkte.GetProjektpunktstusByName(Punkt.Status).Displayname}}
                       </div>
                     </td>
                   </tr>
-                  <tr>
-                    <td align="center">
-                      <checkbox-clon [Checked]="Punkt.ProtokollShowBilder" (CheckChanged)="ShowBilderCheckChanged($event, Punkt)"></checkbox-clon>
+                  <tr *ngIf="Punkt.Status === Const.Projektpunktstatustypen.Geschlossen.Name">
+                    <td style="text-align: center;">
+                      {{Punkt.Geschlossenzeitstring}}
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td style="width: 100px">
+
+                <div *ngIf="Punkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name && Punkt.Status !== Const.Projektpunktstatustypen.Geschlossen.Name" class="statusdivclass"
+                     [style.background]="DBProjektpunkte.GetPrioritaetcolor(Punkt)">
+                  {{Punkt.Prioritaet}}
+                </div>
+
+              </td>
+              <td style="width: 100px; text-align: center">
+
+                <!-- Zuständig BAE -->
+
+                <table class="nobordersmalltable" style="width: 100%">
+                  <tr  *ngFor="let ZustaendigID of Punkt.ZustaendigeInternIDListe">
+                    <td style="text-align: center; color: #307ac1; font-size: 90%">
+                      {{DB.GetZustaendigInternName(ZustaendigID)}}
                     </td>
                   </tr>
                 </table>
 
-              </ng-container>
+              </td>
+              <td>
 
-            </td>
-            <td style="width: 90px">{{GetTermindatum(Punkt)}}</td>
-            <td style="width: 120px">
-              <table class="nobordersmalltable" style="width: 100%">
-                <tr>
-                  <td>
-                    <div class="statusdivclass"
-                         [style.background]="DBProjektpunkte.GetProjektpunktstusByName(Punkt.Status).LOPColor">
-                      {{DBProjektpunkte.GetProjektpunktstusByName(Punkt.Status).Displayname}}
-                    </div>
-                  </td>
-                </tr>
-                <tr *ngIf="Punkt.Status === Const.Projektpunktstatustypen.Geschlossen.Name">
-                  <td style="text-align: center;">
-                    {{Punkt.Geschlossenzeitstring}}
-                  </td>
-                </tr>
-              </table>
-            </td>
-            <td style="width: 100px">
+                <!-- Zuständig Firma -->
 
-              <div *ngIf="Punkt.Status !== Const.Projektpunktstatustypen.Protokollpunkt.Name && Punkt.Status !== Const.Projektpunktstatustypen.Geschlossen.Name" class="statusdivclass"
-                   [style.background]="DBProjektpunkte.GetPrioritaetcolor(Punkt)">
-                {{Punkt.Prioritaet}}
-              </div>
+                <table class="nobordersmalltable" style="width: 100%">
+                  <tr *ngFor="let ZustaendigID of Punkt.ZustaendigeExternIDListe">
+                    <td style="text-align: center; color: black; font-size: 90%">
+                      {{DB.GetZustaendigExternName(ZustaendigID)}}
+                    </td>
+                  </tr>
+                </table>
 
-            </td>
-            <td style="width: 100px; text-align: center">
+              </td>
+              <td style="width: 120px; text-align: center;"></td>
+            </tr>
 
-              <!-- Zuständig BAE -->
 
-              <table class="nobordersmalltable" style="width: 100%">
-                <tr  *ngFor="let ZustaendigID of Punkt.ZustaendigeInternIDListe">
-                  <td style="text-align: center; color: #307ac1; font-size: 90%">
-                    {{DB.GetZustaendigInternName(ZustaendigID)}}
-                  </td>
-                </tr>
-              </table>
 
-            </td>
-            <td>
 
-              <!-- Zuständig Firma -->
-
-              <table class="nobordersmalltable" style="width: 100%">
-                <tr *ngFor="let ZustaendigID of Punkt.ZustaendigeExternIDListe">
-                  <td style="text-align: center; color: black; font-size: 90%">
-                    {{DB.GetZustaendigExternName(ZustaendigID)}}
-                  </td>
-                </tr>
-              </table>
-
-            </td>
-            <td style="width: 120px; text-align: center;"></td>
-          </tr>
 
         </ng-container>
 

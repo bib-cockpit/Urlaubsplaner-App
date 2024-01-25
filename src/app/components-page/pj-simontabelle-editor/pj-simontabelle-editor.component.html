@@ -14,11 +14,11 @@
               <td [style.color]="'white'">{{Titel}}</td>
               <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
               <td>
-                <div class="menubuttonclass" (click)="AllgemeinMenuButtonClicked()">
+                <div class="menubuttonclass" (click)="TabelleMenuButtonClicked()">
                   <table class="paddingsmalltable">
                     <tr>
-                      <td><ion-icon name="reader-outline" [color]="Bereich === Bereiche.Allgemein ? 'schwarz' : 'weiss'"></ion-icon></td>
-                      <td [style.color]="Bereich === Bereiche.Allgemein ? 'black' : 'white'">Allgemein</td>
+                      <td><ion-icon name="reader-outline" [color]="Bereich === Bereiche.Tabelle ? 'schwarz' : 'weiss'"></ion-icon></td>
+                      <td [style.color]="Bereich === Bereiche.Tabelle ? 'black' : 'white'">Simon Tabelle</td>
                     </tr>
                   </table>
                 </div>
@@ -37,13 +37,24 @@
                   </table>
                 </div>
               </td>
+              <td style="width: 20px"></td>
+              <td>
+                <div class="menubuttonclass" (click)="RechnungMenuButtonClicked()">
+                  <table class="paddingsmalltable">
+                    <tr>
+                      <td><ion-icon name="reader-outline" [color]="Bereich === Bereiche.Rechnungen ? 'schwarz' : 'weiss'"></ion-icon></td>
+                      <td [style.color]="Bereich === Bereiche.Rechnungen ? 'black' : 'white'">Rechnungslegung</td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
             </tr>
           </table>
         </page-header>
       </ion-header>
       <ion-content>
 
-        <ng-container *ngIf="Bereich === Bereiche.Allgemein">
+        <ng-container *ngIf="Bereich === Bereiche.Tabelle">
           <div class="contentinnerclass" *ngIf="DB.CurrentSimontabelle">
 
             <table width="100%">
@@ -136,14 +147,6 @@
                       </ion-col>
                     </ion-row>
                     <ion-row>
-                      <ion-col size="6">
-                        Anrechnebare Kosten {{Bruttonkosten.toFixed(2)}} € brutto
-                      </ion-col>
-                      <ion-col size="6">
-                        Honorar {{Bruttohonorar.toFixed(2)}} € brutto
-                      </ion-col>
-                    </ion-row>
-                    <ion-row>
                       <ion-col size="12">
                         <table class="docinnertable" style="width: 100%;">
                           <tr>
@@ -156,13 +159,14 @@
                           <tr *ngFor="let Eintrag of DB.CurrentSimontabelle.Eintraegeliste; let i = index">
                             <td style="text-align: center;">{{Eintrag.Buchstabe}}</td>
                             <td>{{Eintrag.Beschreibung}}</td>
-                            <td style="text-align: center">{{Eintrag.Von.toFixed(1)}} %</td>
-                            <td style="text-align: center">{{Eintrag.Bis.toFixed(1)}} %</td>
+                            <td style="text-align: center">{{Eintrag.Von.toFixed(2)}} %</td>
+                            <td style="text-align: center">{{Eintrag.Bis.toFixed(2)}} %</td>
                             <td>
                               <table class="nobordertable" style="width: 100%;">
                                 <tr>
                                   <td>
                                     <ion-input *ngIf="Eintrag.Bis !== 0" [value]="Eintrag.Vertrag" (ionInput)="VertragswertChanged($event, i)" [style.border]="VertragValid[i] ? '1px solid green' : '1px solid red'" class="inputclass"></ion-input>
+
                                   </td>
                                   <td style="width: 20px"><span *ngIf="Eintrag.Bis !== 0">%</span></td>
                                 </tr>
@@ -197,7 +201,7 @@
               <tr>
                 <td style="font-weight: bold">Nummer</td>
                 <td style="font-weight: bold">Titel</td>
-                <td style="font-weight: bold; width: 400px">Beschreibung</td>
+                <td style="font-weight: bold; width: 500px">Beschreibung</td>
                 <td style="font-weight: bold;">Honorar</td>
               </tr>
               <tr *ngFor="let Leistung of this.DB.CurrentSimontabelle.Besondereleistungenliste">
@@ -220,6 +224,73 @@
           </div>
 
         </ng-container>
+
+        <ng-container *ngIf="Bereich === Bereiche.Rechnungen">
+          <div class="contentinnerclass" *ngIf="DB.CurrentSimontabelle">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-text color="baeblau" style="font-size: 120%"><b>Rechnung</b></ion-text>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12">
+                      <ion-radio-group [value]="DB.CurrentRechnungsindex" (ionChange)="RechnungsIndexChanged($event)">
+                  <table class="docinnertable">
+                    <tr>
+                      <td style="width: 80px; text-align: center"><b>Position</b></td>
+                      <td style="width: 600px;"><b>Beschreibung</b></td>
+                      <td style="width: 80px; text-align: center"><b>Vertrag</b></td>
+
+
+                        <td *ngFor="let Rechnung of DB.CurrentSimontabelle.Rechnungen; let i = index;" style="width: 80px; text-align: center">
+                          <table class="nobordertable">
+                            <tr><td><b>{{(i + 1).toString()}}. AZ</b></td></tr>
+                            <tr><td><b>{{GetRechnungsdatum(Rechnung)}}</b></td></tr>
+                            <tr><ion-radio [value]="i" (click)="DB.CurrentRechnungsindex = i"></ion-radio></tr>
+                          </table>
+                        </td>
+
+
+                      <td style="width: 90px; text-align: center">
+                        <ion-button size="small" color="burnicklbraun" (click)="AddRechnungClicked()">
+                          <ion-icon name="add-circle-outline" slot="icon-only"></ion-icon>
+                        </ion-button>
+                      </td>
+                    </tr>
+                    <tr *ngFor="let Eintrag of DB.CurrentSimontabelle.Eintraegeliste; let i = index">
+                      <td style="text-align: center;">{{Eintrag.Buchstabe}}</td>
+                      <td>{{Eintrag.Beschreibung}}</td>
+                      <td style="text-align: center">{{GetVertragswert(Eintrag).toFixed(2)}} %</td>
+                      <td *ngFor="let Rechnungseintrag of Eintrag.Rechnungseintraege; let i = index;" style="width: 80px;" align="center">
+                        <table class="nobordertable">
+                          <tr>
+                            <td *ngIf="i === DB.CurrentRechnungsindex">
+                              <ion-input [value]="Rechnungseintrag.Honoraranteil" (ionInput)="RechnungswertChanged($event, Eintrag, Rechnungseintrag, i)" [style.border]="Rechnungseintrag.Valid ? '1px solid green' : '1px solid red'" class="inputclass"></ion-input>
+                            </td>
+                            <td *ngIf="i !== DB.CurrentRechnungsindex"><span>{{Rechnungseintrag.Honoraranteil.toFixed(2)}}</span></td>
+                            <td><span>%</span></td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td *ngIf="i === 0" rowspan="100"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2"></td>
+                      <td style="text-align: center">{{CalculateVertrag().toFixed(2)}} %</td>
+                      <td *ngFor="let Rechnung of DB.CurrentSimontabelle.Rechnungen; let i = index;" style="width: 80px; text-align: center">
+                        {{CalculateRechnung(Rechnung)}} %
+                      </td>
+                    </tr>
+                  </table>
+                      </ion-radio-group>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </ng-container>
+
+
       </ion-content>
       <ion-footer>
         <page-footer>
