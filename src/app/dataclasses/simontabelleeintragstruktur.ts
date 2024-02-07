@@ -9,4 +9,14 @@ export type Simontabelleeintragstruktur = {
   Bis: number;
   Vertrag:  number;
   Rechnungseintraege: Rechnungseintragstruktur[];
+
+  Honorarsumme?: number;
+  Honorarsummeprozent?: number;
+  Nettohonorar?: number;
+  Nettonebenkosten?: number;
+  Nettoumbauzuschlag?: number;
+  Bruttoumbauzuschlag?: number;
+  Nettogesamthonorar?: number;
+  Mehrwertsteuer?: number;
+  Bruttogesamthonorar?: number;
 };

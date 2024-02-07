@@ -13,7 +13,6 @@ import {ToolsProvider} from "../../services/tools/tools";
 import {DisplayService} from "../../services/diplay/display.service";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 import {ConstProvider} from "../../services/const/const";
-import * as Joi from "joi";
 import {ObjectSchema} from "joi";
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
 import {DatabaseSimontabelleService} from "../../services/database-simontabelle/database-simontabelle.service";
@@ -65,6 +64,10 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
   public Bruttohonorar: number;
   public Vertragsprozente: number;
   public Bereich: string;
+  public HonorarValid: boolean;
+  public Rechnungslistebreite: number;
+  public DisplayRechnungsliste: boolean[];
+  public Rechnungsbreite: number;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -90,7 +93,11 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
       this.Bruttonkosten       = 0;
       this.Bruttohonorar       = 0;
       this.Vertragsprozente    = 0;
+      this.HonorarValid        = false;
       this.Bereich             = this.Bereiche.Rechnungen;
+      this.Rechnungslistebreite = 0;
+      this.Rechnungsbreite      = 270;
+      this.DisplayRechnungsliste = [];
 
 
     } catch (error) {
@@ -155,11 +162,13 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
+
   private async PrepareData() {
 
     try {
 
       let Steuerfaktor   = 1 + this.DB.Steuersatz / 100;
+      let Rechnung: Rechnungstruktur;
 
       this.Titel         = this.DB.CurrentSimontabelle._id === null ? 'Simontabelle erstellen' : 'Simontabelle bearbeiten';
       this.CanDelete     = false;
@@ -167,23 +176,57 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
       this.Bruttonkosten = this.DB.CurrentSimontabelle.Kosten * Steuerfaktor;
       this.Bruttohonorar = this.DB.CurrentSimontabelle.Honorar * Steuerfaktor;
 
+      debugger;
+
       this.DB.CurrentRechnungsindex = this.DB.CurrentSimontabelle.Rechnungen.length - 1;
 
-      for(let Eintrag of this.DB.CurrentSimontabelle.Eintraegeliste) {
+      this.Rechnungslistebreite  = 1044;
+      this.DisplayRechnungsliste = [];
 
-        this.VertragValid.push(this.CheckVertragswert(Eintrag.Vertrag, Eintrag));
+      for(let i = 0; i < this.DB.CurrentSimontabelle.Rechnungen.length; i++) {
 
-        for(let Rechnungseintrag of Eintrag.Rechnungseintraege) {
+        Rechnung = this.DB.CurrentSimontabelle.Rechnungen[i];
 
-          this.CheckRechnungswert(Rechnungseintrag, Eintrag);
+        Rechnung.CanDelete = false;
+
+        if(i >= this.DB.CurrentSimontabelle.Rechnungen.length - 2) {
+
+          this.Rechnungslistebreite    += this.Rechnungsbreite;
+          this.DisplayRechnungsliste[i] = true;
+        }
+        else this.DisplayRechnungsliste[i] = false;
+      }
+
+      for(let Tabelleneintrag of this.DB.CurrentSimontabelle.Eintraegeliste) {
+
+        Tabelleneintrag.Honorarsummeprozent = 0;
+        Tabelleneintrag.Honorarsumme        = 0;
+        Tabelleneintrag.Nettohonorar        = 0;
+        Tabelleneintrag.Nettonebenkosten    = 0;
+        Tabelleneintrag.Nettogesamthonorar  = 0;
+        Tabelleneintrag.Mehrwertsteuer      = 0;
+        Tabelleneintrag.Bruttogesamthonorar = 0;
+
+        this.VertragValid.push(this.CheckVertragswert(Tabelleneintrag.Vertrag, Tabelleneintrag));
+
+        for(let Rechnungseintrag of Tabelleneintrag.Rechnungseintraege) {
+
+          this.DB.CheckRechnungswert(Rechnungseintrag);
+
+          this.DB.CalculateRechnungseintrag(Tabelleneintrag, Rechnungseintrag);
         }
       }
+
+      this.DB.CalculateRechnungssummen();
+
+      debugger;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Simontabelle Editor', 'PrepareData', this.Debug.Typen.Component);
     }
   }
+
 
   ngAfterViewInit(): void {
 
@@ -446,7 +489,7 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
 
     try {
 
-      let Wert: any = event.detail.value;
+      let Wert: any = event.target.value;
 
       this.VertragValid[index] = this.CheckVertragswert(Wert, this.DB.CurrentSimontabelle.Eintraegeliste[index]);
 
@@ -575,7 +618,7 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
 
 
 
-  CalculateZwischensumme(): number {
+  CalculateGesamthonorar(): number {
 
     try {
 
@@ -592,7 +635,7 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'CalculateZwischensumme', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'CalculateGesamthonorar', this.Debug.Typen.Component);
     }
   }
 
@@ -652,12 +695,7 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
 
       Nebenkosten = (HonorarMitUmbau + Besondereleistungen) * Nebenkostenfaktor;
 
-
       return HonorarMitUmbau + Besondereleistungen + Nebenkosten;
-
-      debugger;
-
-      return HonorarMitUmbau + Nebenkosten;
 
     } catch (error) {
 
@@ -751,47 +789,6 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
-  CheckRechnungswert(Rechnungseintrag: Rechnungseintragstruktur, Tabelleneintrag: Simontabelleeintragstruktur) {
-
-    try {
-
-      let Valid: boolean;
-      let Wert: number;
-
-      Valid = !isNaN(parseFloat(Rechnungseintrag.Honoraranteil.toString())) && isFinite(Rechnungseintrag.Honoraranteil);
-
-      if(Valid === true) {
-
-        Wert = parseFloat(Rechnungseintrag.Honoraranteil.toString());
-
-        Rechnungseintrag.Honoraranteil = Wert;
-
-        Wert = 0;
-
-        for(let Eintrag of Tabelleneintrag.Rechnungseintraege) {
-
-          Wert += Eintrag.Honoraranteil;
-        }
-
-        if(Wert > Tabelleneintrag.Vertrag) {
-
-          Rechnungseintrag.Valid = false;
-        }
-        else {
-
-          Rechnungseintrag.Valid = true;
-        }
-      }
-      else {
-
-        Rechnungseintrag.Valid = false;
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'CheckRechnungswert', this.Debug.Typen.Component);
-    }
-  }
 
   RechnungMenuButtonClicked() {
 
@@ -811,6 +808,20 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
 
       await this.DB.AddNewRechnung();
 
+      this.DisplayRechnungsliste.push(true);
+
+      this.Rechnungslistebreite  = 1044;
+
+      for(let i = 0; i < this.DisplayRechnungsliste.length; i++) {
+
+        if(this.DisplayRechnungsliste[i] === true) {
+
+          this.Rechnungslistebreite += this.Rechnungsbreite;
+        }
+      }
+
+      this.PrepareData();
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'AddRechnungClicked', this.Debug.Typen.Component);
@@ -829,27 +840,31 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
-  RechnungswertChanged(event: any, Eintrag: Simontabelleeintragstruktur, Rechnung: Rechnungseintragstruktur, i: number) {
+  RechnungswertChanged(event: any, Tabelleneintrag: Simontabelleeintragstruktur, Rechnungseintrag: Rechnungseintragstruktur, i: number) {
 
     try {
 
       let Valid: boolean;
       let Wert: number;
+      let Value: any = event.target.value;
 
-      Valid = !isNaN(parseFloat(event.detail.value.toString())) && isFinite(event.detail.value);
+      Valid = !isNaN(parseFloat(Value.toString())) && isFinite(Value);
 
       if(Valid === true) {
 
-        Wert = parseFloat(event.detail.value.toString());
+        Wert = parseFloat(Value.toString());
 
-        Rechnung.Honoraranteil = Wert;
+        Rechnungseintrag.Honoraranteil = Wert;
 
-        this.CheckRechnungswert(Rechnung, Eintrag);
+        this.DB.CheckRechnungswert(Rechnungseintrag);
 
+        this.DB.CalculateRechnungseintrag(Tabelleneintrag, Rechnungseintrag);
+
+        this.DB.CalculateRechnungssummen();
       }
       else {
 
-        Rechnung.Valid = false;
+        Rechnungseintrag.Valid = false;
       }
 
     } catch (error) {
@@ -858,6 +873,7 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
+  /*
   RechnungsIndexChanged(event: any) {
 
     try {
@@ -870,28 +886,134 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
-  CalculateRechnung(Rechnung: Rechnungstruktur): number {
+   */
+
+
+  CheckHonorarValid(Eintrag: Simontabelleeintragstruktur): string {
 
     try {
 
-      let Summe: number = 0;
+      if (Eintrag.Honorarsummeprozent <= this.GetVertragswert(Eintrag)) {
 
-      if(this.DB.CurrentSimontabelle !== null) {
+        return 'green';
 
-        for(let Eintrag of this.DB.CurrentSimontabelle.Eintraegeliste) {
+      } else {
 
-          for(let Rechnungseintrag of Eintrag.Rechnungseintraege) {
 
-            if(Rechnungseintrag.RechnungID === Rechnung.RechnungID) Summe += Rechnungseintrag.Honoraranteil;
-          }
-        }
+        return 'red';
       }
-
-      return Summe;
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'CalculateRechnung', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'CheckHonorarValid', this.Debug.Typen.Component);
+    }
+
+  }
+
+  DisplayRechnungCheckChanged(event: { status: boolean; index: number; event: any; value: string }, index: number) {
+
+    try {
+
+      this.DisplayRechnungsliste[index] = event.status;
+
+      this.Rechnungslistebreite = 1044;
+
+      for(let i = 0; i < this.DisplayRechnungsliste.length; i++) {
+
+        if(this.DisplayRechnungsliste[i] === true) {
+
+          this.Rechnungslistebreite += this.Rechnungsbreite;
+        }
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'DisplayRechnungCheckChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  RechnungBearbeitenClicked(Rechnung: Rechnungstruktur) {
+
+    try {
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'RechnungBearbeitenClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  public async RechnungLoeschenClicked(Rechnung: Rechnungstruktur) {
+
+    try {
+
+      await this.DB.DeleteRechnungen(Rechnung);
+
+      debugger;
+
+      this.PrepareData();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'RechnungLoeschenClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  CanDeleteRechnungChanged(event: { status: boolean; index: number; event: any; value: string }, Rechnung: Rechnungstruktur) {
+
+    try {
+
+      Rechnung.CanDelete = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'CanDeleteRechnungChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  SicherheitseinbehaltTextChanged(event: { Titel: string; Text: string; Valid: boolean }) {
+
+    try {
+
+      let Wert = this.CheckZahlenwert(event.Text);
+
+      if(Wert !== null) {
+
+        this.DB.CurrentSimontabelle.Sicherheitseinbehalt = Wert;
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'SicherheitseinbehaltTextChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  CalculateRechnungsdifferenz(Tabelleneintrag: Simontabelleeintragstruktur, CurrentRechnungseintrag: Rechnungseintragstruktur, Rechnungsindex: number): number {
+
+    try {
+
+      let Differenz: number = 0;
+
+      let LastRechnungseintrag = Tabelleneintrag.Rechnungseintraege[Rechnungsindex - 1]
+
+      if(Rechnungsindex === 0) {
+
+        Differenz = CurrentRechnungseintrag.Honoraranteil;
+      }
+      else {
+
+        if(CurrentRechnungseintrag.Honoraranteil > 0) {
+
+          Differenz = CurrentRechnungseintrag.Honoraranteil - LastRechnungseintrag.Honoraranteil;
+        }
+        else Differenz = 0;
+
+      }
+
+      return Differenz;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'CalculateRechnungsdifferenz', this.Debug.Typen.Component);
     }
   }
 }

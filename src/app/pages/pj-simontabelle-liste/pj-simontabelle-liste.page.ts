@@ -20,21 +20,9 @@ import {
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {Simontabellestruktur} from "../../dataclasses/simontabellestruktur";
 import {Simontabellebesondereleistungstruktur} from "../../dataclasses/simontabellebesondereleistungstruktur";
-import {number} from "joi";
+import {Honorarsummenstruktur} from "../../dataclasses/honorarsummenstruktur";
 
-export type Summenstruktur = {
 
-  Nettokostensumme: number;
-  Bruttokostensumme: number;
-  Nettohonorar: number;
-  Bruttohonorar: number;
-  Nettoleistungssumme: number;
-  Bruttoleistungssumme: number;
-  Nettogesamtsumme: number;
-  Bruttogesamtsumme: number;
-  Nettonebenkosten: number;
-  Bruttonebenkosten: number;
-};
 
 @Component({
   selector:    'pj-simontabelle-liste-page',
@@ -57,12 +45,13 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
   public ContentHoehe: number;
   private PageLoaded: boolean;
   public Auswahlhoehe: number;
+  public Rechnungssummen: Honorarsummenstruktur[];
   private Auswahldialogorigin: string;
-  public Leistungsphasenliste: string[];
+
   private TabellenSubscription: Subscription;
   public ShowLeistungeditor: boolean;
-  public Summenliste: Summenstruktur[];
-  public Anzahlliste: number[][];
+
+
   constructor(public Basics: BasicsProvider,
               public Menuservice: MenueService,
               public DBProjekte: DatabaseProjekteService,
@@ -83,11 +72,9 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
       this.ShowEditor               = false;
       this.ContentHoehe             = 0;
       this.PageLoaded               = false;
-      this.Leistungsphasenliste     = [];
       this.TabellenSubscription     = null;
       this.ShowLeistungeditor       = false;
-      this.Summenliste              = [];
-      this.Anzahlliste              = [];
+      this.Rechnungssummen          = [];
 
       this.ShowProjektschnellauswahl        = false;
       this.Auswahlhoehe                     = 300;
@@ -284,79 +271,33 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
 
     try {
 
-      let Tabelle: Simontabellestruktur;
-      let Index: number;
-      let Leistungssumme: number;
-      let Nettonebenkosten: number;
-      let Bruttonebenkosten: number;
+      let Index: number = 0;
 
-      this.Anzahlliste          = [];
-      this.Leistungsphasenliste = [];
+      this.DB.CalculateHonorar();
 
-      debugger;
+      this.DB.CurrentSimontabellenliste = lodash.filter(this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey], { Leistungsphase: this.DB.CurrentLeistungsphase});
 
-      for(Tabelle of this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
+      for(this.DB.CurrentSimontabelle of this.DB.CurrentSimontabellenliste) {
 
-        Leistungssumme = 0;
+        for(let Tabelleneintrag of this.DB.CurrentSimontabelle.Eintraegeliste) {
 
-        for(let Leistung of Tabelle.Besondereleistungenliste) {
+          Tabelleneintrag.Honorarsummeprozent = 0;
+          Tabelleneintrag.Honorarsumme        = 0;
+          Tabelleneintrag.Nettohonorar        = 0;
+          Tabelleneintrag.Nettonebenkosten    = 0;
+          Tabelleneintrag.Nettogesamthonorar  = 0;
+          Tabelleneintrag.Mehrwertsteuer      = 0;
+          Tabelleneintrag.Bruttogesamthonorar = 0;
 
-          Leistungssumme += Leistung.Honorar;
+          for(let Rechnungseintrag of Tabelleneintrag.Rechnungseintraege) {
+
+            this.DB.CheckRechnungswert(Rechnungseintrag);
+
+            this.DB.CalculateRechnungseintrag(Tabelleneintrag, Rechnungseintrag);
+          }
         }
 
-        Index = this.Leistungsphasenliste.indexOf(Tabelle.Leistungsphase);
-
-        if( Index === -1) {
-
-          this.Leistungsphasenliste.push(Tabelle.Leistungsphase);
-
-          this.Anzahlliste[Tabelle.Leistungsphase] = 0;
-
-          Index = this.Leistungsphasenliste.length - 1;
-
-          Nettonebenkosten  = (Tabelle.Honorar + Leistungssumme) * Tabelle.Nebenkosten / 100;
-          Bruttonebenkosten = (Tabelle.Honorar * (1 + this.DB.Steuersatz / 100) + Leistungssumme * (1 + this.DB.Steuersatz / 100)) * Tabelle.Nebenkosten / 100;
-
-          Tabelle.Nettonebenkosten  = Nettonebenkosten;
-          Tabelle.Bruttonebenkosten = Bruttonebenkosten;
-
-          this.Summenliste[Index] = {
-
-            Nettokostensumme:  Tabelle.Kosten,
-            Bruttokostensumme: Tabelle.Kosten * (1 + this.DB.Steuersatz / 100),
-            Nettohonorar:      Tabelle.Honorar,
-            Bruttohonorar:     Tabelle.Honorar * (1 + this.DB.Steuersatz / 100),
-            Nettoleistungssumme:  Leistungssumme,
-            Bruttoleistungssumme: Leistungssumme * (1 + this.DB.Steuersatz / 100),
-            Nettogesamtsumme:  Tabelle.Honorar + Leistungssumme + Nettonebenkosten,
-            Bruttogesamtsumme: Tabelle.Honorar * (1 + this.DB.Steuersatz / 100) + Leistungssumme * (1 + this.DB.Steuersatz / 100) + Bruttonebenkosten,
-            Nettonebenkosten:  Nettonebenkosten,
-            Bruttonebenkosten: Bruttonebenkosten
-          };
-        }
-        else {
-
-          this.Anzahlliste[Tabelle.Leistungsphase] += 1;
-
-          Nettonebenkosten  = (Tabelle.Honorar + Leistungssumme) * Tabelle.Nebenkosten / 100;
-          Bruttonebenkosten = (Tabelle.Honorar * (1 + this.DB.Steuersatz / 100) + Leistungssumme * (1 + this.DB.Steuersatz / 100)) * Tabelle.Nebenkosten / 100;
-
-          Tabelle.Nettonebenkosten  = Nettonebenkosten;
-          Tabelle.Bruttonebenkosten = Bruttonebenkosten;
-
-          this.Summenliste[Index].Nettokostensumme     += Tabelle.Kosten;
-          this.Summenliste[Index].Bruttokostensumme    += Tabelle.Kosten * (1 + this.DB.Steuersatz / 100);
-          this.Summenliste[Index].Nettohonorar         += Tabelle.Honorar;
-          this.Summenliste[Index].Bruttohonorar        += Tabelle.Honorar * (1 + this.DB.Steuersatz / 100);
-          this.Summenliste[Index].Nettoleistungssumme  += Leistungssumme;
-          this.Summenliste[Index].Bruttoleistungssumme += Leistungssumme * (1 + this.DB.Steuersatz / 100);
-          this.Summenliste[Index].Nettogesamtsumme     += Tabelle.Honorar + Leistungssumme + Bruttonebenkosten;
-          this.Summenliste[Index].Bruttogesamtsumme    += Tabelle.Honorar * (1 + this.DB.Steuersatz / 100) + Leistungssumme * (1 + this.DB.Steuersatz / 100) + Bruttonebenkosten;
-          this.Summenliste[Index].Nettonebenkosten     += Nettonebenkosten;
-          this.Summenliste[Index].Bruttonebenkosten    += Bruttonebenkosten;
-
-          debugger;
-        }
+        Index++;
       }
 
     } catch (error) {
@@ -445,6 +386,7 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
       this.DB.CurrentSimontabelle = lodash.cloneDeep(Tabelle);
       this.ShowEditor             = true;
 
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'SimontabelleClicked', this.Debug.Typen.Page);
@@ -488,6 +430,40 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'EditLeistungClickedEventHandler', this.Debug.Typen.Page);
     }
 
+  }
+
+  CalculateGesamthonorar(Tabelle: Simontabellestruktur): number {
+
+    try {
+
+      let Summe: number = Tabelle.Honorar;
+
+      for(let Leistung of Tabelle.Besondereleistungenliste) {
+
+        Summe += Leistung.Honorar;
+      }
+
+      return Summe;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'CalculateGesamthonorar', this.Debug.Typen.Page);
+    }
+  }
+
+  LeistungsphaseChangedHandler(event: any) {
+
+    try {
+
+      this.DB.CurrentLeistungsphase      = event.detail.value;
+      this.DB.CurrentLeistungsphaseindex = this.DB.Leistungsphasenliste.indexOf(this.DB.CurrentLeistungsphase);
+
+      this.PrepareDaten();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'LeistungsphaseChangedHandler', this.Debug.Typen.Page);
+    }
   }
 }
 

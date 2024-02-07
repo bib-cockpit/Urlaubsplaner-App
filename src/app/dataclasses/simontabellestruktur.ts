@@ -17,10 +17,18 @@ export type Simontabellestruktur = {
   Kosten: number;
   Honorar: number;
   Umbauzuschlag: number;
+  Sicherheitseinbehalt: number;
   Nebenkosten: number;
   Besondereleistungenliste: Simontabellebesondereleistungstruktur[];
   Rechnungen: Rechnungstruktur[];
+
+  Nettoumbauzuschlag?: number;
+  Bruttoumbauzuschlag?: number;
   Nettonebenkosten?: number;
   Bruttonebenkosten?: number;
+  Nettozwischensumme?: number;
+  Bruttozwischensumme?: number;
+  Nettogesamthonorar?: number;
+  Bruttogesamthonorar?: number;
   __v?: any;
 };

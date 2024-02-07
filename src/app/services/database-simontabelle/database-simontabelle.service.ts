@@ -13,6 +13,9 @@ import {Simontabellebesondereleistungstruktur} from "../../dataclasses/simontabe
 import {Rechnungstruktur} from "../../dataclasses/rechnungstruktur";
 import {Rechnungseintragstruktur} from "../../dataclasses/rechnungseintragstruktur";
 import moment, {Moment} from "moment";
+import {Honorarsummenstruktur} from "../../dataclasses/honorarsummenstruktur";
+import {ToolsProvider} from "../tools/tools";
+
 
 @Injectable({
   providedIn: 'root'
@@ -26,24 +29,172 @@ export class DatabaseSimontabelleService {
   public CurrentRechnung: Rechnungstruktur;
   public CurrrentRechnungseintrag: Rechnungseintragstruktur;
   public CurrentRechnungsindex: number;
+  public Leistungsphasenliste: string[];
+  public CurrentLeistungsphase: string;
+  public CurrentLeistungsphaseindex: number;
+  public Summenliste: Honorarsummenstruktur[];
+  public Leistungsphasenanzahlliste: number[][];
+  public CurrentSimontabellenliste: Simontabellestruktur[];
 
   constructor(private Debug: DebugProvider,
               private Const: ConstProvider,
               private http: HttpClient,
               private Pool: DatabasePoolService,
+              private Tools: ToolsProvider,
               private DBProjekte: DatabaseProjekteService) {
     try {
 
-      this.CurrentSimontabelle      = null;
-      this.CurrentBesondereleistung = null;
-      this.CurrentRechnung          = null;
-      this.CurrrentRechnungseintrag = null;
-      this.CurrentRechnungsindex    = null;
-      this.ServerSimontabelleUrl    = this.Pool.CockpitserverURL + '/simontabellen';
+      this.CurrentSimontabelle        = null;
+      this.CurrentBesondereleistung   = null;
+      this.CurrentRechnung            = null;
+      this.CurrrentRechnungseintrag   = null;
+      this.CurrentRechnungsindex      = null;
+      this.Leistungsphasenanzahlliste = [];
+      this.Leistungsphasenliste       = [];
+      this.Summenliste                = [];
+      this.CurrentLeistungsphase      = this.Const.NONE;
+      this.CurrentLeistungsphaseindex = null;
+      this.ServerSimontabelleUrl      = this.Pool.CockpitserverURL + '/simontabellen';
+      this.CurrentSimontabellenliste  = [];
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'constructor', this.Debug.Typen.Service);
+    }
+  }
+
+  public CalculateHonorar() {
+
+    try {
+
+      let Tabelle: Simontabellestruktur;
+      let Index: number;
+      let Leistungssumme: number;
+      let Nettonebenkosten: number;
+      let Nettozwischensumme: number;
+      let Nettogesamthonorar: number;
+      let Nettoumbauzuschlag: number;
+
+      this.Leistungsphasenanzahlliste = [];
+      this.Leistungsphasenliste       = [];
+      this.Summenliste                = [];
+
+      for(Tabelle of this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
+
+        Leistungssumme = 0;
+
+        for(let Leistung of Tabelle.Besondereleistungenliste) {
+
+          Leistungssumme += Leistung.Honorar;
+        }
+
+        Index = this.Leistungsphasenliste.indexOf(Tabelle.Leistungsphase);
+
+        if( Index === -1) {
+
+          this.Summenliste[Tabelle.Leistungsphase] = [];
+
+          this.Leistungsphasenliste.push(Tabelle.Leistungsphase);
+
+          this.Leistungsphasenanzahlliste[Tabelle.Leistungsphase] = 0;
+
+          Index = this.Leistungsphasenliste.length - 1;
+
+          Nettoumbauzuschlag = (Tabelle.Honorar * Tabelle.Umbauzuschlag) / 100;
+          Nettozwischensumme = Tabelle.Honorar + Leistungssumme + Nettoumbauzuschlag;
+          Nettonebenkosten   = Nettozwischensumme * Tabelle.Nebenkosten / 100;
+          Nettogesamthonorar = Nettozwischensumme + Nettonebenkosten;
+
+          Tabelle.Nettoumbauzuschlag  = Nettoumbauzuschlag;
+          Tabelle.Bruttoumbauzuschlag = Nettoumbauzuschlag * (1 + this.Steuersatz / 100);
+          Tabelle.Nettonebenkosten    = Nettonebenkosten;
+          Tabelle.Bruttonebenkosten   = Nettonebenkosten * (1 + this.Steuersatz / 100);
+          Tabelle.Nettozwischensumme  = Nettozwischensumme;
+          Tabelle.Bruttozwischensumme = Nettozwischensumme * (1 + this.Steuersatz / 100);
+          Tabelle.Nettogesamthonorar  = Nettogesamthonorar;
+          Tabelle.Bruttogesamthonorar = Nettogesamthonorar * (1 + this.Steuersatz / 100);
+
+          this.Summenliste[Tabelle.Leistungsphase][Index] = {
+
+            Nettokostensumme:  Tabelle.Kosten,
+            Bruttokostensumme: Tabelle.Kosten * (1 + this.Steuersatz / 100),
+
+            Nettohonorar:         Tabelle.Honorar,
+            Bruttohonorar:        Tabelle.Honorar * (1 + this.Steuersatz / 100),
+            Nettoleistungssumme:  Leistungssumme,
+            Bruttoleistungssumme: Leistungssumme * (1 + this.Steuersatz / 100),
+            Nettozwischensumme:   Nettozwischensumme,
+            Bruttozwischensumme:  Nettozwischensumme * (1 + this.Steuersatz / 100),
+            Nettonebenkosten:     Nettonebenkosten,
+            Bruttonebenkosten:    Nettonebenkosten  * (1 + this.Steuersatz / 100),
+            Nettogesamthonorar:   Nettogesamthonorar,
+            Bruttogesamthonorar:  Nettogesamthonorar * (1 + this.Steuersatz / 100),
+          };
+        }
+        else {
+
+          this.Leistungsphasenanzahlliste[Tabelle.Leistungsphase] += 1;
+
+          Nettoumbauzuschlag = (Tabelle.Honorar * Tabelle.Umbauzuschlag) / 100;
+          Nettozwischensumme = Tabelle.Honorar + Leistungssumme + Nettoumbauzuschlag;
+          Nettonebenkosten   = Nettozwischensumme * Tabelle.Nebenkosten / 100;
+          Nettogesamthonorar = Nettozwischensumme + Nettonebenkosten;
+
+          Tabelle.Nettoumbauzuschlag  = Nettoumbauzuschlag;
+          Tabelle.Bruttoumbauzuschlag = Nettoumbauzuschlag * (1 + this.Steuersatz / 100);
+          Tabelle.Nettonebenkosten    = Nettonebenkosten;
+          Tabelle.Bruttonebenkosten   = Nettonebenkosten * (1 + this.Steuersatz / 100);
+          Tabelle.Nettozwischensumme  = Nettozwischensumme;
+          Tabelle.Bruttozwischensumme = Nettozwischensumme * (1 + this.Steuersatz / 100);
+          Tabelle.Nettogesamthonorar  = Nettogesamthonorar;
+          Tabelle.Bruttogesamthonorar = Nettogesamthonorar * (1 + this.Steuersatz / 100);
+
+          this.Summenliste[Tabelle.Leistungsphase][Index].Nettokostensumme     += Tabelle.Kosten;
+          this.Summenliste[Tabelle.Leistungsphase][Index].Bruttokostensumme    += Tabelle.Kosten * (1 + this.Steuersatz / 100);
+
+          this.Summenliste[Tabelle.Leistungsphase][Index].Nettoumbauzuschlag   += Tabelle.Nettoumbauzuschlag;
+          this.Summenliste[Tabelle.Leistungsphase][Index].Bruttoumbauzuschlag  += Tabelle.Bruttoumbauzuschlag;
+
+
+          this.Summenliste[Tabelle.Leistungsphase][Index].Nettohonorar         += Tabelle.Honorar;
+          this.Summenliste[Tabelle.Leistungsphase][Index].Bruttohonorar        += Tabelle.Honorar * (1 + this.Steuersatz / 100);
+          this.Summenliste[Tabelle.Leistungsphase][Index].Nettoleistungssumme  += Leistungssumme;
+          this.Summenliste[Tabelle.Leistungsphase][Index].Bruttoleistungssumme += Leistungssumme * (1 + this.Steuersatz / 100);
+          this.Summenliste[Tabelle.Leistungsphase][Index].Nettozwischensumme   += Nettozwischensumme;
+          this.Summenliste[Tabelle.Leistungsphase][Index].Bruttozwischensumme  += Nettozwischensumme * (1 + this.Steuersatz / 100);
+          this.Summenliste[Tabelle.Leistungsphase][Index].Nettonebenkosten     += Nettonebenkosten;
+          this.Summenliste[Tabelle.Leistungsphase][Index].Bruttonebenkosten    += Nettonebenkosten * (1 + this.Steuersatz / 100);
+          this.Summenliste[Tabelle.Leistungsphase][Index].Nettogesamthonorar   += Nettogesamthonorar;
+          this.Summenliste[Tabelle.Leistungsphase][Index].Bruttogesamthonorar  += Nettogesamthonorar * (1 + this.Steuersatz / 100);
+        }
+
+        if(this.Leistungsphasenliste.length > 0) {
+
+          this.CurrentLeistungsphaseindex = 0;
+          this.CurrentLeistungsphase      = this.Leistungsphasenliste[this.CurrentLeistungsphaseindex];
+        }
+        else {
+
+          this.CurrentLeistungsphaseindex = null;
+          this.CurrentLeistungsphase      = this.Const.NONE;
+        }
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'CalculateHonorar', this.Debug.Typen.Service);
+    }
+  }
+
+  public FixTabellenbetrag(Wert: number): string {
+
+    try {
+
+      if(!lodash.isUndefined(Wert)) return Wert.toFixed(2);
+      else return '0,00';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'FixTabelleneintragbetrag', this.Debug.Typen.Service);
     }
   }
 
@@ -52,51 +203,361 @@ export class DatabaseSimontabelleService {
     try {
 
       let Rechnung: Rechnungstruktur;
-      let RechnungID: string;
+      let RechnungID: string = this.Pool.GetNewUniqueID();
       let Heute: Moment = moment();
+      let Tabelle: Simontabellestruktur;
+      let Nummernliste: number[];
+      let Nummer: number;
 
       if(this.CurrentSimontabelle !== null) {
 
-        RechnungID = this.Pool.GetNewUniqueID();
+        for(Tabelle of this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
 
-        Rechnung = {
+          if(Tabelle.Leistungsphase === this.CurrentSimontabelle.Leistungsphase) {
 
-          RechnungID: RechnungID,
-          Zeitstempel: Heute.valueOf()
-        };
+            Nummernliste = [];
 
-        debugger;
+            for(Rechnung of Tabelle.Rechnungen) {
 
-        for(let Eintrag of this.CurrentSimontabelle.Eintraegeliste) {
+              Nummernliste.push(Rechnung.Nummer);
+            }
 
-          Eintrag.Rechnungseintraege.push({
+            if(Nummernliste.length > 0) {
 
-            RechnungID: RechnungID,
-            Honoraranteil: 0
-          });
+              Nummer = Nummernliste.reduce((a, b) => Math.max(a, b), -Infinity);
+              Nummer++;
+            }
+            else Nummer = 1;
+
+            Rechnung = {
+
+              RechnungID:  RechnungID,
+              Nummer:      Nummer,
+              Zeitstempel: Heute.valueOf(),
+              CanDelete:   false,
+              BeteiligExternIDListe: [],
+              BeteiligtInternIDListe: [],
+              Betreff: "",
+              CcEmpfaengerExternIDListe: [],
+              CcEmpfaengerInternIDListe: [],
+              DownloadURL: "",
+              EmpfaengerExternIDListe: [],
+              EmpfaengerInternIDListe: [],
+              FileID:   "",
+              Filename: "",
+              GesendetZeitstempel: 0,
+              GesendetZeitstring: "",
+              Nachricht: "",
+              Verfasser: {
+                Name:    this.Pool.Mitarbeiterdaten.Name,
+                Vorname: this.Pool.Mitarbeiterdaten.Vorname,
+                Email:   this.Pool.Mitarbeiterdaten.Email
+              },
+            };
+
+            for(let Eintrag of Tabelle.Eintraegeliste) {
+
+              Eintrag.Rechnungseintraege.push({
+
+                RechnungID:         RechnungID,
+                Honoraranteil:       0,
+                Valid:               true,
+                Nettohonorar:        0,
+                Nettonebenkosten:    0,
+                Nettogesamthonorar:  0,
+                Mehrwertsteuer:      0,
+                Bruttogesamthonorar: 0
+              });
+            }
+
+            for(let Leistung of Tabelle.Besondereleistungenliste) {
+
+              Leistung.Rechnungseintraege.push({
+
+                RechnungID:    RechnungID,
+                Honoraranteil: 0
+              });
+            }
+
+            Tabelle.Rechnungen.push(Rechnung);
+
+            await this.UpdateSimontabelle(Tabelle);
+
+            if(Tabelle._id === this.CurrentSimontabelle._id) {
+
+              this.CurrentSimontabelle = Tabelle;
+            }
+          }
         }
-
-        for(let Leistung of this.CurrentSimontabelle.Besondereleistungenliste) {
-
-          Leistung.Rechnungseintraege.push({
-
-            RechnungID: RechnungID,
-            Honoraranteil: 0
-          });
-        }
-
-        this.CurrentSimontabelle.Rechnungen.push(Rechnung);
-
-        await this.UpdateSimontabelle(this.CurrentSimontabelle);
 
         this.CurrentRechnungsindex = this.CurrentSimontabelle.Rechnungen.length - 1;
+        this.CurrentRechnung       = this.CurrentSimontabelle.Rechnungen[this.CurrentRechnungsindex];
       }
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'AddNewRechnung', this.Debug.Typen.Service);
     }
   }
+
+  CheckRechnungswert(Rechnungseintrag: Rechnungseintragstruktur) {
+
+    try {
+
+      let Valid: boolean;
+      let Wert: number;
+
+      Rechnungseintrag.Valid = !isNaN(parseFloat(Rechnungseintrag.Honoraranteil.toString())) && isFinite(Rechnungseintrag.Honoraranteil);
+
+      if(Rechnungseintrag.Valid) {
+
+        Wert = parseFloat(Rechnungseintrag.Honoraranteil.toString());
+
+        Rechnungseintrag.Honoraranteil = Wert;
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'CheckRechnungswert', this.Debug.Typen.Service);
+    }
+  }
+
+  public CalculateRechnungseintrag(Tabelleneintrag: Simontabelleeintragstruktur, Rechnungseintrag: Rechnungseintragstruktur) {
+
+    try {
+
+      let Tabelleneintragindex: number;
+      let Rechnungseintragindex: number;
+
+      if(Rechnungseintrag.Valid === true) {
+
+        Rechnungseintrag.Nettohonorar        = (this.CurrentSimontabelle.Nettozwischensumme * Rechnungseintrag.Honoraranteil) / 100;
+        Rechnungseintrag.Nettoumbauzuschlag  = (this.CurrentSimontabelle.Honorar * this.CurrentSimontabelle.Umbauzuschlag) / 100;
+        Rechnungseintrag.Bruttoumbauzuschlag = (Rechnungseintrag.Nettoumbauzuschlag * this.Steuersatz) / 100;
+        Rechnungseintrag.Nettonebenkosten    = (Rechnungseintrag.Nettohonorar * this.CurrentSimontabelle.Nebenkosten) / 100;
+        Rechnungseintrag.Nettogesamthonorar  = Rechnungseintrag.Nettohonorar + Rechnungseintrag.Nettonebenkosten;
+        Rechnungseintrag.Mehrwertsteuer      = (Rechnungseintrag.Nettogesamthonorar * this.Steuersatz) / 100;
+        Rechnungseintrag.Bruttogesamthonorar = Rechnungseintrag.Nettogesamthonorar + Rechnungseintrag.Mehrwertsteuer;
+
+
+      }
+      else {
+
+        Rechnungseintrag.Mehrwertsteuer      = 0;
+        Rechnungseintrag.Nettohonorar        = 0;
+        Rechnungseintrag.Nettonebenkosten    = 0;
+        Rechnungseintrag.Nettogesamthonorar  = 0;
+        Rechnungseintrag.Bruttogesamthonorar = 0;
+        Rechnungseintrag.Nettoumbauzuschlag  = 0;
+        Rechnungseintrag.Bruttoumbauzuschlag = 0;
+      }
+
+      Tabelleneintrag.Honorarsummeprozent = 0;
+      Tabelleneintrag.Honorarsumme        = 0;
+      Tabelleneintrag.Nettohonorar        = 0;
+      Tabelleneintrag.Nettonebenkosten    = 0;
+      Tabelleneintrag.Nettoumbauzuschlag  = 0;
+      Tabelleneintrag.Bruttoumbauzuschlag = 0;
+      Tabelleneintrag.Nettogesamthonorar  = 0;
+      Tabelleneintrag.Mehrwertsteuer      = 0;
+      Tabelleneintrag.Bruttogesamthonorar = 0;
+      Tabelleneintrag.Nettoumbauzuschlag  = 0;
+      Tabelleneintrag.Bruttoumbauzuschlag = 0;
+
+      for(let Rechnungseintrag2 of Tabelleneintrag.Rechnungseintraege) {
+
+        if(lodash.isUndefined(Rechnungseintrag2.Honoraranteil))       Rechnungseintrag2.Honoraranteil       = 0;
+        if(lodash.isUndefined(Rechnungseintrag2.Nettohonorar))        Rechnungseintrag2.Nettohonorar        = 0;
+        if(lodash.isUndefined(Rechnungseintrag2.Nettonebenkosten))    Rechnungseintrag2.Nettonebenkosten    = 0;
+        if(lodash.isUndefined(Rechnungseintrag2.Nettogesamthonorar))  Rechnungseintrag2.Nettogesamthonorar  = 0;
+        if(lodash.isUndefined(Rechnungseintrag2.Mehrwertsteuer))      Rechnungseintrag2.Mehrwertsteuer      = 0;
+        if(lodash.isUndefined(Rechnungseintrag2.Bruttogesamthonorar)) Rechnungseintrag2.Bruttogesamthonorar = 0;
+        if(lodash.isUndefined(Rechnungseintrag2.Nettoumbauzuschlag))  Rechnungseintrag2.Nettoumbauzuschlag  = 0;
+        if(lodash.isUndefined(Rechnungseintrag2.Bruttoumbauzuschlag)) Rechnungseintrag2.Bruttoumbauzuschlag = 0;
+
+        Tabelleneintrag.Honorarsummeprozent += Rechnungseintrag2.Honoraranteil;
+        Tabelleneintrag.Honorarsumme        += Rechnungseintrag2.Nettohonorar;
+        Tabelleneintrag.Nettohonorar        += Rechnungseintrag2.Nettohonorar;
+        Tabelleneintrag.Nettonebenkosten    += Rechnungseintrag2.Nettonebenkosten;
+        Tabelleneintrag.Nettogesamthonorar  += Rechnungseintrag2.Nettogesamthonorar;
+        Tabelleneintrag.Mehrwertsteuer      += Rechnungseintrag2.Mehrwertsteuer;
+        Tabelleneintrag.Bruttogesamthonorar += Rechnungseintrag2.Bruttogesamthonorar;
+        Tabelleneintrag.Nettoumbauzuschlag  += Rechnungseintrag2.Nettoumbauzuschlag;
+        Tabelleneintrag.Bruttoumbauzuschlag += Rechnungseintrag2.Bruttoumbauzuschlag;
+      }
+
+      Tabelleneintragindex  = lodash.findIndex(this.CurrentSimontabelle.Eintraegeliste, { Buchstabe: Tabelleneintrag.Buchstabe });
+      Rechnungseintragindex = lodash.findIndex(Tabelleneintrag.Rechnungseintraege,      {RechnungID: Rechnungseintrag.RechnungID});
+
+      this.CurrentSimontabelle.Eintraegeliste[Tabelleneintragindex].Rechnungseintraege[Rechnungseintragindex] = Rechnungseintrag;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'CalculateRechnungseintrag', this.Debug.Typen.Service);
+    }
+  }
+
+  public CalculateSammelrechung(Rechnungsindex: number): Honorarsummenstruktur {
+
+    try {
+
+      let Rechnung: Rechnungstruktur;
+      let Zwischensumme: Honorarsummenstruktur;
+      let Bruttozwischensumme: number;
+      let Merker: Simontabellestruktur;
+      let Summe: Honorarsummenstruktur = {
+
+        Honorarprozente: 0,
+        Bruttogesamthonorar: 0,
+        Bruttohonorar: 0,
+        Nettoumbauzuschlag: 0,
+        Bruttoumbauzuschlag: 0,
+        Bruttokostensumme: 0,
+        Bruttoleistungssumme: 0,
+        Bruttonebenkosten: 0,
+        Bruttozwischensumme: 0,
+        Nettogesamthonorar: 0,
+        Nettohonorar: 0,
+        Nettokostensumme: 0,
+        Nettoleistungssumme: 0,
+        Nettonebenkosten: 0,
+        Nettozwischensumme: 0,
+        Mehrwertsteuer: 0,
+        Sicherheitseinbehalt: 0
+      };
+
+      Merker = this.CurrentSimontabelle;
+
+      for(this.CurrentSimontabelle of this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
+
+        if (this.CurrentSimontabelle.Leistungsphase === this.CurrentLeistungsphase) {
+
+          Rechnung            = this.CurrentSimontabelle.Rechnungen[Rechnungsindex];
+          Zwischensumme       = this.CalculateRechnungssumme(Rechnung, this.CurrentSimontabelle);
+          Bruttozwischensumme = (Zwischensumme.Nettohonorar + Zwischensumme.Nettonebenkosten) * (1 + this.Steuersatz / 100);
+
+          Summe.Nettohonorar         += Zwischensumme.Nettohonorar;
+          Summe.Bruttohonorar        += (Zwischensumme.Nettohonorar  * (1 + this.Steuersatz / 100));
+          Summe.Nettonebenkosten     += Zwischensumme.Nettonebenkosten;
+          Summe.Bruttonebenkosten    += (Zwischensumme.Nettonebenkosten  * (1 + this.Steuersatz / 100));
+          Summe.Nettozwischensumme   += (Zwischensumme.Nettohonorar + Zwischensumme.Nettonebenkosten);
+          Summe.Bruttozwischensumme  += Bruttozwischensumme;
+          Summe.Nettogesamthonorar   += Zwischensumme.Nettogesamthonorar;
+          Summe.Mehrwertsteuer       += Zwischensumme.Mehrwertsteuer;
+        }
+      }
+
+      Summe.Sicherheitseinbehalt = (Summe.Bruttozwischensumme * this.CurrentSimontabelle.Sicherheitseinbehalt) / 100;
+      Summe.Bruttogesamthonorar  = Summe.Bruttozwischensumme - Summe.Sicherheitseinbehalt;
+
+      this.CurrentSimontabelle = Merker;
+
+      return Summe;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'CalculateSammelrechung', this.Debug.Typen.Service);
+    }
+  }
+
+
+  CalculateRechnungssumme(Rechnung: Rechnungstruktur, Tabelle: Simontabellestruktur): Honorarsummenstruktur {
+
+    try {
+
+      let Summe: Honorarsummenstruktur = {
+
+        Honorarprozente: 0,
+        Bruttogesamthonorar: 0,
+        Nettoumbauzuschlag: 0,
+        Bruttoumbauzuschlag: 0,
+        Bruttohonorar: 0,
+        Bruttokostensumme: 0,
+        Bruttoleistungssumme: 0,
+        Bruttonebenkosten: 0,
+        Bruttozwischensumme: 0,
+        Nettogesamthonorar: 0,
+        Nettohonorar: 0,
+        Nettokostensumme: 0,
+        Nettoleistungssumme: 0,
+        Nettonebenkosten: 0,
+        Nettozwischensumme: 0,
+        Mehrwertsteuer: 0,
+        Sicherheitseinbehalt: 0
+      };
+
+      if(this.CurrentSimontabelle !== null) {
+
+        for(let Eintrag of Tabelle.Eintraegeliste) {
+
+          for(let Rechnungseintrag of Eintrag.Rechnungseintraege) {
+
+            if(Rechnungseintrag.RechnungID === Rechnung.RechnungID) {
+
+              Summe.Honorarprozente     += Rechnungseintrag.Honoraranteil;
+              Summe.Nettohonorar        += Rechnungseintrag.Nettohonorar;
+              Summe.Bruttohonorar       += (Rechnungseintrag.Nettohonorar * (1 + this.Steuersatz / 100));
+              Summe.Nettonebenkosten    += Rechnungseintrag.Nettonebenkosten;
+              Summe.Bruttonebenkosten   += (Rechnungseintrag.Nettonebenkosten * (1 + this.Steuersatz / 100));
+              Summe.Nettogesamthonorar  += Rechnungseintrag.Nettogesamthonorar;
+              Summe.Mehrwertsteuer      += Rechnungseintrag.Mehrwertsteuer;
+              Summe.Bruttogesamthonorar += Rechnungseintrag.Bruttogesamthonorar;
+            }
+          }
+        }
+      }
+
+      return Summe;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'CalculateRechnungssumme', this.Debug.Typen.Service);
+    }
+  }
+
+  public CalculateRechnungssummen(): Honorarsummenstruktur  {
+
+    try {
+
+      let Summe: Honorarsummenstruktur;
+
+      Summe = {
+
+        Honorarprozente: 0,
+        Bruttogesamthonorar: 0,
+        Bruttohonorar: 0,
+        Nettoumbauzuschlag: 0,
+        Bruttoumbauzuschlag: 0,
+        Bruttokostensumme: 0,
+        Bruttoleistungssumme: 0,
+        Bruttonebenkosten: 0,
+        Bruttozwischensumme: 0,
+        Nettogesamthonorar: 0,
+        Nettohonorar: 0,
+        Nettokostensumme: 0,
+        Nettoleistungssumme: 0,
+        Nettonebenkosten: 0,
+        Nettozwischensumme: 0,
+        Mehrwertsteuer: 0,
+        Sicherheitseinbehalt: 0
+      };
+
+      for(let Tabelleneintrag of this.CurrentSimontabelle.Eintraegeliste) {
+
+        Summe.Honorarprozente     += Tabelleneintrag.Honorarsummeprozent;
+        Summe.Nettohonorar        += Tabelleneintrag.Nettohonorar;
+        Summe.Nettonebenkosten    += Tabelleneintrag.Nettonebenkosten;
+        Summe.Nettogesamthonorar  += Tabelleneintrag.Nettogesamthonorar;
+        Summe.Mehrwertsteuer      += Tabelleneintrag.Mehrwertsteuer;
+        Summe.Bruttogesamthonorar += Tabelleneintrag.Bruttogesamthonorar;
+      }
+
+      return Summe;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'CalculateRechnungssummen', this.Debug.Typen.Service);
+    }
+  }
+
 
   public GetNewBesondereleistung(): Simontabellebesondereleistungstruktur {
 
@@ -111,7 +572,6 @@ export class DatabaseSimontabelleService {
         Honorar: 0,
         Rechnungseintraege: [],
       };
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'GetNewBesondereleistung', this.Debug.Typen.Service);
@@ -316,6 +776,7 @@ export class DatabaseSimontabelleService {
         Kosten: 0,
         Nebenkosten: 0,
         Umbauzuschlag: 0,
+        Sicherheitseinbehalt: 0,
         Besondereleistungenliste: [],
         Deleted: false,
         Rechnungen: [],
@@ -404,14 +865,6 @@ export class DatabaseSimontabelleService {
         this.Pool.Simontabellenliste[this.CurrentSimontabelle.Projektkey].push(Simontabelle); // neuen
       }
 
-      // Gelöscht markierte Einträge entfernen
-      /*
-
-      this.Pool.Simontabellenliste[this.CurrentSimontabelle.Projektkey] = lodash.filter(this.Pool.Simontabellenliste[this.CurrentSimontabelle.Projektkey], (simontabelle: Simontabellestruktur) => {
-
-        return simontabelle.Deleted === false;
-      });
-       */
 
     } catch (error) {
 
@@ -429,7 +882,7 @@ export class DatabaseSimontabelleService {
     try {
 
       let Observer: Observable<any>;
-      let Merker: Simontabellestruktur;
+      let Tabelle: Simontabellestruktur;
 
       delete simontabelle.__v;
 
@@ -443,12 +896,12 @@ export class DatabaseSimontabelleService {
 
           next: (ne) => {
 
-            Merker = ne.Simontabelle;
+            Tabelle = ne.Simontabelle;
 
           },
           complete: () => {
 
-            resove(Merker);
+            resove(Tabelle);
 
           },
           error: (error: HttpErrorResponse) => {
@@ -464,7 +917,58 @@ export class DatabaseSimontabelleService {
     }
   }
 
-  public DeleteSimontabelle(simontabelle: Simontabellestruktur): Promise<any> {
+  public async DeleteRechnungen(Rechnung: Rechnungstruktur): Promise<any> {
+
+    try {
+
+      let Tabelle : Simontabellestruktur;
+      let Eintrag: Simontabelleeintragstruktur;
+
+      for(Tabelle of this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
+
+
+        Tabelle.Rechnungen = lodash.filter(Tabelle.Rechnungen, (rechnung:Rechnungstruktur) => {
+
+          return rechnung.RechnungID !== Rechnung.RechnungID;
+        });
+
+        debugger;
+
+        for(Eintrag of Tabelle.Eintraegeliste) {
+
+          Eintrag.Rechnungseintraege = lodash.filter(Eintrag.Rechnungseintraege, (rechnungseintrag: Rechnungseintragstruktur) => {
+
+            return rechnungseintrag.RechnungID !== Rechnung.RechnungID;
+          });
+        }
+
+        if(Tabelle._id === this.CurrentSimontabelle._id) {
+
+          this.CurrentSimontabelle = Tabelle;
+
+          if(this.CurrentSimontabelle.Rechnungen.length > 0 ) {
+
+            this.CurrentRechnungsindex = this.CurrentSimontabelle.Rechnungen.length - 1;
+            this.CurrentRechnung       = this.CurrentSimontabelle.Rechnungen[this.CurrentRechnungsindex];
+          }
+          else {
+
+            this.CurrentRechnung       = null;
+            this.CurrentRechnungsindex = null;
+          }
+        }
+
+        await this.UpdateSimontabelle(Tabelle);
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'DeleteRechnungen', this.Debug.Typen.Service);
+    }
+  }
+
+
+  private  DeleteSimontabelle(simontabelle: Simontabellestruktur): Promise<any> {
 
     try {
 

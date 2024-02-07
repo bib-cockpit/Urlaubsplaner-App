@@ -630,6 +630,7 @@ export class DatabasePoolService {
 
       let Params: HttpParams;
       let Headers: HttpHeaders;
+      let Tabelle: Simontabellestruktur;
       let SimontabellenObservable: Observable<any>;
 
       // debugger;
@@ -654,6 +655,13 @@ export class DatabasePoolService {
 
           },
           complete: () => {
+
+            for(Tabelle of this.Simontabellenliste[projekt.Projektkey] ) {
+
+              if(lodash.isUndefined(Tabelle.Sicherheitseinbehalt)) Tabelle.Sicherheitseinbehalt = 5;
+            }
+
+            debugger;
 
             this.Debug.ShowMessage('Read Simontabellenliste von ' + projekt.Projektkurzname + ' fertig.', 'Database Pool', 'ReadSimontabellen', this.Debug.Typen.Service);
 
