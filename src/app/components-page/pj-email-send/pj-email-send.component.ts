@@ -36,6 +36,9 @@ import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
 import {DatabaseLoplisteService} from "../../services/database-lopliste/database-lopliste.service";
 import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
 import moment, {Moment} from "moment";
+import {DatabaseSimontabelleService} from "../../services/database-simontabelle/database-simontabelle.service";
+import {Simontabellestruktur} from "../../dataclasses/simontabellestruktur";
+import {Rechnungstruktur} from "../../dataclasses/rechnungstruktur";
 
 @Component({
   selector: 'pj-email-send',
@@ -89,6 +92,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
               public Const: ConstProvider,
               public Displayservice: DisplayService,
               public DBTagebuch: DatabaseBautagebuchService,
+              public DBSimontabelle: DatabaseSimontabelleService,
               public DBLOPListe: DatabaseLoplisteService,
               public DBProjektpunkte: DatabaseProjektpunkteService,
               public GraphService: Graphservice,
@@ -227,16 +231,6 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           this.DBProtokolle.PrepareProtokollEmaildata();
 
-          /*
-
-
-          AnzahlExtern   = this.DBProtokolle.CurrentProtokoll.EmpfaengerExternIDListe.length;
-          AnzahlBurnickl = this.DBProtokolle.CurrentProtokoll.EmpfaengerInternIDListe.length;
-
-          AnzahlCcExtern    = this.DBProtokolle.CurrentProtokoll.CcEmpfaengerExternIDListe.length;
-          AnzahlCcBunrnickl = this.DBProtokolle.CurrentProtokoll.CcEmpfaengerInternIDListe.length;
-
-           */
 
           break;
 
@@ -244,42 +238,18 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           this.DBLOPListe.PrepareLOPListeEmaildata();
 
-          /*
-          AnzahlExtern   = this.DBLOPListe.CurrentLOPListe.EmpfaengerExternIDListe.length;
-          AnzahlBurnickl = this.DBLOPListe.CurrentLOPListe.EmpfaengerInternIDListe.length;
-
-          AnzahlCcExtern    = this.DBLOPListe.CurrentLOPListe.CcEmpfaengerExternIDListe.length;
-          AnzahlCcBunrnickl = this.DBLOPListe.CurrentLOPListe.CcEmpfaengerInternIDListe.length;
-
-           */
 
           break;
 
         case this.Pool.Emailcontentvarinaten.Bautagebuch:
 
           this.DBTagebuch.PrepareBautagebuchEmaildata();
-          /*
 
-          AnzahlExtern   = this.DBTagebuch.CurrentTagebuch.EmpfaengerExternIDListe.length;
-          AnzahlBurnickl = this.DBTagebuch.CurrentTagebuch.EmpfaengerInternIDListe.length;
-
-          AnzahlCcExtern    = this.DBTagebuch.CurrentTagebuch.CcEmpfaengerExternIDListe.length;
-          AnzahlCcBunrnickl = this.DBTagebuch.CurrentTagebuch.CcEmpfaengerInternIDListe.length;
-
-           */
 
           break;
 
         case this.Pool.Emailcontentvarinaten.Festlegungen:
-          /*
 
-          AnzahlExtern   = this.DBFestlegungen.EmpfaengerExternIDListe.length;
-          AnzahlBurnickl = this.DBFestlegungen.EmpfaengerInternIDListe.length;
-
-          AnzahlCcExtern    = this.DBFestlegungen.CcEmpfaengerExternIDListe.length;
-          AnzahlCcBunrnickl = this.DBFestlegungen.CcEmpfaengerInternIDListe.length;
-
-           */
 
           break;
 
@@ -287,20 +257,16 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           this.ZeitstempelMerker = Heute.add('5', 'day').valueOf(); //  this.DBProjektpunkte.CurrentProjektpunkt.Endezeitstempel;
 
-          /*
-          AnzahlExtern   = this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeExternIDListe.length;
-          AnzahlBurnickl = 0;
 
-          AnzahlCcExtern    = 0;
-          AnzahlCcBunrnickl = this.DBProjektpunkte.CurrentProjektpunkt.ZustaendigeInternIDListe.length;
+          break;
 
-           */
+        case this.Pool.Emailcontentvarinaten.Simontabelle:
+
+          this.DBSimontabelle.PrepareSimontabelleEmaildata();
+
 
           break;
       }
-
-      // this.LinesanzahlEmpfaenger   = Math.max(AnzahlExtern, AnzahlBurnickl);
-      // this.LinesanzahlCcEmpfaenger = Math.max(AnzahlCcExtern, AnzahlCcBunrnickl);
 
       if(this.SendAttachment) await this.ValidateFilename();
 
@@ -340,6 +306,8 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
     let Standort: Standortestruktur      = this.Pool.Mitarbeiterstandort;
     let Mitarbeiter: Mitarbeiterstruktur = this.Pool.Mitarbeiterdaten;
     let Result: any;
+    let Simontabellen: Simontabellestruktur[];
+    let NextSimontabellen: Simontabellestruktur[];
 
     this.SendInProgress = true;
 
@@ -491,6 +459,44 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
           Result = await this.DBProjektpunkte.SendReminderEmail();
 
           this.SendMailFinished = true;
+
+          lodash.delay(() => {
+
+            this.OkClickedEvent.emit();
+
+          }, 600);
+
+
+          break;
+
+        case this.Pool.Emailcontentvarinaten.Simontabelle:
+
+          Filename          = this.DBSimontabelle.CurrentRechnung.Filename;
+          Simontabellen     = lodash.filter(this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey], {Leistungsphase: this.DBSimontabelle.CurrentSimontabelle.Leistungsphase});
+
+          debugger;
+
+          try {
+
+            NextSimontabellen = await this.DBSimontabelle.SaveSimontabelleInSites(Filename, Projekt, Simontabellen, Standort, Mitarbeiter,true);
+
+          } catch (error) {
+
+            debugger;
+          }
+
+          this.SaveFileFinished = true;
+
+          await this.DBSimontabelle.SendSimontabelleFromSite();
+
+          this.SendMailFinished = true;
+
+          for(let Tabelle of NextSimontabellen) {
+
+            if(Tabelle._id === this.DBSimontabelle.CurrentSimontabelle._id) this.DBSimontabelle.CurrentSimontabelle = Tabelle;
+
+            await this.DBSimontabelle.UpdateSimontabelle(Tabelle);
+          }
 
           lodash.delay(() => {
 
@@ -778,6 +784,13 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
           DirectoryID = this.DBProjekte.CurrentProjekt.ProtokolleFolderID;
 
           break;
+
+        case this.Pool.Emailcontentvarinaten.Simontabelle:
+
+          Filename    = this.DBSimontabelle.CurrentRechnung.Filename;
+          DirectoryID = this.DBProjekte.CurrentProjekt.ProtokolleFolderID;
+
+          break;
       }
 
       return new Promise((resolve, reject) => {
@@ -889,6 +902,20 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           if(this.DBProjektpunkte.CurrentProjektpunkt.Betreff   !== '' &&
              this.DBProjektpunkte.CurrentProjektpunkt.Nachricht !== '') {
+
+            this.ContentIsValid = true;
+          }
+          else {
+
+            this.ContentIsValid = false;
+          }
+
+          break;
+
+        case this.Pool.Emailcontentvarinaten.Simontabelle:
+
+          if(this.DBSimontabelle.CurrentRechnung.Betreff   !== '' &&
+             this.DBSimontabelle.CurrentRechnung.Nachricht !== '') {
 
             this.ContentIsValid = true;
           }
@@ -1030,6 +1057,12 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
 
           break;
 
+        case this.Pool.Emailcontentvarinaten.Simontabelle:
+
+          return this.DBSimontabelle.CurrentRechnung !== null;
+
+          break;
+
       }
 
     } catch (error) {
@@ -1072,6 +1105,12 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
         case this.Pool.Emailcontentvarinaten.Aufgabenliste:
 
           return this.DBProjektpunkte.CurrentProjektpunkt.Betreff;
+
+          break;
+
+        case this.Pool.Emailcontentvarinaten.Simontabelle:
+
+          return this.DBSimontabelle.CurrentRechnung.Betreff;
 
           break;
       }
@@ -1131,6 +1170,12 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
           this.DBProjektpunkte.CurrentProjektpunkt.Nachricht = Nachricht;
 
           break;
+
+        case this.Pool.Emailcontentvarinaten.Simontabelle:
+
+          Nachricht =  this.DBSimontabelle.CurrentRechnung.Nachricht;
+
+          break;
       }
 
 
@@ -1171,6 +1216,12 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
         case this.Pool.Emailcontentvarinaten.Festlegungen:
 
           return this.DBFestlegungen.Filename;
+
+          break;
+
+        case this.Pool.Emailcontentvarinaten.Simontabelle:
+
+          return this.DBSimontabelle.CurrentRechnung.Filename;
 
           break;
       }

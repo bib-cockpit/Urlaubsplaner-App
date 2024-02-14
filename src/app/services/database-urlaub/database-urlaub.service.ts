@@ -1339,7 +1339,15 @@ export class DatabaseUrlaubService {
           },
           error: (error: HttpErrorResponse) => {
 
-            reject(error);
+            debugger;
+
+            this.Regionenliste = [];
+
+            console.log('Read Regionen ist fehlgeschlagen.');
+
+            resolve(true);
+
+            // reject(error);
           }
         });
       });
@@ -1384,7 +1392,13 @@ export class DatabaseUrlaubService {
           },
           error: (error: HttpErrorResponse) => {
 
-            reject(error);
+            this.Feiertageliste[landcode] = [];
+
+            debugger;
+
+            console.log('Read Feiertage ist fehlgeschlagen.');
+
+            resolve(true);
           }
         });
       });
@@ -1425,7 +1439,13 @@ export class DatabaseUrlaubService {
 
           error: (error: HttpErrorResponse) => {
 
-            reject(error);
+            this.Ferienliste[landcode] = [];
+
+            console.log('Read Ferien ist fehlgeschlagen.');
+
+            debugger;
+
+            resolve(true);
           }
         });
       });

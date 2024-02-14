@@ -21,6 +21,14 @@ import {
 import {Simontabellestruktur} from "../../dataclasses/simontabellestruktur";
 import {Simontabellebesondereleistungstruktur} from "../../dataclasses/simontabellebesondereleistungstruktur";
 import {Honorarsummenstruktur} from "../../dataclasses/honorarsummenstruktur";
+import {Rechnungstruktur} from "../../dataclasses/rechnungstruktur";
+import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
+import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
+import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
+import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
+import moment from "moment/moment";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import {Graphservice} from "../../services/graph/graph";
 
 
 
@@ -47,9 +55,15 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
   public Auswahlhoehe: number;
   public Rechnungssummen: Honorarsummenstruktur[];
   private Auswahldialogorigin: string;
+  public AuswahlIDliste: string[];
+  public ShowMitarbeiterauswahl: boolean;
+  public DialogPosY: number;
 
   private TabellenSubscription: Subscription;
   public ShowLeistungeditor: boolean;
+  public ShowEmailSenden: boolean;
+  public EmailDialogbreite: number;
+  public EmailDialoghoehe: number;
 
 
   constructor(public Basics: BasicsProvider,
@@ -60,6 +74,8 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
               public Auswahlservice: AuswahlDialogService,
               public Const: ConstProvider,
               public Pool: DatabasePoolService,
+              public DBStandort: DatabaseStandorteService,
+              public GraphService: Graphservice,
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public Debug: DebugProvider) {
 
@@ -75,6 +91,12 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
       this.TabellenSubscription     = null;
       this.ShowLeistungeditor       = false;
       this.Rechnungssummen          = [];
+      this.ShowMitarbeiterauswahl = false;
+      this.AuswahlIDliste          = [];
+      this.EmailDialogbreite        = 800;
+      this.EmailDialoghoehe         = 600;
+      this.DialogPosY               = 60;
+      this.ShowEmailSenden          = false;
 
       this.ShowProjektschnellauswahl        = false;
       this.Auswahlhoehe                     = 300;
@@ -97,6 +119,132 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'ShowProjektauswahlEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+
+  EmailSendenOkButtonClicked(event: any) {
+
+    try {
+
+      this.ShowEmailSenden = false;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'EmailSendenOkButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  SendMailButtonClicked(event: MouseEvent, Tabelle: Simontabellestruktur, Rechnung: Rechnungstruktur) {
+
+    try {
+
+      let Betreff, Nachricht, Filename;
+
+      event.stopPropagation();
+      event.preventDefault();
+
+      this.DB.CurrentSimontabelle   = lodash.cloneDeep(Tabelle);
+      this.DB.CurrentRechnung       = lodash.cloneDeep(Rechnung);
+      this.DB.CurrentRechnungsindex = lodash.findIndex(this.DB.CurrentSimontabelle.Rechnungen, {RechnungID: this.DB.CurrentRechnung.RechnungID});
+
+      debugger;
+
+      if(this.DB.CurrentRechnungsindex !== -1 && this.DB.CurrentRechnungsindex >= 1) {
+
+        this.DB.LastRechnungsindex = this.DB.CurrentRechnungsindex - 1;
+        this.DB.LastRechnung       = lodash.cloneDeep(this.DB.CurrentSimontabelle.Rechnungen[this.DB.LastRechnungsindex]);
+      }
+      else {
+
+        this.DB.LastRechnungsindex = -1;
+        this.DB.LastRechnung       = null;
+      }
+
+      this.Pool.Emailcontent   = this.Pool.Emailcontentvarinaten.Simontabelle;
+      this.EmailDialogbreite   = 1100;
+      this.EmailDialoghoehe    = this.Basics.InnerContenthoehe - 200;
+
+      Filename   = moment(Rechnung.Zeitstempel).format('YYMMDD_') + this.Tools.GenerateFilename('_AZ', 'pdf', Rechnung.Nummer.toString());
+      Betreff    = Rechnung.Nummer + '. Abschlagsrechnung vom ' + moment(Rechnung.Zeitstempel).format('DD.MM.YYYY');
+      Nachricht  = 'Sehr geehrte Damen und Herren,\n\n';
+      Nachricht += 'anbei übersende ich Ihnen die ' + Rechnung.Nummer + '. Abschlagsrechnung vom ' + moment(Rechnung.Zeitstempel).format('DD.MM.YYYY') + '.';
+
+      this.DB.CurrentRechnung.Betreff   = Betreff;
+      this.DB.CurrentRechnung.Nachricht = Nachricht;
+      this.DB.CurrentRechnung.Filename  = Filename;
+
+      this.ShowEmailSenden = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'SendMailButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  async MitarbeiterauswahlOkButtonClicked(idliste: string[]) {
+
+    try {
+
+      let Tabelle: Simontabellestruktur;
+
+      for(Tabelle of this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
+
+        for(let i = 0; i <  Tabelle.Rechnungen.length; i++) {
+
+          Tabelle.Rechnungen[i].EmpfaengerInternIDListe = idliste;
+        }
+
+        Tabelle = await this.DB.UpdateSimontabelle(Tabelle);
+
+        this.DB.UpdateSimontabellenliste(Tabelle);
+
+        if(Tabelle._id === this.DB.CurrentSimontabelle._id) this.DB.CurrentSimontabelle = Tabelle;
+      }
+
+      this.DB.CurrentRechnung.EmpfaengerInternIDListe = idliste;
+
+      this.ShowMitarbeiterauswahl = false;
+
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Simontabelle Liste', 'MitarbeiterauswahlOkButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  MitarebiterStandortfilterClickedHandler() {
+
+    try {
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Simontabelle_Editor_Emailempfaenger;
+
+      let Index = 0;
+
+      this.ShowAuswahl         = true;
+      this.Auswahltitel        = 'Standort festlegen';
+      this.Auswahlliste        = [];
+      this.Auswahlhoehe        = 200;
+
+      this.Auswahlliste.push({ Index: Index, FirstColumn: 'kein Filter', SecoundColumn: '', Data: null });
+      Index++;
+
+      for(let Eintrag of this.Pool.Standorteliste) {
+
+        this.Auswahlliste.push({ Index: Index, FirstColumn: Eintrag.Kuerzel, SecoundColumn: Eintrag.Standort, Data: Eintrag });
+        Index++;
+      }
+
+      if(this.DBStandort.CurrentStandortfilter !== null) {
+
+        this.Auswahlindex = lodash.findIndex(this.Pool.Standorteliste, {_id: this.DBStandort.CurrentStandortfilter._id});
+      }
+      else this.Auswahlindex = 0;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Simontabelle Liste', 'MitarebiterStandortfilterClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -222,6 +370,23 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
 
       switch (this.Auswahldialogorigin) {
 
+        case this.Auswahlservice.Auswahloriginvarianten.Simontabelle_Editor_Emailempfaenger:
+
+
+          this.DBStandort.CurrentStandortfilter        = data;
+          this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
+
+          this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null).then(() => {
+
+            this.DBStandort.StandortfilterChanged.emit();
+
+          }).catch((error) => {
+
+            this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+          });
+
+          break;
+
 
         case 'Anlagengruppe':
 
@@ -277,6 +442,8 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
 
       this.DB.CurrentSimontabellenliste = lodash.filter(this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey], { Leistungsphase: this.DB.CurrentLeistungsphase});
 
+      debugger;
+
       for(this.DB.CurrentSimontabelle of this.DB.CurrentSimontabellenliste) {
 
         for(let Tabelleneintrag of this.DB.CurrentSimontabelle.Eintraegeliste) {
@@ -284,6 +451,8 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
           Tabelleneintrag.Honorarsummeprozent = 0;
           Tabelleneintrag.Honorarsumme        = 0;
           Tabelleneintrag.Nettohonorar        = 0;
+          Tabelleneintrag.Nettoumbauzuschlag  = 0;
+          Tabelleneintrag.Nettozwischensumme  = 0;
           Tabelleneintrag.Nettonebenkosten    = 0;
           Tabelleneintrag.Nettogesamthonorar  = 0;
           Tabelleneintrag.Mehrwertsteuer      = 0;
@@ -463,6 +632,59 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'LeistungsphaseChangedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  async DeleteTabelleClickedEventHandler() {
+
+    try {
+
+      debugger;
+
+      await this.DB.DeleteSimontabelle(this.DB.CurrentSimontabelle);
+
+      this.ShowEditor = false;
+      this.DB.CurrentSimontabelle = null;
+
+      this.PrepareDaten();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'DeleteTabelleClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+
+  async ShowPdfButtonClicked(event: MouseEvent, Tabelle: Simontabellestruktur, Rechnung: Rechnungstruktur) {
+
+    try {
+
+      let File: Teamsfilesstruktur;
+
+      File      = this.GraphService.GetEmptyTeamsfile();
+      File.id   = Rechnung.FileID;
+      File.name = Rechnung.Filename;
+
+      await this.GraphService.DownloadPDFSiteFile(File);
+
+      this.Tools.PushPage(this.Const.Pages.PDFViewerPage);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'ShowPdfButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  EditorMitarbeiterClickedEventHandler() {
+
+    try {
+
+      this.AuswahlIDliste         = this.DB.CurrentRechnung.EmpfaengerInternIDListe;
+      this.ShowMitarbeiterauswahl = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'EditorMitarbeiterClickedEventHandler', this.Debug.Typen.Page);
     }
   }
 }

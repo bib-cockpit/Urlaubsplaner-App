@@ -6,6 +6,7 @@ export type Rechnungseintragstruktur = {
   Valid?: boolean;
   Nettohonorar?: number;
   Nettoumbauzuschlag?: number;
+  Nettozwischensumme?: number;
   Bruttoumbauzuschlag?: number;
   Nettonebenkosten?: number;
   Nettogesamthonorar?: number;

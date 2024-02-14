@@ -104,7 +104,8 @@ export class DatabasePoolService {
         Bautagebuch:  'Bautagebuch',
         Festlegungen: 'Festlegungen',
         LOPListe:     'LOPListe',
-        Aufgabenliste: 'Aufgabenliste'
+        Aufgabenliste: 'Aufgabenliste',
+        Simontabelle: 'Simontabelle'
       };
 
       this.Mitarbeiterdaten         = null;
@@ -633,8 +634,6 @@ export class DatabasePoolService {
       let Tabelle: Simontabellestruktur;
       let SimontabellenObservable: Observable<any>;
 
-      // debugger;
-
       this.Simontabellenliste[projekt.Projektkey] = [];
 
       return new Promise((resolve, reject) => {
@@ -652,16 +651,34 @@ export class DatabasePoolService {
           next: (data) => {
 
             this.Simontabellenliste[projekt.Projektkey] = <Simontabellestruktur[]>data;
-
           },
           complete: () => {
 
             for(Tabelle of this.Simontabellenliste[projekt.Projektkey] ) {
 
               if(lodash.isUndefined(Tabelle.Sicherheitseinbehalt)) Tabelle.Sicherheitseinbehalt = 5;
-            }
 
-            debugger;
+              for(let Rechnung of Tabelle.Rechnungen) {
+
+                if(lodash.isUndefined(Rechnung.Verfasser))               Rechnung.Verfasser = {
+
+                  Name:    this.Mitarbeiterdaten.Name,
+                  Vorname: this.Mitarbeiterdaten.Vorname,
+                  Email:   this.Mitarbeiterdaten.Email
+                };
+
+
+                if(lodash.isUndefined(Rechnung.GesendetZeitstempel)) Rechnung.GesendetZeitstempel = null;
+                if(lodash.isUndefined(Rechnung.EmpfaengerInternIDListe))
+                {
+
+                  Rechnung.EmpfaengerInternIDListe  = [];
+                  Rechnung.EmpfaengerInternIDListe.push(this.Mitarbeiterdaten._id);
+                }
+                if(lodash.isUndefined(Rechnung.EmpfaengerExternIDListe)) Rechnung.EmpfaengerExternIDListe  = [];
+                if(lodash.isUndefined(Rechnung.GesendetZeitstring))      Rechnung.GesendetZeitstring       = null;
+              }
+            }
 
             this.Debug.ShowMessage('Read Simontabellenliste von ' + projekt.Projektkurzname + ' fertig.', 'Database Pool', 'ReadSimontabellen', this.Debug.Typen.Service);
 

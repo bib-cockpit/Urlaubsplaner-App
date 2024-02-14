@@ -13,7 +13,6 @@ import {ToolsProvider} from "../../services/tools/tools";
 import {DisplayService} from "../../services/diplay/display.service";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 import {ConstProvider} from "../../services/const/const";
-import {ObjectSchema} from "joi";
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
 import {DatabaseSimontabelleService} from "../../services/database-simontabelle/database-simontabelle.service";
 import {Simontabellestruktur} from "../../dataclasses/simontabellestruktur";
@@ -23,6 +22,7 @@ import {Simontabellebesondereleistungstruktur} from "../../dataclasses/simontabe
 import { Rechnungstruktur } from 'src/app/dataclasses/rechnungstruktur';
 import moment from "moment";
 import {Rechnungseintragstruktur} from "../../dataclasses/rechnungseintragstruktur";
+import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
 
 @Component({
   selector: 'pj-simontabelle-editor',
@@ -37,7 +37,9 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
   @Output() AnlagengruppeClickedEvent  = new EventEmitter<any>();
   @Output() LeistungsphaseClickedEvent = new EventEmitter<any>();
   @Output() AddLeistungClickedEvent    = new EventEmitter<any>();
-  @Output() EditLeistungClickedEvent    = new EventEmitter<Simontabellebesondereleistungstruktur>();
+  @Output() DeleteTabelleClickedEvent  = new EventEmitter<any>();
+  @Output() MitarbeiterClickedEvent    = new EventEmitter<any>();
+  @Output() EditLeistungClickedEvent   = new EventEmitter<Simontabellebesondereleistungstruktur>();
 
 
   @Input() Titel: string;
@@ -51,10 +53,10 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
 
     Tabelle:    'Tabelle',
     Leistungen: 'Leistungen',
-    Rechnungen: 'Rechnungen'
+    Rechnungen: 'Rechnungen',
+    Rechnungsempfaenger: 'Rechnungsempfaenger'
   };
 
-  private JoiShema: ObjectSchema;
   public Valid: boolean;
   public DeleteEnabled: boolean;
   public CanDelete: boolean;
@@ -68,15 +70,16 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
   public Rechnungslistebreite: number;
   public DisplayRechnungsliste: boolean[];
   public Rechnungsbreite: number;
+  public DeleteTabelleEnabled: boolean;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
               public DB: DatabaseSimontabelleService,
               public Displayservice: DisplayService,
+              public DBMitarbeiter: DatabaseMitarbeiterService,
               public Pool: DatabasePoolService,
               public Const: ConstProvider) {
-
     try {
 
       this.Valid             = true;
@@ -94,10 +97,11 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
       this.Bruttohonorar       = 0;
       this.Vertragsprozente    = 0;
       this.HonorarValid        = false;
-      this.Bereich             = this.Bereiche.Rechnungen;
-      this.Rechnungslistebreite = 0;
-      this.Rechnungsbreite      = 270;
+      this.Bereich               = this.Bereiche.Tabelle;
+      this.Rechnungslistebreite  = 0;
+      this.Rechnungsbreite       = 270;
       this.DisplayRechnungsliste = [];
+      this.DeleteTabelleEnabled  = false;
 
 
     } catch (error) {
@@ -176,9 +180,9 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
       this.Bruttonkosten = this.DB.CurrentSimontabelle.Kosten * Steuerfaktor;
       this.Bruttohonorar = this.DB.CurrentSimontabelle.Honorar * Steuerfaktor;
 
-      debugger;
-
       this.DB.CurrentRechnungsindex = this.DB.CurrentSimontabelle.Rechnungen.length - 1;
+
+      if(this.DB.CurrentRechnungsindex >= 0) this.DB.CurrentRechnung = this.DB.CurrentSimontabelle.Rechnungen[this.DB.CurrentRechnungsindex];
 
       this.Rechnungslistebreite  = 1044;
       this.DisplayRechnungsliste = [];
@@ -218,8 +222,6 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
       }
 
       this.DB.CalculateRechnungssummen();
-
-      debugger;
 
     } catch (error) {
 
@@ -889,6 +891,7 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
    */
 
 
+
   CheckHonorarValid(Eintrag: Simontabelleeintragstruktur): string {
 
     try {
@@ -993,7 +996,7 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
 
       let Differenz: number = 0;
 
-      let LastRechnungseintrag = Tabelleneintrag.Rechnungseintraege[Rechnungsindex - 1]
+      let LastRechnungseintrag = Tabelleneintrag.Rechnungseintraege[Rechnungsindex - 1];
 
       if(Rechnungsindex === 0) {
 
@@ -1014,6 +1017,54 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'CalculateRechnungsdifferenz', this.Debug.Typen.Component);
+    }
+  }
+
+  DeleteTabelleClicked() {
+
+    try {
+
+      this.DeleteTabelleClickedEvent.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'DeleteTabelleClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  DeleteTabelleCheckboxChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      this.DeleteTabelleEnabled = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'DeleteTabelleCheckboxChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  RechnungsempfaengerMenuButtonClicked() {
+
+    try {
+
+      this.Bereich = this.Bereiche.Rechnungsempfaenger;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'RechnungsempfaengerMenuButtonClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  MitarbeiterButtonClicked() {
+
+    try {
+
+      this.MitarbeiterClickedEvent.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'MitarbeiterButtonClicked', this.Debug.Typen.Component);
     }
   }
 }

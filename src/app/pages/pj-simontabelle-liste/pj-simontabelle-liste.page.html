@@ -49,18 +49,12 @@
           </tr>
           <ng-container *ngFor="let Tabelle of DB.CurrentSimontabellenliste; let i = index">
             <tr>
-              <td>
-              </td>
+              <td></td>
               <td>
                 <div (click)="SimontabelleClicked($event, Tabelle)" class="simontabelleeintragdiv">
                   {{Tabelle.Anlagengruppe}}. {{DB.GetAnlagengruppeByNummer(Tabelle.Anlagengruppe).Name}}
                 </div>
               </td>
-              <!--
-              <td style="text-align: right">
-                {{Tools.FormatCurrency(Tabelle.Kosten)}}
-              </td>
-              -->
               <td style="text-align: right">
 
                 <table class="nobordersmalltable" style="width: 100%">
@@ -265,31 +259,61 @@
 
             </ng-container>
           </ng-container>
-          <tr>
-            <td colspan="9">
-              <ion-text color="baeblau" style="font-size: 120%"><b>Abrechnung</b></ion-text>
-            </td>
-          </tr>
+
+
           <ng-container *ngFor="let Tabelle of DB.CurrentSimontabellenliste; let i = index">
 
-              <tr *ngIf="i === 0">
+            <ng-container *ngIf="i === 0">
+              <tr>
+                <td colspan="9">
+                  <ion-text color="baeblau" style="font-size: 120%"><b>Abrechnung</b></ion-text>
+                </td>
+              </tr>
+              <tr>
                 <td colspan="2">
                   <b>Honorar</b>
                 </td>
-                <td colspan="6" style="padding: 0px !important;">
+                <td colspan="7" style="padding: 0px !important;">
+
                   <table class="nobordertable">
                     <tr>
-                      <td *ngFor="let Rechnung of Tabelle.Rechnungen" style="width: 248px; border-right: 1px solid black"><b>{{Rechnung.Nummer}}. AZ</b></td>
+                      <td *ngFor="let Rechnung of Tabelle.Rechnungen" style="width: 248px; border-right: 1px solid black">
+
+                        <table class="nobordersmalltable" width="100%">
+                          <tr>
+                            <td><b>{{Rechnung.Nummer}}. AZ</b></td>
+                            <td align="center">
+                              <div class="maildivclass" (click)="SendMailButtonClicked($event, Tabelle, Rechnung)">
+                                <ion-icon  name="mail" [color]="Rechnung.GesendetZeitstempel !== null ? 'gruen' : 'rot'"></ion-icon>
+                              </div>
+                            </td>
+
+                            <ng-container *ngIf="Rechnung.GesendetZeitstempel !== null">
+                              <td style="width: 10px"></td>
+                              <td style="font-size: 80%; text-align: right">{{Rechnung.GesendetZeitstring}}</td>
+                              <td>
+                                <div (click)="ShowPdfButtonClicked($event, Tabelle, Rechnung)" class="maildivclass">
+                                  <ion-icon  name="document" [color]="Basics.Ionicfarben.BAEBlau"></ion-icon>
+                                </div>
+                              </td>
+                            </ng-container>
+                          </tr>
+                        </table>
+
+                      </td>
                     </tr>
                   </table>
                 </td>
               </tr>
+            </ng-container>
               <tr>
                 <td>
-                  {{Tabelle.Rechnungen.length}}
+
                 </td>
                 <td>
-                  {{Tabelle.Anlagengruppe}}. {{DB.GetAnlagengruppeByNummer(Tabelle.Anlagengruppe).Name}}
+                  <div (click)="SimontabelleClicked($event, Tabelle)" class="simontabelleeintragdiv">
+                    {{Tabelle.Anlagengruppe}}. {{DB.GetAnlagengruppeByNummer(Tabelle.Anlagengruppe).Name}}
+                  </div>
                 </td>
                 <td colspan="7" style="padding: 0px !important;">
                   <table class="nobordertable">
@@ -315,7 +339,7 @@
               </tr>
               <tr *ngIf="i === DB.CurrentSimontabellenliste.length - 1"  style="background: #D7DBDD">
                 <td colspan="2"><b>Honorarsumme</b></td>
-                <td colspan="6" style="padding: 0px !important;">
+                <td colspan="7" style="padding: 0px !important;">
                   <table class="nobordertable">
                     <tr>
                       <td *ngFor="let Rechnung of Tabelle.Rechnungen; let Rechnungsindex = index" style="width: 248px; border-right: 1px solid black">
@@ -358,12 +382,14 @@
               </tr>
               <tr>
                 <td>
-                  {{Tabelle.Rechnungen.length}}
+
                 </td>
                 <td>
-                  {{Tabelle.Anlagengruppe}}. {{DB.GetAnlagengruppeByNummer(Tabelle.Anlagengruppe).Name}}
+                  <div (click)="SimontabelleClicked($event, Tabelle)" class="simontabelleeintragdiv">
+                    {{Tabelle.Anlagengruppe}}. {{DB.GetAnlagengruppeByNummer(Tabelle.Anlagengruppe).Name}}
+                  </div>
                 </td>
-                <td colspan="6" style="padding: 0px !important;">
+                <td colspan="7" style="padding: 0px !important;">
                   <table class="nobordertable">
                     <tr>
                       <td *ngFor="let Rechnung of Tabelle.Rechnungen;" style="width: 248px; border-right: 1px solid black">
@@ -390,7 +416,7 @@
 
               <tr style="background: #D7DBDD">
                 <td colspan="2"><b>Nebenkostensumme</b></td>
-                <td colspan="6" style="padding: 0px !important;">
+                <td colspan="7" style="padding: 0px !important;">
                   <table class="nobordertable">
                     <tr>
                       <td *ngFor="let Rechnung of Tabelle.Rechnungen; let Rechnungsindex = index" style="width: 248px; border-right: 1px solid black">
@@ -414,7 +440,7 @@
               </tr>
               <tr style="background: #5F8CA7; color: white;">
                 <td colspan="2"><b>Zwischensumme</b></td>
-                <td colspan="6" style="padding: 0px !important;">
+                <td colspan="7" style="padding: 0px !important;">
                   <table class="nobordertable">
                     <tr>
                       <td *ngFor="let Rechnung of Tabelle.Rechnungen; let Rechnungsindex = index" style="width: 248px; border-right: 1px solid black">
@@ -438,7 +464,7 @@
               </tr>
               <tr style="background: #5F8CA7; color: white;">
                 <td colspan="2"><b>MwSt. {{DB.Steuersatz}} %</b></td>
-                <td colspan="6" style="padding: 0px !important;">
+                <td colspan="7" style="padding: 0px !important;">
                   <table class="nobordertable">
                     <tr>
                       <td *ngFor="let Rechnung of Tabelle.Rechnungen; let Rechnungsindex = index" style="width: 248px; border-right: 1px solid black">
@@ -462,7 +488,7 @@
               </tr>
               <tr style="background: #5F8CA7; color: white;">
                 <td colspan="2"><b>Bruttohonorar</b></td>
-                <td colspan="6" style="padding: 0px !important;">
+                <td colspan="7" style="padding: 0px !important;">
                   <table class="nobordertable">
                     <tr>
                       <td *ngFor="let Rechnung of Tabelle.Rechnungen; let Rechnungsindex = index" style="width: 248px; border-right: 1px solid black">
@@ -486,7 +512,7 @@
               </tr>
               <tr style="background: #5F8CA7; color: white;">
                 <td colspan="2"><b>Sicherheitseinbehalt {{Tabelle.Sicherheitseinbehalt}} %</b></td>
-                <td colspan="6" style="padding: 0px !important;">
+                <td colspan="7" style="padding: 0px !important;">
                   <table class="nobordertable">
                     <tr>
                       <td *ngFor="let Rechnung of Tabelle.Rechnungen; let Rechnungsindex = index" style="width: 248px; border-right: 1px solid black">
@@ -510,7 +536,7 @@
               </tr>
               <tr style="background: #5F8CA7; color: white;">
                 <td colspan="2"><b>Rechnungsbetrag</b></td>
-                <td colspan="6" style="padding: 0px !important;">
+                <td colspan="7" style="padding: 0px !important;">
                   <table class="nobordertable">
                     <tr>
                       <td *ngFor="let Rechnung of Tabelle.Rechnungen; let Rechnungsindex = index" style="width: 248px; border-right: 1px solid black">
@@ -570,7 +596,9 @@
                         (CancelClickedEvent)="ShowEditor = false" (OkClickedEvent)="ShowEditor = false"
                         (AnlagengruppeClickedEvent)="AnlagengruppeClickedEventHandler()"
                         (AddLeistungClickedEvent)="AddLeistungClickedEventHandler()"
+                        (DeleteTabelleClickedEvent)="DeleteTabelleClickedEventHandler()"
                         (EditLeistungClickedEvent)="EditLeistungClickedEventHandler($event)"
+                        (MitarbeiterClickedEvent)="EditorMitarbeiterClickedEventHandler()"
                         (LeistungsphaseClickedEvent)="LeistungsphaseClickedEventHandler()">
 
 </pj-simontabelle-editor>
@@ -594,6 +622,31 @@
                             (OkClickedEvent)="ShowProjektschnellauswahl = false">
 </pj-projekte-schnellauswahl>
 
+<fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
+                        [Titel]="'Rechnungsempfänger festlegen'"
+                        [Dialogbreite]="600" [ZIndex]="4000"
+                        [Multiselect]="true"
+                        [OnlyProjektmitarbeiter]="false"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
+                        (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
+                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
+
+<pj-email-send *ngIf="ShowEmailSenden"
+               [Titel]="'LOP Liste senden'"
+               [Dialogbreite]="EmailDialogbreite"
+               [PositionY]="DialogPosY"
+               [ZIndex]="1000"
+               Iconname="mail-outline"
+               (CancelClickedEvent)="ShowEmailSenden = false"
+               (OkClickedEvent)="EmailSendenOkButtonClicked($event)"></pj-email-send>
+               <!--
+               (EmpfaengerInternClicked)="EmpfaengerInternClickedHandler()"
+               (CcEmpfaengerInternClicked)="CcEmpfaengerInternClickedHandler()"
+               (EmpfaengerExternClicked)="EmpfaengerExternClickedHandler()"
+               (CcEmpfaengerExternClicked)="CcEmpfaengerExternClickedHandler()"
+               -->
 
 <auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"
                 [Dialogbreite]="400"  [PositionY]="100"

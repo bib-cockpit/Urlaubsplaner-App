@@ -48,6 +48,17 @@
                   </table>
                 </div>
               </td>
+              <td style="width: 20px"></td>
+              <td>
+                <div class="menubuttonclass" (click)="RechnungsempfaengerMenuButtonClicked()">
+                  <table class="paddingsmalltable">
+                    <tr>
+                      <td><ion-icon name="people-outline" [color]="Bereich === Bereiche.Rechnungsempfaenger ? 'schwarz' : 'weiss'"></ion-icon></td>
+                      <td [style.color]="Bereich === Bereiche.Rechnungsempfaenger ? 'black' : 'white'">Rechnungsempfänger</td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
             </tr>
           </table>
           <table *ngIf="Bereich === Bereiche.Rechnungen" class="paddingtable">
@@ -305,6 +316,18 @@
                             </td>
                           </tr>
                         </table>
+                        <table class="nobordertable">
+                          <tr>
+                            <td><checkbox-clon [Checked]="DeleteTabelleEnabled" (CheckChanged)="DeleteTabelleCheckboxChanged($event)"></checkbox-clon></td>
+                            <td style="width: 6px"></td>
+                            <td>
+                              <ion-button size="small" color="rot" [disabled]="!DeleteTabelleEnabled" (click)="DeleteTabelleClicked()">
+                                <ion-icon name="trash-outline" style="font-size: 20px"></ion-icon>
+                                <ion-text>Tabelle löschen</ion-text>
+                              </ion-button>
+                            </td>
+                          </tr>
+                        </table>
 
                       </ion-col>
                     </ion-row>
@@ -313,6 +336,7 @@
                 </td>
               </tr>
             </table>
+            xxx
 
           </div>
         </ng-container>
@@ -577,7 +601,33 @@
           </div>
 
         </ng-container>
-
+        <ng-container *ngIf="Bereich === Bereiche.Rechnungsempfaenger && DB.CurrentRechnung !== null">
+          <ion-grid>
+            <ion-row>
+              <ion-col size="12">
+                <ion-text color="baeblau" style="font-size: 120%"><b>Rechnungsemfänger</b></ion-text>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <table class="paddingtable">
+                  <tr *ngFor="let MitarbeiterID of DB.CurrentRechnung.EmpfaengerInternIDListe">
+                    <td>
+                      {{DBMitarbeiter.GetMitarbeiterByID(MitarbeiterID).Vorname}} {{DBMitarbeiter.GetMitarbeiterByID(MitarbeiterID).Name}}
+                    </td>
+                    <td style="width:10px"></td>
+                    <td style="color: #307ac1;">{{DBMitarbeiter.GetMitarbeiterByID(MitarbeiterID).Email}}</td>
+                  </tr>
+                </table>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-button (click)="MitarbeiterButtonClicked()" size="small" color="burnicklbraun">Mitarbeiterauswahl</ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ng-container>
 
       </ion-content>
       <ion-footer>

@@ -15,6 +15,14 @@ import {Rechnungseintragstruktur} from "../../dataclasses/rechnungseintragstrukt
 import moment, {Moment} from "moment";
 import {Honorarsummenstruktur} from "../../dataclasses/honorarsummenstruktur";
 import {ToolsProvider} from "../tools/tools";
+import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
+import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
+import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
+import {Projektestruktur} from "../../dataclasses/projektestruktur";
+import {Standortestruktur} from "../../dataclasses/standortestruktur";
+import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
+import {DatabaseAuthenticationService} from "../database-authentication/database-authentication.service";
+import {Graphservice} from "../graph/graph";
 
 
 @Injectable({
@@ -27,39 +35,104 @@ export class DatabaseSimontabelleService {
   public readonly Steuersatz: number = 19;
   public CurrentBesondereleistung: Simontabellebesondereleistungstruktur;
   public CurrentRechnung: Rechnungstruktur;
+  public LastRechnung: Rechnungstruktur;
   public CurrrentRechnungseintrag: Rechnungseintragstruktur;
   public CurrentRechnungsindex: number;
+  public LastRechnungsindex: number;
   public Leistungsphasenliste: string[];
   public CurrentLeistungsphase: string;
   public CurrentLeistungsphaseindex: number;
   public Summenliste: Honorarsummenstruktur[];
   public Leistungsphasenanzahlliste: number[][];
   public CurrentSimontabellenliste: Simontabellestruktur[];
+  public AuswahlIDliste: string[];
+  private ServerSaveSimontabelleToSitesUrl: string;
+  private ServerSendSimontabelleToSitesUrl: string;
 
   constructor(private Debug: DebugProvider,
               private Const: ConstProvider,
               private http: HttpClient,
               private Pool: DatabasePoolService,
               private Tools: ToolsProvider,
+              private Basics: BasicsProvider,
+              private GraphService: Graphservice,
+              private AuthService: DatabaseAuthenticationService,
               private DBProjekte: DatabaseProjekteService) {
     try {
 
       this.CurrentSimontabelle        = null;
       this.CurrentBesondereleistung   = null;
       this.CurrentRechnung            = null;
+      this.LastRechnung               = null;
       this.CurrrentRechnungseintrag   = null;
       this.CurrentRechnungsindex      = null;
+      this.LastRechnungsindex         = null;
       this.Leistungsphasenanzahlliste = [];
       this.Leistungsphasenliste       = [];
       this.Summenliste                = [];
       this.CurrentLeistungsphase      = this.Const.NONE;
       this.CurrentLeistungsphaseindex = null;
       this.ServerSimontabelleUrl      = this.Pool.CockpitserverURL + '/simontabellen';
+      this.ServerSaveSimontabelleToSitesUrl = this.Pool.CockpitdockerURL + '/savesimontabelle';
+      this.ServerSendSimontabelleToSitesUrl = this.Pool.CockpitdockerURL + '/sendsimontabelle';
       this.CurrentSimontabellenliste  = [];
+      this.AuswahlIDliste           = [];
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'constructor', this.Debug.Typen.Service);
+    }
+  }
+  public PrepareSimontabelleEmaildata() {
+
+    try {
+
+      // "Errors during JIT compilation of template for PjProjektpunktEditorComponent: Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"    <button-value [Buttontext]=\"'Kostengruppe'\"\n                                          [Wert_A]=\"[ERROR ->]KostenService.GetKos()GetKostengruppennamen()\" (ButtonClicked)=\"KostengruppeClicked.emit()\">\n        \"): ng:///PjProjektpunktEditorComponent/template.html@94:52, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                          [Wert_A]=\"KostenService.GetKos()GetKostengruppennamen()\" (ButtonClicked)=\"[ERROR ->]KostengruppeClicked.emit()\">\n                            </button-value>\n                          </\"): ng:///PjProjektpunktEditorComponent/template.html@94:116, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n\n                  </ion-row>\n                  <ion-row [ERROR ->]*ngIf=\"DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name\">\n            \"): ng:///PjProjektpunktEditorComponent/template.html@118:27, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"ung.Name\">\n                    <ion-col size=\"6\">\n                      <button-value [Buttontext]=\"[ERROR ->]'Gebäudeteil'\"\n                                    [Wert_A]=\"DBGebaeude.GetGebaeudeteilname(DBProjekt\"): ng:///PjProjektpunktEditorComponent/template.html@120:50, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"           <button-value [Buttontext]=\"'Gebäudeteil'\"\n                                    [Wert_A]=\"[ERROR ->]DBGebaeude.GetGebaeudeteilname(DBProjekt.CurrentProjekt, DB.CurrentProjektpunkt)\" (ButtonClicked)=\"Ge\"): ng:///PjProjektpunktEditorComponent/template.html@121:46, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\"DBGebaeude.GetGebaeudeteilname(DBProjekt.CurrentProjekt, DB.CurrentProjektpunkt)\" (ButtonClicked)=\"[ERROR ->]GebaeudeteilClicked.emit()\"></button-value>\n                    </ion-col>\n                  </ion-ro\"): ng:///PjProjektpunktEditorComponent/template.html@121:145, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n                  </ion-row>\n\n                  <ion-row [ERROR ->]*ngIf=\"DB.CurrentProjektpunkt.Status !== Const.Projektpunktstatustypen.Festlegung.Name\">\n            \"): ng:///PjProjektpunktEditorComponent/template.html@125:27, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n                          </td>\n                        </tr>\n                        <tr [ERROR ->]*ngFor=\"let Firma of DBProjekt.CurrentProjekt.Firmenliste\">\n                          <td>\n          \"): ng:///PjProjektpunktEditorComponent/template.html@134:28, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\".Firmenliste\">\n                          <td>\n                            <checkbox-clon [Checked]=\"[ERROR ->]FirmaIsChecked(Firma.FirmenID)\" (CheckChanged)=\"FirmaCheckChanged($event, Firma.FirmenID)\"></checkbox\"): ng:///PjProjektpunktEditorComponent/template.html@136:54, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                          <checkbox-clon [Checked]=\"FirmaIsChecked(Firma.FirmenID)\" (CheckChanged)=\"[ERROR ->]FirmaCheckChanged($event, Firma.FirmenID)\"></checkbox-clon>\n                          </td>\n         \"): ng:///PjProjektpunktEditorComponent/template.html@136:102, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n                          </td>\n                          <td>\n                            [ERROR ->]{{Firma.Firma}}\n                          </td>\n                        </tr>\n\"): ng:///PjProjektpunktEditorComponent/template.html@139:28, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n                          </td>\n                        </tr>\n                        <tr [ERROR ->]*ngFor=\"let MitarbeiterID of DBProjekt.CurrentProjekt.MitarbeiterIDListe\">\n                          \"): ng:///PjProjektpunktEditorComponent/template.html@155:28, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"eiterIDListe\">\n                          <td>\n                            <checkbox-clon [Checked]=\"[ERROR ->]MitarbeiterIsChecked(MitarbeiterID)\" (CheckChanged)=\"MitarbeiterCheckChanged($event, MitarbeiterID)\">\"): ng:///PjProjektpunktEditorComponent/template.html@157:54, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                     <checkbox-clon [Checked]=\"MitarbeiterIsChecked(MitarbeiterID)\" (CheckChanged)=\"[ERROR ->]MitarbeiterCheckChanged($event, MitarbeiterID)\"></checkbox-clon>\n                          </td>\n    \"): ng:///PjProjektpunktEditorComponent/template.html@157:107, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n                          </td>\n                          <td>\n                            [ERROR ->]{{GetMitarbeiterName(MitarbeiterID)}}\n                          </td>\n                        </tr>\n\"): ng:///PjProjektpunktEditorComponent/template.html@160:28, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n                    <ion-col size=\"6\">\n\n                        <ion-textarea [value]=\"[ERROR ->]DB.CurrentProjektpunkt.Aufgabe\" auto-grow style=\"border: 1px solid #444444; min-height: 140px\" (ionIn\"): ng:///PjProjektpunktEditorComponent/template.html@187:47, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"entProjektpunkt.Aufgabe\" auto-grow style=\"border: 1px solid #444444; min-height: 140px\" (ionInput)=\"[ERROR ->]AufgabeTextChangedHandler($event)\"></ion-textarea>\n\n                        <!--\n\"): ng:///PjProjektpunktEditorComponent/template.html@187:154, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n                  </ion-row>\n\n                  <ion-row  [ERROR ->]*ngIf=\"DB.CurrentProjektpunkt.Status !== Const.Projektpunktstatustypen.Festlegung.Name\">\n            \"): ng:///PjProjektpunktEditorComponent/template.html@206:28, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n                        <td>\n\n                          <checkbox-clon [Checked]=\"[ERROR ->]DB.CurrentProjektpunkt.Meilenstein\" (CheckChanged)=\"MeilensteinCheckChanged($event)\"></checkbox-clon>\"): ng:///PjProjektpunktEditorComponent/template.html@211:52, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                      <checkbox-clon [Checked]=\"DB.CurrentProjektpunkt.Meilenstein\" (CheckChanged)=\"[ERROR ->]MeilensteinCheckChanged($event)\"></checkbox-clon>\n\n                        </td><td>Meilenstein</td>\n\"): ng:///PjProjektpunktEditorComponent/template.html@211:104, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n                  -->\n\n                  <ion-row  [ERROR ->]*ngIf=\"DB.CurrentProjektpunkt.Status !== Const.Projektpunktstatustypen.Festlegung.Name\">\n            \"): ng:///PjProjektpunktEditorComponent/template.html@229:28, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"nkt.Status !== Const.Projektpunktstatustypen.Festlegung.Name\">\n                    <ion-col [size]=\"[ERROR ->]Tools.GetButtonvalueSize()\">\n                      <ion-radio-group [value]=\"DB.CurrentProjektpunkt.Z\"): ng:///PjProjektpunktEditorComponent/template.html@230:37, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"      <ion-col [size]=\"Tools.GetButtonvalueSize()\">\n                      <ion-radio-group [value]=\"[ERROR ->]DB.CurrentProjektpunkt.Zeitansatzeinheit\" (ionChange)=\"ZeitansatzeinheitChanged($event)\">\n           \"): ng:///PjProjektpunktEditorComponent/template.html@231:48, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                   <ion-radio-group [value]=\"DB.CurrentProjektpunkt.Zeitansatzeinheit\" (ionChange)=\"[ERROR ->]ZeitansatzeinheitChanged($event)\">\n                        <table>\n                          <tr>\n\"): ng:///PjProjektpunktEditorComponent/template.html@231:103, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                <input-clone Titel=\"Zeitansatz\"\n                                           [Value]=\"[ERROR ->]DB.CurrentProjektpunkt.Zeitansatz.toString()\" (TextChanged)=\"ZeitansatzChangedHandler($event)\">\n     \"): ng:///PjProjektpunktEditorComponent/template.html@236:52, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                              [Value]=\"DB.CurrentProjektpunkt.Zeitansatz.toString()\" (TextChanged)=\"[ERROR ->]ZeitansatzChangedHandler($event)\">\n                              </input-clone>\n                     \"): ng:///PjProjektpunktEditorComponent/template.html@236:113, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                   <td style=\"width: 8px\"></td>\n                            <td><ion-radio [value]=\"[ERROR ->]Const.Zeitansatzeinheitvarianten.Minuten\"></ion-radio></td><td style=\"padding-left: 6px\">Minuten</td>\"): ng:///PjProjektpunktEditorComponent/template.html@240:52, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                  <td style=\"width: 30px\"></td>\n                            <td><ion-radio [value]=\"[ERROR ->]Const.Zeitansatzeinheitvarianten.Stunden\"></ion-radio></td><td style=\"padding-left: 6px\">Stunden</td>\"): ng:///PjProjektpunktEditorComponent/template.html@242:52, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                  <td style=\"width: 30px\"></td>\n                            <td><ion-radio [value]=\"[ERROR ->]Const.Zeitansatzeinheitvarianten.Tage\"></ion-radio></td><td style=\"padding-left: 6px\">Tage</td>\n     \"): ng:///PjProjektpunktEditorComponent/template.html@244:52, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n                  </ion-row>\n\n                  <ion-row [ERROR ->]*ngIf=\"DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name\">\n            \"): ng:///PjProjektpunktEditorComponent/template.html@251:27, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"nkt.Status === Const.Projektpunktstatustypen.Festlegung.Name\">\n                    <ion-col [size]=\"[ERROR ->]Tools.GetButtonvalueSize()\">\n                      <table class=\"paddingtable\">\n                     \"): ng:///PjProjektpunktEditorComponent/template.html@252:37, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"          <tr>\n                          <td>\n                            <checkbox-clon [Checked]=\"[ERROR ->]DB.CurrentProjektpunkt.OpenFestlegung\" (CheckChanged)=\"OpenFestlegungCheckChanged($event)\"></checkbox\"): ng:///PjProjektpunktEditorComponent/template.html@256:54, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                   <checkbox-clon [Checked]=\"DB.CurrentProjektpunkt.OpenFestlegung\" (CheckChanged)=\"[ERROR ->]OpenFestlegungCheckChanged($event)\"></checkbox-clon>\n                          </td><td>Festlegung of\"): ng:///PjProjektpunktEditorComponent/template.html@256:109, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n\n                <ion-grid>\n                  <ion-row [ERROR ->]*ngIf=\"DB.CurrentProjektpunkt.Status === Const.Projektpunktstatustypen.Festlegung.Name\">\n            \"): ng:///PjProjektpunktEditorComponent/template.html@268:27, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n            <ion-row>\n              <ion-col>\n                <ion-text color=\"burnicklgruen\"><b>[ERROR ->]{{DB.CurrentProjektpunkt.Anmerkungenliste.length > 1 ? 'Anmerkungen' : 'Anmerkung'}}</b></ion-text>\n \"): ng:///PjProjektpunktEditorComponent/template.html@289:51, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n\n                <table class=\"paddingsmalltable\" width=\"100%\">\n                  <tr [ERROR ->]*ngFor=\"let Eintrag of DB.CurrentProjektpunkt.Anmerkungenliste; let i = index\">\n                    <\"): ng:///PjProjektpunktEditorComponent/template.html@296:22, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"width: 120px\">\n                      <button-value-date-small\n                        [Buttontext]=\"[ERROR ->]GetAnmerkungDatumString(Eintrag.Zeitstempel)\" [Datum]=\"GetAnmerkungDatum(Eintrag)\" [ElementID]=\"'anme\"): ng:///PjProjektpunktEditorComponent/template.html@299:38, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"-small\n                        [Buttontext]=\"GetAnmerkungDatumString(Eintrag.Zeitstempel)\" [Datum]=\"[ERROR ->]GetAnmerkungDatum(Eintrag)\" [ElementID]=\"'anmerkungdatum_' + i.toString()\" (TimeChanged)=\"AnmerkungTi\"): ng:///PjProjektpunktEditorComponent/template.html@299:93, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"t]=\"GetAnmerkungDatumString(Eintrag.Zeitstempel)\" [Datum]=\"GetAnmerkungDatum(Eintrag)\" [ElementID]=\"[ERROR ->]'anmerkungdatum_' + i.toString()\" (TimeChanged)=\"AnmerkungTimeChanged($event, i)\">\n                  \"): ng:///PjProjektpunktEditorComponent/template.html@299:134, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\" [Datum]=\"GetAnmerkungDatum(Eintrag)\" [ElementID]=\"'anmerkungdatum_' + i.toString()\" (TimeChanged)=\"[ERROR ->]AnmerkungTimeChanged($event, i)\">\n                      </button-value-date-small>\n                  \"): ng:///PjProjektpunktEditorComponent/template.html@299:183, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"00px;\">\n                      <ion-button expand=\"full\" size=\"small\" color=\"burnicklbraun\" (click)=\"[ERROR ->]AnerkungVerfassernClicked.emit(Eintrag)\">{{GetAnmerkungVerfasser(Eintrag, i)}}</ion-button>\n         \"): ng:///PjProjektpunktEditorComponent/template.html@303:92, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\" expand=\"full\" size=\"small\" color=\"burnicklbraun\" (click)=\"AnerkungVerfassernClicked.emit(Eintrag)\">[ERROR ->]{{GetAnmerkungVerfasser(Eintrag, i)}}</ion-button>\n                    </td>\n                    <td \"): ng:///PjProjektpunktEditorComponent/template.html@303:133, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"</td>\n                    <td style=\"width: auto\">\n                      <ion-textarea  [autoGrow]=\"[ERROR ->]true\" style=\"border: 1px solid black; border-radius: 4px; margin: 0px\" (ionChange)=\"AnmerkungTextChan\"): ng:///PjProjektpunktEditorComponent/template.html@306:49, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"ea  [autoGrow]=\"true\" style=\"border: 1px solid black; border-radius: 4px; margin: 0px\" (ionChange)=\"[ERROR ->]AnmerkungTextChangedHandler($event, i)\" [value]=\"Eintrag.Anmerkung\"></ion-textarea>\n                 \"): ng:///PjProjektpunktEditorComponent/template.html@306:133, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"ack; border-radius: 4px; margin: 0px\" (ionChange)=\"AnmerkungTextChangedHandler($event, i)\" [value]=\"[ERROR ->]Eintrag.Anmerkung\"></ion-textarea>\n                    </td>\n                    <td style=\"width: 50\"): ng:///PjProjektpunktEditorComponent/template.html@306:182, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"extarea>\n                    </td>\n                    <td style=\"width: 50px\"><ion-button (click)=\"[ERROR ->]DeleteAnmerkungClicked(i)\" color=\"rot\" size=\"small\"><ion-icon name=\"trash\"></ion-icon></ion-button></\"): ng:///PjProjektpunktEditorComponent/template.html@308:65, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"     <td colspan=\"3\">\n                      <ion-button size=\"small\" color=\"burnicklgruen\" (click)=\"[ERROR ->]AddAnmerkungClicked()\">\n                        <ion-icon name=\"add-circle-outline\" slot=\"icon-only\">\"): ng:///PjProjektpunktEditorComponent/template.html@312:78, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n            <ion-row>\n              <ion-col>\n                <ion-text color=\"burnicklgruen\"><b>[ERROR ->]{{DB.CurrentProjektpunkt.Bilderliste.length > 1 ? 'Bilder' : 'Bild'}}</b></ion-text>\n              </\"): ng:///PjProjektpunktEditorComponent/template.html@349:51, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n              <ion-col>\n                <table>\n                  <tr [ERROR ->]*ngFor=\"let Zeilenliste of Thumbnailliste; let Zeilenindex = index\">\n                    <ng-containe\"): ng:///PjProjektpunktEditorComponent/template.html@355:22, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"For=\"let Zeilenliste of Thumbnailliste; let Zeilenindex = index\">\n                    <ng-container [ERROR ->]*ngFor=\"let Thumb of Zeilenliste; let Thumbnailindex = index\">\n                      <td style=\"curso\"): ng:///PjProjektpunktEditorComponent/template.html@356:34, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"= index\">\n                      <td style=\"cursor: pointer;\">\n                        <ng-container [ERROR ->]*ngIf=\"Thumb !== null\">\n\n                          <table *ngIf=\"Thumb.weburl !== null\">\n\"): ng:///PjProjektpunktEditorComponent/template.html@358:38, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n                        <ng-container *ngIf=\"Thumb !== null\">\n\n                          <table [ERROR ->]*ngIf=\"Thumb.weburl !== null\">\n                            <tr>\n                              <td sty\"): ng:///PjProjektpunktEditorComponent/template.html@360:33, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"  <tr>\n                              <td style=\"padding: 2px\">\n                                <img [ERROR ->]*ngIf=\"Thumb !== null\" [src]=\"Thumb.largeurl\" [style.width.px]=\"Thumbbreite\"/>\n                      \"): ng:///PjProjektpunktEditorComponent/template.html@363:37, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"       <td style=\"padding: 2px\">\n                                <img *ngIf=\"Thumb !== null\" [src]=\"[ERROR ->]Thumb.largeurl\" [style.width.px]=\"Thumbbreite\"/>\n                              </td>\n                \"): ng:///PjProjektpunktEditorComponent/template.html@363:67, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                               <img *ngIf=\"Thumb !== null\" [src]=\"Thumb.largeurl\" [style.width.px]=\"[ERROR ->]Thumbbreite\"/>\n                              </td>\n                            </tr>\n\"): ng:///PjProjektpunktEditorComponent/template.html@363:101, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"    </tr>\n                            <tr>\n                              <td style=\"font-size: 90%\">[ERROR ->]{{Thumb.filename}}</td>\n                            </tr>\n                          </table>\n\"): ng:///PjProjektpunktEditorComponent/template.html@367:57, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n                          </table>\n\n                          <table [ERROR ->]*ngIf=\"Thumb.weburl === null\">\n                            <tr>\n                              <td sty\"): ng:///PjProjektpunktEditorComponent/template.html@371:33, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"          <div style=\"border: 1px solid gray; font-size: 80%; min-height: 120px;\" [style.width.px]=\"[ERROR ->]Thumbbreite\">\n                                  <table width=\"100%\">\n                                \"): ng:///PjProjektpunktEditorComponent/template.html@374:122, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                     <td align=\"center\">\n                                        <ion-icon (click)=\"[ERROR ->]DeleteThumbnailClicked($event, Thumb, Zeilenindex, Thumbnailindex)\" name=\"trash\" color=\"rot\" slot=\"ic\"): ng:///PjProjektpunktEditorComponent/template.html@383:59, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"    <td colspan=\"30\">\n                      <ion-button size=\"small\" color=\"burnicklgruen\" (click)=\"[ERROR ->]AddBildClicked()\">\n                        <ion-icon name=\"add-circle-outline\" slot=\"icon-only\"></ion\"): ng:///PjProjektpunktEditorComponent/template.html@401:78, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n            </ion-row>\n\n            <ng-container [ERROR ->]*ngIf=\"DB.CurrentProjektpunkt.EmailID !== null && DBEmail.CurrentEmail !== null\">\n              <ion-\"): ng:///PjProjektpunktEditorComponent/template.html@410:26, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"r>\n                        <td style=\"width: 110px\"><b>Betreff</b></td>\n                        <td>[ERROR ->]{{this.DBEmail.CurrentEmail.subject}}</td>\n                      </tr>\n                      <tr>\n\"): ng:///PjProjektpunktEditorComponent/template.html@424:28, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                     <tr>\n                        <td><b>Datum</b></td>\n                        <td>[ERROR ->]{{GetMailDatum()}}</td>\n                      </tr>\n                      <tr>\n\"): ng:///PjProjektpunktEditorComponent/template.html@428:28, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                   <tr>\n                        <td><b>Uhrzeit</b></td>\n                        <td>[ERROR ->]{{GetMailUhrzeit()}}</td>\n                      </tr>\n                      <tr>\n\"): ng:///PjProjektpunktEditorComponent/template.html@432:28, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"bordertable\">\n                            <tr>\n                              <td style=\"width: 30%\">[ERROR ->]{{DBEmail.CurrentEmail.from.emailAddress.name}}</td>\n                              <td style=\"width: \"): ng:///PjProjektpunktEditorComponent/template.html@439:53, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"il.CurrentEmail.from.emailAddress.name}}</td>\n                              <td style=\"width: auto\">[ERROR ->]<{{DBEmail.CurrentEmail.from.emailAddress.address}}></td>\n                            </tr>\n         \"): ng:///PjProjektpunktEditorComponent/template.html@440:54, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                  <table style=\"width: 100%\" class=\"nobordertable\">\n                            <tr [ERROR ->]*ngFor=\"let Empfaenger of DBEmail.CurrentEmail.toRecipients\">\n                              <td style\"): ng:///PjProjektpunktEditorComponent/template.html@449:32, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"faenger of DBEmail.CurrentEmail.toRecipients\">\n                              <td style=\"width: 30%\">[ERROR ->]{{Empfaenger.emailAddress.name}}</td>\n                              <td style=\"width: auto\"><{{Empfae\"): ng:///PjProjektpunktEditorComponent/template.html@450:53, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"h: 30%\">{{Empfaenger.emailAddress.name}}</td>\n                              <td style=\"width: auto\">[ERROR ->]<{{Empfaenger.emailAddress.address}}></td>\n                            </tr>\n                        \"): ng:///PjProjektpunktEditorComponent/template.html@451:54, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"                  <table style=\"width: 100%\" class=\"nobordertable\">\n                            <tr [ERROR ->]*ngFor=\"let CcEmpfaenger of DBEmail.CurrentEmail.ccRecipients\">\n                              <td sty\"): ng:///PjProjektpunktEditorComponent/template.html@460:32, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"aenger of DBEmail.CurrentEmail.ccRecipients\">\n                              <td style=\"width: 30%;\">[ERROR ->]{{CcEmpfaenger.emailAddress.name}}</td>\n                              <td style=\"width: auto;\"><{{CcE\"): ng:///PjProjektpunktEditorComponent/template.html@461:54, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"0%;\">{{CcEmpfaenger.emailAddress.name}}</td>\n                              <td style=\"width: auto;\">[ERROR ->]<{{CcEmpfaenger.emailAddress.address}}></td>\n                            </tr>\n                      \"): ng:///PjProjektpunktEditorComponent/template.html@462:55, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"ertable\">\n                      <tr>\n                        <td class=\"nobordertable\" [innerHTML]=\"[ERROR ->]HTMLBody\"></td>\n                      </tr>\n                    </table>\n\"): ng:///PjProjektpunktEditorComponent/template.html@478:63, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n              </ion-row>\n            </ng-container>\n            <ion-row [ERROR ->]*ngIf=\"DB.CurrentProjektpunkt._id !== null\">\n              <ion-col>\n\n\"): ng:///PjProjektpunktEditorComponent/template.html@492:21, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n                <table>\n                  <tr>\n                    <td><checkbox-clon [Checked]=\"[ERROR ->]DeleteEnabled\" (CheckChanged)=\"CanDeleteCheckedChanged($event)\"></checkbox-clon></td>\n               \"): ng:///PjProjektpunktEditorComponent/template.html@497:50, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"              <tr>\n                    <td><checkbox-clon [Checked]=\"DeleteEnabled\" (CheckChanged)=\"[ERROR ->]CanDeleteCheckedChanged($event)\"></checkbox-clon></td>\n                    <td style=\"width: 6px\"></t\"): ng:///PjProjektpunktEditorComponent/template.html@497:81, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"td>\n                    <td>\n                      <ion-button size=\"small\" color=\"rot\" [disabled]=\"[ERROR ->]!DeleteEnabled\" (click)=\"DeleteButtonClicked()\">\n                        <ion-icon name=\"trash-outlin\"): ng:///PjProjektpunktEditorComponent/template.html@500:71, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"td>\n                      <ion-button size=\"small\" color=\"rot\" [disabled]=\"!DeleteEnabled\" (click)=\"[ERROR ->]DeleteButtonClicked()\">\n                        <ion-icon name=\"trash-outline\" style=\"font-size: 20px\"): ng:///PjProjektpunktEditorComponent/template.html@500:96, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n            <tr>\n              <td>\n                <div class=\"rootbuttonclass\" (click)=\"[ERROR ->]CancelButtonClicked()\">\n                  <ion-icon style=\"font-size: 28px\" color=\"weiss\" name=\"close\"): ng:///PjProjektpunktEditorComponent/template.html@519:54, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\"\n              <td>\n\n                <div class=\"rootbuttonclass\" (click)=\"[ERROR ->]Valid === true ? OkButtonClicked() : null\">\n                  <ion-icon style=\"font-size: 28px\" [colo\"): ng:///PjProjektpunktEditorComponent/template.html@525:54, Parser Error: Unexpected token 'GetKostengruppennamen' at column 23 in [KostenService.GetKos()GetKostengruppennamen()] in ng:///PjProjektpunktEditorComponent/template.html@94:52 (\" === true ? OkButtonClicked() : null\">\n                  <ion-icon style=\"font-size: 28px\" [color]=\"[ERROR ->]Valid === true ? 'weiss' : 'grau'\" name=\"save-outline\"></ion-icon>\n                </div>\n           \"): ng:///PjProjektpunktEditorComponent/template.html@526:61"
+
+      let Beteiligter: Projektbeteiligtestruktur;
+      let Mitarbeiter: Mitarbeiterstruktur;
+      let Name: string;
+      let Firma: Projektfirmenstruktur;
+      let CcEmpfaengerliste: {
+        Name:  string;
+        Firma: string;
+        Email: string;
+      }[];
+      let Empfaengerliste: {
+        Name:  string;
+        Firma: string;
+        Email: string;
+      }[];
+
+
+
+      // Empfaenger bestimmen
+
+      Empfaengerliste   = [];
+      CcEmpfaengerliste = [];
+
+
+      // Mitarbeiter zu Cc Liste hinzufügen
+
+      for(let InternEmpfaengerID of this.CurrentRechnung.EmpfaengerInternIDListe) {
+
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: InternEmpfaengerID});
+
+        if(!lodash.isUndefined(Mitarbeiter)) Empfaengerliste.push({
+
+          Name: Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name,
+          Email: Mitarbeiter.Email,
+          Firma: 'BAE'
+        });
+      }
+
+      this.CurrentRechnung.Empfaengerliste = Empfaengerliste;
+
+      debugger;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Simontabelle ', 'PrepareSimontabelleEmaildata', this.Debug.Typen.Service);
     }
   }
 
@@ -118,6 +191,10 @@ export class DatabaseSimontabelleService {
 
             Nettokostensumme:  Tabelle.Kosten,
             Bruttokostensumme: Tabelle.Kosten * (1 + this.Steuersatz / 100),
+
+
+            Nettoumbauzuschlag:   Tabelle.Nettoumbauzuschlag,
+            Bruttoumbauzuschlag:   Tabelle.Bruttoumbauzuschlag,
 
             Nettohonorar:         Tabelle.Honorar,
             Bruttohonorar:        Tabelle.Honorar * (1 + this.Steuersatz / 100),
@@ -230,29 +307,26 @@ export class DatabaseSimontabelleService {
             else Nummer = 1;
 
             Rechnung = {
+              Betreff: "",
+              CcEmpfaengerExternIDListe: [],
+              CcEmpfaengerInternIDListe: [],
+              EmpfaengerExternIDListe: [],
+              EmpfaengerInternIDListe: [],
+              FileID:  this.Const.NONE,
+              Filename: this.Const.NONE,
+              GesendetZeitstempel: null,
+              GesendetZeitstring: this.Const.NONE,
+              Nachricht: this.Const.NONE,
 
               RechnungID:  RechnungID,
               Nummer:      Nummer,
               Zeitstempel: Heute.valueOf(),
               CanDelete:   false,
-              BeteiligExternIDListe: [],
-              BeteiligtInternIDListe: [],
-              Betreff: "",
-              CcEmpfaengerExternIDListe: [],
-              CcEmpfaengerInternIDListe: [],
-              DownloadURL: "",
-              EmpfaengerExternIDListe: [],
-              EmpfaengerInternIDListe: [],
-              FileID:   "",
-              Filename: "",
-              GesendetZeitstempel: 0,
-              GesendetZeitstring: "",
-              Nachricht: "",
               Verfasser: {
                 Name:    this.Pool.Mitarbeiterdaten.Name,
                 Vorname: this.Pool.Mitarbeiterdaten.Vorname,
                 Email:   this.Pool.Mitarbeiterdaten.Email
-              },
+              }
             };
 
             for(let Eintrag of Tabelle.Eintraegeliste) {
@@ -331,13 +405,11 @@ export class DatabaseSimontabelleService {
 
         Rechnungseintrag.Nettohonorar        = (this.CurrentSimontabelle.Nettozwischensumme * Rechnungseintrag.Honoraranteil) / 100;
         Rechnungseintrag.Nettoumbauzuschlag  = (this.CurrentSimontabelle.Honorar * this.CurrentSimontabelle.Umbauzuschlag) / 100;
-        Rechnungseintrag.Bruttoumbauzuschlag = (Rechnungseintrag.Nettoumbauzuschlag * this.Steuersatz) / 100;
+        Rechnungseintrag.Bruttoumbauzuschlag = Rechnungseintrag.Nettoumbauzuschlag * (1 + this.Steuersatz / 100);
+        Rechnungseintrag.Nettozwischensumme  = Rechnungseintrag.Nettohonorar + Rechnungseintrag.Nettoumbauzuschlag + Rechnungseintrag.Nettonebenkosten;
         Rechnungseintrag.Nettonebenkosten    = (Rechnungseintrag.Nettohonorar * this.CurrentSimontabelle.Nebenkosten) / 100;
-        Rechnungseintrag.Nettogesamthonorar  = Rechnungseintrag.Nettohonorar + Rechnungseintrag.Nettonebenkosten;
         Rechnungseintrag.Mehrwertsteuer      = (Rechnungseintrag.Nettogesamthonorar * this.Steuersatz) / 100;
         Rechnungseintrag.Bruttogesamthonorar = Rechnungseintrag.Nettogesamthonorar + Rechnungseintrag.Mehrwertsteuer;
-
-
       }
       else {
 
@@ -811,6 +883,91 @@ export class DatabaseSimontabelleService {
     }
   }
 
+  public SaveSimontabelleInSites(
+
+    filename: string,
+    projekt: Projektestruktur,
+    simontabellen: Simontabellestruktur[],
+    standort: Standortestruktur,
+    mitarbeiter: Mitarbeiterstruktur, showmailinformations: boolean): Promise<Simontabellestruktur[]> {
+
+    try {
+
+      let Observer: Observable<any>;
+      let Teamsfile: Teamsfilesstruktur;
+
+      let Daten: {
+
+        DirectoryID: string;
+        Filename:    string;
+        Projekt:     Projektestruktur;
+        Simontabellen:    Simontabellestruktur[];
+        CurrentRechnung:  Rechnungstruktur;
+        LastRechnung:     Rechnungstruktur;
+        Mitarbeiter: Mitarbeiterstruktur;
+        Standort:    Standortestruktur;
+        ShowMailinformations: boolean;
+      } = {
+
+        DirectoryID:    this.DBProjekte.CurrentProjekt.BaustellenLOPFolderID,
+        Filename:       filename,
+        Projekt:        this.DBProjekte.CurrentProjekt,
+        Simontabellen:  simontabellen,
+        CurrentRechnung: this.CurrentRechnung,
+        LastRechnung:    this.LastRechnung,
+        Mitarbeiter:     mitarbeiter,
+        Standort:        standort,
+        ShowMailinformations: showmailinformations
+      };
+
+      // Simontabelle auf Server speichern
+
+      debugger;
+
+      return new Promise((resolve, reject) => {
+
+        // PUT für update -> Datei neu erstellen oder überschreiben
+
+        Observer = this.http.put(this.ServerSaveSimontabelleToSitesUrl, Daten);
+
+        Observer.subscribe({
+
+          next: (ne) => {
+
+            Teamsfile = ne;
+          },
+          complete: () => {
+
+            for(let Tabelle of simontabellen) {
+
+              for(let Rechnung of Tabelle.Rechnungen) {
+
+                if(Rechnung.RechnungID === this.CurrentRechnung.RechnungID) {
+
+                  Rechnung.FileID              = Teamsfile.id;
+                  Rechnung.GesendetZeitstempel = Teamsfile.GesendetZeitstempel;
+                  Rechnung.GesendetZeitstring  = Teamsfile.GesendetZeitstring;
+                }
+              }
+            }
+
+            resolve(simontabellen);
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Simontabelle', 'SaveSimontabelleInSites', this.Debug.Typen.Service);
+    }
+  }
+
   public InitSimontabelledata(Simontabelle: Simontabellestruktur): Simontabellestruktur {
 
     try {
@@ -876,6 +1033,86 @@ export class DatabaseSimontabelleService {
 
     return this.Const.Anlagengruppen['Anlagengruppe_' + Nummer.toString()];
   }
+
+
+
+  public async SendSimontabelleFromSite(): Promise<any> {
+
+    try {
+
+      let token = await this.AuthService.RequestToken('Mail.Send');
+
+      let Observer: Observable<any>;
+      let Merker: Teamsfilesstruktur;
+      let Daten: {
+
+        Betreff:     string;
+        Nachricht:   string;
+        FileID:      string;
+        Filename:    string;
+        DirectoryID: string;
+        UserID:      string;
+        Token:       string;
+        Empfaengerliste: any[];
+      };
+
+      if(this.Basics.DebugNoExternalEmail) {
+
+        this.CurrentRechnung.Empfaengerliste = lodash.filter(this.CurrentRechnung.Empfaengerliste, { Email : 'p.hornburger@gmail.com' });
+
+        if(this.CurrentRechnung.Empfaengerliste.length === 0) {
+
+          this.CurrentRechnung.Empfaengerliste.push({
+            Email: 'p.hornburger@gmail.com',
+            Name:  'Peter Hornburger',
+            Firma: 'BAE'
+          });
+        }
+      }
+
+      Daten = {
+
+        Betreff:     this.CurrentRechnung.Betreff,
+        Nachricht:   this.CurrentRechnung.Nachricht,
+        DirectoryID: this.DBProjekte.CurrentProjekt.BautagebuchFolderID,
+        UserID:      this.GraphService.Graphuser.id,
+        FileID:      this.CurrentRechnung.FileID,
+        Filename:    this.CurrentRechnung.Filename,
+        Token:       token,
+        Empfaengerliste: this.CurrentRechnung.Empfaengerliste,
+      };
+
+      return new Promise((resolve, reject) => {
+
+        // PUT für update
+
+        Observer = this.http.put(this.ServerSendSimontabelleToSitesUrl, Daten);
+
+        Observer.subscribe({
+
+          next: (ne) => {
+
+            Merker = ne;
+
+          },
+          complete: () => {
+
+            resolve(true);
+          },
+          error: (error: HttpErrorResponse) => {
+
+            debugger;
+
+            reject(error);
+          }
+        });
+      });
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Simontabelle', 'SendBautagebuchFromSite', this.Debug.Typen.Service);
+    }
+  }
+
 
   public UpdateSimontabelle(simontabelle: Simontabellestruktur): Promise<Simontabellestruktur> {
 
@@ -968,12 +1205,12 @@ export class DatabaseSimontabelleService {
   }
 
 
-  private  DeleteSimontabelle(simontabelle: Simontabellestruktur): Promise<any> {
+  public DeleteSimontabelle(simontabelle: Simontabellestruktur): Promise<any> {
 
     try {
 
       let Observer: Observable<any>;
-      let Merker: Simontabellestruktur;
+      let Tabellemerker: Simontabellestruktur;
 
       delete simontabelle.__v;
 
@@ -987,10 +1224,15 @@ export class DatabaseSimontabelleService {
 
           next: (ne) => {
 
-            Merker = ne.Simontabelle;
+            Tabellemerker = ne.Simontabelle;
 
           },
           complete: () => {
+
+            this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey] = lodash.filter( this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey], (tabelle: Simontabellestruktur) => {
+
+              return tabelle._id !== Tabellemerker._id;
+            });
 
             resove(true);
 
