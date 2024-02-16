@@ -134,16 +134,11 @@
 
               </td>
             </tr>
+          <ng-container *ngIf="DB.CurrentPunkteliste[LOP._id]">
             <tr>
-              <td colspan="">Punkteanzahl: {{DB.CurrentPunkteliste[LOP._id].length}}</td>
+              <td colspan="20">Punkteanzahl: {{DB.CurrentPunkteliste[LOP._id].length}}</td>
             </tr>
             <tr style="cursor: pointer" *ngFor="let Punkt of DB.CurrentPunkteliste[LOP._id]; let Punktindex = index">
-
-              <!--
-              <td style="width: 34px; font-size: 160%; font-weight: bold" [style.color]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun">
-                <span *ngIf="CurrentLOPListeID === LOP._id && CurrentPunktID === Punkt._id">&rarr;</span>
-              </td>
-              -->
 
               <td style="width: 30px; text-align: center; color: white;"
                   [style.border.color]="o === true ? Basics.Farben.Burnicklgruen : Basics.Farben.Burnicklbraun"
@@ -315,10 +310,16 @@
               <td style="width: 120px; text-align: center;"></td>
             </tr>
 
-
-
-
-
+          </ng-container>
+          <ng-container *ngIf="!DB.CurrentPunkteliste[LOP._id]">
+            <br>
+            <br>
+            Punkteliste Länge: {{DB.CurrentPunkteliste.length}}
+            <br>
+            LOP Liste ID: {{LOP._id}}
+            <br>
+            <br>
+          </ng-container>
         </ng-container>
 
         <ng-container *ngIf="BigThumbnailliste.length > 0">
@@ -335,10 +336,6 @@
 
         </ng-container>
 
-          <!--
-          <tr style="cursor: pointer" *ngFor="let Punkt of DB.CurrentPunkteliste[LOP._id]; let Punktindex = index">
-
-          -->
         </table>
       </div>
 

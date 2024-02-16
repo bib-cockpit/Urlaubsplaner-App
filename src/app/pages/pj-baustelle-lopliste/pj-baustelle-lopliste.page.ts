@@ -141,7 +141,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.StrukturDialogbreite     = 1260;
       this.StrukturDialoghoehe      = 800;
       this.ShowRaumauswahl          = false;
-      /// this.DB.CurrentPunkteliste              = [];
       this.LOPListepunkteSubscription = null;
       this.CurrentLOPListeID        = null;
       this.CurrentPunktID           = null;
