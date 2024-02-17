@@ -872,6 +872,8 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
     try {
 
+      this.GraphService.FilebrowserModus = this.GraphService.FilebrowserModusvarianten.Current_Projekt;
+
       this.ShowProjektfilesEvent.emit();
 
     } catch (error) {

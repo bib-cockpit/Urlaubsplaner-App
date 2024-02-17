@@ -56,6 +56,12 @@ export class Graphservice {
   public KalenderKW: number;
   public Outlookpresetcolors:Outlookpresetcolorsstruktur[];
   private BAESiteID: string;
+  public FilebrowserModus: string;
+  public FilebrowserModusvarianten = {
+
+    Alle_Projekte:   'Alle_Projekte',
+    Current_Projekt: 'Current_Projekt'
+  };
 
 
   constructor(
@@ -83,6 +89,7 @@ export class Graphservice {
       this.CurrentTeamsID        = 'ea457111-b3f1-4c73-a8ae-cb1cbaf6d244'; // Köferinger Straße 20
       this.CurrentPDFDownload    = null;
       this.Outlookkontakteliste  = [];
+      this.FilebrowserModus      = this.FilebrowserModusvarianten.Alle_Projekte;
       this.KalenderKW            = moment().locale('de').isoWeek();
       this.Outlookpresetcolors   = [
 

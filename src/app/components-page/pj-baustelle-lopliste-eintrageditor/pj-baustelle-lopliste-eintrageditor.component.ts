@@ -505,7 +505,7 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
 
         this.ResetEditor();
 
-        // this.ModalKeeper.DialogVisibleChange.emit(false);
+        this.OkClickedEvent.emit();
       });
 
     } catch (error) {
@@ -622,11 +622,12 @@ export class PjBaustelleLoplisteEintrageditorComponent implements OnInit, OnDest
 
     try {
 
-      this.DB.CurrentProjektpunkt.Aufgabe = event.detail.value;
+      if(!lodash.isUndefined(event.detail)) {
 
-      this.ValidateInput();
+        this.DB.CurrentProjektpunkt.Aufgabe = event.detail.value;
 
-
+        this.ValidateInput();
+      }
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'LOP Liste Eintrageditor', 'AufgabeTextChangedHandler', this.Debug.Typen.Component);

@@ -339,17 +339,17 @@
         </table>
       </div>
 
+    <div *ngIf="LOPListen.length === 0"  class="keineintragclass" style="padding-top: 10px;">
+      <table   width="100%" class="docinnertable">
+        <tr>
+          <td style="text-align: center; height: 100px">Keine LOP Liste vorhanden</td>
+        </tr>
+      </table>
+    </div>
+
     <abstand-element-fixed></abstand-element-fixed>
 
 
-      <div *ngIf="LOPListen.length === 0"  class="keineintragclass">
-        <table   width="100%" class="docinnertable">
-          <tr>
-            <td></td>
-            <td style="text-align: center; height: 100px">Keine LOP Liste vorhanden</td>
-          </tr>
-        </table>
-      </div>
 
     </div>
 

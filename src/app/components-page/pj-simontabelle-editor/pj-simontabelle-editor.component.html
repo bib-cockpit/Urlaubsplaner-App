@@ -347,7 +347,6 @@
               <tr>
                 <td style="font-weight: bold">Nummer</td>
                 <td style="font-weight: bold">Titel</td>
-                <td style="font-weight: bold; width: 500px">Beschreibung</td>
                 <td style="font-weight: bold;">Honorar</td>
               </tr>
               <tr *ngFor="let Leistung of this.DB.CurrentSimontabelle.Besondereleistungenliste">
@@ -357,7 +356,6 @@
                     {{Leistung.Titel}}
                   </div>
                 </td>
-                <td>{{Leistung.Beschreibung}}</td>
                 <td style="text-align: right;">{{Leistung.Honorar}} €</td>
               </tr>
               <tr>

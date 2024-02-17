@@ -90,7 +90,8 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     Protokolle:        'Protokolle',
     Bautagebuch:       'Bautagebuch',
     BaustelleLOPListe: 'BaustelleLOPListe',
-    Projekt:           'Projekt'
+    Projekt:           'Projekt',
+    Rechnungen:        'Rechnungen'
   };
   public Multiselect: boolean;
   public ShowFirmeneditor: boolean;
@@ -1230,6 +1231,14 @@ export class PjProjektListePage implements OnInit, OnDestroy {
             this.DB.CurrentProjekt.ProjektFolderID = dir.id;
 
             break;
+
+          case this.FolderauswahlVarianten.Rechnungen:
+
+            this.DB.CurrentProjekt.RechnungListefolderID = dir.id;
+
+            debugger;
+
+            break;
         }
       }
 
@@ -1358,6 +1367,20 @@ export class PjProjektListePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'BeteiligteFirmaClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  SelectRechnungfolderHandler() {
+
+    try {
+
+      this.FolderauswahlUrsprung = this.FolderauswahlVarianten.Rechnungen;
+      this.Folderauswahltitel    = 'Verzeichnis für Rechnungen festlegen';
+      this.ShowFolderAuswahl     = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Liste', 'SelectRechnungfolderHandler', this.Debug.Typen.Page);
     }
   }
 }

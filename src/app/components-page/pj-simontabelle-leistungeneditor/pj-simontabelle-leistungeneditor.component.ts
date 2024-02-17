@@ -80,8 +80,7 @@ export class PjSimontabelleLeistungeneditorComponent implements OnInit, OnDestro
       this.JoiShema = Joi.object({
 
         Nummer:       Joi.string().required().min(1).max(5),
-        Titel:        Joi.string().required().min(10).max(200),
-        Beschreibung: Joi.string().required().min(10).max(600),
+        Titel:        Joi.string().required().min(3).max(200),
 
       }).options({ stripUnknown: true });
 

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MenueService} from "../../services/menue/menue.service";
 import {DebugProvider} from "../../services/debug/debug";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
@@ -12,13 +12,14 @@ import {ConstProvider} from "../../services/const/const";
 import {BasicsProvider} from "../../services/basics/basics";
 import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
 import {EventObj} from "@tinymce/tinymce-angular/editor/Events";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'common-einstellungen-page',
   templateUrl: 'common-einstellungen.page.html',
   styleUrls: ['common-einstellungen.page.scss'],
 })
-export class CommonEinstellungenPage implements OnInit {
+export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
   public Auswahlliste: Auswahldialogstruktur[];
   public Auswahlindex: number;
@@ -26,6 +27,8 @@ export class CommonEinstellungenPage implements OnInit {
   public ShowAuswahl: boolean;
   private Auswahldialogorigin: string;
   public Editorconfig: any;
+  public Signatur: string;
+  private Mitarbeitersubscription: Subscription;
 
   constructor(public MitarbeitersettingsDB: DatabaseMitarbeitersettingsService,
               public ProjekteDB: DatabaseProjekteService,
@@ -40,7 +43,9 @@ export class CommonEinstellungenPage implements OnInit {
       this.Auswahlindex             = 0;
       this.Auswahltitel             = '';
       this.ShowAuswahl              = false;
+      this.Signatur                 = this.Const.NONE;
       this.Auswahldialogorigin      = this.Const.NONE;
+      this.Mitarbeitersubscription  = null;
 
       this.Editorconfig = {
 
@@ -51,8 +56,8 @@ export class CommonEinstellungenPage implements OnInit {
         height: 800,
         auto_focus : true,
         content_style: 'body { color: black; margin: 0; line-height: 0.9; }, ',
-        // base_url: 'assets/tinymce', // Root for resources
-        // suffix: '.min',        // Suffix to use when loading resources
+        base_url: 'assets/tinymce', // Root for resources
+        suffix: '.min',        // Suffix to use when loading resources
         toolbar: [
           { name: 'styles',      items: [ 'forecolor', 'backcolor' ] }, // , 'fontfamily', 'fontsize'
           { name: 'formatting',  items: [ 'bold', 'italic', 'underline', 'strikethrough' ] },
@@ -68,8 +73,34 @@ export class CommonEinstellungenPage implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+
+    try {
+
+      this.Mitarbeitersubscription.unsubscribe();
+      this.Mitarbeitersubscription = null;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Einstellungen', 'OnDestroy', this.Debug.Typen.Page);
+    }
+  }
+
   ngOnInit(): void {
 
+    try {
+
+      this.Mitarbeitersubscription = this.Pool.LoadingAllDataFinished.subscribe(() => {
+
+        this.PrepareData();
+      });
+
+      this.PrepareData();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Einstellungen', 'OnInit', this.Debug.Typen.Page);
+    }
 
   }
 
@@ -274,7 +305,7 @@ export class CommonEinstellungenPage implements OnInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Settings', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Einstellungen', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -302,7 +333,7 @@ export class CommonEinstellungenPage implements OnInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Settings', 'MeilensteineNachlaufClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Einstellungen', 'MeilensteineNachlaufClicked', this.Debug.Typen.Page);
     }
 
   }
@@ -332,7 +363,7 @@ export class CommonEinstellungenPage implements OnInit {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Settings', 'ZoomfaktorClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Einstellungen', 'ZoomfaktorClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -360,7 +391,35 @@ export class CommonEinstellungenPage implements OnInit {
 
   } catch (error) {
 
-    this.Debug.ShowErrorMessage(error, 'Mitarbeiter Settings', 'ZoomfaktorClicked', this.Debug.Typen.Page);
+    this.Debug.ShowErrorMessage(error, 'Einstellungen', 'ZoomfaktorClicked', this.Debug.Typen.Page);
 
+  }
+
+  private replaceAll(text, search, replace) {
+    return text.split(search).join(replace);
+  }
+
+
+  private PrepareData() {
+
+    try {
+
+      this.Signatur = this.Pool.Signatur;
+
+      this.Signatur = this.Signatur.replace('[Image]', 'assets/images/group_logo.png');
+
+      debugger;
+
+      if(this.Pool.Mitarbeiterdaten !== null) {
+
+        this.Signatur = this.Signatur.replace('[Name]', this.Pool.Mitarbeiterdaten.Vorname + ' ' + this.Pool.Mitarbeiterdaten.Name);
+        this.Signatur = this.replaceAll(this.Signatur, '[Email]', this.Pool.Mitarbeiterdaten.Email);
+
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Einstellungen', 'PrepareData', this.Debug.Typen.Page);
+    }
   }
 }

@@ -788,7 +788,7 @@ export class PjEmailSendComponent implements OnInit, OnDestroy, AfterViewInit {
         case this.Pool.Emailcontentvarinaten.Simontabelle:
 
           Filename    = this.DBSimontabelle.CurrentRechnung.Filename;
-          DirectoryID = this.DBProjekte.CurrentProjekt.ProtokolleFolderID;
+          DirectoryID = this.DBProjekte.CurrentProjekt.RechnungListefolderID;
 
           break;
       }

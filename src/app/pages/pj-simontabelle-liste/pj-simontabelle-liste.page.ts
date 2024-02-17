@@ -148,8 +148,6 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
       this.DB.CurrentRechnung       = lodash.cloneDeep(Rechnung);
       this.DB.CurrentRechnungsindex = lodash.findIndex(this.DB.CurrentSimontabelle.Rechnungen, {RechnungID: this.DB.CurrentRechnung.RechnungID});
 
-      debugger;
-
       if(this.DB.CurrentRechnungsindex !== -1 && this.DB.CurrentRechnungsindex >= 1) {
 
         this.DB.LastRechnungsindex = this.DB.CurrentRechnungsindex - 1;
@@ -165,7 +163,7 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
       this.EmailDialogbreite   = 1100;
       this.EmailDialoghoehe    = this.Basics.InnerContenthoehe - 200;
 
-      Filename   = moment(Rechnung.Zeitstempel).format('YYMMDD_') + this.Tools.GenerateFilename('_AZ', 'pdf', Rechnung.Nummer.toString());
+      Filename   = moment(Rechnung.Zeitstempel).format('YYMMDD_') + this.Tools.GenerateFilename('AZ', 'pdf', Rechnung.Nummer.toString());
       Betreff    = Rechnung.Nummer + '. Abschlagsrechnung vom ' + moment(Rechnung.Zeitstempel).format('DD.MM.YYYY');
       Nachricht  = 'Sehr geehrte Damen und Herren,\n\n';
       Nachricht += 'anbei übersende ich Ihnen die ' + Rechnung.Nummer + '. Abschlagsrechnung vom ' + moment(Rechnung.Zeitstempel).format('DD.MM.YYYY') + '.';
@@ -442,8 +440,6 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
 
       this.DB.CurrentSimontabellenliste = lodash.filter(this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey], { Leistungsphase: this.DB.CurrentLeistungsphase});
 
-      debugger;
-
       for(this.DB.CurrentSimontabelle of this.DB.CurrentSimontabellenliste) {
 
         for(let Tabelleneintrag of this.DB.CurrentSimontabelle.Eintraegeliste) {
@@ -639,8 +635,6 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
 
     try {
 
-      debugger;
-
       await this.DB.DeleteSimontabelle(this.DB.CurrentSimontabelle);
 
       this.ShowEditor = false;
@@ -653,7 +647,6 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'DeleteTabelleClickedEventHandler', this.Debug.Typen.Page);
     }
   }
-
 
   async ShowPdfButtonClicked(event: MouseEvent, Tabelle: Simontabellestruktur, Rechnung: Rechnungstruktur) {
 
