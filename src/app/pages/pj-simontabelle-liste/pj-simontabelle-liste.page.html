@@ -11,7 +11,7 @@
 
   <div *ngIf="DBProjekte.CurrentProjekt !== null" style="padding: 4px; width: 100%">
 
-    <ion-radio-group [value]="DB.CurrentLeistungsphase" (ionChange)="LeistungsphaseChangedHandler($event)">
+    <ion-radio-group [value]="DB.CurrentLeistungsphase" (ionChange)="ListeLeistungsphaseChangedHandler($event)">
 
       <table *ngIf="DB.Leistungsphasenliste.length > 0" class="docinnertable" width="100%">
         <tr>
@@ -20,10 +20,10 @@
           <!--
           <td style="width: 160px;"><b>Anrechenbare Kosten</b></td>
           -->
-          <td style="width: 240px;"><b>Honorar</b></td>
+          <td style="width: 240px;"><b>Basishonorar</b></td>
           <td style="width: 200px;"><b>Umbauzuschlag</b></td>
           <td style="width: 500px;"><b>Besondere Leistung</b></td>
-          <td style="width: 240px;"><b>Zwischensumme</b></td>
+          <td style="width: 240px;"><b>Grundhonorar</b></td>
           <td style="width: 200px;"><b>Nebenkosten</b></td>
           <td style="width: 240px;"><b>Gesamthonorar</b></td>
           <td style="width: auto"></td>
@@ -32,22 +32,25 @@
         <ng-container *ngFor="let Leistungsphase of DB.Leistungsphasenliste; let phasenindex = index">
           <tr>
             <td colspan="9" style="padding: 0px; !important;">
-              <div class="anlagengruppeheader">
+              <div class="leistungsphaseheader" (click)="ListeLeistungsphaseClickedHandler(Leistungsphase)">
                 <table  class="nobordertable">
                   <tr>
-                    <td><ion-radio [value]="Leistungsphase" [color]="'weiss'"></ion-radio></td>
+                    <td><ion-radio [value]="Leistungsphase" [color]="'weiss'" style="--color: white;"></ion-radio></td>
                     <td>{{Leistungsphase}}</td>
                   </tr>
                 </table>
               </div>
             </td>
           </tr>
+
+        <ng-container *ngIf="DB.DisplayLeistungsphaseliste[phasenindex] === true">
+
           <tr>
             <td colspan="9">
               <ion-text color="baeblau" style="font-size: 120%"><b>Honorarübersicht</b></ion-text>
             </td>
           </tr>
-          <ng-container *ngFor="let Tabelle of DB.CurrentSimontabellenliste; let i = index">
+          <ng-container *ngFor="let Tabelle of DB.CurrentSimontabellenliste[Leistungsphase]; let i = index">
             <tr>
               <td></td>
               <td>
@@ -60,10 +63,10 @@
                 <table class="nobordersmalltable" style="width: 100%">
                   <tr>
                     <td style="text-align: right; width: 50%">
-                      {{Tools.FormatCurrency(Tabelle.Honorar)}}
+                      {{Tools.FormatCurrency(Tabelle.Nettobasishonorar)}}
                     </td>
                     <td style="text-align: right; color: green; width: 50%">
-                      {{Tools.FormatCurrency(Tabelle.Honorar * (1 + DB.Steuersatz / 100))}}
+                      {{Tools.FormatCurrency(DB.AddMehrwertsteuer(Tabelle.Nettobasishonorar))}}
                     </td>
                   </tr>
                 </table>
@@ -78,7 +81,7 @@
                       {{Tools.FormatCurrency(Tabelle.Nettoumbauzuschlag)}}
                     </td>
                     <td style="text-align: right; color: green; width: 50%">
-                      {{Tools.FormatCurrency(Tabelle.Bruttoumbauzuschlag)}}
+                      {{Tools.FormatCurrency(DB.AddMehrwertsteuer(Tabelle.Nettoumbauzuschlag))}}
                     </td>
                   </tr>
                 </table>
@@ -97,7 +100,7 @@
                         {{Tools.FormatCurrency(Leistung.Honorar)}}
                       </td>
                       <td style="text-align:right; width: 120px; color: green;">
-                        {{Tools.FormatCurrency(Leistung.Honorar * (1 + DB.Steuersatz / 100))}}
+                        {{Tools.FormatCurrency(DB.AddMehrwertsteuer(Leistung.Honorar))}}
                       </td>
                     </tr>
                   </table>
@@ -129,7 +132,7 @@
                       {{Tools.FormatCurrency(Tabelle.Nettonebenkosten)}}
                     </td>
                     <td style="text-align:right; width: 120px; color: green;">
-                      {{Tools.FormatCurrency(Tabelle.Bruttonebenkosten)}}
+                      {{Tools.FormatCurrency(DB.AddMehrwertsteuer(Tabelle.Nettonebenkosten))}}
                     </td>
                   </tr>
                 </table>
@@ -145,7 +148,7 @@
                       {{Tools.FormatCurrency(Tabelle.Nettogesamthonorar)}}
                     </td>
                     <td style="text-align:right; width: 120px; color: green;">
-                      {{Tools.FormatCurrency(Tabelle.Bruttogesamthonorar)}}
+                      {{Tools.FormatCurrency(DB.AddMehrwertsteuer(Tabelle.Nettogesamthonorar))}}
                     </td>
                   </tr>
                 </table>
@@ -154,8 +157,21 @@
               </td>
               <td style="width: auto;"></td>
             </tr>
+            <!--
+            <tr>
+              <td colspan="100">
+                Leistungsphasenanzahl: {{DB.Leistungsphasenanzahlliste[Leistungsphase]}}<br>
+                Leistungsphase: {{Leistungsphase}}
+                Zeiger i: {{i}}
+              </td>
+            </tr>
+            -->
 
-            <ng-container *ngIf="DB.Summenliste[Leistungsphase][phasenindex] && Tabelle.Leistungsphase === Leistungsphase && DB.Leistungsphasenanzahlliste[Leistungsphase] === i">
+            <!--
+            [phasenindex]
+            --->
+
+            <ng-container *ngIf="DB.Summenliste[Leistungsphase] && Tabelle.Leistungsphase === Leistungsphase && DB.Leistungsphasenanzahlliste[Leistungsphase] === (i + 1)">
               <tr style="background: #D7DBDD">
                 <td style="text-align: left; font-weight: bold;" colspan="2">
                   Summen
@@ -165,10 +181,10 @@
                   <table class="nobordersmalltable" style="width: 100%">
                     <tr>
                       <td style="text-align: right; width: 50%">
-                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase][phasenindex].Nettohonorar)}}
+                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase].Nettobasishonorar)}}
                       </td>
                       <td style="text-align: right; color: green; width: 50%">
-                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase][phasenindex].Bruttohonorar)}}
+                        {{Tools.FormatCurrency(DB.AddMehrwertsteuer(DB.Summenliste[Leistungsphase].Nettobasishonorar))}}
                       </td>
                     </tr>
                   </table>
@@ -180,10 +196,10 @@
                   <table class="nobordersmalltable" style="width: 100%">
                     <tr>
                       <td style="text-align: right; width: 50%">
-                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase][phasenindex].Nettoumbauzuschlag)}}
+                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase].Nettoumbauzuschlag)}}
                       </td>
                       <td style="text-align: right; color: green; width: 50%">
-                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase][phasenindex].Bruttoumbauzuschlag)}}
+                        {{Tools.FormatCurrency(DB.AddMehrwertsteuer(DB.Summenliste[Leistungsphase].Nettoumbauzuschlag))}}
                       </td>
                     </tr>
                   </table>
@@ -199,10 +215,10 @@
                       <tr>
                         <td style="width: auto; text-align: left"></td>
                         <td style="text-align:right; width: 120px;">
-                          {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase][phasenindex].Nettoleistungssumme)}}
+                          {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase].Nettoleistungssumme)}}
                         </td>
                         <td style="text-align:right; width: 120px; color: green;">
-                          {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase][phasenindex].Bruttoleistungssumme)}}
+                          {{Tools.FormatCurrency(DB.AddMehrwertsteuer(DB.Summenliste[Leistungsphase].Nettoleistungssumme))}}
                         </td>
                       </tr>
                     </table>
@@ -214,10 +230,10 @@
                     <tr>
                       <td style="width: auto; text-align: left"></td>
                       <td style="text-align:right; width: 120px;">
-                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase][phasenindex].Nettozwischensumme)}}
+                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase].Nettogrundhonorar)}}
                       </td>
                       <td style="text-align:right; width: 120px; color: green;">
-                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase][phasenindex].Bruttozwischensumme)}}
+                        {{Tools.FormatCurrency(DB.AddMehrwertsteuer(DB.Summenliste[Leistungsphase].Nettogrundhonorar))}}
                       </td>
                     </tr>
                   </table>
@@ -229,10 +245,10 @@
                     <tr>
                       <td style="width: auto; text-align: left"></td>
                       <td style="text-align:right; width: 120px;">
-                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase][phasenindex].Nettonebenkosten)}}
+                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase].Nettonebenkosten)}}
                       </td>
                       <td style="text-align:right; width: 120px; color: green;">
-                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase][phasenindex].Bruttonebenkosten)}}
+                        {{Tools.FormatCurrency(DB.AddMehrwertsteuer(DB.Summenliste[Leistungsphase].Nettonebenkosten))}}
                       </td>
                     </tr>
                   </table>
@@ -244,10 +260,10 @@
                     <tr>
                       <td style="width: auto; text-align: left"></td>
                       <td style="text-align:right; width: 120px;">
-                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase][phasenindex].Nettogesamthonorar)}}
+                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase].Nettogesamthonorar)}}
                       </td>
                       <td style="text-align:right; width: 120px; color: green;">
-                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase][phasenindex].Bruttogesamthonorar)}}
+                        {{Tools.FormatCurrency(DB.Summenliste[Leistungsphase].Bruttogesamthonorar)}}
                       </td>
                     </tr>
                   </table>
@@ -261,7 +277,7 @@
           </ng-container>
 
 
-          <ng-container *ngFor="let Tabelle of DB.CurrentSimontabellenliste; let i = index">
+          <ng-container *ngFor="let Tabelle of DB.CurrentSimontabellenliste[Leistungsphase]; let i = index">
 
             <ng-container *ngIf="i === 0">
               <tr>
@@ -281,7 +297,10 @@
 
                         <table class="nobordersmalltable" width="100%">
                           <tr>
-                            <td><b>{{Rechnung.Nummer}}. AZ</b></td>
+                            <td>
+                              <b>{{Rechnung.Nummer}}. AZ</b><br>
+                              <span style="font-size: 80%">{{GetRechnungsdatum(Rechnung.Zeitstempel)}}</span>
+                            </td>
                             <td align="center">
                               <div class="maildivclass" (click)="SendMailButtonClicked($event, Tabelle, Rechnung)">
                                 <ion-icon  name="mail" [color]="Rechnung.GesendetZeitstempel !== null ? 'gruen' : 'rot'"></ion-icon>
@@ -294,6 +313,11 @@
                               <td>
                                 <div (click)="ShowPdfButtonClicked($event, Tabelle, Rechnung)" class="maildivclass">
                                   <ion-icon  name="document" [color]="Basics.Ionicfarben.BAEBlau"></ion-icon>
+                                </div>
+                              </td>
+                              <td>
+                                <div (click)="DownloadPdfButtonClicked($event, Tabelle, Rechnung)" class="maildivclass">
+                                  <ion-icon  name="download-outline" [color]="Basics.Ionicfarben.Orange"></ion-icon>
                                 </div>
                               </td>
                             </ng-container>
@@ -324,10 +348,10 @@
                           <tr>
                             <td style="width: auto; text-align: left"></td>
                             <td style="text-align:right; width: 120px;">
-                              {{Tools.FormatCurrency(DB.CalculateRechnungssumme(Rechnung, Tabelle).Nettohonorar)}}
+                              {{Tools.FormatCurrency(DB.CalculateRechnungssumme(Rechnung, Tabelle).Nettogrundhonorar)}}
                             </td>
                             <td style="text-align:right; width: 120px; color: green;">
-                              {{Tools.FormatCurrency(DB.CalculateRechnungssumme(Rechnung, Tabelle).Bruttohonorar)}}
+                              {{Tools.FormatCurrency(DB.AddMehrwertsteuer(DB.CalculateRechnungssumme(Rechnung, Tabelle).Nettogrundhonorar))}}
                             </td>
                           </tr>
                         </table>
@@ -337,7 +361,16 @@
                   </table>
                 </td>
               </tr>
-              <tr *ngIf="i === DB.CurrentSimontabellenliste.length - 1"  style="background: #D7DBDD">
+            <!--
+            <tr>
+              <td colspan="1000">
+                CurrentSimontabellenliste Länge:  {{DB.CurrentSimontabellenliste[Leistungsphase].length}}<br>
+                Zeiger i: {{i}}
+
+              </td>
+            </tr>
+            -->
+              <tr *ngIf="i === DB.CurrentSimontabellenliste[Leistungsphase].length - 1"  style="background: #D7DBDD">
                 <td colspan="2"><b>Honorarsumme</b></td>
                 <td colspan="7" style="padding: 0px !important;">
                   <table class="nobordertable">
@@ -348,10 +381,10 @@
                           <tr>
                             <td style="width: auto; text-align: left"></td>
                             <td style="text-align:right; width: 120px;">
-                              {{Tools.FormatMoney(DB.CalculateSammelrechung(Rechnungsindex).Nettohonorar)}} €
+                              {{Tools.FormatMoney(DB.CalculateSammelrechung(Rechnungsindex).Nettogrundhonorar)}} €
                             </td>
                             <td style="text-align:right; width: 120px; color: green;">
-                              {{Tools.FormatMoney(DB.CalculateSammelrechung(Rechnungsindex).Bruttohonorar)}} €
+                              {{Tools.FormatMoney(DB.AddMehrwertsteuer(DB.CalculateSammelrechung(Rechnungsindex).Nettogrundhonorar))}} €
                             </td>
                           </tr>
                         </table>
@@ -366,7 +399,7 @@
 
 
 
-          <ng-container *ngFor="let Tabelle of DB.CurrentSimontabellenliste; let i = index">
+          <ng-container *ngFor="let Tabelle of DB.CurrentSimontabellenliste[Leistungsphase]; let i = index">
 
               <tr *ngIf="i === 0">
                 <td colspan="2">
@@ -401,7 +434,7 @@
                               {{Tools.FormatCurrency(DB.CalculateRechnungssumme(Rechnung, Tabelle).Nettonebenkosten)}}
                             </td>
                             <td style="text-align:right; width: 120px; color: green;">
-                              {{Tools.FormatCurrency(DB.CalculateRechnungssumme(Rechnung, Tabelle).Bruttonebenkosten)}}
+                              {{Tools.FormatCurrency(DB.AddMehrwertsteuer(DB.CalculateRechnungssumme(Rechnung, Tabelle).Nettonebenkosten))}}
                             </td>
                           </tr>
                         </table>
@@ -412,7 +445,7 @@
                 </td>
               </tr>
 
-            <ng-container *ngIf="i === DB.CurrentSimontabellenliste.length - 1">
+            <ng-container *ngIf="i === DB.CurrentSimontabellenliste[Leistungsphase].length - 1">
 
               <tr style="background: #D7DBDD">
                 <td colspan="2"><b>Nebenkostensumme</b></td>
@@ -428,7 +461,7 @@
                               {{Tools.FormatMoney(DB.CalculateSammelrechung(Rechnungsindex).Nettonebenkosten)}} €
                             </td>
                             <td style="text-align:right; width: 120px; color: green;">
-                              {{Tools.FormatMoney(DB.CalculateSammelrechung(Rechnungsindex).Bruttonebenkosten)}} €
+                              {{Tools.FormatMoney(DB.AddMehrwertsteuer(DB.CalculateSammelrechung(Rechnungsindex).Nettonebenkosten))}} €
                             </td>
                           </tr>
                         </table>
@@ -449,7 +482,7 @@
                           <tr>
                             <td style="width: auto; text-align: left"></td>
                             <td style="text-align:right; width: 120px;">
-                              {{Tools.FormatMoney(DB.CalculateSammelrechung(Rechnungsindex).Nettozwischensumme)}} €
+                              {{Tools.FormatMoney(DB.CalculateSammelrechung(Rechnungsindex).Nettogesamthonorar)}} €
                             </td>
                             <td style="text-align:right; width: 120px; color: black;">
 
@@ -500,7 +533,7 @@
                               =
                             </td>
                             <td style="text-align:right; width: 120px; color: black;">
-                              {{Tools.FormatMoney(DB.CalculateSammelrechung(Rechnungsindex).Bruttozwischensumme)}} €
+                              {{Tools.FormatMoney(DB.AddMehrwertsteuer(DB.CalculateSammelrechung(Rechnungsindex).Nettogrundhonorar))}} €
                             </td>
                           </tr>
                         </table>
@@ -561,7 +594,7 @@
 
             </ng-container>
           </ng-container>
-
+        </ng-container>
         </ng-container>
       </table>
 
@@ -599,7 +632,8 @@
                         (DeleteTabelleClickedEvent)="DeleteTabelleClickedEventHandler()"
                         (EditLeistungClickedEvent)="EditLeistungClickedEventHandler($event)"
                         (MitarbeiterClickedEvent)="EditorMitarbeiterClickedEventHandler()"
-                        (LeistungsphaseClickedEvent)="LeistungsphaseClickedEventHandler()">
+                        (EditDatumClickedEvent)="EditDatumClickedEventHandler()"
+                        (LeistungsphaseClickedEvent)="EditorLeistungsphaseClickedEventHandler()">
 
 </pj-simontabelle-editor>
 
@@ -647,6 +681,16 @@
                (EmpfaengerExternClicked)="EmpfaengerExternClickedHandler()"
                (CcEmpfaengerExternClicked)="CcEmpfaengerExternClickedHandler()"
                -->
+
+<pj-rechnung-editor *ngIf="ShowRechnungeditor" [Dialogbreite]="380"
+                             [Dialoghoehe]="520"
+                             [PositionY]="DialogPosY + 200"
+                             [ZIndex]="5000"
+                             [Iconname]="'calendar-outline'"
+                             [Titel]="'Rechnungsdatum festlegen'"
+                             (OkClickedEvent)="ShowRechnungeditor = false"
+                             (CancelClickedEvent)="ShowRechnungeditor = false">
+</pj-rechnung-editor>
 
 <auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"
                 [Dialogbreite]="400"  [PositionY]="100"

@@ -96,6 +96,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         this.isIframe = window !== window.parent && !window.opener;
 
+        this.authService.initialize().subscribe(() => {
+
         this.msalBroadcastService.inProgress$
           .pipe(
             filter((status_a: InteractionStatus) => {
@@ -113,15 +115,20 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
             this.AuthService.SetShowLoginStatus();
           });
 
-        this.AuthService.LoginSuccessEvent.subscribe(() => {
+          this.AuthService.LoginSuccessEvent.subscribe(() => {
 
-          this.Debug.ShowMessage('LoginSuccessEvent -> Start App', 'App Component', 'StartApp', this.Debug.Typen.Component);
+            this.Debug.ShowMessage('LoginSuccessEvent -> Start App', 'App Component', 'StartApp', this.Debug.Typen.Component);
+
+            this.StartApp();
+          });
 
           this.StartApp();
         });
       }
+      else {
 
-      this.StartApp();
+        this.StartApp();
+      }
 
     } catch (error) {
 
@@ -365,7 +372,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
           }
           else {
 
-            Page = this.Const.Pages.EinstellungenPage; // PjListePage; // PjSimontabellelistePage; // PjProtokolleListePage; // PjProtokolleListePage; // PjAufgabenlistePage; // UrlaubFreigabenPage; // UrlaubPlanungPage; // PjBaustelleLoplistePage; //
+            Page = this.Const.Pages.PjSimontabellelistePage; // PjListePage; // PjSimontabellelistePage; // PjProtokolleListePage; // PjProtokolleListePage; // PjAufgabenlistePage; // UrlaubFreigabenPage; // UrlaubPlanungPage; // PjBaustelleLoplistePage; //
             // PjBaustelleLoplistePage; // UrlaubEinstellungenPage; // UrlaubPlanungPage; // PjBaustelleLoplistePage; // FiMitarbeiterlistePage; // UrlaubsplanungPage; // FiStandortelistePage; // UrlaubsplanungPage; // UrlaubsplanungPage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
 
             this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden

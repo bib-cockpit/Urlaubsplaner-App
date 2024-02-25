@@ -151,7 +151,7 @@ export class DatabaseAuthenticationService {
 
     try {
 
-      let message: string;
+      let message: string = 'nothing';
       let acountliste: any[] = this.MSALService.instance.getAllAccounts();
 
 
@@ -188,6 +188,8 @@ export class DatabaseAuthenticationService {
         scopes: [scope],
         account: this.ActiveUser,
       };
+
+      // You must call and await the initialize function before attempting to call any other MSAL API.  For more visit: aka.ms/msaljs/browser-errors
 
       return new Promise((resolve, reject) => {
 

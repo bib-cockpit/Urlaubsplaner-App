@@ -8,12 +8,11 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import {Outlookkontaktestruktur} from "../../dataclasses/Outlookkontaktestruktur";
+import {Outlookkontaktestruktur} from "../../dataclasses/outlookkontaktestruktur";
 import {BasicsProvider} from "../../services/basics/basics";
 import {DebugProvider} from "../../services/debug/debug";
 import {ToolsProvider} from "../../services/tools/tools";
 import {ConstProvider} from "../../services/const/const";
-import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 import {AlphabetComponent} from "../../components/alphabet/alphabet";
 import * as lodash from "lodash-es";
 import {Subscription} from "rxjs";

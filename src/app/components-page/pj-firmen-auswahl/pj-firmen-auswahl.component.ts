@@ -16,7 +16,7 @@ import {AlphabetComponent} from "../../components/alphabet/alphabet";
 import * as lodash from "lodash-es";
 import {DisplayService} from "../../services/diplay/display.service";
 import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
-import {Projektfirmenstruktur} from "../../dataclasses/Projektfirmenstruktur";
+import {Projektfirmenstruktur} from "../../dataclasses/projektfirmenstruktur";
 import {DatabaseProjektfirmenService} from "../../services/database-projektfirmen/database-projektfirmen.service";
 
 @Component({

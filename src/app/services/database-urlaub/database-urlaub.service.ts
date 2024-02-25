@@ -537,7 +537,7 @@ export class DatabaseUrlaubService {
         }
       }
 
-      debugger;
+      // debugger;
 
       for(let VertreterID of VertreterIDListe) {
 
@@ -697,7 +697,7 @@ export class DatabaseUrlaubService {
 
           }).catch((error: any) => {
 
-            debugger;
+            // debugger;
 
             reject(error);
           });
@@ -778,7 +778,7 @@ export class DatabaseUrlaubService {
 
           }).catch((error: any) => {
 
-            debugger;
+            // debugger;
 
             reject(error);
           });
@@ -915,7 +915,7 @@ export class DatabaseUrlaubService {
 
           }).catch((error: any) => {
 
-            debugger;
+            // debugger;
 
             reject(error);
           });
@@ -1001,7 +1001,7 @@ export class DatabaseUrlaubService {
 
           }).catch((error: any) => {
 
-            debugger;
+            // debugger;
 
             reject(error);
           });
@@ -1099,7 +1099,7 @@ export class DatabaseUrlaubService {
 
           }).catch((error: any) => {
 
-            debugger;
+            // debugger;
 
             reject(error);
           });
@@ -1192,7 +1192,7 @@ export class DatabaseUrlaubService {
 
           }).catch((error: any) => {
 
-            debugger;
+            // debugger;
 
             reject(error);
           });
@@ -1285,7 +1285,7 @@ export class DatabaseUrlaubService {
 
           }).catch((error: any) => {
 
-            debugger;
+            // debugger;
 
             reject(error);
           });
@@ -1339,7 +1339,7 @@ export class DatabaseUrlaubService {
           },
           error: (error: HttpErrorResponse) => {
 
-            debugger;
+            // debugger;
 
             this.Regionenliste = [];
 
@@ -1394,7 +1394,7 @@ export class DatabaseUrlaubService {
 
             this.Feiertageliste[landcode] = [];
 
-            debugger;
+            // debugger;
 
             console.log('Read Feiertage ist fehlgeschlagen.');
 
@@ -1443,7 +1443,7 @@ export class DatabaseUrlaubService {
 
             console.log('Read Ferien ist fehlgeschlagen.');
 
-            debugger;
+            // debugger;
 
             resolve(true);
           }

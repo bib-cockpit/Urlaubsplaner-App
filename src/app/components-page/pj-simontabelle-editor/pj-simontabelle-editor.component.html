@@ -96,7 +96,7 @@
                     </ion-row>
                     <ion-row>
                       <ion-col size="12">
-                        <input-clone (TextChanged)="HonorarTextChanged($event)" [ParseToFloat]="true" [Inputtype]="'numeric'" [Value]="DB.CurrentSimontabelle.Honorar.toString()" [Einheit]="'€'" [Titel]="'Honorar (netto)'"></input-clone>
+                        <input-clone (TextChanged)="HonorarTextChanged($event)" [ParseToFloat]="true" [Inputtype]="'numeric'" [Value]="DB.CurrentSimontabelle.Nettobasishonorar.toString()" [Einheit]="'€'" [Titel]="'Honorar (netto)'"></input-clone>
                       </ion-col>
                     </ion-row>
                     <ion-row>
@@ -399,12 +399,25 @@
 
                     <td *ngIf="DisplayRechnungsliste[i] === true" style="width: 280px; text-align: center">
 
-                      <div class="rechnungclass"  (click)="DB.CurrentRechnungsindex = i"
+                      <div class="rechnungclass"  (click)="RechnungClicked(i, Rechnung)"
                            [style.background]="DB.CurrentRechnungsindex === i ? '#307ac1' : 'white'"
                            [style.color]="DB.CurrentRechnungsindex === i ? 'white' : 'black'">
                         <table class="nobordertable">
-                          <tr><td><b *ngIf="Rechnung.Nummer">{{Rechnung.Nummer.toString()}}. AZ</b></td></tr>
-                          <tr><td><b>{{GetRechnungsdatum(Rechnung)}}</b></td></tr>
+                          <tr>
+                            <td colspan="5"><b *ngIf="Rechnung.Nummer">{{Rechnung.Nummer.toString()}}. AZ</b></td>
+                          </tr>
+                          <tr>
+                            <ng-container *ngIf="DB.CurrentRechnungsindex === i">
+                              <td style="width: 20px"></td>
+                              <td style="width: 10px"></td>
+                            </ng-container>
+                            <td><b>{{GetRechnungsdatum(Rechnung)}}</b></td>
+                            <ng-container *ngIf="DB.CurrentRechnungsindex === i">
+                              <td style="width: 10px"></td>
+                              <td style="width: 20px"><ion-icon name="create" (click)="EditDatumClicked($event)"></ion-icon></td>
+                            </ng-container>
+
+                          </tr>
                         </table>
                       </div>
                     </td>
@@ -435,17 +448,19 @@
                             <input style="width: 60px; height: 30px; background: white" (input)="RechnungswertChanged($event, Tabelleneintrag, Rechnungseintrag, i)"  [style.border]="Rechnungseintrag.Valid ? '1px solid green' : '1px solid red'" [value]="Rechnungseintrag.Honoraranteil"/>
                           </td>
                           <td *ngIf="i !== DB.CurrentRechnungsindex" style="width: 90px; text-align: right">
-                            <span>{{DB.FixTabellenbetrag(Rechnungseintrag.Honoraranteil)}} %</span>
+                            <span [style.color]="Rechnungseintrag.Honoraranteil !== 0 ? 'red' : 'black'">{{DB.FixTabellenbetrag(Rechnungseintrag.Honoraranteil)}} %</span>
                           </td>
                           <td style="width: 90px; text-align: center;">
+                            <!--
                             <span *ngIf="CalculateRechnungsdifferenz(Tabelleneintrag, Rechnungseintrag, i) !== 0" style="color: red;">
                               [+{{Tools.FormatNumber(CalculateRechnungsdifferenz(Tabelleneintrag, Rechnungseintrag, i), 2)}} %]
                             </span>
                             <span *ngIf="CalculateRechnungsdifferenz(Tabelleneintrag, Rechnungseintrag, i) === 0">
                               ---
                             </span>
+                            -->
                           </td>
-                          <td style="text-align: right; width: 90px">{{Tools.FormatCurrency(Rechnungseintrag.Nettohonorar)}}</td>
+                          <td style="text-align: right; width: 90px">{{Tools.FormatCurrency(Rechnungseintrag.Honorarberechnung.Nettogrundhonorar)}}</td>
                         </tr>
                       </table>
 
@@ -495,17 +510,17 @@
                 </tr>
                 <tr>
                   <td colspan="2" style="text-align: right; font-weight: bold">Nettohonorar</td>
-                  <td style="text-align: center">{{Tools.FormatMoney(DB.CurrentSimontabelle.Nettozwischensumme)}} €</td>
+                  <td style="text-align: center">{{Tools.FormatMoney(DB.CurrentSimontabelle.Nettogrundhonorar)}} €</td>
 
                   <ng-container *ngFor="let Rechnung of DB.CurrentSimontabelle.Rechnungen; let i = index;">
 
                     <td *ngIf="DisplayRechnungsliste[i] === true" style="width: 80px; text-align: center">
-                      {{Tools.FormatMoney(DB.CalculateRechnungssumme(Rechnung, DB.CurrentSimontabelle).Nettohonorar)}} €
+                      {{Tools.FormatMoney(DB.CalculateRechnungssumme(Rechnung, DB.CurrentSimontabelle).Nettogrundhonorar)}} €
                     </td>
 
                   </ng-container>
 
-                  <td style="text-align: center">{{Tools.FormatMoney(DB.CalculateRechnungssummen().Nettohonorar)}} €</td>
+                  <td style="text-align: center">{{Tools.FormatMoney(DB.CalculateRechnungssummen().Nettogrundhonorar)}} €</td>
                 </tr>
                 <tr>
                   <td colspan="2" style="text-align: right; font-weight: bold">Nebenkosten</td>
@@ -522,8 +537,8 @@
                   <td style="text-align: center">{{Tools.FormatMoney(DB.CalculateRechnungssummen().Nettonebenkosten)}} €</td>
                 </tr>
                 <tr>
-                  <td colspan="2" style="text-align: right; font-weight: bold">Zischensumme</td>
-                  <td style="text-align: center">{{Tools.FormatMoney(DB.CurrentSimontabelle.Nettogesamthonorar)}} €</td>
+                  <td colspan="2" style="text-align: right; font-weight: bold">Zwischensumme</td>
+                  <td style="text-align: center">{{Tools.FormatMoney(DB.CurrentSimontabelle.Nettogrundhonorar)}} €</td>
 
                   <ng-container *ngFor="let Rechnung of DB.CurrentSimontabelle.Rechnungen; let i = index;">
 
@@ -551,7 +566,7 @@
                 </tr>
                 <tr>
                   <td colspan="2" style="text-align: right; font-weight: bold">Bruttohonorar</td>
-                  <td style="text-align: center; color: green;">{{Tools.FormatMoney(DB.CurrentSimontabelle.Bruttogesamthonorar)}} €</td>
+                  <td style="text-align: center; color: green;">{{Tools.FormatMoney(DB.AddMehrwertsteuer(DB.CurrentSimontabelle.Nettogesamthonorar))}} €</td>
 
                   <ng-container *ngFor="let Rechnung of DB.CurrentSimontabelle.Rechnungen; let i = index;">
 

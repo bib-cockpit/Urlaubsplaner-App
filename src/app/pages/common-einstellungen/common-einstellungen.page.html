@@ -100,8 +100,11 @@
 
 
       </td>
-      <td style="width: 1000px;">
+      <td style="width: 800px; padding: 6px;">
 
+        <div style="width: 800px; height: 800px; border: 1px solid gray; padding: 4px; border-radius: 4px;" [innerHTML]="Signatur | safe: 'html'"></div>
+
+        <!--
         <editor
           [apiKey]="'7hvzif1s8dafhu40z0kjgpw1y4zwc2p5cokjkfox946qpfjc'"
           [init]="Editorconfig" [id]="'Signatureditor'"
@@ -112,10 +115,12 @@
           (onCut)="SignaturTextChangedHandler($event)"
           (onKeyPress)="SignaturTextChangedHandler($event)"
         </editor>
+        -->
 
       </td>
     </tr>
   </table>
+
 
 
 </ion-content>

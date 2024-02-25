@@ -114,7 +114,7 @@ export class PjSimontabelleLeistungeneditorComponent implements OnInit, OnDestro
       if(Result.error) this.Valid = false;
       else             this.Valid = true;
 
-      if(this.DB.CurrentSimontabelle.Honorar === 0) this.Valid = false;
+      if(this.DB.CurrentSimontabelle.Nettobasishonorar === 0) this.Valid = false;
 
       this.ValidChange.emit(this.Valid);
 

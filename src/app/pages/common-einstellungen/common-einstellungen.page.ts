@@ -404,11 +404,11 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
     try {
 
-      this.Signatur = this.Pool.Signatur;
+      this.Signatur = this.Pool.GetFilledSignatur(this.Pool.Mitarbeiterdaten, true);
+
+      /*
 
       this.Signatur = this.Signatur.replace('[Image]', 'assets/images/group_logo.png');
-
-      debugger;
 
       if(this.Pool.Mitarbeiterdaten !== null) {
 
@@ -416,6 +416,8 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
         this.Signatur = this.replaceAll(this.Signatur, '[Email]', this.Pool.Mitarbeiterdaten.Email);
 
       }
+
+       */
 
     } catch (error) {
 

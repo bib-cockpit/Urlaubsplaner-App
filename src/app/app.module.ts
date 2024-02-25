@@ -28,6 +28,7 @@ import {
 import {BrowserCacheLocation, InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication} from "@azure/msal-browser";
 import {environment} from "../environments/environment";
 import { EditorModule } from '@tinymce/tinymce-angular';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 const appurl: string                   = environment.production === false ? 'http://localhost:4200' : 'https://nice-glacier-0c9ec7703.3.azurestaticapps.net';
 
@@ -114,6 +115,8 @@ const MSALGuardConfigFactory = (): MsalGuardConfiguration => {
         'Calendars.ReadWrite.Shared',
         'Contacts.ReadWrite',
         'Mail.Read',
+        'Files.Read',
+        'Sites.ReadWrite.All',
         'Mail.ReadBasic',
         'Mail.ReadWrite',
         'Mail.Send',
@@ -131,6 +134,8 @@ const MSALGuardConfigFactory = (): MsalGuardConfiguration => {
 };
 
 
+// originalKeywordKind -> identifierToKeywordKind(identifier)
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -145,6 +150,7 @@ const MSALGuardConfigFactory = (): MsalGuardConfiguration => {
     HttpClientModule,
     MsalModule,
     EditorModule,
+    FontAwesomeModule,
   ],
   providers: [
     {

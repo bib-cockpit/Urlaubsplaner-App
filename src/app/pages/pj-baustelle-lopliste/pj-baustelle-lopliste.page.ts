@@ -1705,4 +1705,16 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
     }
 
   }
+
+  async DownloadPdfButtonClicked($event: MouseEvent, LOP: LOPListestruktur) {
+
+    try {
+
+      await this.GraphService.DownloadPDFSiteFileViaLink(LOP.FileID);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'DownloadPdfButtonClicked', this.Debug.Typen.Page);
+    }
+  }
 }

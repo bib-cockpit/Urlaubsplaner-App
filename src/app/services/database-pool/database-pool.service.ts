@@ -154,28 +154,45 @@ export class DatabasePoolService {
            <tr><td>Mobil:</td><td>[Mobil]</td></tr>
            <tr><td>Email:</td><td><a href="mailto:[Email]">[Email]</a></td></tr>
            <tr><td>Web:</td><td><a href=https://www.bae-group.eu">www.bae-group.eu</a></td></tr>
-        </table><br>
+        </table>
         <img src="[Image]" style="width: 200px;"><br><br>
         <span style="font-size: 12px; font-weight: bold;">
         BAE GmbH, Sitz: Coburg, Amtsgericht Coburg, HRB 6357.<br>
         Geschäftsführer Jürgen Kerscher, Michael Hölzle<br>
         Standorte BAE GROUP: Frankfurt, Berlin, München, Coburg, Bamberg, Deggendorf, Sofia, Varna<br>
         </span>
-        <span style="font-size: 10px">Der Inhalt dieser E-Mail ist ausschließlich für den bezeichneten Adressaten bestimmt. Wenn Sie nicht der vorgesehene Adressat dieser E-Mail oder dessen
+        <br>
+        <table>
+        <tr>
+        <td style="font-size: 11px; text-align: justify; width: 100%">
+        Der Inhalt dieser E-Mail ist ausschließlich für den bezeichneten Adressaten bestimmt. Wenn Sie nicht der vorgesehene Adressat dieser E-Mail oder dessen
         Vertreter sein sollten, so beachten Sie, dass jede Form der Kenntnis- und Vorteilsnahme, Veröffentlichung, Vervielfältigung oder Weitergabe des
         Inhalts dieser Mail unzulässig ist. Wir bitten Sie, sich in diesem Fall mit dem Absender der E-Mail in Verbindung zu setzen. Aussagen gegenüber
         dem Adressaten unterliegen den Regelungen des zugrundeliegenden Angebotes bzw. Auftrags, insbesondere den Allgemeinen Auftragsbedingungen und der
         individuellen Haftungsvereinbarung. Der Inhalt der E-Mail ist nur rechtsverbindlich, wenn er unsererseits durch einen Brief entsprechend bestätigt wird.
         Die Versendung von E-Mails an uns hat keine fristwahrende Wirkung. Wir möchten Sie außerdem darauf hinweisen, dass die Kommunikation per E-Mail über das
         Internet unsicher ist, da für unberechtigte Dritte grundsätzlich die Möglichkeit der Kenntnisnahme und Manipulation besteht.
-        <br><br>
+        </td>
+        </tr>
+        <tr>
+        <td style="font-size: 11px; text-align: justify;">
         The information contained in this email is intended exclusively for the addressee. Access to this email by anyone else is unauthorized. If you are not
         the intended recipient or his representative, any form of disclosure, reproduction, distribution or any action taken or refrained from in reliance on it,
         is prohibited. Please notify the sender immediately. All statements directed via this email to our clients are subject to the conditions of the submitted
         offer respectively order, in particular to the General Terms and Conditions and to the individual liability agreement between the parties. The content of
         this email is not legally binding unless confirmed by letter. The sending of emails to us will not constitute compliance with any time limits or deadlines.
         Please note that communication via email over the internet is insecure because third parties generally have the possibility to access and manipulate emails.
-        </span><br>`;
+        </td>
+        </tr>
+        </table>
+        <table>
+          <tr>
+            <td><b><span style='font-size:24.0pt;font-family:Webdings;color:#007F00;'>P</span></b></td>
+            <td style='font-size:8.0pt;color:#00AF4F; padding: 4px; vertical-align: bottom;' valign="bottom">Think about Nature before you print!</td>
+          </tr>
+        </table>
+    `;
+
 
     } catch (error) {
 
@@ -232,7 +249,7 @@ export class DatabasePoolService {
 
       if(local) {
 
-        Signatur = Signatur.split('[Image]').join('assets/images/logo_large.png');
+        Signatur = Signatur.split('[Image]').join('assets/images/group_logo.png');
       }
       else {
 

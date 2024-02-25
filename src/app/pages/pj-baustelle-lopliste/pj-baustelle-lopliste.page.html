@@ -113,11 +113,18 @@
                                 <ion-icon  name="mail" [color]="LOP.GesendetZeitstempel !== null ? 'gruen' : 'rot'"></ion-icon>
                               </div>
                             </td>
-                            <td *ngIf="LOP.GesendetZeitstempel !== null">
-                              <div (click)="ShowPdfButtonClicked($event, LOP)" class="mailclass">
-                                <ion-icon  name="document" [color]="Basics.Ionicfarben.BAEBlau"></ion-icon>
-                              </div>
-                            </td>
+                            <ng-container *ngIf="LOP.GesendetZeitstempel !== null">
+                              <td>
+                                <div (click)="ShowPdfButtonClicked($event, LOP)" class="mailclass">
+                                  <ion-icon  name="document" [color]="Basics.Ionicfarben.BAEBlau"></ion-icon>
+                                </div>
+                              </td>
+                              <td>
+                                <div (click)="DownloadPdfButtonClicked($event, LOP)" class="mailclass">
+                                  <ion-icon  name="download-outline" [color]="Basics.Ionicfarben.Orange"></ion-icon>
+                                </div>
+                              </td>
+                            </ng-container>
                           </tr>
                         </table>
                       </td>

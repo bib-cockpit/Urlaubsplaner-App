@@ -1118,5 +1118,17 @@ export class PjProtokolleListePage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'ProtokollDeletedEventHandler', this.Debug.Typen.Page);
     }
   }
+
+  async DownloadPdfButtonClicked($event: MouseEvent, Protokoll: Protokollstruktur) {
+
+    try {
+
+      await this.GraphService.DownloadPDFSiteFileViaLink(Protokoll.FileID);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Protokoll Liste', 'DownloadPdfButtonClicked', this.Debug.Typen.Page);
+    }
+  }
 }
 

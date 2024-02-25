@@ -15,21 +15,19 @@ export type Simontabellestruktur = {
   Eintraegeliste: Simontabelleeintragstruktur[];
   Deleted: boolean;
   Kosten: number;
-  Honorar: number;
+  Nettobasishonorar: number;
   Umbauzuschlag: number;
   Sicherheitseinbehalt: number;
   Nebenkosten: number;
   Besondereleistungenliste: Simontabellebesondereleistungstruktur[];
   Rechnungen: Rechnungstruktur[];
 
-
   Nettoumbauzuschlag?: number;
-  Bruttoumbauzuschlag?: number;
-  Nettonebenkosten?: number;
-  Bruttonebenkosten?: number;
-  Nettozwischensumme?: number;
-  Bruttozwischensumme?: number;
+  Nettoleistungen?:    number;
+  Nettogrundhonorar?:  number;
+  Nettonebenkosten?:   number;
   Nettogesamthonorar?: number;
-  Bruttogesamthonorar?: number;
+
+
   __v?: any;
 };

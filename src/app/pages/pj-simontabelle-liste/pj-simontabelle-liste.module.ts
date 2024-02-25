@@ -21,6 +21,10 @@ import {
 } from "../../components-page/pj-simontabelle-leistungeneditor/pj-simontabelle-leistungeneditor.module";
 import {FiMitarbeiterAuswahlModule} from "../../components-page/fi-mitarbeiter-auswahl/fi-mitarbeiter-auswahl.module";
 import {PjEmailSendModule} from "../../components-page/pj-email-send/pj-email-send.module";
+import {
+    PjProjektpunktDateKwPickerModule
+} from "../../components-page/pj-projektpunkt-date-kw-picker/pj-projektpunkt-date-kw-picker.module";
+import {PjRechnungEditorModule} from "../../components/pj-rechnung-editor/pj-rechnung-editor.module";
 
 
 const routes: Routes = [
@@ -31,25 +35,27 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        IonicModule,
-        PageHeaderModule,
-        RouterModule.forChild(routes),
-        PageHeaderMenuModule,
-        PageFooterModule,
-        AuswahlDialogModule,
-        PjNotizenkapitelEditorModule,
-        EditorComponent,
-        FormsModule,
-        PjProjekteSchnellauswahlModule,
-        PjSimontabelleEditorModule,
-        PjSimontabelleLeistungeneditorModule,
-        FiMitarbeiterAuswahlModule,
-        PjEmailSendModule,
+  imports: [
+    CommonModule,
+    IonicModule,
+    PageHeaderModule,
+    RouterModule.forChild(routes),
+    PageHeaderMenuModule,
+    PageFooterModule,
+    AuswahlDialogModule,
+    PjNotizenkapitelEditorModule,
+    EditorComponent,
+    FormsModule,
+    PjProjekteSchnellauswahlModule,
+    PjSimontabelleEditorModule,
+    PjSimontabelleLeistungeneditorModule,
+    FiMitarbeiterAuswahlModule,
+    PjEmailSendModule,
+    PjProjektpunktDateKwPickerModule,
+    PjRechnungEditorModule,
 
 
-    ],
+  ],
   declarations: [PjSimontabelleListePage],
   exports: [
     PjSimontabelleListePage

@@ -23,29 +23,34 @@
             <tr>
               <td valign="top">
                 <table>
-                  <tr>
-                    <td style="padding-top: 4px; padding-bottom: 12px">
-                      <ion-text color="burnicklgruen"><b>Termin</b></ion-text>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <ion-radio-group [value]="Terminvariante" (ionChange)="TerminStatusChangedHandler($event)">
-                        <div style="overflow: auto">
-                          <table class="paddingtable">
-                            <tr>
-                              <td><ion-radio [value]="Terminvarianten.Stichtag" mode="md"></ion-radio></td>
-                              <td>Stichtag</td>
-                            </tr>
-                            <tr>
-                              <td><ion-radio [value]="Terminvarianten.Kalenderwoche" mode="md"></ion-radio></td>
-                              <td>Kalenderwoche</td>
-                            </tr>
-                          </table>
-                        </div>
-                      </ion-radio-group>
-                    </td>
-                  </tr>
+                  <ng-container *ngIf="ShowTerminvarianteAuswahl === true">
+                    <tr>
+                      <td style="padding-top: 4px; padding-bottom: 12px">
+                        <ion-text color="burnicklgruen"><b>Termin</b></ion-text>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <ion-radio-group [value]="Terminvariante" (ionChange)="TerminStatusChangedHandler($event)">
+                          <div style="overflow: auto">
+                            <table class="paddingtable">
+                              <tr>
+                                <td><ion-radio [value]="Terminvarianten.Stichtag" mode="md"></ion-radio></td>
+                                <td>Stichtag</td>
+                              </tr>
+                              <tr>
+                                <td><ion-radio [value]="Terminvarianten.Kalenderwoche" mode="md"></ion-radio></td>
+                                <td>Kalenderwoche</td>
+                              </tr>
+                            </table>
+                          </div>
+                        </ion-radio-group>
+                      </td>
+                    </tr>
+
+                  </ng-container>
+
+
                   <tr *ngIf="Terminvariante === Terminvarianten.Stichtag">
                     <td>
                       <ion-datetime color="burnicklgruen" style="--background: #307ac1; color: white; border: 1px solid gray;" first-day-of-week="1" size="fixed"  presentation="date"  [value]="GetDatum()" (ionChange)="StichtagChangedEvent($event)"></ion-datetime>

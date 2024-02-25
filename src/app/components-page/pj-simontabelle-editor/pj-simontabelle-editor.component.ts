@@ -39,6 +39,7 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
   @Output() AddLeistungClickedEvent    = new EventEmitter<any>();
   @Output() DeleteTabelleClickedEvent  = new EventEmitter<any>();
   @Output() MitarbeiterClickedEvent    = new EventEmitter<any>();
+  @Output() EditDatumClickedEvent      = new EventEmitter<any>();
   @Output() EditLeistungClickedEvent   = new EventEmitter<Simontabellebesondereleistungstruktur>();
 
 
@@ -97,7 +98,7 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
       this.Bruttohonorar       = 0;
       this.Vertragsprozente    = 0;
       this.HonorarValid        = false;
-      this.Bereich               = this.Bereiche.Tabelle;
+      this.Bereich               = this.Bereiche.Rechnungen;
       this.Rechnungslistebreite  = 0;
       this.Rechnungsbreite       = 270;
       this.DisplayRechnungsliste = [];
@@ -178,7 +179,7 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
       this.CanDelete     = false;
       this.VertragValid  = [];
       this.Bruttonkosten = this.DB.CurrentSimontabelle.Kosten * Steuerfaktor;
-      this.Bruttohonorar = this.DB.CurrentSimontabelle.Honorar * Steuerfaktor;
+      this.Bruttohonorar = this.DB.CurrentSimontabelle.Nettobasishonorar * Steuerfaktor;
 
       this.DB.CurrentRechnungsindex = this.DB.CurrentSimontabelle.Rechnungen.length - 1;
 
@@ -315,6 +316,8 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
       this.DB.CurrentSimontabelle = this.DB.InitSimontabelledata(Simontabelle);
 
       this.DB.UpdateSimontabellenliste(this.DB.CurrentSimontabelle);
+
+
 
       this.Pool.SimontabellenlisteChanged.emit();
       this.OkClickedEvent.emit();
@@ -572,9 +575,9 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
 
       if(Wert !== null) {
 
-        this.DB.CurrentSimontabelle.Honorar = Wert;
+        this.DB.CurrentSimontabelle.Nettobasishonorar = Wert;
 
-        this.Bruttohonorar = this.DB.CurrentSimontabelle.Honorar * Steuerfaktor;
+        this.Bruttohonorar = this.DB.CurrentSimontabelle.Nettobasishonorar * Steuerfaktor;
       }
     } catch (error) {
 
@@ -609,7 +612,7 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
       let Umbaufaktor = 1 + this.DB.CurrentSimontabelle.Umbauzuschlag / 100;
 
 
-      return this.DB.CurrentSimontabelle.Honorar * Umbaufaktor;
+      return this.DB.CurrentSimontabelle.Nettobasishonorar * Umbaufaktor;
 
     } catch (error) {
 
@@ -625,7 +628,7 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
     try {
 
       let Umbaufaktor = 1 + this.DB.CurrentSimontabelle.Umbauzuschlag / 100;
-      let HonorarMitUmbau: number = this.DB.CurrentSimontabelle.Honorar * Umbaufaktor;
+      let HonorarMitUmbau: number = this.DB.CurrentSimontabelle.Nettobasishonorar * Umbaufaktor;
       let Besondereleistungen: number = 0;
 
       for(let Leistung of this.DB.CurrentSimontabelle.Besondereleistungenliste) {
@@ -665,7 +668,7 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
 
       let Umbaufaktor = 1 + this.DB.CurrentSimontabelle.Umbauzuschlag / 100;
       let Nebenkostenfaktor = this.DB.CurrentSimontabelle.Nebenkosten / 100;
-      let HonorarMitUmbau: number = this.DB.CurrentSimontabelle.Honorar * Umbaufaktor;
+      let HonorarMitUmbau: number = this.DB.CurrentSimontabelle.Nettobasishonorar * Umbaufaktor;
       let Besondereleistungen: number = 0;
 
       for(let Leistung of this.DB.CurrentSimontabelle.Besondereleistungenliste) {
@@ -686,7 +689,7 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
 
       let Umbaufaktor = 1 + this.DB.CurrentSimontabelle.Umbauzuschlag / 100;
       let Nebenkostenfaktor = this.DB.CurrentSimontabelle.Nebenkosten / 100;
-      let HonorarMitUmbau: number = this.DB.CurrentSimontabelle.Honorar * Umbaufaktor;
+      let HonorarMitUmbau: number = this.DB.CurrentSimontabelle.Nettobasishonorar * Umbaufaktor;
       let Nebenkosten: number;
       let Besondereleistungen: number = 0;
 
@@ -990,36 +993,6 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
-  CalculateRechnungsdifferenz(Tabelleneintrag: Simontabelleeintragstruktur, CurrentRechnungseintrag: Rechnungseintragstruktur, Rechnungsindex: number): number {
-
-    try {
-
-      let Differenz: number = 0;
-
-      let LastRechnungseintrag = Tabelleneintrag.Rechnungseintraege[Rechnungsindex - 1];
-
-      if(Rechnungsindex === 0) {
-
-        Differenz = CurrentRechnungseintrag.Honoraranteil;
-      }
-      else {
-
-        if(CurrentRechnungseintrag.Honoraranteil > 0) {
-
-          Differenz = CurrentRechnungseintrag.Honoraranteil - LastRechnungseintrag.Honoraranteil;
-        }
-        else Differenz = 0;
-
-      }
-
-      return Differenz;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'CalculateRechnungsdifferenz', this.Debug.Typen.Component);
-    }
-  }
-
   DeleteTabelleClicked() {
 
     try {
@@ -1066,5 +1039,35 @@ export class PjSimontabelleEditorComponent implements OnInit, OnDestroy, AfterVi
 
       this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'MitarbeiterButtonClicked', this.Debug.Typen.Component);
     }
+  }
+
+  EditDatumClicked(event: MouseEvent) {
+
+    try {
+
+      event.stopPropagation();
+      event.preventDefault();
+
+      this.EditDatumClickedEvent.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'EditDatumClicked', this.Debug.Typen.Component);
+    }
+
+  }
+
+  RechnungClicked(index: number, Rechnung: Rechnungstruktur) {
+
+    try {
+
+      this.DB.CurrentRechnungsindex = index;
+      this.DB.CurrentRechnung       = this.DB.CurrentSimontabelle.Rechnungen[this.DB.CurrentRechnungsindex];
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Editor', 'function', this.Debug.Typen.Component);
+    }
+
   }
 }

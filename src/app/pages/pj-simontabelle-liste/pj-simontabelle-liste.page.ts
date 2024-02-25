@@ -29,6 +29,9 @@ import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
 import moment from "moment/moment";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Graphservice} from "../../services/graph/graph";
+import {Teamsdownloadstruktur} from "../../dataclasses/teamsdownloadstruktur";
+import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
+import {Moment} from "moment";
 
 
 
@@ -48,10 +51,8 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
   public Auswahltitel: string;
   public ShowAuswahl: boolean;
   public ShowProjektschnellauswahl: boolean;
-  private Projektschenllauswahltitel: string;
   public ShowEditor: boolean;
   public ContentHoehe: number;
-  private PageLoaded: boolean;
   public Auswahlhoehe: number;
   public Rechnungssummen: Honorarsummenstruktur[];
   private Auswahldialogorigin: string;
@@ -64,6 +65,8 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
   public ShowEmailSenden: boolean;
   public EmailDialogbreite: number;
   public EmailDialoghoehe: number;
+  public Projektschenllauswahltitel: string;
+  public ShowRechnungeditor: boolean;
 
 
   constructor(public Basics: BasicsProvider,
@@ -87,7 +90,6 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
       this.ShowAuswahl              = false;
       this.ShowEditor               = false;
       this.ContentHoehe             = 0;
-      this.PageLoaded               = false;
       this.TabellenSubscription     = null;
       this.ShowLeistungeditor       = false;
       this.Rechnungssummen          = [];
@@ -97,6 +99,7 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
       this.EmailDialoghoehe         = 600;
       this.DialogPosY               = 60;
       this.ShowEmailSenden          = false;
+      this.ShowRechnungeditor         = false;
 
       this.ShowProjektschnellauswahl        = false;
       this.Auswahlhoehe                     = 300;
@@ -438,31 +441,34 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
 
       this.DB.CalculateHonorar();
 
-      this.DB.CurrentSimontabellenliste = lodash.filter(this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey], { Leistungsphase: this.DB.CurrentLeistungsphase});
+      // this.DB.CurrentSimontabellenliste = lodash.filter(this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey], { Leistungsphase: this.DB.CurrentLeistungsphase});
 
-      for(this.DB.CurrentSimontabelle of this.DB.CurrentSimontabellenliste) {
+      for(let Leistungsphase of this.DB.Leistungsphasenliste) {
 
-        for(let Tabelleneintrag of this.DB.CurrentSimontabelle.Eintraegeliste) {
+        for(this.DB.CurrentSimontabelle of this.DB.CurrentSimontabellenliste[Leistungsphase]) {
 
-          Tabelleneintrag.Honorarsummeprozent = 0;
-          Tabelleneintrag.Honorarsumme        = 0;
-          Tabelleneintrag.Nettohonorar        = 0;
-          Tabelleneintrag.Nettoumbauzuschlag  = 0;
-          Tabelleneintrag.Nettozwischensumme  = 0;
-          Tabelleneintrag.Nettonebenkosten    = 0;
-          Tabelleneintrag.Nettogesamthonorar  = 0;
-          Tabelleneintrag.Mehrwertsteuer      = 0;
-          Tabelleneintrag.Bruttogesamthonorar = 0;
+          for(let Tabelleneintrag of this.DB.CurrentSimontabelle.Eintraegeliste) {
 
-          for(let Rechnungseintrag of Tabelleneintrag.Rechnungseintraege) {
+            Tabelleneintrag.Honorarsummeprozent = 0;
+            Tabelleneintrag.Honorarsumme        = 0;
+            Tabelleneintrag.Nettohonorar        = 0;
+            Tabelleneintrag.Nettoumbauzuschlag  = 0;
+            Tabelleneintrag.Nettozwischensumme  = 0;
+            Tabelleneintrag.Nettonebenkosten    = 0;
+            Tabelleneintrag.Nettogesamthonorar  = 0;
+            Tabelleneintrag.Mehrwertsteuer      = 0;
+            Tabelleneintrag.Bruttogesamthonorar = 0;
 
-            this.DB.CheckRechnungswert(Rechnungseintrag);
+            for(let Rechnungseintrag of Tabelleneintrag.Rechnungseintraege) {
 
-            this.DB.CalculateRechnungseintrag(Tabelleneintrag, Rechnungseintrag);
+              this.DB.CheckRechnungswert(Rechnungseintrag);
+
+              this.DB.CalculateRechnungseintrag(Tabelleneintrag, Rechnungseintrag);
+            }
           }
-        }
 
-        Index++;
+          Index++;
+        }
       }
 
     } catch (error) {
@@ -517,7 +523,7 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
     }
   }
 
-  LeistungsphaseClickedEventHandler() {
+  EditorLeistungsphaseClickedEventHandler() {
 
     this.Auswahltitel = 'Leistungsphase festlegen';
     this.Auswahlliste = [];
@@ -541,7 +547,7 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
 
   } catch (error) {
 
-    this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'AnlagengruppeClickedEventHandler', this.Debug.Typen.Page);
+    this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'EditorLeistungsphaseClickedEventHandler', this.Debug.Typen.Page);
   }
 
   SimontabelleClicked(event: MouseEvent, Tabelle: Simontabellestruktur) {
@@ -601,7 +607,7 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
 
     try {
 
-      let Summe: number = Tabelle.Honorar;
+      let Summe: number = Tabelle.Nettobasishonorar + Tabelle.Nettoumbauzuschlag;
 
       for(let Leistung of Tabelle.Besondereleistungenliste) {
 
@@ -616,18 +622,25 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
     }
   }
 
-  LeistungsphaseChangedHandler(event: any) {
+  ListeLeistungsphaseChangedHandler(event: any) {
 
     try {
 
       this.DB.CurrentLeistungsphase      = event.detail.value;
       this.DB.CurrentLeistungsphaseindex = this.DB.Leistungsphasenliste.indexOf(this.DB.CurrentLeistungsphase);
 
-      this.PrepareDaten();
+      for(let i = 0; i < this.DB.DisplayLeistungsphaseliste.length; i++) {
+
+        this.DB.DisplayLeistungsphaseliste[i] = false;
+      }
+
+      this.DB.DisplayLeistungsphaseliste[this.DB.CurrentLeistungsphaseindex] = true;
+
+      // this.PrepareDaten();
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'LeistungsphaseChangedHandler', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'ListeeistungsphaseChangedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -680,5 +693,104 @@ export class PjSimontabelleListePage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'EditorMitarbeiterClickedEventHandler', this.Debug.Typen.Page);
     }
   }
+
+  async DownloadPdfButtonClicked($event: MouseEvent, Tabelle: Simontabellestruktur, Rechnung: Rechnungstruktur) {
+
+    try {
+
+      await this.GraphService.DownloadPDFSiteFileViaLink(Rechnung.FileID);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'DownloadPdfButtonClicked', this.Debug.Typen.Page);
+    }
+  }
+
+  ListeLeistungsphaseClickedHandler(Leistungsphase: string) {
+
+    try {
+
+      this.DB.CurrentLeistungsphase      = Leistungsphase;
+      this.DB.CurrentLeistungsphaseindex = this.DB.Leistungsphasenliste.indexOf(this.DB.CurrentLeistungsphase);
+
+      for(let i = 0; i < this.DB.DisplayLeistungsphaseliste.length; i++) {
+
+        this.DB.DisplayLeistungsphaseliste[i] = false;
+      }
+
+      this.DB.DisplayLeistungsphaseliste[this.DB.CurrentLeistungsphaseindex] = true;
+
+      // this.PrepareDaten();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'ListeLeistungsphaseClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  EditDatumClickedEventHandler() {
+
+    try {
+
+      this.ShowRechnungeditor = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'EditDatumClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  public GetRechnungsdatum(Zeitstempel: number): string {
+
+    try {
+
+      return moment(Zeitstempel).format('DD.MM.YY');
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'GetRechnungsdatum', this.Debug.Typen.Page);
+    }
+
+  }
+
+  /*
+  async ShowRechnungeditorOkClicked() {
+
+    try {
+
+      let Rechnung: Rechnungstruktur;
+      let Tabelle: Simontabellestruktur;
+
+      if(!lodash.isUndefined(this.DB.CurrentSimontabellenliste[this.DB.CurrentLeistungsphase])) {
+
+        for(Tabelle of this.DB.CurrentSimontabellenliste[this.DB.CurrentLeistungsphase]) {
+
+          debugger;
+
+          Rechnung = lodash.find(Tabelle.Rechnungen, {RechnungID: this.DB.CurrentRechnung.RechnungID});
+
+          if(!lodash.isUndefined(Rechnung)) {
+
+            if(Tabelle._id === this.DB.CurrentSimontabelle._id && Rechnung.RechnungID === this.DB.CurrentRechnung.RechnungID) {
+
+              this.DB.CurrentRechnung     = Rechnung;
+              this.DB.CurrentSimontabelle = Tabelle;
+            }
+
+            await this.DB.UpdateSimontabelle(Tabelle);
+
+          }
+        }
+      }
+
+      this.ShowRechnungeditor = false;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Simontabelle Liste', 'DatePickerOkClicked', this.Debug.Typen.Page);
+    }
+  }
+
+   */
 }
 

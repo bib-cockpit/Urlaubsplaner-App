@@ -44,8 +44,9 @@ export class DatabaseSimontabelleService {
   public CurrentLeistungsphaseindex: number;
   public Summenliste: Honorarsummenstruktur[];
   public Leistungsphasenanzahlliste: number[][];
-  public CurrentSimontabellenliste: Simontabellestruktur[];
+  public CurrentSimontabellenliste: Simontabellestruktur[][];
   public AuswahlIDliste: string[];
+  public DisplayLeistungsphaseliste: boolean[];
   private ServerSaveSimontabelleToSitesUrl: string;
   private ServerSendSimontabelleToSitesUrl: string;
 
@@ -76,7 +77,8 @@ export class DatabaseSimontabelleService {
       this.ServerSaveSimontabelleToSitesUrl = this.Pool.CockpitdockerURL + '/savesimontabelle';
       this.ServerSendSimontabelleToSitesUrl = this.Pool.CockpitdockerURL + '/sendsimontabelle';
       this.CurrentSimontabellenliste  = [];
-      this.AuswahlIDliste           = [];
+      this.AuswahlIDliste             = [];
+      this.DisplayLeistungsphaseliste = [];
 
     } catch (error) {
 
@@ -124,30 +126,24 @@ export class DatabaseSimontabelleService {
 
       let Tabelle: Simontabellestruktur;
       let Index: number;
-      let Leistungssumme: number;
+      let Nettoleistungssumme: number;
       let Nettonebenkosten: number;
-      let Nettozwischensumme: number;
+      let Nettogrundhonorar: number;
       let Nettogesamthonorar: number;
       let Nettoumbauzuschlag: number;
+      let Mehrwertsteuer: number;
+      let Summeeintrag: Honorarsummenstruktur;
 
       this.Leistungsphasenanzahlliste = [];
       this.Leistungsphasenliste       = [];
       this.Summenliste                = [];
+      this.CurrentSimontabellenliste  = [];
 
       for(Tabelle of this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey]) {
-
-        Leistungssumme = 0;
-
-        for(let Leistung of Tabelle.Besondereleistungenliste) {
-
-          Leistungssumme += Leistung.Honorar;
-        }
 
         Index = this.Leistungsphasenliste.indexOf(Tabelle.Leistungsphase);
 
         if( Index === -1) {
-
-          this.Summenliste[Tabelle.Leistungsphase] = [];
 
           this.Leistungsphasenliste.push(Tabelle.Leistungsphase);
 
@@ -155,89 +151,90 @@ export class DatabaseSimontabelleService {
 
           Index = this.Leistungsphasenliste.length - 1;
 
-          Nettoumbauzuschlag = (Tabelle.Honorar * Tabelle.Umbauzuschlag) / 100;
-          Nettozwischensumme = Tabelle.Honorar + Leistungssumme + Nettoumbauzuschlag;
-          Nettonebenkosten   = Nettozwischensumme * Tabelle.Nebenkosten / 100;
-          Nettogesamthonorar = Nettozwischensumme + Nettonebenkosten;
+          Nettoleistungssumme = 0;
 
+          for(let Leistung of Tabelle.Besondereleistungenliste) {
+
+            Nettoleistungssumme += Leistung.Honorar;
+          }
+
+          Nettoumbauzuschlag = (Tabelle.Nettobasishonorar * Tabelle.Umbauzuschlag) / 100;
+          Nettogrundhonorar  = Tabelle.Nettobasishonorar + Nettoleistungssumme + Nettoumbauzuschlag;
+          Nettonebenkosten   = Nettogrundhonorar * Tabelle.Nebenkosten / 100;
+          Nettogesamthonorar = Nettogrundhonorar + Nettonebenkosten;
+
+          Tabelle.Nettoleistungen     = Nettoleistungssumme;
           Tabelle.Nettoumbauzuschlag  = Nettoumbauzuschlag;
-          Tabelle.Bruttoumbauzuschlag = Nettoumbauzuschlag * (1 + this.Steuersatz / 100);
+          Tabelle.Nettogrundhonorar   = Nettogrundhonorar;
           Tabelle.Nettonebenkosten    = Nettonebenkosten;
-          Tabelle.Bruttonebenkosten   = Nettonebenkosten * (1 + this.Steuersatz / 100);
-          Tabelle.Nettozwischensumme  = Nettozwischensumme;
-          Tabelle.Bruttozwischensumme = Nettozwischensumme * (1 + this.Steuersatz / 100);
           Tabelle.Nettogesamthonorar  = Nettogesamthonorar;
-          Tabelle.Bruttogesamthonorar = Nettogesamthonorar * (1 + this.Steuersatz / 100);
 
-          this.Summenliste[Tabelle.Leistungsphase][Index] = {
-
-            Nettokostensumme:  Tabelle.Kosten,
-            Bruttokostensumme: Tabelle.Kosten * (1 + this.Steuersatz / 100),
-
-
-            Nettoumbauzuschlag:   Tabelle.Nettoumbauzuschlag,
-            Bruttoumbauzuschlag:   Tabelle.Bruttoumbauzuschlag,
-
-            Nettohonorar:         Tabelle.Honorar,
-            Bruttohonorar:        Tabelle.Honorar * (1 + this.Steuersatz / 100),
-            Nettoleistungssumme:  Leistungssumme,
-            Bruttoleistungssumme: Leistungssumme * (1 + this.Steuersatz / 100),
-            Nettozwischensumme:   Nettozwischensumme,
-            Bruttozwischensumme:  Nettozwischensumme * (1 + this.Steuersatz / 100),
-            Nettonebenkosten:     Nettonebenkosten,
-            Bruttonebenkosten:    Nettonebenkosten  * (1 + this.Steuersatz / 100),
-            Nettogesamthonorar:   Nettogesamthonorar,
-            Bruttogesamthonorar:  Nettogesamthonorar * (1 + this.Steuersatz / 100),
-          };
+          this.Summenliste[Tabelle.Leistungsphase] = this.GetEmptyHonorarsumme();
         }
-        else {
+      }
+
+      this.Leistungsphasenliste.sort();
+
+      for(let Leistungsphase of this.Leistungsphasenliste) {
+
+        this.CurrentSimontabellenliste[Leistungsphase] = lodash.filter(this.Pool.Simontabellenliste[this.DBProjekte.CurrentProjekt.Projektkey], { Leistungsphase: Leistungsphase});
+
+        for(Tabelle of this.CurrentSimontabellenliste[Leistungsphase]) {
+
+          Nettoleistungssumme = 0;
+
+          for(let Leistung of Tabelle.Besondereleistungenliste) {
+
+            Nettoleistungssumme += Leistung.Honorar;
+          }
 
           this.Leistungsphasenanzahlliste[Tabelle.Leistungsphase] += 1;
 
-          Nettoumbauzuschlag = (Tabelle.Honorar * Tabelle.Umbauzuschlag) / 100;
-          Nettozwischensumme = Tabelle.Honorar + Leistungssumme + Nettoumbauzuschlag;
-          Nettonebenkosten   = Nettozwischensumme * Tabelle.Nebenkosten / 100;
-          Nettogesamthonorar = Nettozwischensumme + Nettonebenkosten;
+          Nettoumbauzuschlag = (Tabelle.Nettobasishonorar * Tabelle.Umbauzuschlag) / 100;
+          Nettogrundhonorar  = Tabelle.Nettobasishonorar + Nettoleistungssumme + Nettoumbauzuschlag;
+          Nettonebenkosten   = Nettogrundhonorar * Tabelle.Nebenkosten / 100;
+          Nettogesamthonorar = Nettogrundhonorar + Nettonebenkosten;
+          Mehrwertsteuer     = (Nettogesamthonorar * this.Steuersatz) / 100;
 
+          Tabelle.Nettoleistungen     = Nettoleistungssumme;
           Tabelle.Nettoumbauzuschlag  = Nettoumbauzuschlag;
-          Tabelle.Bruttoumbauzuschlag = Nettoumbauzuschlag * (1 + this.Steuersatz / 100);
+          Tabelle.Nettogrundhonorar   = Nettogrundhonorar;
           Tabelle.Nettonebenkosten    = Nettonebenkosten;
-          Tabelle.Bruttonebenkosten   = Nettonebenkosten * (1 + this.Steuersatz / 100);
-          Tabelle.Nettozwischensumme  = Nettozwischensumme;
-          Tabelle.Bruttozwischensumme = Nettozwischensumme * (1 + this.Steuersatz / 100);
           Tabelle.Nettogesamthonorar  = Nettogesamthonorar;
-          Tabelle.Bruttogesamthonorar = Nettogesamthonorar * (1 + this.Steuersatz / 100);
 
-          this.Summenliste[Tabelle.Leistungsphase][Index].Nettokostensumme     += Tabelle.Kosten;
-          this.Summenliste[Tabelle.Leistungsphase][Index].Bruttokostensumme    += Tabelle.Kosten * (1 + this.Steuersatz / 100);
+          Summeeintrag = this.Summenliste[Tabelle.Leistungsphase];
 
-          this.Summenliste[Tabelle.Leistungsphase][Index].Nettoumbauzuschlag   += Tabelle.Nettoumbauzuschlag;
-          this.Summenliste[Tabelle.Leistungsphase][Index].Bruttoumbauzuschlag  += Tabelle.Bruttoumbauzuschlag;
-
-
-          this.Summenliste[Tabelle.Leistungsphase][Index].Nettohonorar         += Tabelle.Honorar;
-          this.Summenliste[Tabelle.Leistungsphase][Index].Bruttohonorar        += Tabelle.Honorar * (1 + this.Steuersatz / 100);
-          this.Summenliste[Tabelle.Leistungsphase][Index].Nettoleistungssumme  += Leistungssumme;
-          this.Summenliste[Tabelle.Leistungsphase][Index].Bruttoleistungssumme += Leistungssumme * (1 + this.Steuersatz / 100);
-          this.Summenliste[Tabelle.Leistungsphase][Index].Nettozwischensumme   += Nettozwischensumme;
-          this.Summenliste[Tabelle.Leistungsphase][Index].Bruttozwischensumme  += Nettozwischensumme * (1 + this.Steuersatz / 100);
-          this.Summenliste[Tabelle.Leistungsphase][Index].Nettonebenkosten     += Nettonebenkosten;
-          this.Summenliste[Tabelle.Leistungsphase][Index].Bruttonebenkosten    += Nettonebenkosten * (1 + this.Steuersatz / 100);
-          this.Summenliste[Tabelle.Leistungsphase][Index].Nettogesamthonorar   += Nettogesamthonorar;
-          this.Summenliste[Tabelle.Leistungsphase][Index].Bruttogesamthonorar  += Nettogesamthonorar * (1 + this.Steuersatz / 100);
-        }
-
-        if(this.Leistungsphasenliste.length > 0) {
-
-          this.CurrentLeistungsphaseindex = 0;
-          this.CurrentLeistungsphase      = this.Leistungsphasenliste[this.CurrentLeistungsphaseindex];
-        }
-        else {
-
-          this.CurrentLeistungsphaseindex = null;
-          this.CurrentLeistungsphase      = this.Const.NONE;
+          Summeeintrag.Nettokostensumme     += Tabelle.Kosten;
+          Summeeintrag.Nettobasishonorar    += Tabelle.Nettobasishonorar;
+          Summeeintrag.Nettoumbauzuschlag   += Tabelle.Nettoumbauzuschlag;
+          Summeeintrag.Nettoleistungssumme  += Tabelle.Nettoleistungen;
+          Summeeintrag.Nettogrundhonorar    += Tabelle.Nettogrundhonorar;
+          Summeeintrag.Nettonebenkosten     += Nettonebenkosten;
+          Summeeintrag.Nettogesamthonorar   += Nettogesamthonorar;
+          Summeeintrag.Mehrwertsteuer       += Mehrwertsteuer;
+          Summeeintrag.Bruttogesamthonorar  += Nettogesamthonorar + Mehrwertsteuer;
         }
       }
+
+      for(let i = 0; i < this.Leistungsphasenliste.length; i++) {
+
+        if (lodash.isUndefined(this.DisplayLeistungsphaseliste[i])) this.DisplayLeistungsphaseliste[i] = false;
+      }
+
+      if(this.Leistungsphasenliste.length > 0) {
+
+        this.CurrentLeistungsphaseindex = 0;
+        this.CurrentLeistungsphase      = this.Leistungsphasenliste[this.CurrentLeistungsphaseindex];
+
+        this.DisplayLeistungsphaseliste[this.CurrentLeistungsphaseindex] = true;
+      }
+      else {
+
+        this.CurrentLeistungsphaseindex = null;
+        this.CurrentLeistungsphase      = this.Const.NONE;
+        this.DisplayLeistungsphaseliste = [];
+      }
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'CalculateHonorar', this.Debug.Typen.Service);
@@ -267,6 +264,7 @@ export class DatabaseSimontabelleService {
       let Tabelle: Simontabellestruktur;
       let Nummernliste: number[];
       let Nummer: number;
+      let Summe: Honorarsummenstruktur = this.GetEmptyHonorarsumme();
 
       if(this.CurrentSimontabelle !== null) {
 
@@ -316,13 +314,9 @@ export class DatabaseSimontabelleService {
               Eintrag.Rechnungseintraege.push({
 
                 RechnungID:         RechnungID,
-                Honoraranteil:       0,
-                Valid:               true,
-                Nettohonorar:        0,
-                Nettonebenkosten:    0,
-                Nettogesamthonorar:  0,
-                Mehrwertsteuer:      0,
-                Bruttogesamthonorar: 0
+                Honoraranteil:      0,
+                Valid:              true,
+                Honorarberechnung:  Summe
               });
             }
 
@@ -385,25 +379,19 @@ export class DatabaseSimontabelleService {
       let Tabelleneintragindex: number;
       let Rechnungseintragindex: number;
 
+      if(lodash.isUndefined(Rechnungseintrag.Honorarberechnung))Rechnungseintrag.Honorarberechnung = this.GetEmptyHonorarsumme();
+
       if(Rechnungseintrag.Valid === true) {
 
-        Rechnungseintrag.Nettohonorar        = (this.CurrentSimontabelle.Nettozwischensumme * Rechnungseintrag.Honoraranteil) / 100;
-        Rechnungseintrag.Nettoumbauzuschlag  = (this.CurrentSimontabelle.Honorar * this.CurrentSimontabelle.Umbauzuschlag) / 100;
-        Rechnungseintrag.Bruttoumbauzuschlag = Rechnungseintrag.Nettoumbauzuschlag * (1 + this.Steuersatz / 100);
-        Rechnungseintrag.Nettozwischensumme  = Rechnungseintrag.Nettohonorar + Rechnungseintrag.Nettoumbauzuschlag + Rechnungseintrag.Nettonebenkosten;
-        Rechnungseintrag.Nettonebenkosten    = (Rechnungseintrag.Nettohonorar * this.CurrentSimontabelle.Nebenkosten) / 100;
-        Rechnungseintrag.Mehrwertsteuer      = (Rechnungseintrag.Nettogesamthonorar * this.Steuersatz) / 100;
-        Rechnungseintrag.Bruttogesamthonorar = Rechnungseintrag.Nettogesamthonorar + Rechnungseintrag.Mehrwertsteuer;
+        Rechnungseintrag.Honorarberechnung.Nettogrundhonorar   = (this.CurrentSimontabelle.Nettogrundhonorar * Rechnungseintrag.Honoraranteil) / 100;
+        Rechnungseintrag.Honorarberechnung.Nettonebenkosten    = (Rechnungseintrag.Honorarberechnung.Nettogrundhonorar * this.CurrentSimontabelle.Nebenkosten) / 100;
+        Rechnungseintrag.Honorarberechnung.Nettogesamthonorar  = Rechnungseintrag.Honorarberechnung.Nettogrundhonorar + Rechnungseintrag.Honorarberechnung.Nettonebenkosten;
+        Rechnungseintrag.Honorarberechnung.Mehrwertsteuer      = (Rechnungseintrag.Honorarberechnung.Nettogesamthonorar * this.Steuersatz) / 100;
+        Rechnungseintrag.Honorarberechnung.Bruttogesamthonorar = Rechnungseintrag.Honorarberechnung.Nettogesamthonorar + Rechnungseintrag.Honorarberechnung.Mehrwertsteuer;
       }
       else {
 
-        Rechnungseintrag.Mehrwertsteuer      = 0;
-        Rechnungseintrag.Nettohonorar        = 0;
-        Rechnungseintrag.Nettonebenkosten    = 0;
-        Rechnungseintrag.Nettogesamthonorar  = 0;
-        Rechnungseintrag.Bruttogesamthonorar = 0;
-        Rechnungseintrag.Nettoumbauzuschlag  = 0;
-        Rechnungseintrag.Bruttoumbauzuschlag = 0;
+        Rechnungseintrag.Honorarberechnung = this.GetEmptyHonorarsumme();
       }
 
       Tabelleneintrag.Honorarsummeprozent = 0;
@@ -420,24 +408,12 @@ export class DatabaseSimontabelleService {
 
       for(let Rechnungseintrag2 of Tabelleneintrag.Rechnungseintraege) {
 
-        if(lodash.isUndefined(Rechnungseintrag2.Honoraranteil))       Rechnungseintrag2.Honoraranteil       = 0;
-        if(lodash.isUndefined(Rechnungseintrag2.Nettohonorar))        Rechnungseintrag2.Nettohonorar        = 0;
-        if(lodash.isUndefined(Rechnungseintrag2.Nettonebenkosten))    Rechnungseintrag2.Nettonebenkosten    = 0;
-        if(lodash.isUndefined(Rechnungseintrag2.Nettogesamthonorar))  Rechnungseintrag2.Nettogesamthonorar  = 0;
-        if(lodash.isUndefined(Rechnungseintrag2.Mehrwertsteuer))      Rechnungseintrag2.Mehrwertsteuer      = 0;
-        if(lodash.isUndefined(Rechnungseintrag2.Bruttogesamthonorar)) Rechnungseintrag2.Bruttogesamthonorar = 0;
-        if(lodash.isUndefined(Rechnungseintrag2.Nettoumbauzuschlag))  Rechnungseintrag2.Nettoumbauzuschlag  = 0;
-        if(lodash.isUndefined(Rechnungseintrag2.Bruttoumbauzuschlag)) Rechnungseintrag2.Bruttoumbauzuschlag = 0;
-
         Tabelleneintrag.Honorarsummeprozent += Rechnungseintrag2.Honoraranteil;
-        Tabelleneintrag.Honorarsumme        += Rechnungseintrag2.Nettohonorar;
-        Tabelleneintrag.Nettohonorar        += Rechnungseintrag2.Nettohonorar;
-        Tabelleneintrag.Nettonebenkosten    += Rechnungseintrag2.Nettonebenkosten;
-        Tabelleneintrag.Nettogesamthonorar  += Rechnungseintrag2.Nettogesamthonorar;
-        Tabelleneintrag.Mehrwertsteuer      += Rechnungseintrag2.Mehrwertsteuer;
-        Tabelleneintrag.Bruttogesamthonorar += Rechnungseintrag2.Bruttogesamthonorar;
-        Tabelleneintrag.Nettoumbauzuschlag  += Rechnungseintrag2.Nettoumbauzuschlag;
-        Tabelleneintrag.Bruttoumbauzuschlag += Rechnungseintrag2.Bruttoumbauzuschlag;
+        Tabelleneintrag.Honorarsumme        += Rechnungseintrag2.Honorarberechnung.Nettogrundhonorar;
+        Tabelleneintrag.Nettonebenkosten    += Rechnungseintrag2.Honorarberechnung.Nettonebenkosten;
+        Tabelleneintrag.Nettogesamthonorar  += Rechnungseintrag2.Honorarberechnung.Nettogesamthonorar;
+        Tabelleneintrag.Mehrwertsteuer      += Rechnungseintrag2.Honorarberechnung.Mehrwertsteuer;
+        Tabelleneintrag.Bruttogesamthonorar += Rechnungseintrag2.Honorarberechnung.Bruttogesamthonorar;
       }
 
       Tabelleneintragindex  = lodash.findIndex(this.CurrentSimontabelle.Eintraegeliste, { Buchstabe: Tabelleneintrag.Buchstabe });
@@ -459,26 +435,7 @@ export class DatabaseSimontabelleService {
       let Zwischensumme: Honorarsummenstruktur;
       let Bruttozwischensumme: number;
       let Merker: Simontabellestruktur;
-      let Summe: Honorarsummenstruktur = {
-
-        Honorarprozente: 0,
-        Bruttogesamthonorar: 0,
-        Bruttohonorar: 0,
-        Nettoumbauzuschlag: 0,
-        Bruttoumbauzuschlag: 0,
-        Bruttokostensumme: 0,
-        Bruttoleistungssumme: 0,
-        Bruttonebenkosten: 0,
-        Bruttozwischensumme: 0,
-        Nettogesamthonorar: 0,
-        Nettohonorar: 0,
-        Nettokostensumme: 0,
-        Nettoleistungssumme: 0,
-        Nettonebenkosten: 0,
-        Nettozwischensumme: 0,
-        Mehrwertsteuer: 0,
-        Sicherheitseinbehalt: 0
-      };
+      let Summe: Honorarsummenstruktur = this.GetEmptyHonorarsumme();
 
       Merker = this.CurrentSimontabelle;
 
@@ -488,21 +445,28 @@ export class DatabaseSimontabelleService {
 
           Rechnung            = this.CurrentSimontabelle.Rechnungen[Rechnungsindex];
           Zwischensumme       = this.CalculateRechnungssumme(Rechnung, this.CurrentSimontabelle);
-          Bruttozwischensumme = (Zwischensumme.Nettohonorar + Zwischensumme.Nettonebenkosten) * (1 + this.Steuersatz / 100);
 
-          Summe.Nettohonorar         += Zwischensumme.Nettohonorar;
-          Summe.Bruttohonorar        += (Zwischensumme.Nettohonorar  * (1 + this.Steuersatz / 100));
+          /*
+
+                        Summe.Nettogrundhonorar   += Rechnungseintrag.Honorarberechnung.Nettogrundhonorar;
+              Summe.Nettonebenkosten    += Rechnungseintrag.Honorarberechnung.Nettonebenkosten;
+              Summe.Nettogesamthonorar  += Rechnungseintrag.Honorarberechnung.Nettogesamthonorar;
+              Summe.Mehrwertsteuer      += Rechnungseintrag.Honorarberechnung.Mehrwertsteuer;
+              Summe.Bruttogesamthonorar += Rechnungseintrag.Honorarberechnung.Bruttogesamthonorar;
+           */
+
+          // Bruttozwischensumme = (Zwischensumme.Nettohonorar + Zwischensumme.Nettonebenkosten) * (1 + this.Steuersatz / 100);
+
+          Summe.Nettogrundhonorar    += Zwischensumme.Nettogrundhonorar;
           Summe.Nettonebenkosten     += Zwischensumme.Nettonebenkosten;
-          Summe.Bruttonebenkosten    += (Zwischensumme.Nettonebenkosten  * (1 + this.Steuersatz / 100));
-          Summe.Nettozwischensumme   += (Zwischensumme.Nettohonorar + Zwischensumme.Nettonebenkosten);
-          Summe.Bruttozwischensumme  += Bruttozwischensumme;
           Summe.Nettogesamthonorar   += Zwischensumme.Nettogesamthonorar;
           Summe.Mehrwertsteuer       += Zwischensumme.Mehrwertsteuer;
+          Summe.Bruttogesamthonorar  += Zwischensumme.Bruttogesamthonorar;
         }
       }
 
-      Summe.Sicherheitseinbehalt = (Summe.Bruttozwischensumme * this.CurrentSimontabelle.Sicherheitseinbehalt) / 100;
-      Summe.Bruttogesamthonorar  = Summe.Bruttozwischensumme - Summe.Sicherheitseinbehalt;
+      Summe.Sicherheitseinbehalt = (Summe.Bruttogesamthonorar * this.CurrentSimontabelle.Sicherheitseinbehalt) / 100;
+      Summe.Bruttogesamthonorar  = Summe.Bruttogesamthonorar - Summe.Sicherheitseinbehalt;
 
       this.CurrentSimontabelle = Merker;
 
@@ -519,26 +483,7 @@ export class DatabaseSimontabelleService {
 
     try {
 
-      let Summe: Honorarsummenstruktur = {
-
-        Honorarprozente: 0,
-        Bruttogesamthonorar: 0,
-        Nettoumbauzuschlag: 0,
-        Bruttoumbauzuschlag: 0,
-        Bruttohonorar: 0,
-        Bruttokostensumme: 0,
-        Bruttoleistungssumme: 0,
-        Bruttonebenkosten: 0,
-        Bruttozwischensumme: 0,
-        Nettogesamthonorar: 0,
-        Nettohonorar: 0,
-        Nettokostensumme: 0,
-        Nettoleistungssumme: 0,
-        Nettonebenkosten: 0,
-        Nettozwischensumme: 0,
-        Mehrwertsteuer: 0,
-        Sicherheitseinbehalt: 0
-      };
+      let Summe: Honorarsummenstruktur = this.GetEmptyHonorarsumme();
 
       if(this.CurrentSimontabelle !== null) {
 
@@ -549,13 +494,11 @@ export class DatabaseSimontabelleService {
             if(Rechnungseintrag.RechnungID === Rechnung.RechnungID) {
 
               Summe.Honorarprozente     += Rechnungseintrag.Honoraranteil;
-              Summe.Nettohonorar        += Rechnungseintrag.Nettohonorar;
-              Summe.Bruttohonorar       += (Rechnungseintrag.Nettohonorar * (1 + this.Steuersatz / 100));
-              Summe.Nettonebenkosten    += Rechnungseintrag.Nettonebenkosten;
-              Summe.Bruttonebenkosten   += (Rechnungseintrag.Nettonebenkosten * (1 + this.Steuersatz / 100));
-              Summe.Nettogesamthonorar  += Rechnungseintrag.Nettogesamthonorar;
-              Summe.Mehrwertsteuer      += Rechnungseintrag.Mehrwertsteuer;
-              Summe.Bruttogesamthonorar += Rechnungseintrag.Bruttogesamthonorar;
+              Summe.Nettogrundhonorar   += Rechnungseintrag.Honorarberechnung.Nettogrundhonorar;
+              Summe.Nettonebenkosten    += Rechnungseintrag.Honorarberechnung.Nettonebenkosten;
+              Summe.Nettogesamthonorar  += Rechnungseintrag.Honorarberechnung.Nettogesamthonorar;
+              Summe.Mehrwertsteuer      += Rechnungseintrag.Honorarberechnung.Mehrwertsteuer;
+              Summe.Bruttogesamthonorar += Rechnungseintrag.Honorarberechnung.Bruttogesamthonorar;
             }
           }
         }
@@ -569,37 +512,44 @@ export class DatabaseSimontabelleService {
     }
   }
 
+  private GetEmptyHonorarsumme(): Honorarsummenstruktur {
+
+    try {
+
+      let Summe: Honorarsummenstruktur = {
+
+        Bruttogesamthonorar:  0,
+        Honorarprozente:      0,
+        Mehrwertsteuer:       0,
+        Nettobasishonorar:    0,
+        Nettogesamthonorar:   0,
+        Nettogrundhonorar:    0,
+        Nettokostensumme:     0,
+        Nettoleistungssumme:  0,
+        Nettonebenkosten:     0,
+        Nettoumbauzuschlag:   0,
+        Sicherheitseinbehalt: 0,
+        Bruttorechungsbetrag: 0
+      };
+
+      return Summe;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Simontabelle', 'GetEmptyHonorarsumme', this.Debug.Typen.Service);
+    }
+  }
+
   public CalculateRechnungssummen(): Honorarsummenstruktur  {
 
     try {
 
-      let Summe: Honorarsummenstruktur;
-
-      Summe = {
-
-        Honorarprozente: 0,
-        Bruttogesamthonorar: 0,
-        Bruttohonorar: 0,
-        Nettoumbauzuschlag: 0,
-        Bruttoumbauzuschlag: 0,
-        Bruttokostensumme: 0,
-        Bruttoleistungssumme: 0,
-        Bruttonebenkosten: 0,
-        Bruttozwischensumme: 0,
-        Nettogesamthonorar: 0,
-        Nettohonorar: 0,
-        Nettokostensumme: 0,
-        Nettoleistungssumme: 0,
-        Nettonebenkosten: 0,
-        Nettozwischensumme: 0,
-        Mehrwertsteuer: 0,
-        Sicherheitseinbehalt: 0
-      };
+      let Summe: Honorarsummenstruktur = this.GetEmptyHonorarsumme();
 
       for(let Tabelleneintrag of this.CurrentSimontabelle.Eintraegeliste) {
 
         Summe.Honorarprozente     += Tabelleneintrag.Honorarsummeprozent;
-        Summe.Nettohonorar        += Tabelleneintrag.Nettohonorar;
+        Summe.Nettobasishonorar   += Tabelleneintrag.Nettohonorar;
         Summe.Nettonebenkosten    += Tabelleneintrag.Nettonebenkosten;
         Summe.Nettogesamthonorar  += Tabelleneintrag.Nettogesamthonorar;
         Summe.Mehrwertsteuer      += Tabelleneintrag.Mehrwertsteuer;
@@ -828,7 +778,7 @@ export class DatabaseSimontabelleService {
         Leistungsphase: Leistungsphase,
         Durchschnittswert: Durchschnittswert,
         Eintraegeliste: Liste,
-        Honorar: 0,
+        Nettobasishonorar: 0,
         Kosten: 0,
         Nebenkosten: 0,
         Umbauzuschlag: 0,
@@ -847,6 +797,18 @@ export class DatabaseSimontabelleService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Databse Simontabelle', 'GetNewSimontabelle', this.Debug.Typen.Service);
+    }
+  }
+
+  public AddMehrwertsteuer(wert: number): number {
+
+    try {
+
+      return wert * (1 + this.Steuersatz / 100);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Databse Simontabelle', 'AddMehrwertsteuer', this.Debug.Typen.Service);
     }
   }
 
@@ -906,8 +868,6 @@ export class DatabaseSimontabelleService {
 
       // Simontabelle auf Server speichern
 
-      debugger;
-
       return new Promise((resolve, reject) => {
 
         // PUT für update -> Datei neu erstellen oder überschreiben
@@ -963,6 +923,8 @@ export class DatabaseSimontabelleService {
 
       OriginSimontabelle = this.GetNewSimontabelle(Leistungsphase, Anlagengruppe);
 
+      if(lodash.isUndefined(Simontabelle.Nettogrundhonorar)) Simontabelle.Nettogrundhonorar = 0;
+
       Simontabelle.Durchschnittswert = OriginSimontabelle.Durchschnittswert;
 
       for(let Eintrag of Simontabelle.Eintraegeliste) {
@@ -974,6 +936,12 @@ export class DatabaseSimontabelleService {
           Eintrag.Von          = OriginEintrag.Von;
           Eintrag.Bis          = OriginEintrag.Bis;
           Eintrag.Beschreibung = OriginEintrag.Beschreibung;
+        }
+
+        for(let Rechnungseintrag of Eintrag.Rechnungseintraege) {
+
+          if(lodash.isUndefined(Rechnungseintrag.Honoraranteil))     Rechnungseintrag.Honoraranteil     = 0;
+          if(lodash.isUndefined(Rechnungseintrag.Honorarberechnung)) Rechnungseintrag.Honorarberechnung = this.GetEmptyHonorarsumme();
         }
       }
 
@@ -1063,7 +1031,7 @@ export class DatabaseSimontabelleService {
         UserID:      this.GraphService.Graphuser.id,
         FileID:      this.CurrentRechnung.FileID,
         Filename:    this.CurrentRechnung.Filename,
-        Signatur:    this.Pool.Signatur,
+        Signatur:    this.Pool.GetFilledSignatur(this.Pool.Mitarbeiterdaten, false),
         Token:       token,
         Empfaengerliste: this.CurrentRechnung.Empfaengerliste,
       };
@@ -1154,8 +1122,6 @@ export class DatabaseSimontabelleService {
 
           return rechnung.RechnungID !== Rechnung.RechnungID;
         });
-
-        debugger;
 
         for(Eintrag of Tabelle.Eintraegeliste) {
 
@@ -1317,8 +1283,6 @@ export class DatabaseSimontabelleService {
 
           return eintrag.LeistungID === CurrentBesondereleistung.LeistungID;
         });
-
-        debugger;
 
         if(Index !== -1) this.CurrentSimontabelle.Besondereleistungenliste[Index] = CurrentBesondereleistung;
 
