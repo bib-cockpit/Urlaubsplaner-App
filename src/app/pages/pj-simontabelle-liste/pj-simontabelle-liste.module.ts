@@ -19,6 +19,8 @@ import {PjSimontabelleEditorModule} from "../../components-page/pj-simontabelle-
 import {
   PjSimontabelleLeistungeneditorModule
 } from "../../components-page/pj-simontabelle-leistungeneditor/pj-simontabelle-leistungeneditor.module";
+import {FiMitarbeiterAuswahlModule} from "../../components-page/fi-mitarbeiter-auswahl/fi-mitarbeiter-auswahl.module";
+import {PjEmailSendModule} from "../../components-page/pj-email-send/pj-email-send.module";
 
 
 const routes: Routes = [
@@ -29,23 +31,25 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    IonicModule,
-    PageHeaderModule,
-    RouterModule.forChild(routes),
-    PageHeaderMenuModule,
-    PageFooterModule,
-    AuswahlDialogModule,
-    PjNotizenkapitelEditorModule,
-    EditorComponent,
-    FormsModule,
-    PjProjekteSchnellauswahlModule,
-    PjSimontabelleEditorModule,
-    PjSimontabelleLeistungeneditorModule,
+    imports: [
+        CommonModule,
+        IonicModule,
+        PageHeaderModule,
+        RouterModule.forChild(routes),
+        PageHeaderMenuModule,
+        PageFooterModule,
+        AuswahlDialogModule,
+        PjNotizenkapitelEditorModule,
+        EditorComponent,
+        FormsModule,
+        PjProjekteSchnellauswahlModule,
+        PjSimontabelleEditorModule,
+        PjSimontabelleLeistungeneditorModule,
+        FiMitarbeiterAuswahlModule,
+        PjEmailSendModule,
 
 
-  ],
+    ],
   declarations: [PjSimontabelleListePage],
   exports: [
     PjSimontabelleListePage

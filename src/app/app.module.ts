@@ -29,14 +29,14 @@ import {BrowserCacheLocation, InteractionType, IPublicClientApplication, LogLeve
 import {environment} from "../environments/environment";
 import { EditorModule } from '@tinymce/tinymce-angular';
 
-const appurl: string                   = environment.production === false ? 'http://localhost:4200' : 'https://nice-glacier-0c9ec7703.3.azurestaticapps.net';
+const appurl: string                   = environment.production === false ? 'http://localhost:4200' : 'https://blue-glacier-0917b1103.4.azurestaticapps.net';
 
 // !! Server URL auch in Pool service anpassen
 
-const serverurl: string                = environment.production === false ? 'http://localhost:8080' : 'https://bae-cockpit-server.azurewebsites.net';
+const serverurl: string                = environment.production === false ? 'http://localhost:8080' : 'bae-urlaubsplaner-server.azurewebsites.net';
 const MandantenID: string              = '8870822d-b5ee-4a63-b4ea-7147f0ee753d';
-const clientappregistration: string    = 'bc457d46-6f13-4fa7-a973-e94cf4102dd9'; // Login funktioniert mit peter.hornburger
-const clientserverregistration: string = '8289bad1-d444-4958-9033-832603d0e244'; // geht nicht da Web / Server Anwendung
+const clientappregistration: string    = 'e85e5489-e9fd-4d10-b6aa-37be3ce084b6'; // Login funktioniert mit peter.hornburger
+const clientserverregistration: string = 'ca7568f7-4672-4348-843b-b80b210d692f'; // geht nicht da Web / Server Anwendung
 
 // GITHUB Account
 // Benutzername: peter.hornburger@b-a-e.eu

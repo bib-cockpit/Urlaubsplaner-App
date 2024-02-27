@@ -105,6 +105,7 @@ export class AuswahlDialogService {
     Protokollliste_Projektpunkteditor_Status:          'Protokollliste_Projektpunkteditor_Status',
     Protokollliste_Projektpunkteditor_Fachbereich:     'Protokollliste_Projektpunkteditor_Fachbereich',
 
+    Simontabelle_Editor_Emailempfaenger:           'Simontabelle_Editor_Emailempfaenger',
 
 
     Emailliste_Projektpunkteditor_Fachbereich:     'Emailliste_Projektpunkteditor_Fachbereich',

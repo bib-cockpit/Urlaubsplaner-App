@@ -22,6 +22,7 @@ export type Simontabellestruktur = {
   Besondereleistungenliste: Simontabellebesondereleistungstruktur[];
   Rechnungen: Rechnungstruktur[];
 
+
   Nettoumbauzuschlag?: number;
   Bruttoumbauzuschlag?: number;
   Nettonebenkosten?: number;

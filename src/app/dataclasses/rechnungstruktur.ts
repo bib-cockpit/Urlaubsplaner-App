@@ -5,10 +5,9 @@ export type Rechnungstruktur = {
   RechnungID:  string;
   Nummer: number;
   Zeitstempel: number;
-  DownloadURL: string;
   Verfasser: Verfasserstruktur;
-  BeteiligExternIDListe:  string[];
-  BeteiligtInternIDListe: string[];
+  CanDelete?: boolean;
+
   EmpfaengerExternIDListe: string[];
   EmpfaengerInternIDListe: string[];
   CcEmpfaengerExternIDListe: string[];
@@ -20,5 +19,9 @@ export type Rechnungstruktur = {
   GesendetZeitstring:  string;
   GesendetZeitstempel: number;
 
-  CanDelete?: boolean;
+  Empfaengerliste?: {
+    Name:  string;
+    Firma: string;
+    Email: string;
+  }[];
 };

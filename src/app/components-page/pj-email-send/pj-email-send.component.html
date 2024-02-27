@@ -61,6 +61,13 @@
                           <td>{{Empfaenger.Email}}</td>
                         </tr>
                       </ng-container>
+                      <ng-container *ngSwitchCase="Pool.Emailcontentvarinaten.Simontabelle">
+                        <tr *ngFor="let Empfaenger of DBSimontabelle.CurrentRechnung.Empfaengerliste" style="font-size: 90%;">
+                          <td>{{Empfaenger.Name}}</td>
+                          <td>{{Empfaenger.Firma}}</td>
+                          <td>{{Empfaenger.Email}}</td>
+                        </tr>
+                      </ng-container>
                     </ng-container>
 
                   </table>
