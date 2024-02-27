@@ -13,9 +13,11 @@ export type Simontabelleeintragstruktur = {
   Honorarsumme?: number;
   Honorarsummeprozent?: number;
   Nettohonorar?: number;
-  Nettonebenkosten?: number;
   Nettoumbauzuschlag?: number;
   Bruttoumbauzuschlag?: number;
+  Nettoleistungen?: number;
+  Nettozwischensumme?: number;
+  Nettonebenkosten?: number;
   Nettogesamthonorar?: number;
   Mehrwertsteuer?: number;
   Bruttogesamthonorar?: number;

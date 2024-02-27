@@ -80,8 +80,7 @@ export class PjSimontabelleLeistungeneditorComponent implements OnInit, OnDestro
       this.JoiShema = Joi.object({
 
         Nummer:       Joi.string().required().min(1).max(5),
-        Titel:        Joi.string().required().min(10).max(200),
-        Beschreibung: Joi.string().required().min(10).max(600),
+        Titel:        Joi.string().required().min(3).max(200),
 
       }).options({ stripUnknown: true });
 
@@ -115,7 +114,7 @@ export class PjSimontabelleLeistungeneditorComponent implements OnInit, OnDestro
       if(Result.error) this.Valid = false;
       else             this.Valid = true;
 
-      if(this.DB.CurrentSimontabelle.Honorar === 0) this.Valid = false;
+      if(this.DB.CurrentSimontabelle.Nettobasishonorar === 0) this.Valid = false;
 
       this.ValidChange.emit(this.Valid);
 

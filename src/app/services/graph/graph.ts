@@ -56,6 +56,12 @@ export class Graphservice {
   public KalenderKW: number;
   public Outlookpresetcolors:Outlookpresetcolorsstruktur[];
   private BAESiteID: string;
+  public FilebrowserModus: string;
+  public FilebrowserModusvarianten = {
+
+    Alle_Projekte:   'Alle_Projekte',
+    Current_Projekt: 'Current_Projekt'
+  };
 
 
   constructor(
@@ -83,6 +89,7 @@ export class Graphservice {
       this.CurrentTeamsID        = 'ea457111-b3f1-4c73-a8ae-cb1cbaf6d244'; // Köferinger Straße 20
       this.CurrentPDFDownload    = null;
       this.Outlookkontakteliste  = [];
+      this.FilebrowserModus      = this.FilebrowserModusvarianten.Alle_Projekte;
       this.KalenderKW            = moment().locale('de').isoWeek();
       this.Outlookpresetcolors   = [
 
@@ -483,7 +490,7 @@ export class Graphservice {
 
               default:
 
-                debugger;
+                // debugger;
 
                 break;
             }
@@ -503,7 +510,7 @@ export class Graphservice {
     }
   }
 
-  public async GetOwnEmail(emailid: string): Promise<Outlookemailstruktur> {
+  public async GetOwnEmail(emailid: string): Promise<Outlookemailstruktur>  {
 
     try {
 
@@ -519,7 +526,7 @@ export class Graphservice {
       });
 
 
-      return new Promise((resolve, reject) => {
+      return new Promise <Outlookemailstruktur>((resolve, reject) => {
 
         if(token !== null) {
 
@@ -558,12 +565,12 @@ export class Graphservice {
                 break;
             }
 
-            reject(error);
+            reject(null);
           });
         }
         else {
 
-          reject(false);
+          reject(null);
         }
       });
 
@@ -585,7 +592,7 @@ export class Graphservice {
         }
       });
 
-      return new Promise((resolve, reject) => {
+      return new Promise <Outlookemailattachmentstruktur[]>((resolve, reject) => {
 
         if(token !== null) {
 
@@ -851,7 +858,7 @@ export class Graphservice {
         }
       });
 
-      return new Promise((resolve, reject) => {
+      return new Promise <Graphuserstruktur>((resolve, reject) => {
 
         if(token !== null) {
 
@@ -891,7 +898,7 @@ export class Graphservice {
     }
   }
 
-  public async GetOtherTeamsinfo(teamsid: string): Promise<Teamsstruktur> {
+  public async GetOtherTeamsinfo(teamsid: string): Promise <Teamsstruktur> {
 
     try {
 
@@ -906,7 +913,7 @@ export class Graphservice {
 
       debugger;
 
-      return new Promise((resolve, reject) => {
+      return new Promise <Teamsstruktur>((resolve, reject) => {
 
         if(token !== null) {
 
@@ -1141,7 +1148,7 @@ export class Graphservice {
         }
       });
 
-      return new Promise((resolve, reject) => {
+      return new Promise <Thumbnailstruktur>((resolve, reject) => {
 
         if(token !== null) {
 
@@ -1223,6 +1230,11 @@ export class Graphservice {
     }
   }
 
+  // originalKeywordKind
+
+  // identifierToKeywordKind(identifier)
+
+
   public RemoveSiteSubdirectory(file: Teamsfilesstruktur) {
 
     try {
@@ -1234,7 +1246,7 @@ export class Graphservice {
 
       for(let Eintrag of Liste) {
 
-        Result = lodash.find(this.TeamsSubdirectorylist, (eintrag: Teamsfilesstruktur) => {
+        Result = <Teamsfilesstruktur>lodash.find(this.TeamsSubdirectorylist, (eintrag: Teamsfilesstruktur) => {
 
           return eintrag.id === Eintrag.id;
         });
@@ -1479,7 +1491,7 @@ export class Graphservice {
         }
       });
 
-      return new Promise((resolve, reject) => {
+      return new Promise <Teamsdownloadstruktur>((resolve, reject) => {
 
         if(token !== null) {
 
@@ -1531,7 +1543,7 @@ export class Graphservice {
         }
       });
 
-      return new Promise((resolve, reject) => {
+      return new Promise <Teamsdownloadstruktur>((resolve, reject) => {
 
         if(token !== null) {
 
@@ -1563,6 +1575,67 @@ export class Graphservice {
       this.Debug.ShowErrorMessage(error, 'Graph', 'DownloadPDFSiteFile', this.Debug.Typen.Service);
     }
   }
+
+  public async DownloadPDFSiteFileViaLink(fileid: string): Promise<Teamsdownloadstruktur> {
+
+    try {
+
+      let token = await this.AuthService.RequestToken('user.read');
+      let Link: any =  document.createElement('a');
+      let Download: Teamsdownloadstruktur = {
+
+        name: '',
+        id: '',
+        context: '',
+        url: ''
+      };
+
+      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
+
+          done(null, token);
+        }
+      });
+
+      return new Promise <Teamsdownloadstruktur>((resolve, reject) => {
+
+        if(token !== null) {
+
+          graphClient.api('/sites/' +  this.BAESiteID + '/drive/items/' + fileid + '?select=id,@microsoft.graph.downloadUrl').get().then((result: any) => {
+
+            Download.id      = result.id;
+            Download.url     = result['@microsoft.graph.downloadUrl'];
+            Download.context = result['@odata.context'];
+
+            this.CurrentPDFDownload = Download;
+
+            document.body.appendChild(Link);
+
+            Link.href = Download.url;
+
+            Link.click();
+            Link.remove();
+
+            resolve(Download);
+
+          }).catch((error: GraphError) => {
+
+            debugger;
+
+            reject(error);
+          });
+        }
+        else {
+
+          reject(null);
+        }
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Graph', 'DownloadPDFSiteFileViaLink', this.Debug.Typen.Service);
+    }
+  }
+
 
   public async GetOwnUserteams() {
 
@@ -1626,7 +1699,7 @@ export class Graphservice {
 
       let Url: string = this.Pool.CockpitserverURL + '/userteams';
 
-      return new Promise((resolve, reject) => {
+      return new Promise <Teamsstruktur[]>((resolve, reject) => {
 
         Observer = this.http.put(Url, Daten);
 
@@ -1667,7 +1740,7 @@ export class Graphservice {
 
       let Url: string = this.Pool.CockpitserverURL + '/addteamsmember';
 
-      return new Promise((resolve, reject) => {
+      return new Promise <Teamsstruktur[]>((resolve, reject) => {
 
         Observer = this.http.put(Url, Daten);
 
@@ -1766,7 +1839,7 @@ export class Graphservice {
 
       directoryid = directoryid.replace('ROOT:', '');
 
-      return new Promise((resolve, reject) => {
+      return new Promise <boolean>((resolve, reject) => {
 
         if(token !== null) {
 
@@ -1818,7 +1891,7 @@ export class Graphservice {
 
       directoryid = directoryid.replace('ROOT:', '');
 
-      return new Promise((resolve, reject) => {
+      return new Promise <boolean>((resolve, reject) => {
 
         if(token !== null) {
 
@@ -1866,7 +1939,7 @@ export class Graphservice {
         }
       });
 
-      return new Promise((resolve, reject) => {
+      return new Promise <Teamsfilesstruktur>((resolve, reject) => {
 
         if(token !== null) {
 
@@ -1908,11 +1981,13 @@ export class Graphservice {
         }
       });
 
-      return new Promise((resolve, reject) => {
+      return new Promise <Teamsfilesstruktur>((resolve, reject) => {
 
         if(token !== null) {
 
-          graphClient.api('/sites/' + this.BAESiteID + '/drive/items/' + dirid).get().then((result: Teamsfilesstruktur) => {
+          graphClient.api('/sites/' + this.BAESiteID + '/drive/items/' + dirid).get().then((result: any) => {
+
+            debugger;
 
             resolve(result);
 
@@ -2058,7 +2133,7 @@ export class Graphservice {
         }
       });
 
-      return new Promise((resolve, reject) => {
+      return new Promise <Teamsmitgliederstruktur[]>((resolve, reject) => {
 
         if(token !== null) {
 

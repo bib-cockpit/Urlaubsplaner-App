@@ -28,9 +28,8 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
   @Input() Dialoghoehe: number;
   @Input() PositionY: number;
   @Input() ZIndex: number;
-  // @Input() public Pageheader: PageHeaderComponent;
-
-  // @ViewChild('MyAuswahlDialog', { static: false }) MyAuswahlDialog: AuswahlDialogComponent;
+  @Input() ShowTerminvarianteAuswahl: boolean;
+  @Input() DoUpdateProjektpunkt: boolean;
 
   @Output() StatusChanged            = new EventEmitter<string>();
   @Output() FertigClicked            = new EventEmitter<any>();
@@ -59,9 +58,11 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
               public Const: ConstProvider) {
     try {
 
-      this.ShowProtokollpunkte = true;
-      this.Kalendertageliste   = [];
-      this.Terminvariante      = this.Terminvarianten.Stichtag;
+      this.ShowProtokollpunkte       = true;
+      this.Kalendertageliste         = [];
+      this.ShowTerminvarianteAuswahl = true;
+      this.Terminvariante            = this.Terminvarianten.Stichtag;
+      this.DoUpdateProjektpunkt      = true;
     }
     catch (error) {
 
@@ -363,25 +364,29 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy {
 
       this.Debug.ShowMessage('Ok  Button CLicked', 'LOP Liste Date KW Picker', 'OkButtonClicked', this.Debug.Typen.Component);
 
-      debugger;
+      if(this.DoUpdateProjektpunkt) {
 
-      if(this.DBProjektpunkte.CurrentProjektpunkt._id !== null && this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe !== '') {
+        if(this.DBProjektpunkte.CurrentProjektpunkt._id !== null && this.DBProjektpunkte.CurrentProjektpunkt.Aufgabe !== '') {
 
-        this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt, true).then(() => {
+          this.DBProjektpunkte.UpdateProjektpunkt(this.DBProjektpunkte.CurrentProjektpunkt, true).then(() => {
 
+
+            this.OkClickedEvent.emit();
+
+          }).catch((error: any) => {
+
+            this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'function', this.Debug.Typen.Component);
+          });
+        }
+        else {
 
           this.OkClickedEvent.emit();
-
-        }).catch((error: any) => {
-
-          this.Debug.ShowErrorMessage(error.message, 'LOP Liste Date KW Picker', 'function', this.Debug.Typen.Component);
-        });
+        }
       }
       else {
 
         this.OkClickedEvent.emit();
       }
-
 
     } catch (error) {
 

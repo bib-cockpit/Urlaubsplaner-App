@@ -7,7 +7,9 @@
 
   <table style="width: 100%">
     <tr>
-      <td style="width: auto;">
+      <td style="width: auto;" valign="top">
+
+
         <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
           <tr>
             <td style="width: 460px">
@@ -98,21 +100,27 @@
 
 
       </td>
-      <td style="width: 1000px">
+      <td style="width: 800px; padding: 6px;">
 
+        <div style="width: 800px; height: 800px; border: 1px solid gray; padding: 4px; border-radius: 4px;" [innerHTML]="Signatur | safe: 'html'"></div>
+
+        <!--
         <editor
           [apiKey]="'7hvzif1s8dafhu40z0kjgpw1y4zwc2p5cokjkfox946qpfjc'"
           [init]="Editorconfig" [id]="'Signatureditor'"
-          [(ngModel)]="Pool.Signatur"
+          [(ngModel)]="Signatur">
           (onNodeChange)="SignaturTextChangedHandler($event)"
           (onChange)="SignaturTextChangedHandler($event)"
           (onPaste)="SignaturTextChangedHandler($event)"
           (onCut)="SignaturTextChangedHandler($event)"
-          (onKeyPress)="SignaturTextChangedHandler($event)">
+          (onKeyPress)="SignaturTextChangedHandler($event)"
         </editor>
+        -->
+
       </td>
     </tr>
   </table>
+
 
 
 </ion-content>

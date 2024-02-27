@@ -335,6 +335,25 @@
                               </table>
                             </ion-col>
                           </ion-row>
+                          <ion-row *ngIf="DB.CurrentProjekt.ProjektFolderID !== Const.NONE">
+                            <ion-col [size]="12">
+                              <table style="width: 100%">
+                                <tr>
+                                  <td style="width: auto">
+                                    <input-clone (click)="SelectRechnungListefolderClicked()" [Value]="RechnungListefolder"
+                                                 [Enabled]="false" Titel="Speicherort Rechnungen" [DisabledColor]="DB.CurrentProjekt.RechnungListefolderID !== Const.NONE ? '#354547' : 'orange'">
+                                    </input-clone>
+                                  </td>
+                                  <td style="width: 4px"></td>
+                                  <td style="width: 46px">
+                                    <ion-button (click)="SelectRechnungListefolderClicked()" size="small" color="burnicklbraun">
+                                      <ion-icon name="folder"></ion-icon>
+                                    </ion-button>
+                                  </td>
+                                </tr>
+                              </table>
+                            </ion-col>
+                          </ion-row>
 
                           <ion-row>
                             <ion-col [size]="12">

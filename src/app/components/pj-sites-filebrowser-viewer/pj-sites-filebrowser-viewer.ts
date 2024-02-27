@@ -16,13 +16,12 @@ import {ConstProvider} from '../../services/const/const';
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Graphservice} from "../../services/graph/graph";
-import {ToolsProvider} from "../../services/tools/tools";
 import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
-import {isTabSwitch} from "@ionic/angular/directives/navigation/stack-utils";
 import {MenueService} from "../../services/menue/menue.service";
 import {Subscription} from "rxjs";
 import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
 import {Projektpunktimagestruktur} from "../../dataclasses/projektpunktimagestruktur";
+import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 
 @Component({
   selector: 'pj-sites-filebrowser-viewer',
@@ -65,6 +64,7 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
               public GraphService: Graphservice,
               public Pool: DatabasePoolService,
               public  Menuservice: MenueService,
+              private DBProjekte: DatabaseProjekteService,
               private DBProjektpunkte: DatabaseProjektpunkteService,
               public Const: ConstProvider) {
 
@@ -113,11 +113,9 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
     }
   }
 
-  ngOnInit() {
+  async ngOnInit() {
 
     try {
-
-
 
       this.Contenthoehe   = this.Browserhoehe - this.Headerhoehe;
       this.Filelistbreite = 500;
@@ -152,7 +150,7 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
         }
       }
 
-      this.PrepareDaten();
+      await this.PrepareDaten();
     }
     catch (error) {
 
@@ -182,6 +180,10 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
       await this.GraphService.GetSiteSubdirictoryfilelist(File, true);
       await this.PrepareDaten();
 
+      let Text = this.GraphService.TeamsSubdirectorylist;
+
+      debugger;
+
 
     } catch (error) {
 
@@ -192,6 +194,8 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
   async RootFolderClicked() {
 
     try {
+
+      this.GraphService.FilebrowserModus = this.GraphService.FilebrowserModusvarianten.Alle_Projekte;
 
       await this.GraphService.GetSiteRootfilelist(true);
       await this.PrepareDaten();
@@ -300,6 +304,15 @@ export class PjSitesFilebrowserViewerComponent implements OnInit, OnDestroy, OnC
       let Anzahl: number;
       let Index: number;
       let Liste: Thumbnailstruktur[] = [];
+      let Directory: Teamsfilesstruktur;
+
+      if(this.DBProjekte.CurrentProjekt !== null &&
+         this.DBProjekte.CurrentProjekt.ProjektFolderID !== this.Const.NONE && this.GraphService.FilebrowserModus === this.GraphService.FilebrowserModusvarianten.Current_Projekt) {
+
+        Directory = await this.GraphService.GetSiteSubDirectory(this.DBProjekte.CurrentProjekt.ProjektFolderID);
+
+        await this.GraphService.GetSiteSubdirictoryfilelist(Directory, true);
+      }
 
       let Imageliste: Teamsfilesstruktur[] = lodash.filter(this.GraphService.TeamsCurrentfilelist, (fileitem: Teamsfilesstruktur) => {
 

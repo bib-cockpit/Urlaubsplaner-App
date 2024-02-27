@@ -50,6 +50,7 @@ export class DisplayService {
     Festlegungkategorieneditor: 'Festlegungkategorieneditor',
     Simontabelleeditor: 'Simontabelleeditor',
     Simontabellelesitungeditor: 'Simontabellelesitungeditor',
+    RechnungEditor: 'RechnungEditor'
 
   };
 

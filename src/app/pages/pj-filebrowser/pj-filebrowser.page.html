@@ -45,7 +45,7 @@
           </table>
 
         </td>
-        <td align="right" valign="middle" style="width: 50%">
+        <td align="right" valign="middle" style="width: 50px;">
             <table *ngIf="GraphService.UserimageSRC !== null">
               <tr>
                 <td>
@@ -71,6 +71,7 @@
     [Browserbreite]="Browserbreite"
     [Browserhoehe]="Browserhoehe"
     [Filelistbreite]="500"
+    [SelectImages]="false"
     [Zoomfaktor]="Zoomfaktor"
     (PDFDownloadStarted)="PDFDownloadStartedHandler($event)"
     (PDFRenderedFinished)="PDFPageRenderedFinishedHandler()">

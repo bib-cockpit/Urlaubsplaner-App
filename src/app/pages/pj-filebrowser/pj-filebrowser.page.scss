@@ -8,6 +8,21 @@
   object-fit: cover;
 }
 
+.userkuerzelsmall {
+
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin-right: 4px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  background: #454545;
+  color: white;
+  font-weight: bold;
+}
+
 .trennerdivclass {
 
   width: 1px;

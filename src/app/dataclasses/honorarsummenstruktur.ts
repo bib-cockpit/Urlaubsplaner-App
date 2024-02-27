@@ -1,20 +1,16 @@
 export type Honorarsummenstruktur = {
 
-    Honorarprozente: number;
-    Nettokostensumme: number;
-    Bruttokostensumme: number;
-    Nettohonorar: number;
-    Bruttohonorar: number;
-    Nettoleistungssumme: number;
-    Bruttoleistungssumme: number;
-    Nettoumbauzuschlag: number;
-    Bruttoumbauzuschlag: number;
-    Nettozwischensumme: number;
-    Bruttozwischensumme: number;
-    Nettonebenkosten: number;
-    Bruttonebenkosten: number;
-    Nettogesamthonorar: number;
-    Bruttogesamthonorar: number;
-    Mehrwertsteuer: number;
+    Nettokostensumme:     number;
+
+    Honorarprozente:      number;
+    Nettobasishonorar:    number;
+    Nettoumbauzuschlag:   number;
+    Nettoleistungssumme:  number;
+    Nettogrundhonorar:    number;
+    Nettonebenkosten:     number;
+    Nettogesamthonorar:   number;
+    Mehrwertsteuer:       number;
+    Bruttogesamthonorar:  number;
     Sicherheitseinbehalt: number;
+    Bruttorechungsbetrag: number;
 };

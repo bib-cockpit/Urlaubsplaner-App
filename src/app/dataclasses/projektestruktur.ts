@@ -38,6 +38,7 @@ export type Projektestruktur = {
   ProtokolleFolderID:    string;
   BautagebuchFolderID:   string;
   BaustellenLOPFolderID: string;
+  RechnungListefolderID: string;
   LastLOPEintragnummer:  number;
 
   DisplayKG410: boolean;

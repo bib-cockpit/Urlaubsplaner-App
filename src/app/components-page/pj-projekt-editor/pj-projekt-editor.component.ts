@@ -61,6 +61,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
   @Output() SelectBaustelleLOPListefolderEvent = new EventEmitter<any>();
   @Output() SelectProtokollfolderEvent         = new EventEmitter<any>();
   @Output() SelectProjektfolderEvent           = new EventEmitter<any>();
+  @Output() SelectRechnungfolderEvent          = new EventEmitter<any>();
   @Output() LeistungsphaseClickedEvent         = new EventEmitter<any>();
   @Output() EditMitarbeiterEvent               = new EventEmitter<any>();
   @Output() FirmaClickedEvend                  = new EventEmitter<Projektfirmenstruktur>();
@@ -97,6 +98,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
   public Projektfolder: string;
   public Bautagebuchfolder: string;
   public BaustelleLOPListefolder:string;
+  public RechnungListefolder: string;
   public Listentrennerhoehe: number;
   private MitarbeiterSubscription: Subscription;
   private FirmenSubscription: Subscription;
@@ -138,6 +140,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       this.Projektfolder       = '/';
 
       this.BaustelleLOPListefolder = '/';
+      this.RechnungListefolder     = '/';
 
       this.BeteiligtenSubscription = null;
       this.MitarbeiterSubscription = null;
@@ -239,6 +242,7 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       let FileinfoB: Teamsfilesstruktur = null;
       let FileinfoC: Teamsfilesstruktur = null;
       let FileinfoD: Teamsfilesstruktur = null;
+      let FileinfoE: Teamsfilesstruktur = null;
       let Root: string;
 
       if(this.DB.CurrentProjekt.ProjektFolderID !== this.Const.NONE) {
@@ -321,6 +325,27 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
       else {
 
         this.BaustelleLOPListefolder = 'nicht festgelegt';
+      }
+
+      if(this.DB.CurrentProjekt.RechnungListefolderID !== this.Const.NONE) {
+
+        FileinfoE = await this.GraphService.GetSiteSubDirectory(this.DB.CurrentProjekt.RechnungListefolderID);
+
+        if(FileinfoE !== null) {
+
+          Root      = FileinfoE.parentReference.path;
+          Root      = Root.replace('/drive/root:/', '');
+
+          this.RechnungListefolder = 'Projekte/' + Root + '/' + FileinfoE.name;
+        }
+        else {
+
+          this.RechnungListefolder = 'Verzeichnis ist nicht vorhanden';
+        }
+      }
+      else {
+
+        this.RechnungListefolder = 'nicht festgelegt';
       }
 
       this.ValidateInput();
@@ -975,6 +1000,19 @@ export class PjProjektEditorComponent implements OnInit, OnDestroy, AfterViewIni
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'SelectBaustelleLOPListefolderClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  SelectRechnungListefolderClicked() {
+
+    try {
+
+      this.SelectRechnungfolderEvent.emit();
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Projekt Editor', 'SelectRechnungListefolderClicked', this.Debug.Typen.Component);
     }
   }
 

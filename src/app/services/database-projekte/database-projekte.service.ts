@@ -176,6 +176,7 @@ export class DatabaseProjekteService {
         BautagebuchFolderID:   this.Const.NONE,
         ProtokolleFolderID:    this.Const.NONE,
         ProjektFolderID:       this.Const.NONE,
+        RechnungListefolderID: this.Const.NONE,
         Bauteilliste: [],
         Beteiligtenliste: [],
         Firmenliste: [],
@@ -297,6 +298,7 @@ export class DatabaseProjekteService {
               if(lodash.isUndefined(Projekt.BaustellenLOPFolderID)) Projekt.BaustellenLOPFolderID = this.Const.NONE;
               if(lodash.isUndefined(Projekt.ProtokolleFolderID))    Projekt.ProtokolleFolderID    = this.Const.NONE;
               if(lodash.isUndefined(Projekt.BautagebuchFolderID))   Projekt.BautagebuchFolderID   = this.Const.NONE;
+              if(lodash.isUndefined(Projekt.RechnungListefolderID)) Projekt.RechnungListefolderID = this.Const.NONE;
               if(lodash.isUndefined(Projekt.Leistungsphase))        Projekt.Leistungsphase        = 'unbekannt';
               if(lodash.isUndefined(Projekt.MitarbeiterIDListe))    Projekt.MitarbeiterIDListe    = [];
               if(lodash.isUndefined(Projekt.DisplayKG410))          Projekt.DisplayKG410          = true;
@@ -646,6 +648,7 @@ export class DatabaseProjekteService {
         BaustellenLOPFolderID: this.Const.NONE,
         ProtokolleFolderID:    this.Const.NONE,
         BautagebuchFolderID:   this.Const.NONE,
+        RechnungListefolderID: this.Const.NONE,
 
         DisplayKG410: false,
         DisplayKG420: false,

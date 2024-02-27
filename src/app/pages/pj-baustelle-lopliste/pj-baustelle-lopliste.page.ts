@@ -141,7 +141,6 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.StrukturDialogbreite     = 1260;
       this.StrukturDialoghoehe      = 800;
       this.ShowRaumauswahl          = false;
-      /// this.DB.CurrentPunkteliste              = [];
       this.LOPListepunkteSubscription = null;
       this.CurrentLOPListeID        = null;
       this.CurrentPunktID           = null;
@@ -1705,5 +1704,17 @@ export class PjBaustelleLoplistePage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'LOP Liste', 'GetAufgabentext', this.Debug.Typen.Page);
     }
 
+  }
+
+  async DownloadPdfButtonClicked($event: MouseEvent, LOP: LOPListestruktur) {
+
+    try {
+
+      await this.GraphService.DownloadPDFSiteFileViaLink(LOP.FileID);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'LOP Liste', 'DownloadPdfButtonClicked', this.Debug.Typen.Page);
+    }
   }
 }
