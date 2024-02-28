@@ -30,7 +30,7 @@ import {environment} from "../environments/environment";
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-const appurl: string                   = environment.production === false ? 'http://localhost:4200' : 'https://blue-glacier-0917b1103.4.azurestaticapps.net';
+const appurl: string                   = environment.production === false ? 'http://localhost:4200' : 'https://polite-cliff-084832d03.4.azurestaticapps.net';
 
 // !! Server URL auch in Pool service anpassen
 
