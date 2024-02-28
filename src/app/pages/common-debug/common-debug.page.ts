@@ -8,8 +8,6 @@ import {DatabaseAuthenticationService} from "../../services/database-authenticat
 import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
-import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
-import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
 import * as lodash from "lodash-es";
 
 @Component({
@@ -29,8 +27,6 @@ export class CommonDebugPage implements OnInit, OnDestroy {
               public fb: FormBuilder,
               private http: HttpClient,
               public Pool: DatabasePoolService,
-              public DBProjekte: DatabaseProjekteService,
-              public DBProjektpunkte: DatabaseProjektpunkteService,
               public AuthService: DatabaseAuthenticationService,
 
   ) {
@@ -50,7 +46,7 @@ export class CommonDebugPage implements OnInit, OnDestroy {
 
     try {
 
-      if(lodash.isUndefined(this.DBProjektpunkte.CurrentProjektpunkt)) this.DBProjektpunkte.CurrentProjektpunkt = null;
+     // if(lodash.isUndefined(this.DBProjektpunkte.CurrentProjektpunkt)) this.DBProjektpunkte.CurrentProjektpunkt = null;
 
 
     } catch (error) {
@@ -182,6 +178,8 @@ export class CommonDebugPage implements OnInit, OnDestroy {
 
     try {
 
+      /*
+
       this.DBProjektpunkte.RemoveProjektpunkteliste(this.Pool.DeletedProjektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey]).then(() => {
 
         debugger;
@@ -192,6 +190,8 @@ export class CommonDebugPage implements OnInit, OnDestroy {
 
         debugger;
       });
+
+       */
 
     } catch (error) {
 

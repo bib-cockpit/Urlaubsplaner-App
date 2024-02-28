@@ -12,14 +12,12 @@ import {InteractionStatus} from "@azure/msal-browser";
 import {ConstProvider} from "./services/const/const";
 import {DatabaseMitarbeiterService} from "./services/database-mitarbeiter/database-mitarbeiter.service";
 import {DatabaseStandorteService} from "./services/database-standorte/database-standorte.service";
-import {DatabaseProjekteService} from "./services/database-projekte/database-projekte.service";
 import {DatabaseMitarbeitersettingsService} from "./services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import * as lodash from "lodash-es";
 import {Graphservice} from "./services/graph/graph";
 import {Mitarbeiterstruktur} from "./dataclasses/mitarbeiterstruktur";
 import {environment} from "../environments/environment";
 import {DatabaseUrlaubService} from "./services/database-urlaub/database-urlaub.service";
-import {DatabaseSimontabelleService} from "./services/database-simontabelle/database-simontabelle.service";
 
 @Component({
   selector: 'app-root',
@@ -48,8 +46,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
               private MitarbeiterDB: DatabaseMitarbeiterService,
               private MitarbeitersettingsDB: DatabaseMitarbeitersettingsService,
               private StandortDB: DatabaseStandorteService,
-              private ProjekteDB: DatabaseProjekteService,
-              private SimontabelllenDB: DatabaseSimontabelleService,
               private UrlaubDB: DatabaseUrlaubService,
               public GraphService: Graphservice,
               private Debug: DebugProvider) {
@@ -75,7 +71,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
       this.StandortDB.FinishService();
       this.MitarbeiterDB.FinishService();
-      this.ProjekteDB.FinishService();
 
     } catch (error) {
 
@@ -151,8 +146,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
       this.Basics.Contentbreite = this.platform.width();
       this.Basics.Contenthoehe  = this.platform.height();
 
-      debugger;
-
       if(this.AuthService.ActiveUser !== null) {
 
         // Benutzer ist angemeldet
@@ -216,6 +209,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
           this.Pool.CurrentProgressValue++;
 
+          /*
+
           this.Pool.ProgressMessage = 'Lade Gesamtprojektliste';
 
           await this.ProjekteDB.ReadGesamtprojektliste(); // 7
@@ -226,7 +221,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
           await this.ProjekteDB.AddMusterprojekt(); // 8
 
+
           this.Pool.CurrentProgressValue++;
+
+           */
 
           this.Pool.ProgressMessage = 'Aktuallisiere Mitarbeiterliste';
 
@@ -324,11 +322,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         this.Pool.ProgressMessage = 'Syncronisiere Gesamtprojektliste';
 
+        /*
+
         await this.ProjekteDB.SyncronizeGesamtprojektlisteWithTeams(this.GraphService.Teamsliste); // 10
 
         this.Pool.CurrentProgressValue++;
 
-        this.ProjekteDB.CheckMyProjektdaten();
+         */
+
+        // this.ProjekteDB.CheckMyProjektdaten();
 
         this.Pool.Mitarbeitersettings = this.Pool.InitMitarbeitersettings(); // fehlende Settingseintraege initialisieren
 
@@ -351,49 +353,27 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         this.MitarbeiterDB.InitService();
         this.StandortDB.InitService();
-        this.ProjekteDB.InitService();
 
         this.Pool.ShowProgress = false;
 
-        if(this.Pool.Mitarbeiterdaten.Favoritenliste.length === 0) {
+        if(this.Pool.Mitarbeiterdaten.Planeradministrator === true) {
 
-          this.Tools.SetRootPage(this.Const.Pages.HomePage).then(() => {
-
-            this.Pool.LoadingAllDataFinished.emit();
-          });
+          Page = this.Const.Pages.HomePage;
         }
         else {
 
-          this.ProjekteDB.InitGesamtprojekteliste();
-          this.ProjekteDB.InitProjektfavoritenliste();
-
-          if(environment.production) {
-
-            if(this.Pool.CheckShowOnlyUrlaub() === true) Page = this.Const.Pages.UrlaubPlanungPage;
-            else Page = this.Const.Pages.HomePage;
-          }
-          else {
-
-            Page = this.Const.Pages.PjSimontabellelistePage; // PjListePage; // PjSimontabellelistePage; // PjProtokolleListePage; // PjProtokolleListePage; // PjAufgabenlistePage; // UrlaubFreigabenPage; // UrlaubPlanungPage; // PjBaustelleLoplistePage; //
-            // PjBaustelleLoplistePage; // UrlaubEinstellungenPage; // UrlaubPlanungPage; // PjBaustelleLoplistePage; // FiMitarbeiterlistePage; // UrlaubsplanungPage; // FiStandortelistePage; // UrlaubsplanungPage; // UrlaubsplanungPage; // .PjProtokolleListePage;  // PjListePage; // PjAufgabenlistePage; // .PjFilebrowserPage;  // PjPlanungsmatrixPage; // PjFilebrowserPage; // HomePage; // .PjPlanungsmatrixPage; //.PjAufgabenlistePage; // EinstellungenPage; // PjAufgabenlistePage ; // HomePage ; // EmaillistePage //  HomePage PjBaustelleTagebuchlistePage PjBaustelleLoplistePage
-
-            this.ProjekteDB.SetProjekteliste(this.ProjekteDB.CurrentFavorit.Projekteliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
-            this.ProjekteDB.SetCurrentFavoritenprojekt();
-
-            await this.Pool.ReadProjektdaten(this.ProjekteDB.Projektliste); // Dise Zeile bie HomePage wieder raus -> Daten über Play Button laden
-
-            this.SimontabelllenDB.InitSimontabellenlistedata();
-
-            this.Pool.ProjektdatenLoaded = true;
-          }
-
-          this.SetProjekteMenuebereich(Page);
-
-          this.Tools.SetRootPage(Page).then(() => {
-
-            this.Pool.LoadingAllDataFinished.emit();
-          });
+          Page = this.Const.Pages.UrlaubPlanungPage;
         }
+
+        this.Pool.ProjektdatenLoaded = true;
+
+        this.SetProjekteMenuebereich(Page);
+
+        this.Tools.SetRootPage(Page).then(() => {
+
+          this.Pool.LoadingAllDataFinished.emit();
+        });
+
       }
       else {
 

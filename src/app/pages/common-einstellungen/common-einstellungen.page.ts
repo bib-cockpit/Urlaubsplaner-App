@@ -2,9 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MenueService} from "../../services/menue/menue.service";
 import {DebugProvider} from "../../services/debug/debug";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
-import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
@@ -31,7 +29,6 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
   private Mitarbeitersubscription: Subscription;
 
   constructor(public MitarbeitersettingsDB: DatabaseMitarbeitersettingsService,
-              public ProjekteDB: DatabaseProjekteService,
               public Pool: DatabasePoolService,
               public Const: ConstProvider,
               public Basics: BasicsProvider,
@@ -279,7 +276,7 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
           case 'Favoritenanzahl':
 
-            this.ProjekteDB.CurrentFavoritenChanged.emit();
+            // this.ProjekteDB.CurrentFavoritenChanged.emit();
 
             break;
 

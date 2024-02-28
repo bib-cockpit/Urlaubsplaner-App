@@ -6,11 +6,9 @@ import * as lodash from "lodash-es";
 import {DatabasePoolService} from "../database-pool/database-pool.service";
 import {Observable} from "rxjs";
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
-import {DatabaseAuthenticationService} from "../database-authentication/database-authentication.service";
 import {ConstProvider} from "../const/const";
 import {Meinewochestruktur} from "../../dataclasses/meinewochestruktur";
 import {Graphuserstruktur} from "../../dataclasses/graphuserstruktur";
-import {Graphservice} from "../graph/graph";
 import {Urlauzeitspannenstruktur} from "../../dataclasses/urlauzeitspannenstruktur";
 
 @Injectable({
@@ -21,14 +19,12 @@ export class DatabaseMitarbeiterService {
   public CurrentMitarbeiter: Mitarbeiterstruktur;
   public CurrentMeinewoche: Meinewochestruktur;
   private ServerMitarbeiterUrl: string;
-  private ServerSettingsUrl: string;
   private ServerRegistrierungUrl: string;
+  private ServerSettingsUrl: string;
 
   constructor(private Debug: DebugProvider,
               private http: HttpClient,
               private Const: ConstProvider,
-              private GraphService: Graphservice,
-              private AuthService: DatabaseAuthenticationService,
               private Pool: DatabasePoolService) {
     try {
 
@@ -254,9 +250,9 @@ export class DatabaseMitarbeiterService {
         Zeitstring: Zeit.format('HH:mm DD.MM.YYYY'),
         Zeitstempel: Zeit.valueOf(),
         Deleted: false,
-        Urlaubsadministrator: false,
+        Planeradministrator: false,
+        Homeofficefreigaben: false,
         Urlaubsfreigaben: false,
-        ShowUrlaubOnly: true,
         Favoritenliste: [],
         Meintagliste: [],
         Meinewocheliste: [],

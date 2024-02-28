@@ -6,11 +6,9 @@ import {PageHeaderComponent} from "../../components/page-header/page-header";
 import {PageFooterComponent} from "../../components/page-footer/page-footer";
 import * as lodash from "lodash-es";
 import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import moment, {Moment} from "moment/moment";
 import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
-import {Mitarbeitersettingsstruktur} from "../../dataclasses/mitarbeitersettingsstruktur";
 import {Subscription} from "rxjs";
 import {
   DatabaseMitarbeitersettingsService
@@ -813,7 +811,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
     try {
 
-      if(this.Pool.Mitarbeiterdaten !== null && this.Pool.Mitarbeiterdaten.Urlaubsadministrator === true) {
+      if(this.Pool.Mitarbeiterdaten !== null && this.Pool.Mitarbeiterdaten.Urlaubsfreigaben === true) {
 
         return true;
       }

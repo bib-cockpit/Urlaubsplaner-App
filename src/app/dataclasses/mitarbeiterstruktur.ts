@@ -23,9 +23,11 @@ export interface Mitarbeiterstruktur  {
     Zeitstempel: number;
     Fachbereich: string;
     Deleted: boolean;
-    Urlaubsfreigaben: boolean;
-    Urlaubsadministrator: boolean;
-    ShowUrlaubOnly: boolean;
+
+    Planeradministrator: boolean;
+    Urlaubsfreigaben:    boolean;
+    Homeofficefreigaben: boolean;
+
     Meintagliste:    Meintagstruktur[];
     Meinewocheliste: Meinewochestruktur[];
     Favoritenliste:  Favoritenstruktur[];

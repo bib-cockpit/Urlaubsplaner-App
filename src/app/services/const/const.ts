@@ -1,13 +1,4 @@
 import { Injectable } from '@angular/core';
-import {PjProtokolleListePage} from "../../pages/pj-protokolle-liste/pj-protokolle-liste.page";
-import {CommonHomePage} from "../../pages/common-home/common-home.page";
-import {PjBaustelleLoplistePage} from "../../pages/pj-baustelle-lopliste/pj-baustelle-lopliste.page";
-import {PjBaustelleTagebuchlistePage} from "../../pages/pj-baustelle-tagebuchliste/pj-baustelle-tagebuchliste.page";
-import {
-  PjFestlegungslistePage
-} from "../../pages/pj-festlegungsliste/pj-festlegungsliste.page";
-import {PjPlanungsmatrixPage} from "../../pages/pj-planungsmatrix/pj-planungsmatrix.page";
-import {CommonUrlaubFreigabenPage} from "../../pages/common-urlaub-freigaben/common-urlaub-freigaben.page";
 
 const _MitarbeiterdatenKeys = {
 

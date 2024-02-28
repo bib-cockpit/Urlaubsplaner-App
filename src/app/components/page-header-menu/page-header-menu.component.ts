@@ -20,21 +20,18 @@ import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/da
 import * as lodash from 'lodash-es';
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 import {ConstProvider} from "../../services/const/const";
-import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
 import {DatabaseAuthenticationService} from "../../services/database-authentication/database-authentication.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import {DatabaseProjektpunkteService} from "../../services/database-projektpunkte/database-projektpunkte.service";
 import moment, {Moment} from "moment";
 import {DatabaseMitarbeitersettingsService} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {Graphservice} from "../../services/graph/graph";
 import {DatabaseOutlookemailService} from "../../services/database-email/database-outlookemail.service";
-import {DatabasePlanungsmatrixService} from "../../services/database-planungsmatrix/database-planungsmatrix.service";
-import {DatabaseLoplisteService} from "../../services/database-lopliste/database-lopliste.service";
 import {Fachbereichestruktur} from "../../dataclasses/fachbereicheclass";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
 import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'page-header-menu',
@@ -90,6 +87,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   public ShowOpenFestlegungOnly: boolean;
   public BackMouseOver: boolean;
   public Timelinebreite: number;
+  public LogoutMouseOver: boolean;
 
 
   constructor(private Debug: DebugProvider,
@@ -99,11 +97,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public Auswahlservice: AuswahlDialogService,
               public  DBStandort: DatabaseStandorteService,
-              public DBProjekte: DatabaseProjekteService,
               public DBEmail: DatabaseOutlookemailService,
-              public DBProjektpunkte: DatabaseProjektpunkteService,
-              public DBPlanungsmatrix: DatabasePlanungsmatrixService,
-              public DBLOPliste: DatabaseLoplisteService,
               public DBUrlaub: DatabaseUrlaubService,
               public GraphService: Graphservice,
               public  AuthService: DatabaseAuthenticationService,
@@ -134,11 +128,26 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
       this.ShowOpenFestlegungOnly       = false;
       this.SendFestlegungenEnabled      = false;
       this.BackMouseOver                = false;
+      this.LogoutMouseOver              = false;
       this.Timelineindex                = 0;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'consturctor', this.Debug.Typen.Component);
+    }
+  }
+
+  LogoutButtonClicked() {
+
+    try {
+
+      this.Pool.ProjektdatenLoaded = false;
+
+      this.AuthService.Logout();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'LogoutButtonClicked', this.Debug.Typen.Component);
     }
   }
 
@@ -464,19 +473,25 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+  /*
+
   public GetAufgabenansicht(): Aufgabenansichtstruktur {
 
     try {
 
       let Aufgabenansicht: Aufgabenansichtstruktur = this.Pool.GetAufgabenansichten(this.DBProjekte.CurrentProjekt !== null ? this.DBProjekte.CurrentProjekt._id : null);
 
-      return Aufgabenansicht;
+      return null; Aufgabenansicht;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetAufgabenansicht', this.Debug.Typen.Component);
     }
   }
+
+   */
+
+  /*
 
   StatusFilterChanged(event: any, Statusname: string) {
 
@@ -539,6 +554,8 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
       this.Debug.ShowErrorMessage(error.message, 'Page Header Menu', 'StatusFilterChanged', this.Debug.Typen.Component);
     }
   }
+
+   */
 
   StatusFilterShowFaelligOnlyChanged(event: { status: boolean; index: number; event: any }) {
 
@@ -777,6 +794,8 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+  /*
+
   ProjektGoBackClicked() {
 
     try {
@@ -803,6 +822,10 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
       this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ProjektGoBackClicked', this.Debug.Typen.Component);
     }
   }
+
+   */
+
+  /*
 
   ProjektGoForwardClicked() {
 
@@ -832,6 +855,10 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+   */
+
+  /*
+
   GetProjektBackButtoncolor(): string {
 
     try {
@@ -850,6 +877,9 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+   */
+
+  /*
   GetProjektForwardButtoncolor(): string {
 
     try {
@@ -868,6 +898,8 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+
+   */
   ProjektfilesClicked() {
 
     try {
@@ -881,6 +913,8 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
       this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ProjektfilesClicked', this.Debug.Typen.Component);
     }
   }
+
+  /*
 
   GetKostengruppenname(id: string): string {
 
@@ -916,6 +950,8 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
       this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetKostengruppenname', this.Debug.Typen.Component);
     }
   }
+
+   */
 
   ShowOpenFestlegungOnlyChanged(event: { status: boolean; index: number; event: any }) {
 
@@ -1008,6 +1044,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+  /*
   ShowBeschereibungenChanged(event: { status: boolean; index: number; event: any }) {
 
     try {
@@ -1022,6 +1059,9 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+   */
+
+  /*
   DisplayKG410Changed(event: { status: boolean; index: number; event: any }) {
 
     try {
@@ -1040,6 +1080,10 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
       this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'DisplayKG410Changed', this.Debug.Typen.Page);
     }
   }
+
+   */
+
+  /*
 
   DisplayKG420Changed(event: { status: boolean; index: number; event: any }) {
 
@@ -1193,6 +1237,9 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+   */
+
+  /*
   ShowUngenutzteChanged(event: { status: boolean; index: number; event: any }) {
 
     try {
@@ -1207,6 +1254,9 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+   */
+
+  /*
   AlleProjekteClicked() {
 
     try {
@@ -1219,6 +1269,9 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+   */
+
+  /*
   ShowLOPListeInfoeintraegeChangedHandler(event: { status: boolean; index: number; event: any }) {
 
     try {
@@ -1247,4 +1300,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+   */
+
+  protected readonly environment = environment;
 }

@@ -3,7 +3,6 @@ import {DebugProvider} from "../debug/debug";
 import {ToolsProvider} from "../tools/tools";
 import {ConstProvider} from "../const/const";
 import {DatabaseAuthenticationService} from "../database-authentication/database-authentication.service";
-import {DatabaseProjekteService} from "../database-projekte/database-projekte.service";
 
 @Injectable({
   providedIn: 'root'
@@ -79,8 +78,6 @@ export class MenueService {
 
   constructor(private Debug: DebugProvider,
               private Tools: ToolsProvider,
-              private DBProjekte: DatabaseProjekteService,
-              private AuthService: DatabaseAuthenticationService,
               private Const: ConstProvider) {
 
     try {

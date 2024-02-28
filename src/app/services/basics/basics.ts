@@ -20,8 +20,8 @@ export class BasicsProvider {
   public AppBuild: string             = '16.02.2024 11:30';
   public ShowHomeScreenInfos          = true;
   public DebugNoExternalEmail         = true;
-  public AppVersionName               = 'none';
-  public AppVersionDatum              = 'none';
+  public AppVersionName               = '1.0';
+  public AppVersionDatum              = '01.03.2024';
   public WebAppUrl                    = 'https://nice-glacier-0c9ec7703.3.azurestaticapps.net';
 
 

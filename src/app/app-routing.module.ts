@@ -1,13 +1,5 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import {MsalRedirectComponent} from "@azure/msal-angular";
-import {
-  PjFestlegungslistePage
-} from "./pages/pj-festlegungsliste/pj-festlegungsliste.page";
-import {
-  CommonUrlaubEinstellungenPageModule
-} from "./pages/common-urlaub-einstellungen/common-urlaub-einstellungen.module";
-import {PjSimontabelleListePageModule} from "./pages/pj-simontabelle-liste/pj-simontabelle-liste.module";
 
 const routes: Routes = [
   {
@@ -27,10 +19,6 @@ const routes: Routes = [
   {
     path: 'EinstellungenPage',
     loadChildren: () => import('./pages/common-einstellungen/common-einstellungen.module').then(m => m.CommonEinstellungenPageModule),
-  },
-  {
-    path: 'EmaillistePage',
-    loadChildren: () => import('./pages/common-emailliste/common-emailliste.module').then(m => m.CommonEmaillistePageModule),
   },
   {
     path: 'UrlaubPlanungPage',
@@ -59,55 +47,8 @@ const routes: Routes = [
     // canLoad: [SecurityService]
   },
   {
-    path: 'PjListePage',
-    loadChildren: () => import('./pages/pj-projekt-liste/pj-projekt-liste.module').then(m => m.PjProjektListePageModule),
-    // canLoad: [SecurityService]
-  },
-  {
-    path: 'PjFilebrowserPage',
-    loadChildren: () => import('./pages/pj-filebrowser/pj-filebrowser.module').then(m => m.PjFilebrowserPageModule),
-    // canLoad: [SecurityService]
-  },
-  {
-    path: 'PjFavoritenlistePage',
-    loadChildren: () => import('./pages/pj-favoriten-liste/pj-favoriten-liste.module').then(m => m.PjFavoritenListePageModule),
-    // canLoad: [SecurityService]
-  },
-  {
     path: '',
     loadChildren: () => import('./pages/common-home/common-home.module').then(m => m.CommonHomePageModule),
-  },
-  {
-    path: 'PjAufgabenlistePage',
-    loadChildren: () => import('./pages/pj-aufgaben-liste/pj-aufgaben-liste.module').then(m => m.PjAufgabenListePageModule)
-  },
-  {
-    path: 'PjProtokolleListePage',
-    loadChildren: () => import('./pages/pj-protokolle-liste/pj-protokolle-liste.module').then(m => m.PjProtokolleListePageModule)
-  },
-  {
-    path: 'PjBaustelleLoplistePage',
-    loadChildren: () => import('./pages/pj-baustelle-lopliste/pj-baustelle-lopliste.module').then(m => m.PjBaustelleLoplistePageModule)
-  },
-  {
-    path: 'PjBaustelleTagebuchlistePage',
-    loadChildren: () => import('./pages/pj-baustelle-tagebuchliste/pj-baustelle-tagebuchliste.module').then(m => m.PjBaustelleTagebuchlistePageModule)
-  },
-  {
-    path: 'PjFestlegungslistePage',
-    loadChildren: () => import('./pages/pj-festlegungsliste/pj-festlegungsliste.module').then(m => m.PjFestlegungslistePageModule)
-  },
-  {
-    path: 'PjPlanungsmatrixPage',
-    loadChildren: () => import('./pages/pj-planungsmatrix/pj-planungsmatrix.module').then(m => m.PjPlanungsmatrixModule)
-  },
-  {
-    path: 'PjNotizenListePage',
-    loadChildren: () => import('./pages/pj-notizen-liste/pj-notizen-liste.module').then(m => m.PjNotizenListePageModule)
-  },
-  {
-    path: 'PjSimontabellelistePage',
-    loadChildren: () => import('./pages/pj-simontabelle-liste/pj-simontabelle-liste.module').then(m => m.PjSimontabelleListePageModule)
   },
   {
     path: 'PDFViewerPage',

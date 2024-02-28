@@ -103,11 +103,7 @@ const MSALInterceptorConfigFactory = () : MsalInterceptorConfiguration => {
   };
 };
 
-const MSALGuardConfigFactory = (): MsalGuardConfiguration => {
-  return {
-    interactionType: InteractionType.Redirect,
-    authRequest: {
-      scopes: [
+/*
         'Calendars.Read',
         'Calendars.Read.Shared',
         'Calendars.ReadBasic',
@@ -122,8 +118,15 @@ const MSALGuardConfigFactory = (): MsalGuardConfiguration => {
         'Mail.Send',
         'MailboxSettings.Read',
         'MailboxSettings.ReadWrite',
-        'User.Read',
         'User.ReadBasic.All',
+ */
+
+const MSALGuardConfigFactory = (): MsalGuardConfiguration => {
+  return {
+    interactionType: InteractionType.Redirect,
+    authRequest: {
+      scopes: [
+        'User.Read',
         'offline_access',
         'openid',
         'profile',

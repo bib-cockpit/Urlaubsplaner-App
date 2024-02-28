@@ -200,23 +200,6 @@ export class DatabasePoolService {
     }
   }
 
-  public CheckShowOnlyUrlaub(): boolean {
-
-    try {
-
-      if(this.Mitarbeiterdaten === null) return true;
-      else {
-
-        if(this.Mitarbeiterdaten.Email === 'peter.hornburger@b-a-e.eu') return false;
-        else return this.Mitarbeiterdaten.ShowUrlaubOnly;
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'CheckShowOnlyUrlaub', this.Debug.Typen.Service);
-    }
-  }
-
   public GetFilledSignatur(Mitarbeiterdaten: Mitarbeiterstruktur, local: boolean): string {
 
     try {
@@ -844,7 +827,7 @@ export class DatabasePoolService {
 
         console.log('Start Contacs Subscription');
 
-        debugger;
+        // debugger;
 
         Observer = this.Http.post(this.ContacsSubscriptionURl, {});
 
@@ -852,12 +835,12 @@ export class DatabasePoolService {
 
           next: (result) => {
 
-            debugger;
+            // debugger;
 
           },
           complete: () => {
 
-            debugger;
+            // debugger;
 
           },
           error: (error: HttpErrorResponse) => {
@@ -894,13 +877,13 @@ export class DatabasePoolService {
 
           next: (data) => {
 
-            debugger;
+            // debugger;
 
           },
           complete: () => {
 
 
-            debugger;
+            // debugger;
 
             resolve(true);
 
@@ -953,7 +936,7 @@ export class DatabasePoolService {
 
             this.ChangeloglisteChanged.emit();
 
-            debugger;
+            // debugger;
 
             resolve(true);
 
@@ -992,13 +975,13 @@ export class DatabasePoolService {
 
           next: (data) => {
 
-            debugger;
+            // ;
 
             this.Standorteliste = <Standortestruktur[]>data;
           },
           complete: () => {
 
-            debugger;
+            // debugger;
 
             for(let Standort of this.Standorteliste) {
 
@@ -1114,14 +1097,19 @@ export class DatabasePoolService {
         mitarbeiter.Urlaubsfreigaben = false;
       }
 
-      if(lodash.isUndefined(mitarbeiter.Urlaubsadministrator)) {
+      if(lodash.isUndefined(mitarbeiter.Planeradministrator)) {
 
-        mitarbeiter.Urlaubsadministrator = false;
+        mitarbeiter.Planeradministrator = false;
       }
 
-      if(lodash.isUndefined(mitarbeiter.ShowUrlaubOnly)) {
+      if(lodash.isUndefined(mitarbeiter.Urlaubsfreigaben)) {
 
-        mitarbeiter.ShowUrlaubOnly = true;
+        mitarbeiter.Urlaubsfreigaben = false;
+      }
+
+      if(lodash.isUndefined(mitarbeiter.Homeofficefreigaben)) {
+
+        mitarbeiter.Homeofficefreigaben = false;
       }
 
       for(let Eintrag of mitarbeiter.Meinewocheliste) {

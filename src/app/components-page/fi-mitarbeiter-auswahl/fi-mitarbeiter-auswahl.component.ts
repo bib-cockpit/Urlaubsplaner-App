@@ -11,7 +11,6 @@ import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {BasicsProvider} from "../../services/basics/basics";
 import {DebugProvider} from "../../services/debug/debug";
 import {ToolsProvider} from "../../services/tools/tools";
-import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
 import {ConstProvider} from "../../services/const/const";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
@@ -59,7 +58,6 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
-              private DB: DatabaseProjekteService,
               public DBStandort: DatabaseStandorteService,
               public Const: ConstProvider,
               public Displayservice: DisplayService,
@@ -165,6 +163,8 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
 
         if(this.OnlyProjektmitarbeiter) {
 
+          /*
+
           if(this.DB.CurrentProjekt !== null) {
 
             for(let id of this.DB.CurrentProjekt.MitarbeiterIDListe) {
@@ -174,6 +174,8 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
               if(!lodash.isUndefined(Mitarbeiter)) this.Mitarbeiterliste.push(Mitarbeiter);
             }
           }
+
+           */
         }
         else {
 

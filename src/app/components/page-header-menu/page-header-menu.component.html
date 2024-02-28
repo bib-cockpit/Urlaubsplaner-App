@@ -11,7 +11,7 @@
         <table>
           <tr>
             <td style="width: 10px"></td>
-            <ng-container *ngIf="Pool.CheckShowOnlyUrlaub() === false">
+            <ng-container *ngIf="Pool.Mitarbeiterdaten !== null && Pool.Mitarbeiterdaten.Planeradministrator">
               <td>
                 <div class="menubuttonclass"
                      (mouseenter)="HomeMouseOver = true"
@@ -28,11 +28,14 @@
                   </table>
                 </div>
               </td>
+
               <td align="center" class="trennertdclass">
                 <div [class]="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte ? 'trennerbigdivclass' : 'trennerdivclass'"></div>
               </td>
+
             </ng-container>
 
+            <!--
             <td *ngIf="Menuservice.MainMenuebereich !== Menuservice.MainMenuebereiche.Email && Menuservice.MainMenuebereich !== Menuservice.MainMenuebereiche.Urlaubsplanung">
               <div class="menubuttonclass"
                    (mouseenter)="EmailMouseOver = true"
@@ -49,10 +52,30 @@
                 </table>
               </div>
             </td>
+            -->
             <td *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Urlaubsplanung">
 
               <table>
                 <tr>
+                  <td>
+                    <div class="menubuttonclass" [style.cursor]="LogoutMouseOver ? 'pointer': 'default'"
+                         (mouseenter)="LogoutMouseOver = true"
+                         (mouseleave)="LogoutMouseOver = false"
+                         (click)="LogoutButtonClicked()">
+                      <table class="paddingsmalltable">
+                        <tr>
+                          <td>
+                            <ion-icon name="log-out-outline"
+                                      [color]="LogoutMouseOver ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Weiss">
+                            </ion-icon>
+                          </td>
+                          <td [style.color]="LogoutMouseOver ? '#000000' : 'white'">Abmelden</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </td>
+                  <td style="width: 10px"></td>
+                  <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
                   <td>
                     <div  class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Planung)">
                       <table class="paddingsmalltable">
@@ -99,7 +122,7 @@
                   </td>
                   <td *ngIf="DBUrlaub.CorrectSetup === false"><img src="assets/svgs/alert.svg" style="width: 24px"></td>
                   <td style="width: 60px;"></td>
-                  <td *ngIf="Pool.Mitarbeiterdaten !== null && Pool.Mitarbeiterdaten.Urlaubsadministrator === true" style="font-size: 90%; color: white;">
+                  <td *ngIf="Pool.Mitarbeiterdaten !== null && Pool.Mitarbeiterdaten.Planeradministrator === true" style="font-size: 90%; color: white;">
                     <ion-button size="small" color="grau" (click)="UrlaubMitarbeiterClicked.emit()">{{DBUrlaub.CurrentMitarbeiter !== null ? DBUrlaub.CurrentMitarbeiter.Vorname + ' ' + DBUrlaub.CurrentMitarbeiter.Name : 'unbekannt'}}</ion-button>
                   </td>
                   <td style="width: 120px;"></td>
@@ -175,153 +198,11 @@
             {{Menuservice.MainMenuebereich}}
             -->
 
-            <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte && Menuservice.ProjekteMenuebereich !== Menuservice.ProjekteMenuebereiche.Fileliste">
-              <td>
-                <table>
-                  <tr>
-                    <td>
-                      <div class="planungheaderdiv"><ion-icon name="create" style="font-size: 28px"></ion-icon></div>
-                    </td>
-                    <td>
-                      <div  class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Aufgabenliste)">
-                        <table class="paddingsmalltable">
-                          <tr>
-                            <td><ion-icon name="list-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Aufgabenliste)"></ion-icon></td>
-                            <td style="white-space: nowrap;" [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Aufgabenliste)">Aufgabenliste</td>
-                          </tr>
-                        </table>
-                      </div>
-                    </td>
-                    <td style="width: 20px"></td>
-                    <td>
-                      <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Protokolle)">
-                        <table class="paddingsmalltable">
-                          <tr>
-                            <td><ion-icon name="book-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Protokolle)"></ion-icon></td>
-                            <td [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Protokolle)">Protokolle</td>
-                          </tr>
-                        </table>
-                      </div>
-                    </td>
-                  </tr>
-                </table>
 
-              </td>
-              <td align="center" style="width: 13px; padding-right: 4px" align="right"><div class="trennerbigdivclass"></div></td>
-              <td>
-                <table>
-                  <tr>
-                    <td colspan="3">
-                      <div class="planungheaderdiv"><ion-icon name="hammer" style="font-size: 22px"></ion-icon></div>
-                    </td>
-                    <td>
-                      <div  class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.LOPListe)">
-                        <table class="paddingsmalltable">
-                          <tr>
-                            <td>
-                              <ion-icon  name="list" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.LOPListe)"></ion-icon>
-                            </td>
-                            <td style="white-space: nowrap;" [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.LOPListe)">Baustellenbericht</td>
-                          </tr>
-                        </table>
-                      </div>
-                    </td>
-                    <td style="width: 20px"></td>
-                    <td>
-                      <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Bautagebuch)">
-                        <table class="paddingsmalltable">
-                          <tr>
-                            <td><ion-icon name="time-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Bautagebuch)"></ion-icon></td>
-                            <td [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Bautagebuch)">Bautagebuch</td>
-                          </tr>
-                        </table>
-                      </div>
-                    </td>
-                  </tr>
-                </table>
-
-              </td>
-              <td align="center" style="width: 13px; padding-right: 4px" align="right"><div class="trennerbigdivclass"></div></td>
-              <td>
-
-                <table>
-                  <tr>
-                    <td colspan="3">
-                      <div class="planungheaderdiv">
-                        <ion-icon name="book" style="font-size: 22px"></ion-icon>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Festlegungen)">
-                        <table class="paddingsmalltable">
-                          <tr>
-                            <td><ion-icon name="file-tray-full-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Festlegungen)"></ion-icon></td>
-                            <td [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Festlegungen)">Festlegungen</td>
-                          </tr>
-                        </table>
-                      </div>
-                    </td>
-                  </tr>
-                </table>
-
-              </td>
-              <td>
-
-                <table>
-                  <tr>
-                    <td>
-                      <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Planungsmatrix)">
-                        <table class="paddingsmalltable">
-                          <tr>
-                            <td><ion-icon name="apps-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Planungsmatrix)"></ion-icon></td>
-                            <td [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Planungsmatrix)">Planungsmatrix</td>
-                          </tr>
-                        </table>
-                      </div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-              <td>
-
-                <table>
-                  <tr>
-                    <td>
-                      <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Simontabelle)">
-                        <table class="paddingsmalltable">
-                          <tr>
-                            <td><ion-icon name="newspaper-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Simontabelle)"></ion-icon></td>
-                            <td [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Simontabelle)">Simontabelle</td>
-                          </tr>
-                        </table>
-                      </div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-              <td>
-
-                <table>
-                  <tr>
-                    <td>
-                      <div class="menubuttonclass" (click)="ProjekteMenueButtonClicked(Menuservice.ProjekteMenuebereiche.Notizen)">
-                        <table class="paddingsmalltable">
-                          <tr>
-                            <td><ion-icon name="book-outline" [color]="GetProjekteMenueIconcolor(Menuservice.ProjekteMenuebereiche.Notizen)"></ion-icon></td>
-                            <td [style.color]="GetProjekteMenueFontcolor(Menuservice.ProjekteMenuebereiche.Notizen)">Notizen</td>
-                          </tr>
-                        </table>
-                      </div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-
-              <td align="center" class="trennertdclass"><div class="trennerbigdivclass"></div></td>
-            </ng-container>
             <!--
              || Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Email
              -->
+            <!--
             <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte">
                 <td *ngIf="DBProjekte.CurrentProjekt !== null">
                   <table class="paddingtable">
@@ -376,6 +257,7 @@
                 </td>
 
             </ng-container>
+            -->
             <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Email">
               <td>
                 <table class="paddingtable">
@@ -403,50 +285,6 @@
                 </table>
               </td>
             </ng-container>
-
-              <ng-container *ngIf="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte &&
-              Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste">
-
-                <td>
-                  <div (click)="MeintagClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Mein_Tag ? 'black' : 'white'"  class="buttonclass">
-                    <table>
-                      <tr>
-                        <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Mein_Tag ? 'black' : 'white'">
-                          Mein Tag
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-                </td>
-                <td style="width: 10px"></td>
-                <td>
-                  <div (click)="MeineWocheClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meine_Woche ? 'black' : 'white'"  class="buttonclass">
-                    <table>
-                      <tr>
-                        <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meine_Woche ? 'black' : 'white'">
-                          Meine Woche
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-                </td>
-                <td style="width: 10px"></td>
-                <td>
-                  <div (click)="MeilensteineClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meilensteine ? 'black' : 'white'"  class="buttonclass">
-                    <table>
-                      <tr>
-                        <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meilensteine ? 'black' : 'white'">
-                          Meilensteine
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-                </td>
-                <td style="width: 10px"></td>
-
-
-              </ng-container>
-
 
             <ng-container *ngIf="ShowSuchleiste">
               <td style="width: 20px"></td>
@@ -494,6 +332,7 @@
 
     <!-- Meine Woche 2. Menüzeile -->
 
+    <!--
     <ng-container *ngIf="this.Menuservice.MainMenuebereich === this.Menuservice.MainMenuebereiche.Projekte && Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.LOPListe">
         <tr>
           <td colspan="2" style="padding-left: 8px; padding-right: 8px">
@@ -527,6 +366,7 @@
         </tr>
 
     </ng-container>
+    -->
     <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Projekte &&
                          Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste &&
                          Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meine_Woche">
@@ -574,6 +414,8 @@
 
     </ng-container>
 
+    <!--
+
     <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Projekte &&
                          Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Festlegungen &&
                          DBProjekte.CurrentProjekt        !== null">
@@ -606,9 +448,6 @@
                   <ng-content>
 
                   </ng-content>
-                  <!--
-                  <ion-searchbar #Suchleiste2 id="searchbar2" placeholder="Suche"></ion-searchbar>
-                  -->
                 </td>
                 <td style="width: auto">
                   <table class="paddingtable">
@@ -619,12 +458,6 @@
                   </table>
                 </td>
                 <td style="width: 120px;" align="right">
-                  <!--
-                  <ion-button size="small" [color]="SendFestlegungenEnabled === true ? 'burnicklbraun' : 'grau'" (click)="SendFestlegungenEnabled === true ? SendFestlegungenClicked.emit() : null">
-                    <ion-icon name="mail-outline" color="weiss" slot="start"></ion-icon>
-                    <ion-text color="weiss">Email</ion-text>
-                  </ion-button>
-                  -->
                 </td>
               </tr>
             </table>
@@ -634,6 +467,10 @@
 
 
     </ng-container>
+
+-->
+
+    <!--
 
     <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Projekte &&
                          Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Planungsmatrix">
@@ -657,6 +494,7 @@
                   </button-value>
                 </td>
                 <td style="width: auto">
+
                   <table class="paddingtable">
                     <tr>
                       <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayBeschreibungen" (CheckChanged)="ShowBeschereibungenChanged($event)"></checkbox-clon></td>
@@ -685,6 +523,7 @@
                       </ng-container>
                     </tr>
                   </table>
+
                 </td>
               </tr>
             </table>
@@ -695,6 +534,8 @@
 
     </ng-container>
 
+    -->
+
 
 
     <!-- Einzelprojekt 3. Menüzeile -->
@@ -702,6 +543,8 @@
     <!--
      || Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Alle
      -->
+
+    <!--
 
     <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Projekte &&
                          Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste &&
@@ -725,6 +568,7 @@
                                 (ButtonClicked)="ZeitspaneClickedHandler(Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Filter_Zeitspanne)"
                                 [Wert_A]="GetZeitfilterButtonwert()"></button-value>
                 </td>
+
                 <ng-container *ngIf="DBProjekte.CurrentFavoritprojektindex !== 1500">
                   <td align="center" class="trennertdclass"><div class="trennerdivclass"></div>
                   <td><checkbox-clon [Checked]="GetAufgabenansicht().AufgabenShowOffen"  (CheckChanged)="StatusFilterChanged($event, Const.Projektpunktstatustypen.Offen.Name)"></checkbox-clon></td>
@@ -737,17 +581,14 @@
                   <td><div class="statusvaianteclass" style="background: #0020C2;">Rücklauf ausstehend</div></td><td style="width: 6px"></td>
                   <td><checkbox-clon [Checked]="GetAufgabenansicht().AufgabenShowBilder"   (CheckChanged)="StatusFilterChanged($event, 'Bilder')"></checkbox-clon></td>
                   <td><div class="statusvaianteclass" style="background: none;">Bilder anzeigen</div></td><td style="width: 6px"></td>
-                  <!--
-                  <td><checkbox-clon  [Checked]="Pool.Mitarbeitersettings.AufgabenShowMeilensteinOnly" (CheckChanged)="StatusFilterChanged($event, 'Meilenstein')"></checkbox-clon></td>
-                  <td><div class="statusvaianteclass" style="background: purple;">Nur Meilensteine anzeigen</div></td><td style="width: 6px"></td>
-                  -->
                 </ng-container>
 
-                <!--
+
+
                 [Checked]="DBProjekte.CurrentProjekt.Aufgabenlistefilter.FilterShowFaelligOnly"
                 <td><checkbox-clon (CheckChanged)="StatusFilterShowFaelligOnlyChanged($event)"></checkbox-clon></td>
                 <td><div class="statusvaianteclass" style="background: red;">Nur fällige Aufgaben</div></td>
-                -->
+
               </tr>
             </table>
 
@@ -755,9 +596,11 @@
           </div>
 
         </td>
-        <td><!-- Bild --></td>
+        <td></td>
       </tr>
     </ng-container>
+
+    -->
 
     <!--
     <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Email">

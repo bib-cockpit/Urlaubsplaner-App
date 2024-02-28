@@ -1613,7 +1613,7 @@ export class DatabaseUrlaubService {
             if(Zeitspanne.Status !== this.Urlaubstatusvarianten.Abgelehnt) Urlaubstage += Zeitspanne.Tageanzahl;
           }
 
-          if(this.CurrentMitarbeiter !== null && this.CurrentMitarbeiter.Urlaubsadministrator !== null) Urlaub.Text = '[' + Urlaubstage + ' von ' + Gesamturlaub + ']';
+          if(this.CurrentMitarbeiter !== null && this.CurrentMitarbeiter.Urlaubsfreigaben === true) Urlaub.Text = '[' + Urlaubstage + ' von ' + Gesamturlaub + ']';
           else Urlaub.Text = '[' + Urlaubstage + ']';
 
           this.UrlaublisteExtern.push(Urlaub);

@@ -17,6 +17,7 @@ import * as lodash from "lodash-es";
 import {ObjectSchema} from "joi";
 import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
 import {Regionenstruktur} from "../../dataclasses/regionenstruktur";
+import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 
 @Component({
   selector: 'fi-standort-editor',
@@ -49,6 +50,7 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
               public Displayservice: DisplayService,
               public Const: ConstProvider,
               private Tools: ToolsProvider,
+              private Pool: DatabasePoolService,
               private DBUrlaub: DatabaseUrlaubService,
               public DB: DatabaseStandorteService) {
 
@@ -127,6 +129,8 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
 
       if(Result.error) this.Valid = false;
       else             this.Valid = true;
+
+      if(this.Pool.Mitarbeiterdaten === null || this.Pool.Mitarbeiterdaten.Planeradministrator === false) this.Valid = false;
 
       this.ValidChange.emit(this.Valid);
 

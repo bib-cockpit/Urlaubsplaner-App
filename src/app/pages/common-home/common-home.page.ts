@@ -3,13 +3,10 @@ import {BasicsProvider} from "../../services/basics/basics";
 import {DebugProvider} from "../../services/debug/debug";
 import {ToolsProvider} from "../../services/tools/tools";
 import {ConstProvider} from "../../services/const/const";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {LoadingAnimationService} from "../../services/loadinganimation/loadinganimation";
 import {DatabaseAuthenticationService} from "../../services/database-authentication/database-authentication.service";
 import {MenueService} from "../../services/menue/menue.service";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 import * as lodash from "lodash-es";
-import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 import {DatabaseChangelogService} from "../../services/database-changelog/database-changelog.service";
 import moment, {Moment} from "moment";
 import {Changelogstruktur} from "../../dataclasses/changelogstruktur";
@@ -20,11 +17,10 @@ import {Graphservice} from "../../services/graph/graph";
 import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
-import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
-import {DatabaseProtokolleService} from "../../services/database-protokolle/database-protokolle.service";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {Projektestruktur} from "../../dataclasses/projektestruktur";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
+import {environment} from "../../../environments/environment";
 
 
 @Component({
@@ -58,8 +54,6 @@ export class CommonHomePage implements OnInit, OnDestroy {
               public Pool: DatabasePoolService,
               private authService: MsalService,
               private msalBroadcastService: MsalBroadcastService,
-              public DBProjekte: DatabaseProjekteService,
-              private DBProtokolle: DatabaseProtokolleService,
               public GraphService: Graphservice,
               public DBChangelog: DatabaseChangelogService,
               public AuthService: DatabaseAuthenticationService,
@@ -186,6 +180,8 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     try {
 
+      /*
+
       this.DBProjekte.CurrentFavorit = lodash.find(this.Pool.Mitarbeiterdaten.Favoritenliste, {FavoritenID: event.detail.value});
 
       if(lodash.isUndefined(this.DBProjekte.CurrentFavorit)) this.DBProjekte.CurrentFavorit = null;
@@ -202,6 +198,8 @@ export class CommonHomePage implements OnInit, OnDestroy {
         this.DBProjekte.CurrentFavoritenlisteindex = lodash.findIndex(this.Pool.Mitarbeiterdaten.Favoritenliste, {FavoritenID: this.DBProjekte.CurrentFavorit.FavoritenID});
         this.Pool.Mitarbeitersettings.ProjektID    = null;
       }
+
+       */
 
     } catch (error) {
 
@@ -285,7 +283,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
     }
   }
 
-  UrlaubButtonClicked() {
+  PlanerButtonClicked() {
 
     try {
 
@@ -295,7 +293,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Home', 'UrlaubButtonClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error.message, 'Home', 'PlanerButtonClicked', this.Debug.Typen.Page);
     }
   }
 
@@ -327,6 +325,8 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
     try {
 
+      /*
+
       let Aufgabenansicht: Aufgabenansichtstruktur;
 
       if(this.DBProjekte.CurrentFavorit !== null && this.DBProjekte.GesamtprojektlisteHasDatenerror === false) {
@@ -353,6 +353,8 @@ export class CommonHomePage implements OnInit, OnDestroy {
 
         this.Tools.SetRootPage(this.Const.Pages.PjAufgabenlistePage);
       }
+
+       */
 
     } catch (error) {
 
@@ -587,13 +589,17 @@ debugger;
 
     try {
 
+      /*
+
       let Liste: Projektestruktur[] =  lodash.filter(this.DBProjekte.Gesamtprojektliste, (Projekt: Projektestruktur) => {
 
         return Projekt.ProjektIsReal === true;
 
       });
 
-      return Liste.length;
+      */
+
+      return 0; //  Liste.length;
 
     } catch (error) {
 
@@ -614,4 +620,6 @@ debugger;
       this.Debug.ShowErrorMessage(error, 'Home', 'RelaodButtonClicked', this.Debug.Typen.Page);
     }
   }
+
+  protected readonly environment = environment;
 }

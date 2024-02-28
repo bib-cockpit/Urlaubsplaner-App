@@ -13,7 +13,6 @@ import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {BasicsProvider} from "../../services/basics/basics";
 import {Graphservice} from "../../services/graph/graph";
 import {Teamsstruktur} from "../../dataclasses/teamsstruktur";
-import {DatabaseProjekteService} from "../../services/database-projekte/database-projekte.service";
 import {LoadingAnimationService} from "../../services/loadinganimation/loadinganimation";
 import * as lodash from "lodash-es";
 
@@ -57,10 +56,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
               public Const: ConstProvider,
               public Basics: BasicsProvider,
               public Displayservice: DisplayService,
-              private GraphService: Graphservice,
               public StandortDB: DatabaseStandorteService,
-              public ProjekteDB: DatabaseProjekteService,
-              public LoadingAnimation: LoadingAnimationService,
               public DB: DatabaseMitarbeiterService) {
 
     try {
@@ -154,6 +150,8 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
       else             this.Valid = true;
 
       if(this.DB.CurrentMitarbeiter.StandortID === '') this.Valid = false;
+
+      if(this.Pool.Mitarbeiterdaten === null || this.Pool.Mitarbeiterdaten.Planeradministrator === false) this.Valid = false;
 
       this.ValidChanged.emit(this.Valid);
 
@@ -320,27 +318,30 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
     }
   }
 
-  ShowUrlaubOnlyCheckboxChanged(event: {status: boolean; index: number; event: any}) {
+
+
+  HomeofficefreigabenCheckboxChanged(event: {status: boolean; index: number; event: any}) {
 
     try {
 
-      this.DB.CurrentMitarbeiter.ShowUrlaubOnly = event.status;
+      this.DB.CurrentMitarbeiter.Homeofficefreigaben = event.status;
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'ShowUrlaubOnlyCheckboxChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'HomeofficefreigabenCheckboxChanged', this.Debug.Typen.Component);
     }
   }
 
-  UrlaubsadministratorCheckboxChanged(event: {status: boolean; index: number; event: any}) {
+
+  PlaneradministratorCheckboxChanged(event: {status: boolean; index: number; event: any}) {
 
     try {
 
-      this.DB.CurrentMitarbeiter.Urlaubsadministrator = event.status;
+      this.DB.CurrentMitarbeiter.Planeradministrator = event.status;
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'UrlaubsadministratorCheckboxChanged', this.Debug.Typen.Component);
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'PlaneradministratorCheckboxChanged', this.Debug.Typen.Component);
     }
   }
 
@@ -353,40 +354,6 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'UrlaubsfreigabenCheckboxChanged', this.Debug.Typen.Component);
-    }
-  }
-
-  CheckForNewProjects(): boolean {
-
-    try {
-
-     for(let Eintrag of this.Teamsliste) {
-
-       if(lodash.isUndefined(lodash.find(this.ProjekteDB.Gesamtprojektliste, { TeamsID : Eintrag.id}))) {
-
-         return true;
-       }
-     }
-
-     return false;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'CheckForNewProjects', this.Debug.Typen.Component);
-    }
-  }
-
-  async SaveNewProjekte() {
-
-    try {
-
-      await this.LoadingAnimation.ShowLoadingAnimation('Hinweis', 'Unbekannte Projekte werden gespeichert.');
-      await this.ProjekteDB.SyncronizeGesamtprojektlisteWithTeams(this.Teamsliste);
-      await this.LoadingAnimation.HideLoadingAnimation(true);
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'SaveNewProjekte', this.Debug.Typen.Component);
     }
   }
 
