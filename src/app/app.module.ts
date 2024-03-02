@@ -35,9 +35,12 @@ const appurl: string                   = environment.production === false ? 'htt
 // !! Server URL auch in Pool service anpassen
 
 const serverurl: string                = environment.production === false ? 'http://localhost:8080' : 'bae-urlaubsplaner-server.azurewebsites.net';
+const dockerurl: string                = environment.production === false ? 'http://localhost:80'   : 'bae-urlaubsplaner-docker.azurewebsites.net';
+
 const MandantenID: string              = '8870822d-b5ee-4a63-b4ea-7147f0ee753d';
 const clientappregistration: string    = 'e85e5489-e9fd-4d10-b6aa-37be3ce084b6'; // Login funktioniert mit peter.hornburger
-const clientserverregistration: string = 'ca7568f7-4672-4348-843b-b80b210d692f'; // geht nicht da Web / Server Anwendung
+const clientserverregistration: string = 'ca7568f7-4672-4348-843b-b80b210d692f';
+const clientdockerregistration: string = '0caad6ac-8087-46ce-99ca-690c083121a8';
 
 // GITHUB Account
 // Benutzername: peter.hornburger@b-a-e.eu
@@ -95,7 +98,7 @@ export const MSALInstanceFactory = (): IPublicClientApplication => {
 const MSALInterceptorConfigFactory = () : MsalInterceptorConfiguration => {
   const protectedResourceMap = new Map<string, Array<string>>();
   protectedResourceMap.set('https://graph.microsoft.com/v1.0/me', ['user.read']);
-  protectedResourceMap.set(serverurl, ['api://' + clientserverregistration + '/database_access']);
+  protectedResourceMap.set(dockerurl, ['api://' + clientdockerregistration + '/database_access']);
 
   return {
     interactionType: InteractionType.Redirect,

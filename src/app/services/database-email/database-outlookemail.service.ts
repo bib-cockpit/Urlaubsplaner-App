@@ -26,7 +26,7 @@ export class DatabaseOutlookemailService {
     try {
 
       this.CurrentEmail          = null;
-      this.ServerUrl             = this.Pool.CockpitserverURL + '/email';
+      this.ServerUrl             = this.Pool.CockpitdockerURL + '/email';
       this.ShowUngelesenOnly     = true;
       this.Projektsortierung     = true;
 
@@ -54,7 +54,7 @@ export class DatabaseOutlookemailService {
 
       return new Promise((resolve, reject) => {
 
-        let EmailObservable = this.http.get(this.Pool.CockpitserverURL + '/email', { headers: headers, params: queryParams });
+        let EmailObservable = this.http.get(this.Pool.CockpitdockerURL + '/email', { headers: headers, params: queryParams });
 
         EmailObservable.subscribe({
 

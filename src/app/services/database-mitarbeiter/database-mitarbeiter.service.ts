@@ -19,8 +19,6 @@ export class DatabaseMitarbeiterService {
   public CurrentMitarbeiter: Mitarbeiterstruktur;
   public CurrentMeinewoche: Meinewochestruktur;
   private ServerMitarbeiterUrl: string;
-  private ServerRegistrierungUrl: string;
-  private ServerSettingsUrl: string;
 
   constructor(private Debug: DebugProvider,
               private http: HttpClient,
@@ -28,9 +26,7 @@ export class DatabaseMitarbeiterService {
               private Pool: DatabasePoolService) {
     try {
 
-      this.ServerMitarbeiterUrl   = this.Pool.CockpitserverURL + '/mitarbeiter';
-      this.ServerSettingsUrl      = this.Pool.CockpitserverURL + '/settings';
-      this.ServerRegistrierungUrl = this.Pool.CockpitserverURL + '/registrierung';
+      this.ServerMitarbeiterUrl   = this.Pool.CockpitdockerURL + '/mitarbeiter';
       this.CurrentMeinewoche      = this.GetEmptyMeinewocheeintrag();
 
       // Test
@@ -514,48 +510,6 @@ export class DatabaseMitarbeiterService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'AddMitarbeiter', this.Debug.Typen.Service);
-    }
-  }
-
-  public RegisterMitarbeiter() {
-
-    try {
-
-      let Observer: Observable<any>;
-      let Daten: any;
-      let headers: HttpHeaders = new HttpHeaders({
-
-        'content-type': 'application/json',
-      });
-
-      return new Promise((resolve, reject) => {
-
-        // POST für neue Registrierung
-
-        Observer = this.http.post(this.ServerRegistrierungUrl, this.CurrentMitarbeiter, { headers: headers } );
-
-        Observer.subscribe({
-
-          next: (result) => {
-
-            Daten = result;
-
-          },
-          complete: () => {
-
-            resolve(Daten);
-          },
-          error: (error: HttpErrorResponse) => {
-
-            reject(error);
-          }
-        });
-
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'RegisterMitarbeiter', this.Debug.Typen.Page);
     }
   }
 

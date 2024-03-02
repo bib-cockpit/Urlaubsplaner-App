@@ -27,7 +27,7 @@ export class DatabaseStandorteService {
 
       this.CurrentStandort       = null;
       this.CurrentStandortfilter = null;
-      this.ServerUrl             = this.Pool.CockpitserverURL + '/standorte';
+      this.ServerUrl             = this.Pool.CockpitdockerURL + '/standorte';
 
     } catch (error) {
 

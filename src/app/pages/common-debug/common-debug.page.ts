@@ -18,7 +18,6 @@ import * as lodash from "lodash-es";
 export class CommonDebugPage implements OnInit, OnDestroy {
 
   public Title: string;
-  private ServerUrl: string;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -32,9 +31,8 @@ export class CommonDebugPage implements OnInit, OnDestroy {
   ) {
     try
     {
-      this.ServerUrl = this.Pool.CockpitserverURL + '/standorte/';
 
-      // Test
+
     }
     catch (error) {
 
@@ -78,66 +76,6 @@ export class CommonDebugPage implements OnInit, OnDestroy {
     }
   }
 
-  /*
-    ClearAccessToken() {
-
-      try {
-
-        // this.AuthService.AccessToken = null;
-        this.AuthService.ActiveUser  = null;
-
-        this.AuthService.DeleteAccessToken();
-
-      } catch (error) {
-
-        this.Debug.ShowErrorMessage(error.message, 'Debug', 'ClearAccessToken', this.Debug.Typen.Page);
-      }
-    }
-   */
-
-  public TestButtonCLcicked() {
-
-    try {
-
-      let Observer: Observable<any>;
-
-      let headers: HttpHeaders = new HttpHeaders({
-
-        'content-type': 'application/json',
-        // 'authorization': this.AuthService.AccessToken
-      });
-
-      Observer = this.http.get(this.ServerUrl, { headers: headers } ); // { headers: {'Authorization' : this.AuthService.SecurityToken} }
-
-      Observer.subscribe({
-
-        next: (result) => {
-
-          debugger;
-
-          // this.UpdateStandortliste(result.data);
-        },
-        complete: () => {
-
-          // this.Pool.StandortelisteChanged.emit();
-
-          debugger;
-          // resove(true);
-
-        },
-        error: (error: HttpErrorResponse) => {
-
-          debugger;
-          //reject(error);
-        }
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Debug', 'TextButtonCLcicked', this.Debug.Typen.Page);
-    }
-  }
-
   ClearMessagesButtonCLcicked() {
 
     try {
@@ -174,28 +112,14 @@ export class CommonDebugPage implements OnInit, OnDestroy {
     }
   }
 
-  ProjektpunkteLoeschenClicked() {
+  TestButtonChlicked() {
 
     try {
 
-      /*
-
-      this.DBProjektpunkte.RemoveProjektpunkteliste(this.Pool.DeletedProjektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey]).then(() => {
-
-        debugger;
-
-        this.Pool.DeletedProjektpunkteliste[this.DBProjekte.CurrentProjekt.Projektkey] = [];
-
-      }).catch((error) => {
-
-        debugger;
-      });
-
-       */
-
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Debug', 'ProjektpunkteLoeschenClicked', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Debug', 'TestButtonChlicked', this.Debug.Typen.Page);
     }
+
   }
 }

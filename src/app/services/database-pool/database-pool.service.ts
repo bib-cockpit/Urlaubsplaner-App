@@ -53,7 +53,6 @@ export class DatabasePoolService {
   public MitarbeiterdatenHasError:boolean;
   public Emailcontent: string;
   public Outlookkatekorien: Outlookkategoriesstruktur[];
-  public ContacsSubscriptionURl: string;
   public Fachbereich: Fachbereiche;
   public Festlegungskategorienliste: Festlegungskategoriestruktur[][];
   public ProjektdatenLoaded: boolean;
@@ -127,7 +126,6 @@ export class DatabasePoolService {
       this.CockpitserverURL         = environment.production === true ? 'https://bae-urlaubsplaner-server.azurewebsites.net' : 'http://localhost:8080';
       this.CockpitdockerURL         = environment.production === true ? 'https://bae-urlaubsplaner-docker.azurewebsites.net' : 'http://localhost:80';
       this.Emailcontent             = this.Emailcontentvarinaten.NONE;
-      this.ContacsSubscriptionURl   = this.CockpitserverURL + '/subscription';
       this.Fachbereich              = new Fachbereiche();
       this.CurrentAufgabenansichten = null;
       this.Festlegungskategorienliste = [];
@@ -244,6 +242,8 @@ export class DatabasePoolService {
     }
   }
 
+
+
   public GetAufgabenansichten(projektid: string): Aufgabenansichtstruktur {
 
     try {
@@ -276,6 +276,8 @@ export class DatabasePoolService {
       this.Debug.ShowErrorMessage(error, 'Database Pool', 'GetAufgabenansichten', this.Debug.Typen.Service);
     }
   }
+
+  /*
 
 
   public ReadProjektpunkteliste(projekt: Projektestruktur): Promise<any> {
@@ -763,6 +765,10 @@ export class DatabasePoolService {
     }
   }
 
+
+
+   */
+
   public ReadMitarbeiterliste(): Promise<any> {
 
     try {
@@ -776,7 +782,7 @@ export class DatabasePoolService {
 
       return new Promise((resolve, reject) => {
 
-        let MitarbeiterObservable = this.Http.get(this.CockpitserverURL + '/mitarbeiter', { headers: headers } );
+        let MitarbeiterObservable = this.Http.get(this.CockpitdockerURL + '/mitarbeiter', { headers: headers } );
 
         MitarbeiterObservable.subscribe({
 
@@ -814,91 +820,7 @@ export class DatabasePoolService {
     }
   }
 
-  public StartContacsSubscription() {
 
-    try {
-
-      let Observer: Observable<any>;
-
-      return new Promise((resolve, reject) => {
-
-        console.log('Start Contacs Subscription');
-
-        // debugger;
-
-        Observer = this.Http.post(this.ContacsSubscriptionURl, {});
-
-        Observer.subscribe({
-
-          next: (result) => {
-
-            // debugger;
-
-          },
-          complete: () => {
-
-            // debugger;
-
-          },
-          error: (error: HttpErrorResponse) => {
-
-            debugger;
-
-            reject(error);
-          }
-        });
-      });
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'StartContacsSubscription', this.Debug.Typen.Service);
-    }
-  }
-
-
-  public TestServerconnection(): Promise<any> {
-
-    try {
-
-      this.Changlogliste = [];
-
-      let headers: HttpHeaders = new HttpHeaders({
-
-        'content-type': 'application/json',
-      });
-
-      return new Promise((resolve, reject) => {
-
-        let TestObservable = this.Http.get(this.CockpitserverURL + '/', { headers: headers } );
-
-        TestObservable.subscribe({
-
-          next: (data) => {
-
-            // debugger;
-
-          },
-          complete: () => {
-
-
-            // debugger;
-
-            resolve(true);
-
-          },
-          error: (error: HttpErrorResponse) => {
-
-            debugger;
-
-            reject(error);
-          }
-        });
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'TestServerconnection', this.Debug.Typen.Service);
-    }
-  }
 
   public ReadChangelogliste(): Promise<any> {
 
@@ -913,7 +835,7 @@ export class DatabasePoolService {
 
       return new Promise((resolve, reject) => {
 
-        let ChangelogObservable = this.Http.get(this.CockpitserverURL + '/changelog', { headers: headers } );
+        let ChangelogObservable = this.Http.get(this.CockpitdockerURL + '/changelog', { headers: headers } );
 
         ChangelogObservable.subscribe({
 
@@ -966,7 +888,7 @@ export class DatabasePoolService {
 
       return new Promise((resolve, reject) => {
 
-        let StandortObservable = this.Http.get(this.CockpitserverURL + '/standorte', { headers: headers });
+        let StandortObservable = this.Http.get(this.CockpitdockerURL + '/standorte', { headers: headers });
 
         StandortObservable.subscribe({
 
@@ -1006,8 +928,6 @@ export class DatabasePoolService {
     }
   }
 
-
-
   public ReadSettingsliste(): Promise<any> {
 
     try {
@@ -1021,7 +941,7 @@ export class DatabasePoolService {
 
       return new Promise((resolve, reject) => {
 
-        let SettingsObservable = this.Http.get(this.CockpitserverURL + '/settings', { headers: headers });
+        let SettingsObservable = this.Http.get(this.CockpitdockerURL + '/settings', { headers: headers });
 
         SettingsObservable.subscribe({
 
@@ -1147,6 +1067,8 @@ export class DatabasePoolService {
     }
   }
 
+  /*
+
   public async ReadProjektdaten(projektliste: Projektestruktur[]): Promise<any> {
 
     try {
@@ -1234,6 +1156,8 @@ export class DatabasePoolService {
       this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadProjektdaten', this.Debug.Typen.Service);
     }
   }
+
+   */
 
 
   public GetNewUniqueID(): string {

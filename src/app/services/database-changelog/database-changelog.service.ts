@@ -22,7 +22,7 @@ export class DatabaseChangelogService {
               private http: HttpClient) {
     try {
 
-      this.ServerUrl        = this.Pool.CockpitserverURL + '/changelog';
+      this.ServerUrl        = this.Pool.CockpitdockerURL + '/changelog';
       this.CurrentChangelog = null;
 
     } catch (error) {

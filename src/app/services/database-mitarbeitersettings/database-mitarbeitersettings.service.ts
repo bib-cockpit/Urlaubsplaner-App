@@ -1,14 +1,11 @@
 import { Injectable } from '@angular/core';
 import {DebugProvider} from "../debug/debug";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
-import moment, {Moment} from "moment";
 import * as lodash from "lodash-es";
 import {DatabasePoolService} from "../database-pool/database-pool.service";
 import {Observable} from "rxjs";
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
-import {DatabaseAuthenticationService} from "../database-authentication/database-authentication.service";
 import {Mitarbeitersettingsstruktur} from "../../dataclasses/mitarbeitersettingsstruktur";
-import {ConstProvider} from "../const/const";
 import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 
 @Injectable({
@@ -20,12 +17,10 @@ export class DatabaseMitarbeitersettingsService {
 
   constructor(private Debug: DebugProvider,
               private http: HttpClient,
-              private Const: ConstProvider,
-              private AuthService: DatabaseAuthenticationService,
               private Pool: DatabasePoolService) {
     try {
 
-      this.ServerSettingsUrl = this.Pool.CockpitserverURL + '/settings/';
+      this.ServerSettingsUrl = this.Pool.CockpitdockerURL + '/settings/';
 
     } catch (error) {
 
