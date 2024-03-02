@@ -151,7 +151,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
       if(this.DB.CurrentMitarbeiter.StandortID === '') this.Valid = false;
 
-      if(this.Pool.Mitarbeiterdaten === null || this.Pool.Mitarbeiterdaten.Planeradministrator === false) this.Valid = false;
+      // if(this.Pool.Mitarbeiterdaten === null || this.Pool.Mitarbeiterdaten.Planeradministrator === false) this.Valid = false;
 
       this.ValidChanged.emit(this.Valid);
 
@@ -273,7 +273,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
       }
       else {
 
-        this.DB.UpdateMitarbeiter(this.DB.CurrentMitarbeiter).then(() => {
+        this.DB.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
 
           this.ResetEditor();
 

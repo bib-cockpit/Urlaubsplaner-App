@@ -36,7 +36,7 @@
             </ion-row>
             <ion-row>
               <ion-col>
-                <input-clone Titel="PLZ" [Required]="true" [MinLength]="5" [MaxLength]="5" [(Value)]="DB.CurrentStandort.PLZ" (TextChanged)="TextChanged($event)"></input-clone>
+                <input-clone Titel="PLZ" [Required]="true" [MinLength]="4" [MaxLength]="5" [(Value)]="DB.CurrentStandort.PLZ" (TextChanged)="TextChanged($event)"></input-clone>
               </ion-col>
               <ion-col>
                 <input-clone Titel="Ort" [Required]="true" [MaxLength]="100" [(Value)]="DB.CurrentStandort.Ort" (TextChanged)="TextChanged($event)"></input-clone>

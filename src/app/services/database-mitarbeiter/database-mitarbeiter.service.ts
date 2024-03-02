@@ -238,7 +238,6 @@ export class DatabaseMitarbeiterService {
         Kuerzel: "",
         Fachbereich: "Unbekannt",
         StandortID: "",
-        // MitarbeiterID: "",
         Email: "",
         Mobil: "",
         SettingsID: null,

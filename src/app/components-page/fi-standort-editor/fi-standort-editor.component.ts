@@ -95,7 +95,7 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
         Kuerzel:   Joi.string().required().min(3).max(10),
         Strasse:   Joi.string().required().max(100),
         Ort:       Joi.string().required().max(100),
-        PLZ:       Joi.string().required().min(5).max(5),
+        PLZ:       Joi.string().required().min(4).max(5),
         Email:     Joi.string().required().max(255).email({ tlds: { allow: false } }).required(),
 
       }).options({ stripUnknown: true });
