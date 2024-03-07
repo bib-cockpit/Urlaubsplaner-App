@@ -216,8 +216,11 @@
                                     <div class="projektbuttoniconclass">
                                       <ion-icon name="people-outline" [color]="MitarbeiterMouseOver ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.BurnicklGrau" style="font-size: 80px"></ion-icon>
                                     </div>
-                                    <ng-container *ngIf="Pool.Mitarbeiterdaten !== null">
-                                      <div *ngIf="Pool.Mitarbeiterdaten.Kuerzel === '' || Pool.Mitarbeiterdaten.StandortID === ''" class="projektbuttoniconerrorclass">
+                                    <!--
+                                    *ngIf="Pool.Mitarbeiterdaten.Kuerzel === '' || Pool.Mitarbeiterdaten.StandortID === ''"
+                                    -->
+                                    <ng-container *ngIf="Pool.Mitarbeiterdaten !== null && CheckAllMitarbeiterdaten() === false">
+                                      <div class="projektbuttoniconerrorclass">
                                         <img src="/assets/svgs/alert.svg" style="height: 44px"/>
                                       </div>
                                     </ng-container>
@@ -294,7 +297,7 @@
                               </tr>
                               <tr>
                                 <td style="text-align: center;">
-                                  <ion-text [color]="Basics.Ionicfarben.Grau" style="font-size: 26px">Urlaubsplaner</ion-text>
+                                  <ion-text [color]="Basics.Ionicfarben.Grau" style="font-size: 26px">Urlaub - Homeoffice - Planer</ion-text>
                                 </td>
                               </tr>
                               <tr>
@@ -361,7 +364,7 @@
                       </tr>
                       <tr>
                         <td style="text-align: center;">
-                          <ion-text [color]="Basics.Ionicfarben.Grau" style="font-size: 26px">Urlaubsplaner</ion-text>
+                          <ion-text [color]="Basics.Ionicfarben.Grau" style="font-size: 26px">Urlaub - Homeoffice - Planer</ion-text>
                         </td>
                       </tr>
                       <tr>

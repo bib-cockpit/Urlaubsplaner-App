@@ -97,18 +97,22 @@
                       </table>
                     </div>
                   </td>
-                  <td style="width: 20px"></td>
-                  <td>
-                    <div class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Freigaben)">
-                      <table class="paddingsmalltable">
-                        <tr>
-                          <td><ion-icon name="thumbs-up-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Freigaben)"></ion-icon></td>
-                          <td [style.color]="GetUrlaubMenueFontcolor(Menuservice.UrlaubMenuebereiche.Freigaben)">Anfragen</td>
-                          <td *ngIf="DBUrlaub.Anfragenanzahl > 0"><ion-badge color="rot">{{DBUrlaub.Anfragenanzahl.toString()}}</ion-badge></td>
-                        </tr>
-                      </table>
-                    </div>
-                  </td>
+                  <ng-container *ngIf="DBUrlaub.CurrentMitarbeiter.Homeofficefreigaben === true || DBUrlaub.CurrentMitarbeiter.Urlaubsfreigaben === true || DBUrlaub.Vertretungsanfragenanzahl > 0">
+                    <td style="width: 20px"></td>
+                    <td>
+                      <div class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Freigaben)">
+                        <table class="paddingsmalltable">
+                          <tr>
+                            <td><ion-icon name="thumbs-up-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Freigaben)"></ion-icon></td>
+                            <td [style.color]="GetUrlaubMenueFontcolor(Menuservice.UrlaubMenuebereiche.Freigaben)">Anfragen</td>
+                            <td *ngIf="DBUrlaub.Urlaubsanfragenanzahl > 0 || DBUrlaub.Homeofficeanfragenanzahl > 0">
+                              <ion-badge color="rot">{{(DBUrlaub.Urlaubsanfragenanzahl + DBUrlaub.Homeofficeanfragenanzahl).toString()}}</ion-badge>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </td>
+                  </ng-container>
                   <td style="width: 20px"></td>
                   <td>
                     <div class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Einstellungen)">

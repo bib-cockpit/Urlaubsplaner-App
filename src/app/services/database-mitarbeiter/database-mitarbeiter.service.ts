@@ -313,7 +313,7 @@ export class DatabaseMitarbeiterService {
 
       for(let Urlaubsliste of mitarbeiter.Urlaubsliste) {
 
-        Urlaubsliste.Zeitspannen.sort((a: Urlauzeitspannenstruktur, b:Urlauzeitspannenstruktur) => {
+        Urlaubsliste.Urlaubzeitspannen.sort((a: Urlauzeitspannenstruktur, b:Urlauzeitspannenstruktur) => {
 
           if (a.Startstempel < b.Startstempel) return -1;
           if (a.Startstempel > b.Startstempel) return 1;
@@ -380,7 +380,7 @@ export class DatabaseMitarbeiterService {
 
       for(let Urlaubsliste of mitarbeiter.Urlaubsliste) {
 
-        Urlaubsliste.Zeitspannen.sort((a: Urlauzeitspannenstruktur, b:Urlauzeitspannenstruktur) => {
+        Urlaubsliste.Urlaubzeitspannen.sort((a: Urlauzeitspannenstruktur, b:Urlauzeitspannenstruktur) => {
 
           if (a.Startstempel < b.Startstempel) return -1;
           if (a.Startstempel > b.Startstempel) return 1;

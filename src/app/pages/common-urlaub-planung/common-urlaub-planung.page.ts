@@ -24,6 +24,7 @@ import {Urlaubsstruktur} from "../../dataclasses/urlaubsstruktur";
 import {Urlaubprojektbeteiligtestruktur} from "../../dataclasses/urlaubprojektbeteiligtestruktur";
 import {ToolsProvider} from "../../services/tools/tools";
 import {cloneDeep} from "lodash-es";
+import {Homeofficezeitspannenstruktur} from "../../dataclasses/homeofficezeitspannenstruktur";
 
 @Component({
   selector: 'common-urlaub-planung-page',
@@ -47,6 +48,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
   public Message: string;
   public ShowMitarbeitereditor: boolean;
   public AddUrlaubRunning: boolean;
+  public AddHomeofficeRunning: boolean;
   private Auswahldialogorigin: string;
   private DataSubscription: Subscription;
   public ShowMitarbeiterauswahl: boolean;
@@ -84,6 +86,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
       this.ShowMitarbeitereditor = false;
       this.Auswahldialogorigin   = this.Const.NONE;
       this.AddUrlaubRunning      = false;
+      this.AddHomeofficeRunning  = false;
       this.ShowMitarbeiterauswahl = false;
       this.AuswahlIDliste         = [];
       this.MitarbeiterauswahlTitel = '';
@@ -160,11 +163,11 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
         case this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Status_Aendern:
 
-          if(data !== null && data !== this.DB.CurrentZeitspanne.Status) {
+          if(data !== null && data !== this.DB.CurrentUrlaubzeitspanne.Status) {
 
             debugger;
 
-            Zeitspanne = lodash.find(this.DB.CurrentUrlaub.Zeitspannen, {ZeitspannenID: this.DB.CurrentZeitspanne.ZeitspannenID});
+            Zeitspanne = lodash.find(this.DB.CurrentUrlaub.Urlaubzeitspannen, {ZeitspannenID: this.DB.CurrentUrlaubzeitspanne.ZeitspannenID});
 
             Zeitspanne.Status                     = data;
 
@@ -242,9 +245,9 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
         case  this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Vertreter_Festlegen:
 
-          Zeitspanne = lodash.find(this.DB.CurrentUrlaub.Zeitspannen, {ZeitspannenID: this.DB.CurrentZeitspanne.ZeitspannenID});
+          Zeitspanne = lodash.find(this.DB.CurrentUrlaub.Urlaubzeitspannen, {ZeitspannenID: this.DB.CurrentUrlaubzeitspanne.ZeitspannenID});
 
-          this.DB.CurrentZeitspanne.VertreterID = data;
+          this.DB.CurrentUrlaubzeitspanne.VertreterID = data;
           Zeitspanne.VertreterID                = data;
           Zeitspanne.Status                     = this.DB.Urlaubstatusvarianten.Geplant;
           Zeitspanne.FreigabeantwortSended      = false;
@@ -494,12 +497,25 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
     try {
 
-      this.DB.CurrentZeitspanne = null;
-      this.AddUrlaubRunning     = true;
+      this.DB.CurrentUrlaubzeitspanne = null;
+      this.AddUrlaubRunning           = true;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'AddUrlaub', this.Debug.Typen.Page);
+    }
+  }
+
+  AddHomeofficeStart() {
+
+    try {
+
+      this.DB.CurrentHomeofficezeitspanne = null;
+      this.AddHomeofficeRunning           = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'AddHomeofficeStart', this.Debug.Typen.Page);
     }
   }
 
@@ -509,9 +525,9 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
       this.AddUrlaubRunning = false;
 
-      if(this.DB.CurrentZeitspanne !== null) {
+      if(this.DB.CurrentUrlaubzeitspanne !== null) {
 
-        this.DB.CurrentUrlaub.Zeitspannen.push(this.DB.CurrentZeitspanne);
+        this.DB.CurrentUrlaub.Urlaubzeitspannen.push(this.DB.CurrentUrlaubzeitspanne);
 
         let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
 
@@ -520,7 +536,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
         this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
 
           // debugger;
-          // this.DB.CurrentZeitspanne = null;
+          // this.DB.CurrentUrlaubzeitspanne = null;
         });
       }
     } catch (error) {
@@ -534,13 +550,13 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     try {
 
 
-      let Zeitspannen = lodash.filter(this.DB.CurrentUrlaub.Zeitspannen, (eintrag: Urlauzeitspannenstruktur) => {
+      let Zeitspannen = lodash.filter(this.DB.CurrentUrlaub.Urlaubzeitspannen, (eintrag: Urlauzeitspannenstruktur) => {
 
         return eintrag.ZeitspannenID !== Zeitspanne.ZeitspannenID;
       });
 
-      this.DB.CurrentUrlaub             = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.Jahr});
-      this.DB.CurrentUrlaub.Zeitspannen = Zeitspannen;
+      this.DB.CurrentUrlaub                   = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.Jahr});
+      this.DB.CurrentUrlaub.Urlaubzeitspannen = Zeitspannen;
 
       let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
 
@@ -715,7 +731,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
       let Mitarbeiter: Mitarbeiterstruktur;
       let Index: number;
 
-      this.DB.CurrentZeitspanne = Zeitspanne;
+      this.DB.CurrentUrlaubzeitspanne = Zeitspanne;
 
       Index = 0;
 
@@ -785,7 +801,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
   }
 
 
-  CheckUpdatesAvailable(): boolean {
+  CheckUrlaubUpdatesAvailable(): boolean {
 
     try {
 
@@ -793,7 +809,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
       if(this.DB.CurrentUrlaub !== null) {
 
-        for(let Zeitspanne of this.DB.CurrentUrlaub.Zeitspannen) {
+        for(let Zeitspanne of this.DB.CurrentUrlaub.Urlaubzeitspannen) {
 
           if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Geplant && Zeitspanne.VertreterID !== null) Available = true;
         }
@@ -803,7 +819,29 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'CheckUpdatesAvailable', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'CheckUrlaubUpdatesAvailable', this.Debug.Typen.Page);
+    }
+  }
+
+  CheckHomeofficeUpdatesAvailable(): boolean {
+
+    try {
+
+      let Available: boolean = false;
+
+      if(this.DB.CurrentUrlaub !== null) {
+
+        for(let Zeitspanne of this.DB.CurrentUrlaub.Homeofficezeitspannen) {
+
+          if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Geplant && this.DB.CurrentUrlaub.HomeofficefreigeberID !== null) Available = true;
+        }
+      }
+
+      return Available;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'CheckHomeofficeUpdatesAvailable', this.Debug.Typen.Page);
     }
   }
 
@@ -831,7 +869,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     try {
 
       this.AddUrlaubRunning     = false;
-      this.DB.CurrentZeitspanne = null;
+      this.DB.CurrentUrlaubzeitspanne = null;
 
     } catch (error) {
 
@@ -847,7 +885,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
       this.Auswahltitel         = 'Status ändern';
       this.Auswahldialogorigin  = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Status_Aendern;
-      this.DB.CurrentZeitspanne = Zeitspanne;
+      this.DB.CurrentUrlaubzeitspanne = Zeitspanne;
 
       this.Auswahlliste = [];
 
@@ -864,6 +902,56 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'StatusClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  AddHomeoffice() {
+
+    try {
+
+      if(this.DB.CurrentHomeofficezeitspanne !== null) {
+
+        this.DB.CurrentUrlaub.Homeofficezeitspannen.push(this.DB.CurrentHomeofficezeitspanne);
+
+        let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+        this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
+
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'AddHomeofficeFinished', this.Debug.Typen.Page);
+    }
+  }
+
+  SaveHomeofficeEventHandler() {
+
+    try {
+
+      this.AddHomeofficeRunning           = false;
+      this.DB.CurrentHomeofficezeitspanne = null;
+
+      this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
+
+
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'SaveHomeofficeEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  GetHomeofficezeitspannenByStataus(Status: string): Homeofficezeitspannenstruktur[] {
+
+    try {
+
+      return lodash.filter(this.DB.CurrentUrlaub.Homeofficezeitspannen, {Status: Status});
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'GetHomeofficezeitspannenByStataus', this.Debug.Typen.Page);
     }
   }
 }

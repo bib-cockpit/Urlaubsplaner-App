@@ -502,4 +502,30 @@ export class CommonHomePage implements OnInit, OnDestroy {
   }
 
   protected readonly environment = environment;
+
+  CheckAllMitarbeiterdaten(): boolean {
+
+    try {
+
+      let Valid: boolean = true;
+
+      for(let Mitarbeiter of this.Pool.Mitarbeiterliste) {
+
+        if(Mitarbeiter.Archiviert === false) {
+
+          if(Mitarbeiter.Kuerzel === '' || Mitarbeiter.StandortID === '') {
+
+            Valid = false;
+          }
+        }
+      }
+
+      return Valid;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Home', 'CheckAllMitarbeiterdaten', this.Debug.Typen.Page);
+    }
+
+  }
 }

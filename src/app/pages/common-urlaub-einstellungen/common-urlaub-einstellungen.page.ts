@@ -1,33 +1,27 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MenueService} from "../../services/menue/menue.service";
 import {DebugProvider} from "../../services/debug/debug";
 import {BasicsProvider} from "../../services/basics/basics";
 import {PageHeaderComponent} from "../../components/page-header/page-header";
 import {PageFooterComponent} from "../../components/page-footer/page-footer";
 import * as lodash from "lodash-es";
 import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import moment, {Moment} from "moment/moment";
 import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
-import {Mitarbeitersettingsstruktur} from "../../dataclasses/mitarbeitersettingsstruktur";
-import {Subscription} from "rxjs";
 import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {ConstProvider} from "../../services/const/const";
 import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
 import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
-import {backspace, languageSharp} from "ionicons/icons";
-import {Urlauzeitspannenstruktur} from "../../dataclasses/urlauzeitspannenstruktur";
 import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {Urlaubsstruktur} from "../../dataclasses/urlaubsstruktur";
 import {cloneDeep} from "lodash-es";
 import {Ferienstruktur} from "../../dataclasses/ferienstruktur";
-import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import {Feiertagestruktur} from "../../dataclasses/feiertagestruktur";
 import {Urlaubprojektbeteiligtestruktur} from "../../dataclasses/urlaubprojektbeteiligtestruktur";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'common-urlaub-einstellungen-page',
@@ -46,18 +40,18 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
   public Auswahlhoehe: number;
 
   private Auswahldialogorigin: string;
-  private DataSubscription: Subscription;
   public ShowMitarbeiterauswahl: boolean;
   public AuswahlIDliste: string[];
   public MitarbeiterauswahlTitel: string;
   public Projektbeteiligteliste: Mitarbeiterstruktur[];
+  public Urlaubsfreigeberliste: Mitarbeiterstruktur[];
+  public Homeofficefreigeberliste: Mitarbeiterstruktur[];
   public MitarbeiterMultiselect: boolean;
   public Ferienliste: Ferienstruktur[];
   public Feiertageliste: Feiertagestruktur[];
+  private DataSubscription: Subscription;
 
-  constructor(public Menuservice: MenueService,
-              public Basics: BasicsProvider,
-              private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
+  constructor(public Basics: BasicsProvider,
               public Pool: DatabasePoolService,
               public DB: DatabaseUrlaubService,
               private DBMitarbeiter: DatabaseMitarbeiterService,
@@ -79,8 +73,9 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
       this.MitarbeiterMultiselect = true;
       this.Ferienliste = [];
       this.Feiertageliste = [];
-      this.Projektbeteiligteliste = [];
-
+      this.Projektbeteiligteliste   = [];
+      this.Urlaubsfreigeberliste    = [];
+      this.Homeofficefreigeberliste = [];
 
     } catch (error) {
 
@@ -91,6 +86,9 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
 
     try {
+
+      this.DataSubscription.unsubscribe();
+      this.DataSubscription = null;
 
 
     } catch (error) {
@@ -140,8 +138,42 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
       this.Projektbeteiligteliste.sort((a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
 
-        if (a.Name > b.Name) return -1;
-        if (a.Name < b.Name) return 1;
+        if (a.Name < b.Name) return -1;
+        if (a.Name > b.Name) return 1;
+        return 0;
+      });
+
+      this.Urlaubsfreigeberliste = [];
+
+      for (let Mitarbeiter of this.Pool.Mitarbeiterliste) {
+
+        if(Mitarbeiter.Urlaubsfreigaben === true) {
+
+          this.Urlaubsfreigeberliste.push(Mitarbeiter);
+        }
+      }
+
+      this.Urlaubsfreigeberliste.sort((a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
+
+        if (a.Name < b.Name) return -1;
+        if (a.Name > b.Name) return 1;
+        return 0;
+      });
+
+      this.Homeofficefreigeberliste = [];
+
+      for (let Mitarbeiter of this.Pool.Mitarbeiterliste) {
+
+        if(Mitarbeiter.Homeofficefreigaben === true) {
+
+          this.Homeofficefreigeberliste.push(Mitarbeiter);
+        }
+      }
+
+      this.Homeofficefreigeberliste.sort((a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
+
+        if (a.Name < b.Name) return -1;
+        if (a.Name > b.Name) return 1;
         return 0;
       });
 
@@ -206,21 +238,6 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
           break;
 
-        case this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Freigeber_Auswahl:
-
-          this.DB.CurrentUrlaub.FreigeberID = lodash.isUndefined(idliste[0]) ? null : idliste[0];
-
-          Urlaub = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
-
-          if (!lodash.isUndefined(Urlaub)) {
-
-            Urlaub.FreigeberID = lodash.isUndefined(idliste[0]) ? null : idliste[0];
-
-            this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
-
-              this.PrepareData();
-            });
-          }
 
           break;
 
@@ -365,6 +382,8 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
   ResturlaubClickedEvent() {
 
     try {
+
+      this.MitarbeiterMultiselect = false;
 
       this.Auswahldialogorigin = 'Resturlaub';
       this.Auswahlhoehe = 600;
@@ -595,13 +614,14 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
     }
   }
 
+  /*
   FreigabeAuswahlClicked() {
 
     try {
 
       this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Freigeber_Auswahl;
       this.ShowMitarbeiterauswahl = true;
-      this.AuswahlIDliste = this.DB.CurrentUrlaub.FreigeberID !== null ? [this.DB.CurrentUrlaub.FreigeberID] : [];
+      this.AuswahlIDliste = this.DB.CurrentUrlaub.UrlaubsfreigeberID !== null ? [this.DB.CurrentUrlaub.UrlaubsfreigeberID] : [];
       this.MitarbeiterauswahlTitel = 'Vertreter/innen auswählen';
       this.MitarbeiterMultiselect = false;
 
@@ -610,6 +630,8 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'FreigabeAuswahlClicked', this.Debug.Typen.Page);
     }
   }
+
+   */
 
   GetFreigeberName(FreigeberID: string): string {
 
@@ -629,6 +651,62 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'GetFreigeberName', this.Debug.Typen.Page);
+    }
+  }
+
+  UrlaubsfreigeberChanged(event: any) {
+
+    try {
+
+      let Urlaub: Urlaubsstruktur;
+
+      Urlaub = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
+
+      if (!lodash.isUndefined(Urlaub)) {
+
+        Urlaub.UrlaubsfreigeberID = event.detail.value;
+        this.DB.CurrentUrlaub     = Urlaub;
+
+        this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
+
+          this.PrepareData();
+        });
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'UrlaubsfreigeberChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  HomeofficefreigeberChanged(event: any) {
+
+    try {
+
+      let Urlaub: Urlaubsstruktur;
+      let Urlaubindex: number;
+
+      Urlaub = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
+
+      if (!lodash.isUndefined(Urlaub)) {
+
+        Urlaub.HomeofficefreigeberID = event.detail.value;
+        this.DB.CurrentUrlaub        = Urlaub;
+
+        Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+        this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
+
+        this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
+
+          this.PrepareData();
+        });
+
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'HomeofficefreigeberChanged', this.Debug.Typen.Page);
     }
   }
 }

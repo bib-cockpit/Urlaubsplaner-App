@@ -164,7 +164,7 @@
               </tr>
               <tr *ngFor="let Urlaub of DB.UrlaublisteExtern; let i = index">
                 <td>
-                  <checkbox-clon [Checked]="DB.CheckDisplayExternenUrlaub(Urlaub.MitarbeiterIDExtern)" (CheckChanged)="DisplayExternCheckChanged($event, Urlaub, i)" [Enabled]="Urlaub.Zeitspannen.length > 0"></checkbox-clon>
+                  <checkbox-clon [Checked]="DB.CheckDisplayExternenUrlaub(Urlaub.MitarbeiterIDExtern)" (CheckChanged)="DisplayExternCheckChanged($event, Urlaub, i)" [Enabled]="Urlaub.Urlaubzeitspannen.length > 0"></checkbox-clon>
                 </td>
                 <td><div class="legendeexterndivclass">{{Urlaub.NameKuerzel}}</div></td><td>{{Urlaub.NameExtern}} {{Urlaub.Text}}</td>
               </tr>

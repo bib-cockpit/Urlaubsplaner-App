@@ -32,6 +32,23 @@
   padding: 4px;
 }
 
+.datumokdivclass {
+
+  width: 120px;
+  height: 60px;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  text-align: center;
+  background: green;
+  color: white;
+  font-weight: bold;
+  border: 1px solid #444444;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 4px;
+}
+
 .contentdivclass {
 
   position: relative;
@@ -66,6 +83,7 @@
 .legendedivclass {
 
   font-weight: bold;
+  font-size: 90%;
   color: white;
   width: 30px;
   border: 1px solid #444444;

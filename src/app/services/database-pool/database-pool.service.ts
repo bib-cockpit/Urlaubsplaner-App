@@ -24,6 +24,7 @@ import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur
 import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
 import {Urlaubsstruktur} from "../../dataclasses/urlaubsstruktur";
 import {Simontabellestruktur} from "../../dataclasses/simontabellestruktur";
+import {BasicsProvider} from "../basics/basics";
 
 @Injectable({
   providedIn: 'root'
@@ -89,7 +90,7 @@ export class DatabasePoolService {
 
   constructor(private Debug: DebugProvider,
               private Const: ConstProvider,
-              private AuthService: DatabaseAuthenticationService,
+              private Basics: BasicsProvider,
               private Http:  HttpClient) {
     try {
 
@@ -223,15 +224,19 @@ export class DatabasePoolService {
       Signatur = Signatur.replace('[Telefon]',  Telefon);
       Signatur = Signatur.replace('[Mobil]',    Mobil);
 
+
       Signatur = Signatur.split('[Email]').join(Email);
+
+      // debugger;
 
       if(local) {
 
-        Signatur = Signatur.split('[Image]').join('assets/images/group_logo.png');
+        Signatur = Signatur.split('[Image]').join(this.Basics.WebAppUrl + '/assets/images/group_logo.png');
       }
       else {
 
-
+        Signatur = Signatur.split('[Image]').join(this.Basics.WebAppUrl + '/assets/images/group_logo.png');
+        debugger;
       }
 
       return Signatur;
@@ -1219,6 +1224,8 @@ export class DatabasePoolService {
         UrlaubShowFeiertage_BG:      true,
         UrlaubShowMeinenUrlaub:      true,
 
+        ShowHomeoffice: true,
+
         OberkostengruppeFilter: null,
         HauptkostengruppeFilter: null,
         UnterkostengruppeFilter: null,
@@ -1301,6 +1308,7 @@ export class DatabasePoolService {
           if(lodash.isUndefined(Settings.UrlaubShowFeiertage_DE))         Settings.UrlaubShowFeiertage_DE         = true;
           if(lodash.isUndefined(Settings.UrlaubShowFeiertage_BG))         Settings.UrlaubShowFeiertage_BG         = true;
           if(lodash.isUndefined(Settings.UrlaubShowMeinenUrlaub))         Settings.UrlaubShowMeinenUrlaub         = true;
+          if(lodash.isUndefined(Settings.ShowHomeoffice))                 Settings.ShowHomeoffice                 = true;
 
           this.CurrentAufgabenansichten = this.GetAufgabenansichten(null);
 

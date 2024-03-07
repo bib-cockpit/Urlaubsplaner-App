@@ -58,5 +58,7 @@ export type Mitarbeitersettingsstruktur = {
   UrlaubShowFeiertage_DE:      boolean;
   UrlaubShowFeiertage_BG:      boolean;
 
+  ShowHomeoffice:              boolean;
+
   __v?: any;
 };

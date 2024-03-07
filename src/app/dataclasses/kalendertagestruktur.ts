@@ -14,6 +14,7 @@ export type Kalendertagestruktur = {
   IsFerientag_DE? : boolean;
   IsFerientag_BG? : boolean;
   IsUrlaub?: boolean;
+  IsHomeoffice?: boolean;
   Feiertagname_DE?: string;
   Feiertagname_BG?: string;
   Ferienname_DE?: string;

@@ -7,37 +7,76 @@
 
   <ion-grid *ngIf="DB.CurrentUrlaub !== null">
     <ion-row>
-      <ion-col>
+      <ion-col size="12">
         <ion-text color="baeblau" style="font-size: 120%"><b>Projekt beteiligte Mitarbeiter/innen</b></ion-text>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col>
+      <ion-col size="12">
         <table class="paddingtable">
+          <ng-container *ngIf="Projektbeteiligteliste.length > 0">
             <tr *ngFor="let Mitarbeiter of Projektbeteiligteliste">
-              <td>{{Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name}}</td>
+              <td colspan="2">{{Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name}}</td>
             </tr>
+          </ng-container>
+          <ng-container *ngIf="Projektbeteiligteliste.length === 0">
             <tr>
-              <td><ion-button size="small" color="grau" (click)="MitarbeiterAuswahlClicked()">Mitarbeiter/innen auswählen</ion-button></td>
+              <td><img src="assets/svgs/alert.svg" style="width: 24px"></td>
+              <td>
+                Bitte wähle hier alle Personen aus mit denen du regelmäßig zusammenarbeitest,<br>oder Personen die eventuell deine Urlaubsvertretung übernehmen können.
+              </td>
             </tr>
+          </ng-container>
+          <tr>
+            <td colspan="2"><ion-button size="small" color="grau" (click)="MitarbeiterAuswahlClicked()">Mitarbeiter/innen auswählen</ion-button></td>
+          </tr>
         </table>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-text color="baeblau" style="font-size: 120%"><b>Urlaubsfreigabe</b></ion-text>
+        <ion-text color="baeblau" style="font-size: 120%"><b>Urlaubsfreigaben</b></ion-text>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size="6">
-        <table class="paddingtable">
-          <tr *ngIf="DB.CurrentUrlaub.FreigeberID !== null">
-            <td>{{GetFreigeberName(DB.CurrentUrlaub.FreigeberID)}}</td>
-          </tr>
-          <tr>
-            <td><ion-button size="small" color="grau" (click)="FreigabeAuswahlClicked()">Mitarbeiter/in auswählen</ion-button></td>
-          </tr>
-        </table>
+        <ion-radio-group [value]="DB.CurrentUrlaub.UrlaubsfreigeberID" (ionChange)="UrlaubsfreigeberChanged($event)">
+          <table class="paddingtable">
+            <tr *ngIf="DB.CurrentUrlaub.UrlaubsfreigeberID === null">
+              <td><img src="assets/svgs/alert.svg" style="width: 24px"></td>
+              <td>
+                Bitte zuständige Person für die Urlaubsfreigaben festlegen.
+              </td>
+            </tr>
+            <tr *ngFor="let Mitarbeiter of Urlaubsfreigeberliste">
+              <td><ion-radio [value]="Mitarbeiter._id"></ion-radio></td>
+              <td>{{Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name}}</td>
+            </tr>
+          </table>
+        </ion-radio-group>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-text color="baeblau" style="font-size: 120%"><b>Homeofficefreigaben</b></ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="6">
+        <ion-radio-group [value]="DB.CurrentUrlaub.HomeofficefreigeberID" (ionChange)="HomeofficefreigeberChanged($event)">
+          <table class="paddingtable">
+            <tr *ngIf="DB.CurrentUrlaub.HomeofficefreigeberID === null">
+              <td><img src="assets/svgs/alert.svg" style="width: 24px"></td>
+              <td>
+                Bitte zuständige Person für die Homeofficefreigaben festlegen.
+              </td>
+            </tr>
+            <tr *ngFor="let Mitarbeiter of Homeofficefreigeberliste">
+              <td><ion-radio [value]="Mitarbeiter._id"></ion-radio></td>
+              <td>{{Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name}}</td>
+            </tr>
+          </table>
+        </ion-radio-group>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -134,7 +173,7 @@
 <fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
                         [Titel]="MitarbeiterauswahlTitel"
                         [Dialogbreite]="600" [ZIndex]="4000"
-                        [Multiselect]="false"
+                        [Multiselect]="MitarbeiterMultiselect"
                         [OnlyProjektmitarbeiter]="false"
                         Iconname="people-outline"
                         [AuswahlIDliste]="AuswahlIDliste"

@@ -22,6 +22,7 @@ import {DatabaseUrlaubService} from "../../services/database-urlaub/database-url
 import {Kalendertagestruktur} from "../../dataclasses/kalendertagestruktur";
 import {Subscription} from "rxjs";
 import {ToolsProvider} from "../../services/tools/tools";
+import {boolean} from "joi";
 
 @Component({
   selector: 'urlaubsplanung-kalender',
@@ -39,11 +40,13 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
   @Input() Monatindex: number;
   @Input() Jahr: number;
   @Input() AddUrlaubRunning: boolean;
+  @Input() AddHomeofficerunning: boolean;
   @Input() ShowYear: boolean;
 
   @Output() FeiertagCrossedEvent  = new EventEmitter<{Name: string; Laendercode: string}>();
   @Output() FerientagCrossedEvent = new EventEmitter<{Name: string; Laendercode: string}>();
-  @Output() AddUrlaubFinished     = new EventEmitter<boolean>();
+  @Output() AddUrlaubFinished            = new EventEmitter<boolean>();
+  @Output() AddHomeofficeEvent          = new EventEmitter<boolean>();
 
   public Kalendertageliste: Kalendertagestruktur[][];
   public KalendertageExternliste: Kalendertagestruktur[][][];
@@ -52,6 +55,8 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
   public Monatname: string;
   private ExterneUrlaubSubscription: Subscription;
   private UrlaubStatusSubscription: Subscription;
+  private HomeofficeStatusSubscription: Subscription;
+  private ExterneHomeofficeSubscription: Subscription;
 
   constructor(private Debug: DebugProvider,
               public Basics: BasicsProvider,
@@ -70,14 +75,17 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
       this.KalendertageExternliste = [];
       this.Monatname = 'none';
       this.AddUrlaubRunning = false;
+      this.AddHomeofficerunning = false;
       this.Monatindex = 0;
       this.ShowYear   = false;
       this.Monatname = this.DB.Monateliste[this.Monatindex];
 
-      this.DataSubscription = null;
-      this.MonateSubscription = null;
-      this.ExterneUrlaubSubscription = null;
-      this.UrlaubStatusSubscription = null;
+      this.DataSubscription              = null;
+      this.MonateSubscription            = null;
+      this.ExterneUrlaubSubscription     = null;
+      this.UrlaubStatusSubscription      = null;
+      this.HomeofficeStatusSubscription  = null;
+      this.ExterneHomeofficeSubscription = null;
 
     } catch (error) {
 
@@ -98,7 +106,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'file', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Kalender', 'ngOnChanges', this.Debug.Typen.Component);
     }
 
     }
@@ -192,20 +200,49 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
           if(this.DB.CurrentUrlaub !== null) {
 
-            for(let Zeitspanne of this.DB.CurrentUrlaub.Zeitspannen) {
+            for(let Zeitspanne of this.DB.CurrentUrlaub.Urlaubzeitspannen) {
 
               Startdatum = moment(Zeitspanne.Startstempel);
               Endedatum  = moment(Zeitspanne.Endestempel);
 
-              if(Datum.isSameOrAfter(Startdatum, 'day') === true &&
-                Datum.isSameOrBefore(Endedatum, 'day') === true &&
+              if(Datum.isSameOrAfter(Startdatum, 'day')  === true &&
+                Datum.isSameOrBefore(Endedatum, 'day')   === true &&
                 this.DB.CheckIsFeiertag(Tag, this.DB.Laendercode) === false) {
 
                 Tag.IsUrlaub   = true;
-                Tag.Background = this.DB.GetStatuscolor(Zeitspanne.Status);
+                Tag.Background = this.DB.GetUrlaubStatuscolor(Zeitspanne.Status);
                 Tag.Color      = 'white';
 
                 break;
+              }
+            }
+          }
+
+          // Homeoffice eintragen
+
+          if(Tag.IsUrlaub === false) {
+
+            Tag.Background   = 'white';
+            Tag.Color        = 'black';
+            Tag.IsHomeoffice = false;
+
+            if(this.DB.CurrentUrlaub !== null) {
+
+              for(let Zeitspanne of this.DB.CurrentUrlaub.Homeofficezeitspannen) {
+
+                Startdatum = moment(Zeitspanne.Startstempel);
+                Endedatum  = moment(Zeitspanne.Endestempel);
+
+                if(Datum.isSameOrAfter(Startdatum, 'day')  === true &&
+                  Datum.isSameOrBefore(Endedatum, 'day')   === true &&
+                  this.DB.CheckIsFeiertag(Tag, this.DB.Laendercode) === false) {
+
+                  Tag.IsHomeoffice = true;
+                  Tag.Background   = this.DB.GetHomeofficeStatuscolor(Zeitspanne.Status);
+                  Tag.Color        = 'white';
+
+                  break;
+                }
               }
             }
           }
@@ -267,7 +304,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                 Color:      'black'
               };
 
-              for(let Zeitspanne of this.DB.UrlaublisteExtern[i].Zeitspannen) {
+              for(let Zeitspanne of this.DB.UrlaublisteExtern[i].Urlaubzeitspannen) {
 
                 Startdatum = moment(Zeitspanne.Startstempel);
                 Endedatum  = moment(Zeitspanne.Endestempel);
@@ -277,7 +314,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                   this.DB.CheckIsFeiertag(Tag, this.DB.Laendercode) === false) {
 
                   Tag.IsUrlaub   = true;
-                  Tag.Background = this.DB.GetStatuscolor(Zeitspanne.Status);
+                  Tag.Background = this.DB.GetUrlaubStatuscolor(Zeitspanne.Status);
                   Tag.Color      = 'white';
 
                   break;
@@ -320,7 +357,17 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
         this.PrepareData();
       });
 
+      this.ExterneHomeofficeSubscription = this.DB.ExterneHomeofficeChanged.subscribe(() => {
+
+        this.PrepareData();
+      });
+
       this.UrlaubStatusSubscription = this.DB.UrlaubStatusChanged.subscribe(() => {
+
+        this.PrepareData();
+      });
+
+      this.HomeofficeStatusSubscription = this.DB.HomeofficeStatusChanged.subscribe(() => {
 
         this.PrepareData();
       });
@@ -349,6 +396,12 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
       this.UrlaubStatusSubscription.unsubscribe();
       this.UrlaubStatusSubscription = null;
+
+      this.HomeofficeStatusSubscription.unsubscribe();
+      this.HomeofficeStatusSubscription = null;
+
+      this.ExterneHomeofficeSubscription.unsubscribe();
+      this.ExterneHomeofficeSubscription = null;
 
     } catch (error) {
 
@@ -408,92 +461,122 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
       let Anzahl: number = 0  ;
       let IsFeiertag: boolean = this.DB.Laendercode === 'DE' ? Tag.IsFeiertag_DE : Tag.IsFeiertag_BG;
       let Resturlaub: number;
+      let IsUrlaub: boolean = Tag.IsUrlaub;
+      let IsHomeoffice: boolean = Tag.IsHomeoffice;
 
-      if(this.AddUrlaubRunning && IsFeiertag === false) {
+      if(this.AddUrlaubRunning) {
 
-        if(this.DB.CurrentZeitspanne === null ) {
+        if (IsFeiertag === false && IsHomeoffice === false && IsUrlaub === false) {
 
-          this.DB.CurrentZeitspanne = this.DB.GetEmptyZeitspanne();
+          if (this.DB.CurrentUrlaubzeitspanne === null) {
 
-          this.DB.CurrentZeitspanne.Startstempel = Tag.Tagstempel;
-          this.DB.CurrentZeitspanne.Startstring  = Tag.Datumstring;
+            this.DB.CurrentUrlaubzeitspanne = this.DB.GetEmptyUrlaubszeitspanne();
 
-          // this.DB.CurrentZeitspanne.Endestempel = Tag.Tagstempel;
-          // this.DB.CurrentZeitspanne.Endestring  = Tag.Datumstring;
+            this.DB.CurrentUrlaubzeitspanne.Startstempel = Tag.Tagstempel;
+            this.DB.CurrentUrlaubzeitspanne.Startstring = Tag.Datumstring;
 
-          Tag.Background = this.DB.Urlaubsfaben.Geplant;
-          Tag.IsUrlaub   = true;
-          Tag.Color      = 'white';
-        }
-        else {
 
-          Startdatum = moment(this.DB.CurrentZeitspanne.Startstempel);
-          Datum      = moment(Tag.Tagstempel);
+            Tag.Background = this.DB.Urlaubsfaben.Geplant;
+            Tag.IsUrlaub = true;
+            Tag.Color = 'white';
+          } else {
 
-          if(Datum.isSameOrAfter(Startdatum, 'day') === true && Datum.isSame(Startdatum, 'week')) {
+            Startdatum = moment(this.DB.CurrentUrlaubzeitspanne.Startstempel);
+            Datum = moment(Tag.Tagstempel);
 
-            this.DB.CurrentZeitspanne.Endestempel = Tag.Tagstempel;
-            this.DB.CurrentZeitspanne.Endestring  = Tag.Datumstring;
+            if (Datum.isSameOrAfter(Startdatum, 'day') === true && Datum.isSame(Startdatum, 'week')) {
 
-            for(let Index = Tagindex; Index >= 0; Index--) {
+              this.DB.CurrentUrlaubzeitspanne.Endestempel = Tag.Tagstempel;
+              this.DB.CurrentUrlaubzeitspanne.Endestring = Tag.Datumstring;
 
-              Kalendertag = this.Kalendertageliste[Wocheindex][Index];
-              IsFeiertag  = this.DB.Laendercode === 'DE' ? Kalendertag.IsFeiertag_DE : Kalendertag.IsFeiertag_BG;
+              for (let Index = Tagindex; Index >= 0; Index--) {
 
-              if(IsFeiertag === false) {
+                Kalendertag = this.Kalendertageliste[Wocheindex][Index];
+                IsFeiertag  = this.DB.Laendercode === 'DE' ? Kalendertag.IsFeiertag_DE : Kalendertag.IsFeiertag_BG;
 
-                Kalendertag.Background = this.DB.Urlaubsfaben.Geplant;
-                Kalendertag.IsUrlaub   = true;
-                Kalendertag.Color      = 'white';
+                if (IsFeiertag === false) {
 
-                Anzahl++;
-              }
-            }
+                  Kalendertag.Background = this.DB.Urlaubsfaben.Geplant;
+                  Kalendertag.IsUrlaub = true;
+                  Kalendertag.Color = 'white';
 
-            this.DB.CurrentZeitspanne.Tageanzahl = Anzahl;
-
-            Resturlaub = this.DB.CountResturlaub();
-
-            if(Resturlaub - Anzahl >= 0) {
-
-              this.AddUrlaubFinished.emit(true);
-            }
-            else {
-
-              this.Tools.ShowHinweisDialog('Du hast nur noch ' + Resturlaub + ' Tage Resturlaub.');
-
-              this.DB.CurrentZeitspanne = null;
-
-              window.setTimeout(() => {
-
-                for(let Index = Tagindex; Index >= 0; Index--) {
-
-                  Kalendertag = this.Kalendertageliste[Wocheindex][Index];
-                  IsFeiertag  = this.DB.Laendercode === 'DE' ? Kalendertag.IsFeiertag_DE : Kalendertag.IsFeiertag_BG;
-
-                  if(IsFeiertag === false) {
-
-                    Kalendertag.Background = 'none';
-                    Kalendertag.IsUrlaub   = false;
-                    Kalendertag.Color      = 'black';
-                  }
+                  Anzahl++;
                 }
+              }
 
-                this.AddUrlaubFinished.emit(false);
+              this.DB.CurrentUrlaubzeitspanne.Tageanzahl = Anzahl;
 
-              }, 3000);
+              Resturlaub = this.DB.CountResturlaub();
 
-            }
-          }
-          else {
+              if (Resturlaub - Anzahl >= 0) {
+
+                this.AddUrlaubFinished.emit(true);
+              } else {
+
+                this.Tools.ShowHinweisDialog('Du hast nur noch ' + Resturlaub + ' Tage Resturlaub.');
+
+                this.DB.CurrentUrlaubzeitspanne = null;
+
+                window.setTimeout(() => {
+
+                  for (let Index = Tagindex; Index >= 0; Index--) {
+
+                    Kalendertag = this.Kalendertageliste[Wocheindex][Index];
+                    IsFeiertag = this.DB.Laendercode === 'DE' ? Kalendertag.IsFeiertag_DE : Kalendertag.IsFeiertag_BG;
+
+                    if (IsFeiertag === false) {
+
+                      Kalendertag.Background = 'none';
+                      Kalendertag.IsUrlaub = false;
+                      Kalendertag.Color = 'black';
+                    }
+                  }
+
+                  this.AddUrlaubFinished.emit(false);
+
+                }, 3000);
+
+              }
+            } else {
 
               this.Tools.ShowHinweisDialog('Bitte Tag in der gleichen Woche wählen.');
+            }
           }
+
+        } else {
+
+          if (IsFeiertag)       this.Tools.ShowHinweisDialog('Dieser Tag ist ein Feiertag.');
+          else if(IsHomeoffice) this.Tools.ShowHinweisDialog('Dieser Tag ist ein Homeofficetag.');
+          else                  this.Tools.ShowHinweisDialog('Dieser Tag ist bereits ein Urlaubstag.');
         }
       }
-      else {
 
-        if(this.AddUrlaubRunning) this.Tools.ShowHinweisDialog('Dieser Tag ist ein Feiertag.');
+      if(this.AddHomeofficerunning) {
+
+
+        if(IsFeiertag === false && IsUrlaub === false && IsHomeoffice === false) {
+
+          this.DB.CurrentHomeofficezeitspanne = this.DB.GetEmptyHomeofficezeitspanne();
+
+          this.DB.CurrentHomeofficezeitspanne.Startstempel = Tag.Tagstempel;
+          this.DB.CurrentHomeofficezeitspanne.Endestempel  = Tag.Tagstempel;
+          this.DB.CurrentHomeofficezeitspanne.Startstring  = Tag.Datumstring;
+          this.DB.CurrentHomeofficezeitspanne.Endestring   = Tag.Datumstring;
+          this.DB.CurrentHomeofficezeitspanne.Tageanzahl   = 1;
+
+          Kalendertag              = this.Kalendertageliste[Wocheindex][Tagindex];
+          Kalendertag.Background   = this.DB.Homeofficefarben.Geplant;
+          Kalendertag.IsHomeoffice = true;
+          Kalendertag.Color        = 'white';
+
+        } else {
+
+          if (IsFeiertag)   this.Tools.ShowHinweisDialog('Dieser Tag ist ein Feiertag.');
+          else if(IsUrlaub) this.Tools.ShowHinweisDialog('Dieser Tag ist ein Urlaubstag.');
+          else              this.Tools.ShowHinweisDialog('Dieser Tag ist bereits ein Homeofficetag.');
+        }
+
+        this.AddHomeofficeEvent.emit(true);
       }
     } catch (error) {
 
@@ -514,6 +597,22 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Kalender', 'GetMonatname', this.Debug.Typen.Component);
+    }
+  }
+
+  GetTagBackground(Tag: Kalendertagestruktur): string {
+
+    try {
+
+      if(Tag.IsUrlaub === true || Tag.IsHomeoffice === true) {
+
+        return Tag.Background;
+      }
+      else return 'none';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Kalender', 'GetTagBackground', this.Debug.Typen.Component);
     }
   }
 }

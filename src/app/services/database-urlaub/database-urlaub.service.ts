@@ -19,6 +19,7 @@ import {Graphservice} from "../graph/graph";
 import {Outlookemailadressstruktur} from "../../dataclasses/outlookemailadressstruktur";
 import {BasicsProvider} from "../basics/basics";
 import {DatabaseMitarbeiterService} from "../database-mitarbeiter/database-mitarbeiter.service";
+import {Homeofficezeitspannenstruktur} from "../../dataclasses/homeofficezeitspannenstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,9 @@ export class DatabaseUrlaubService {
 
   public PlanungsmonateChanged: EventEmitter<any> = new EventEmitter<any>();
   public ExterneUrlaubeChanged: EventEmitter<any> = new EventEmitter<any>();
+  public ExterneHomeofficeChanged: EventEmitter<any> = new EventEmitter<any>();
   public UrlaubStatusChanged:   EventEmitter<any> = new EventEmitter<any>();
+  public HomeofficeStatusChanged: EventEmitter<any> = new EventEmitter<any>();
 
   public Bundeslandkuerzel: string;
   public Bundesland: string;
@@ -49,18 +52,22 @@ export class DatabaseUrlaubService {
   public Ferienfarbe_BG: string;
   public Feiertagefarbe_DE: string;
   public Feiertagefarbe_BG: string;
-  public CurrentZeitspanne: Urlauzeitspannenstruktur;
+  public CurrentUrlaubzeitspanne: Urlauzeitspannenstruktur;
+  public CurrentHomeofficezeitspanne: Homeofficezeitspannenstruktur;
   public Monateliste: string[];
   private ServerReadfeiertageUrl: string;
   private ServerReadRegionenUrl: string;
   private ServerReadFerienUrl: string;
   public Vertretrungliste: Mitarbeiterstruktur[];
-  public Freigabenliste: Mitarbeiterstruktur[];
+  public Urlaubfreigabenliste: Mitarbeiterstruktur[];
+  public Homeofficefreigabenliste: Mitarbeiterstruktur[];
   public Vertretungsanfragenanzahl: number;
   public Vertretungsantwortenanzahl: number;
   public Freigabenanfragenanzahl: number;
   public Freigabenantwortenanzahl: number;
-  public Anfragenanzahl: number;
+  public Urlaubsanfragenanzahl: number;
+  public Homeofficeanfragenanzahl: number;
+  public Homeofficantwortenanzahl: number;
   public Antwortenanzahl: number;
   public CorrectSetup: boolean;
   public Officeemailadress: string;
@@ -77,6 +84,17 @@ export class DatabaseUrlaubService {
     Feiertag:           'Feiertag',
     Ferientag:          'Ferientag'
   };
+
+  public Homeofficestatusvarianten = {
+
+    Geplant:            'Geplant',
+    Freigabeanfrage:    'Freigabeanfrage',
+    Abgelehnt:          'Abgelehnt',
+    Genehmigt:          'Genehmigt',
+    Feiertag:           'Feiertag',
+    Ferientag:          'Ferientag'
+  };
+
   public Urlaubsfaben = {
 
     Geplant:            '#307ac1',
@@ -90,6 +108,14 @@ export class DatabaseUrlaubService {
     Feiertage_DE:         '#454545',
     Feiertage_BG:         '#454545',
     Wochenende:           '#34495E'
+  };
+
+  public Homeofficefarben = {
+
+    Geplant:            '#307ac1',
+    Freigabeanfrage:    '#04B4AE',
+    Abgelehnt:          'red',
+    Genehmigt:          'green',
   };
 
   constructor(private Debug: DebugProvider,
@@ -110,11 +136,13 @@ export class DatabaseUrlaubService {
       this.Bundesland              = '';
       this.Feiertageliste          = [];
       this.Ferienliste             = [];
-      this.Freigabenliste          = [];
+      this.Urlaubfreigabenliste     = [];
+      this.Homeofficefreigabenliste = [];
       this.CurrentMonatindex       = moment().month();
       this.FirstMonatIndex         = this.CurrentMonatindex - 1;
       this.LastMonatIndex          = this.CurrentMonatindex + 1;
-      this.CurrentZeitspanne       = null;
+      this.CurrentUrlaubzeitspanne = null;
+      this.CurrentUrlaubzeitspanne = null;
       this.Laendercode             = 'DE';
       this.ShowFeiertage_DE        = false;
       this.ShowFeiertage_BG        = false;
@@ -124,12 +152,14 @@ export class DatabaseUrlaubService {
       this.Feiertagefarbe_DE       = this.Const.NONE;
       this.UrlaublisteExtern       = [];
       this.Vertretrungliste        = [];
-      this.Anfragenanzahl             = 0;
+      this.Urlaubsanfragenanzahl      = 0;
       this.Antwortenanzahl            = 0;
       this.Vertretungsanfragenanzahl  = 0;
       this.Vertretungsantwortenanzahl = 0;
       this.Freigabenanfragenanzahl    = 0;
       this.Freigabenantwortenanzahl   = 0;
+      this.Homeofficeanfragenanzahl   = 0;
+      this.Homeofficantwortenanzahl   = 0;
       this.CurrentMitarbeiter      = null;
       this.CorrectSetup            = false;
       this.Officeemailadress       = 'office@b-a-e.eu';
@@ -159,7 +189,7 @@ export class DatabaseUrlaubService {
 
       if(this.CurrentUrlaub !== null && this.CurrentMitarbeiter !== null) {
 
-        this.CorrectSetup = this.CurrentUrlaub.FreigeberID !== null && this.CurrentUrlaub.Projektbeteiligteliste.length > 0;
+        this.CorrectSetup = this.CurrentUrlaub.UrlaubsfreigeberID !== null && this.CurrentUrlaub.HomeofficefreigeberID !== null && this.CurrentUrlaub.Projektbeteiligteliste.length > 0;
       }
       else this.CorrectSetup = false;
 
@@ -180,7 +210,8 @@ export class DatabaseUrlaubService {
 
         this.Freigabenanfragenanzahl  = 0;
         this.Freigabenantwortenanzahl = 0;
-        this.Freigabenliste           = [];
+        this.Urlaubfreigabenliste     = [];
+        this.Homeofficefreigabenliste = [];
 
         if(this.CurrentMitarbeiter !== null) {
 
@@ -190,7 +221,7 @@ export class DatabaseUrlaubService {
 
               Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, (urlaub: Urlaubsstruktur) => {
 
-                return urlaub.Jahr === this.Jahr && urlaub.FreigeberID === this.CurrentMitarbeiter._id;
+                return urlaub.Jahr === this.Jahr && urlaub.UrlaubsfreigeberID === this.CurrentMitarbeiter._id;
               });
 
               if(!lodash.isUndefined(Urlaub)) {
@@ -198,18 +229,18 @@ export class DatabaseUrlaubService {
                 CountAnfrage = false;
                 CountAntwort = false;
 
-                for (let Zeitspanne of Urlaub.Zeitspannen) {
+                for (let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
                   Zeitspanne = this.InitZeitspanne(Zeitspanne);
 
-                  if (this.CheckFreigabeanwortAge(Zeitspanne) === true &&
+                  if (this.CheckUrlaubFreigabeanwortAge(Zeitspanne) === true &&
                      (Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterfreigabe ||
                       Zeitspanne.Status === this.Urlaubstatusvarianten.Abgelehnt ||
                       Zeitspanne.Status === this.Urlaubstatusvarianten.Genehmigt)) {
 
-                    if(lodash.isUndefined(lodash.find(this.Freigabenliste, {_id: Mitarbeiter._id}))) {
+                    if(lodash.isUndefined(lodash.find(this.Urlaubfreigabenliste, {_id: Mitarbeiter._id}))) {
 
-                      this.Freigabenliste.push(Mitarbeiter);
+                      this.Urlaubfreigabenliste.push(Mitarbeiter);
 
                       if(Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterfreigabe) CountAnfrage = true; // nur offene Anfragen zaehlen
                       else {
@@ -222,7 +253,7 @@ export class DatabaseUrlaubService {
 
                 if(CountAnfrage === true) {
 
-                  this.Anfragenanzahl++;
+                  this.Urlaubsanfragenanzahl++;
                   this.Freigabenanfragenanzahl++;
                 }
 
@@ -230,6 +261,47 @@ export class DatabaseUrlaubService {
 
                   this.Antwortenanzahl++;
                   this.Freigabenantwortenanzahl++;
+                }
+              }
+            }
+
+            Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, (urlaub: Urlaubsstruktur) => {
+
+              return urlaub.Jahr === this.Jahr && urlaub.HomeofficefreigeberID === this.CurrentMitarbeiter._id;
+            });
+
+            if(!lodash.isUndefined(Urlaub)) {
+
+              for (let Zeitspanne of Urlaub.Homeofficezeitspannen) {
+
+                CountAnfrage = false;
+                CountAntwort = false;
+
+                if (this.CheckHomeofficeFreigabeanwortAge(Zeitspanne) === true &&
+                  ( Zeitspanne.Status === this.Homeofficestatusvarianten.Freigabeanfrage ||
+                    Zeitspanne.Status === this.Homeofficestatusvarianten.Abgelehnt ||
+                    Zeitspanne.Status === this.Homeofficestatusvarianten.Genehmigt)) {
+
+                  if(lodash.isUndefined(lodash.find(this.Homeofficefreigabenliste, {_id: Mitarbeiter._id}))) {
+
+                    this.Homeofficefreigabenliste.push(Mitarbeiter);
+
+                    if(Zeitspanne.Status === this.Homeofficestatusvarianten.Freigabeanfrage) CountAnfrage = true; // nur offene Anfragen zaehlen
+                    else {
+
+                      CountAntwort = true;
+                    }
+                  }
+                }
+
+                if(CountAnfrage === true) {
+
+                  this.Homeofficeanfragenanzahl++;
+                }
+
+                if(CountAntwort === true) {
+
+                  this.Homeofficantwortenanzahl++;
                 }
               }
             }
@@ -247,7 +319,7 @@ export class DatabaseUrlaubService {
 
       if(Urlaub !== null) {
 
-        for(let Zeitspanne of Urlaub.Zeitspannen) {
+        for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
           Zeitspanne.Status                       = this.Urlaubstatusvarianten.Geplant;
           Zeitspanne.VertreterantwortSended       = false;
@@ -306,7 +378,7 @@ export class DatabaseUrlaubService {
     }
   }
 
-  public CheckFreigabeanwortAge(Zeitspanne: Urlauzeitspannenstruktur): boolean {
+  public CheckUrlaubFreigabeanwortAge(Zeitspanne: Urlauzeitspannenstruktur): boolean {
 
     try {
 
@@ -339,7 +411,42 @@ export class DatabaseUrlaubService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'CheckFreigabeanwortAge', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'CheckUrlaubFreigabeanwortAge', this.Debug.Typen.Service);
+    }
+  }
+
+  public CheckHomeofficeFreigabeanwortAge(Zeitspanne: Homeofficezeitspannenstruktur): boolean {
+
+    try {
+
+      let Heute: Moment = moment().locale('de');
+      let Datum: Moment;
+      let Dauer: number;
+
+      if(Zeitspanne.FreigabeantwortSended === true &&
+        (Zeitspanne.Status  === this.Homeofficestatusvarianten.Genehmigt ||
+         Zeitspanne.Status  === this.Homeofficestatusvarianten.Abgelehnt)) {
+
+        if(Zeitspanne.Freigabeantwortzeitstempel === null) {
+
+          return false;
+        }
+        else {
+
+          // Alter prüfen
+
+          Datum = moment(Zeitspanne.Freigabeantwortzeitstempel).locale('de');
+          Dauer = moment.duration(Heute.diff(Datum)).asMinutes();
+
+          return Dauer <= 180;
+
+        }
+      }
+      else return true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'CheckHomeofficeFreigabeanwortAge', this.Debug.Typen.Service);
     }
   }
 
@@ -405,7 +512,7 @@ export class DatabaseUrlaubService {
                  CountAnfrage = false;
                  CountAntwort = false;
 
-                 for(let Zeitspanne of Urlaub.Zeitspannen) {
+                 for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
                    Zeitspanne = this.InitZeitspanne(Zeitspanne);
 
@@ -435,7 +542,7 @@ export class DatabaseUrlaubService {
                  if(CountAnfrage === true) {
 
                    this.Vertretungsanfragenanzahl++;
-                   this.Anfragenanzahl++;
+                   this.Urlaubsanfragenanzahl++;
                  }
 
                  if(CountAntwort === true) {
@@ -454,7 +561,7 @@ export class DatabaseUrlaubService {
     }
   }
 
-  public GetStatuscolor(status: string): string {
+  public GetUrlaubStatuscolor(status: string): string {
 
     try {
 
@@ -510,7 +617,56 @@ export class DatabaseUrlaubService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'GetStatuscolor', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'GetUrlaubStatuscolor', this.Debug.Typen.Page);
+    }
+  }
+
+  public GetHomeofficeStatuscolor(status: string): string {
+
+    try {
+
+      let Color: string = 'none';
+
+      switch (status) {
+
+        case this.Homeofficestatusvarianten.Geplant:
+
+          Color = this.Homeofficefarben.Geplant;
+
+          break;
+
+        case this.Homeofficestatusvarianten.Freigabeanfrage:
+
+          Color = this.Homeofficefarben.Freigabeanfrage;
+
+          break;
+
+
+        case this.Homeofficestatusvarianten.Genehmigt:
+
+          Color = this.Homeofficefarben.Genehmigt;
+
+          break;
+
+        case this.Homeofficestatusvarianten.Abgelehnt:
+
+          Color = this.Homeofficefarben.Abgelehnt;
+
+          break;
+
+        default:
+
+          Color = '#00FFFF';
+
+          break;
+      }
+
+
+      return Color;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'GetHomeofficeStatuscolor', this.Debug.Typen.Page);
     }
   }
 
@@ -522,11 +678,11 @@ export class DatabaseUrlaubService {
       let Vertretung: Mitarbeiterstruktur;
       let Heute: Moment = moment();
       let VertreterIDListe: string[] = [];
-      let CurrentZeitspannen: Urlauzeitspannenstruktur[] = [];
+      let CurrentUrlaubzeitspannen: Urlauzeitspannenstruktur[] = [];
       let UpdatedZeitspannen: Urlauzeitspannenstruktur[] = [];
       let Index;
 
-      for(let Zeitspanne of this.CurrentUrlaub.Zeitspannen) {
+      for(let Zeitspanne of this.CurrentUrlaub.Urlaubzeitspannen) {
 
         if(Zeitspanne.Status === this.Urlaubstatusvarianten.Geplant &&
           Zeitspanne.VertreterID !== null &&
@@ -541,32 +697,32 @@ export class DatabaseUrlaubService {
 
       for(let VertreterID of VertreterIDListe) {
 
-        CurrentZeitspannen = [];
+        CurrentUrlaubzeitspannen = [];
         Vertretung         = lodash.find(this.Pool.Mitarbeiterliste, {_id: VertreterID});
 
         if(!lodash.isUndefined(Vertretung)) {
 
-          for(let Zeitspanne of this.CurrentUrlaub.Zeitspannen) {
+          for(let Zeitspanne of this.CurrentUrlaub.Urlaubzeitspannen) {
 
             if(Zeitspanne.Status === this.Urlaubstatusvarianten.Geplant && Zeitspanne.VertreterID === VertreterID) {
 
-              CurrentZeitspannen.push(Zeitspanne);
+              CurrentUrlaubzeitspannen.push(Zeitspanne);
 
               Zeitspanne.Status         = this.Urlaubstatusvarianten.Vertreteranfrage;
               Zeitspanne.Planungmeldung = Heute.format('DD.MM.YYYY') + ' Vertretungsanfrage wurde an ' + Vertretung.Vorname + ' ' + Vertretung.Name + ' gesendet.';
             }
           }
 
-          CurrentZeitspannen = await this.SendVertreteranfragen(this.CurrentMitarbeiter, Vertretung, CurrentZeitspannen);
-          UpdatedZeitspannen = UpdatedZeitspannen.concat(CurrentZeitspannen);
+          CurrentUrlaubzeitspannen = await this.SendVertreteranfragen(this.CurrentMitarbeiter, Vertretung, CurrentUrlaubzeitspannen);
+          UpdatedZeitspannen       = UpdatedZeitspannen.concat(CurrentUrlaubzeitspannen);
         }
       }
 
       for(let Zeitspanne of UpdatedZeitspannen) {
 
-        Index = lodash.findIndex(this.CurrentUrlaub.Zeitspannen, {ZeitspannenID: Zeitspanne.ZeitspannenID});
+        Index = lodash.findIndex(this.CurrentUrlaub.Urlaubzeitspannen, {ZeitspannenID: Zeitspanne.ZeitspannenID});
 
-        this.CurrentUrlaub.Zeitspannen[Index] = Zeitspanne;
+        this.CurrentUrlaub.Urlaubzeitspannen[Index] = Zeitspanne;
       }
 
       let Urlaubindex = lodash.findIndex(this.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.Jahr });
@@ -583,6 +739,57 @@ export class DatabaseUrlaubService {
     }
   }
 
+  public async UpdateHomeofficefreigabeanfragen() {
+
+    try {
+
+      let Vertretung: Mitarbeiterstruktur;
+      let CurrentHomeofficezeitspannen: Homeofficezeitspannenstruktur[] = [];
+      let UpdatedHomeofficezeitspannen: Homeofficezeitspannenstruktur[] = [];
+      let Index;
+
+      Vertretung                   = lodash.find(this.Pool.Mitarbeiterliste, {_id: this.CurrentUrlaub.UrlaubsfreigeberID});
+      CurrentHomeofficezeitspannen = [];
+
+      for(let Zeitspanne of this.CurrentUrlaub.Homeofficezeitspannen) {
+
+        if(Zeitspanne.Status === this.Homeofficestatusvarianten.Geplant) {
+
+          Zeitspanne.Status = this.Homeofficestatusvarianten.Freigabeanfrage;
+
+          UpdatedHomeofficezeitspannen.push(Zeitspanne);
+        }
+        else {
+
+          CurrentHomeofficezeitspannen.push(Zeitspanne);
+        }
+      }
+
+      UpdatedHomeofficezeitspannen = await this.SendHomeofficefreigabeanfrage(this.CurrentMitarbeiter, Vertretung, UpdatedHomeofficezeitspannen);
+      CurrentHomeofficezeitspannen = CurrentHomeofficezeitspannen.concat(UpdatedHomeofficezeitspannen);
+
+
+      for(let Zeitspanne of CurrentHomeofficezeitspannen) {
+
+        Index = lodash.findIndex(this.CurrentUrlaub.Homeofficezeitspannen, {ZeitspannenID: Zeitspanne.ZeitspannenID});
+
+        this.CurrentUrlaub.Homeofficezeitspannen[Index] = Zeitspanne;
+      }
+
+      let Urlaubindex = lodash.findIndex(this.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.Jahr });
+
+      this.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.CurrentUrlaub;
+
+      await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.CurrentMitarbeiter);
+
+      this.HomeofficeStatusChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'UpdateHomeofficefreigabeanfragen', this.Debug.Typen.Service);
+    }
+  }
+
   async UpdateVertreterantworten(Mitarbeiter: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur) {
 
     try {
@@ -592,16 +799,16 @@ export class DatabaseUrlaubService {
       let Freigebender: Mitarbeiterstruktur;
       let Stellvertreter: Mitarbeiterstruktur;
 
-      for(let Zeitspanne of Urlaub.Zeitspannen) {
+      for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
         if(Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterablehnung && Zeitspanne.VertreterantwortSended === false)  Gesamtanzahl += 1;
         if(Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterfreigabe  && Zeitspanne.VertreterantwortSended === false)  Gesamtanzahl += 2;
       }
 
-      Freigebender   = lodash.find(this.Pool.Mitarbeiterliste, {_id: Urlaub.FreigeberID});
+      Freigebender   = lodash.find(this.Pool.Mitarbeiterliste, {_id: Urlaub.UrlaubsfreigeberID});
       Stellvertreter = this.CurrentMitarbeiter;
 
-      for(let Zeitspanne of Urlaub.Zeitspannen) {
+      for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
         if(Zeitspanne.Status !== this.Urlaubstatusvarianten.Vertreteranfrage && Zeitspanne.VertreterantwortSended === false) {
 
@@ -637,7 +844,7 @@ export class DatabaseUrlaubService {
     }
   }
 
-  private SendVertreteranfragen(Mitarbeiter: Mitarbeiterstruktur, Vertretung: Mitarbeiterstruktur, Zeitspannen: Urlauzeitspannenstruktur[]): Promise<Urlauzeitspannenstruktur[]> {
+  private SendVertreteranfragen(Mitarbeiter: Mitarbeiterstruktur, Vertretung: Mitarbeiterstruktur, Urlaubzeitspannen: Urlauzeitspannenstruktur[]): Promise<Urlauzeitspannenstruktur[]> {
 
     try {
 
@@ -654,7 +861,7 @@ export class DatabaseUrlaubService {
         Nachricht += '<tr>';
         Nachricht += '<td style="width: 100px; text-align: center"><b>Von</b></td><td style="width: 100px; text-align: center"><b>Bis</b></td>';
 
-        for(let Zeitspanne of Zeitspannen) {
+        for(let Zeitspanne of Urlaubzeitspannen) {
 
           if(Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreteranfrage &&
              Zeitspanne.VertreterID === Vertretung._id &&
@@ -675,7 +882,7 @@ export class DatabaseUrlaubService {
 
         Nachricht += '<br>Die Urlaubsvertretung für mich übernehmen kannst.<br><br>';
         Nachricht += '<br><br>';
-        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaubsplanung jetzt öffnen</a>';
+        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaub - Homeoffice - Planung jetzt öffnen</a>';
         Nachricht += '<br><br>' + this.Pool.GetFilledSignatur(Mitarbeiter, true);
 
         Empfaenger.push({
@@ -693,7 +900,7 @@ export class DatabaseUrlaubService {
 
             console.log('Vertretungsanfrage wurde an ' + Vertretung.Vorname + ' ' + Vertretung.Name + ' gesendet.');
 
-            resolve(Zeitspannen);
+            resolve(Urlaubzeitspannen);
 
           }).catch((error: any) => {
 
@@ -705,13 +912,88 @@ export class DatabaseUrlaubService {
 
           console.log('Es wurde keine Vertretungsanfrage gesendet.');
 
-          resolve(Zeitspannen);
+          resolve(Urlaubzeitspannen);
         }
       });
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'SendVertreteranfragen', this.Debug.Typen.Service);
+    }
+  }
+
+  private SendHomeofficefreigabeanfrage(Mitarbeiter: Mitarbeiterstruktur, Vertretung: Mitarbeiterstruktur, Urlaubzeitspannen: Homeofficezeitspannenstruktur[]): Promise<Homeofficezeitspannenstruktur[]> {
+
+    try {
+
+      let Betreff: string = 'Homeofficefreigabeanfrage von ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
+      let Nachricht: string;
+      let Empfaenger: Outlookemailadressstruktur[] = [];
+      let SendMail: boolean = false;
+
+      return new Promise((resolve, reject) => {
+
+        Nachricht  = "Hallo " + Vertretung.Vorname + ",<br><br>bitte folgende Homeofficetage freigeben:<br><br>";
+        Nachricht += '<table border="1" cellpadding="0" cellspacing="0">';
+        Nachricht += '<tr>';
+        Nachricht += '<td style="width: 500px; padding: 4px;">';
+
+
+        for(let Zeitspanne of Urlaubzeitspannen) {
+
+          if(Zeitspanne.Status === this.Homeofficestatusvarianten.Freigabeanfrage && Zeitspanne.FreigabeanfrageSended === false) {
+
+            SendMail = true;
+            Zeitspanne.FreigabeanfrageSended = true;
+
+            Nachricht += '<span>';
+            Nachricht += Zeitspanne.Startstring + ', ';
+            Nachricht += '</span>';
+          }
+        }
+
+        Nachricht += '</td>';
+        Nachricht += '</tr>';
+        Nachricht += '</table>';
+
+        Nachricht += '<br><br>';
+        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaub - Homeoffice - Planung jetzt öffnen</a>';
+        Nachricht += '<br><br>' + this.Pool.GetFilledSignatur(Mitarbeiter, true);
+
+        Empfaenger.push({
+
+          emailAddress: {
+
+            address: Vertretung.Email,
+            name: Vertretung.Vorname + ' ' + Vertretung.Name
+          }
+        });
+
+        if(SendMail) {
+
+          this.Graph.SendMail(Empfaenger, Betreff, Nachricht).then(() => {
+
+            console.log('Homeofficefreigabeanfrage wurde an ' + Vertretung.Vorname + ' ' + Vertretung.Name + ' gesendet.');
+
+            resolve(Urlaubzeitspannen);
+
+          }).catch((error: any) => {
+
+            // debugger;
+
+            reject(error);
+          });
+        } else {
+
+          console.log('Es wurden keine Homeofficefreigabeanfragen gesendet.');
+
+          resolve(Urlaubzeitspannen);
+        }
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'SendHomeofficefreigabeanfrage', this.Debug.Typen.Service);
     }
   }
 
@@ -733,7 +1015,7 @@ export class DatabaseUrlaubService {
         Nachricht += '<td style="width: 100px; text-align: center"><b>Von</b></td><td style="width: 100px; text-align: center"><b>Bis</b></td><td><b>Vertretung</b></td>';
         Nachricht += '</tr>';
 
-        for(let Zeitspanne of Urlaub.Zeitspannen) {
+        for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
           if(Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterfreigabe &&
              Zeitspanne.VertreterID === Vertretung._id &&
@@ -756,7 +1038,7 @@ export class DatabaseUrlaubService {
         Nachricht += '<br><br>';
         Nachricht += 'Deine Urlaubsanfrage wurde zur Freigabe an ' + Freigeber.Vorname + ' ' + Freigeber.Name + ' weitergeleitet.';
         Nachricht += '<br><br>';
-        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaubsplanung jetzt öffnen</a>';
+        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaub - Homeoffice - Planung jetzt öffnen</a>';
         Nachricht += '<br><br>' + this.Pool.GetFilledSignatur(Vertretung,true);
 
         Empfaenger.push({
@@ -797,6 +1079,30 @@ export class DatabaseUrlaubService {
     }
   }
 
+  async SendHomeofficeFreigabeantworten(Mitarbeiter: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur) {
+
+    try {
+
+      let Freigebender: Mitarbeiterstruktur = lodash.find(this.Pool.Mitarbeiterliste, {_id: Urlaub.HomeofficefreigeberID});
+
+      Urlaub = await this.SendMitarbeiterHomeofficeFreigabeablehnung(Mitarbeiter, Freigebender, Urlaub);
+      Urlaub = await this.SendMitarbeiterHomeofficeFreigabezusage(Mitarbeiter, Freigebender, Urlaub);
+
+      let Urlaubindex = lodash.findIndex(Mitarbeiter.Urlaubsliste, { Jahr: this.Jahr });
+
+      Mitarbeiter.Urlaubsliste[Urlaubindex] = Urlaub;
+
+      if(Mitarbeiter._id === this.CurrentMitarbeiter._id) this.CurrentMitarbeiter = Mitarbeiter;
+
+      await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(Mitarbeiter);
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'SendHomeofficeFreigabeantworten', this.Debug.Typen.Service);
+    }
+
+  }
+
   async UpdateFreigabenantworten(Mitarbeiter: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur) {
 
     try {
@@ -807,17 +1113,17 @@ export class DatabaseUrlaubService {
       let Vertretung: Mitarbeiterstruktur;
 
 
-      for(let Zeitspanne of Urlaub.Zeitspannen) {
+      for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
         if(Zeitspanne.Status === this.Urlaubstatusvarianten.Genehmigt && Zeitspanne.FreigabeantwortSended === false)  Gesamtanzahl += 1;
         if(Zeitspanne.Status === this.Urlaubstatusvarianten.Abgelehnt && Zeitspanne.FreigabeantwortSended === false)  Gesamtanzahl += 2;
       }
 
-      for(let Zeitspanne of Urlaub.Zeitspannen) {
+      for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
         if(Zeitspanne.Status === this.Urlaubstatusvarianten.Genehmigt || Zeitspanne.Status === this.Urlaubstatusvarianten.Abgelehnt) {
 
-          Freigebender = lodash.find(this.Pool.Mitarbeiterliste, { _id: Urlaub.FreigeberID });
+          Freigebender = lodash.find(this.Pool.Mitarbeiterliste, { _id: Urlaub.UrlaubsfreigeberID });
           Vertretung   = lodash.find(this.Pool.Mitarbeiterliste, { _id: Zeitspanne.VertreterID });
 
           if(Zeitspanne.Status === this.Urlaubstatusvarianten.Genehmigt) {
@@ -872,7 +1178,7 @@ export class DatabaseUrlaubService {
         Nachricht += '<td style="width: 100px; text-align: center"><b>Von</b></td><td style="width: 100px; text-align: center"><b>Bis</b></td><td><b>Vertretung</b></td>';
         Nachricht += '</tr>';
 
-        for(let Zeitspanne of Urlaub.Zeitspannen) {
+        for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
           if(Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterablehnung &&
              Zeitspanne.VertreterID === Vertretung._id &&
@@ -893,7 +1199,7 @@ export class DatabaseUrlaubService {
 
         Nachricht += '</table>';
         Nachricht += '<br><br>';
-        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaubsplanung jetzt öffnen</a>';
+        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaub - Homeoffice - Planung jetzt öffnen</a>';
         Nachricht += '<br><br>' + this.Pool.GetFilledSignatur(Vertretung,true);
 
         Empfaenger.push({
@@ -954,7 +1260,7 @@ export class DatabaseUrlaubService {
         Nachricht += '<td style="width: 100px; text-align: center"><b>Von</b></td><td style="width: 100px; text-align: center"><b>Bis</b></td><td>Vertretung</td>';
         Nachricht += '</tr>';
 
-        for(let Zeitspanne of Urlaub.Zeitspannen) {
+        for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
           if(Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterfreigabe && Zeitspanne.FreigabeanfrageSended === false) {
 
@@ -979,7 +1285,7 @@ export class DatabaseUrlaubService {
 
         Nachricht += '</table>';
         Nachricht += '<br><br>';
-        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaubsplanung jetzt öffnen</a>';
+        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaub - Homeoffice - Planung jetzt öffnen</a>';
         Nachricht += '<br><br>' + this.Pool.GetFilledSignatur(Mitarbeiter,true);
 
         Empfaenger.push({
@@ -1043,7 +1349,7 @@ export class DatabaseUrlaubService {
         Nachricht += '<td><b>Status</b></td>';
         Nachricht += '</tr>';
 
-        for(let Zeitspanne of Urlaub.Zeitspannen) {
+        for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
           if(Zeitspanne.Status === this.Urlaubstatusvarianten.Genehmigt && Zeitspanne.FreigabeantwortSended === false) {
 
@@ -1077,7 +1383,7 @@ export class DatabaseUrlaubService {
         Nachricht += '<br><br>';
         Nachricht += 'Deine Urlaubsfreigabe wurde zur Eintragung in "untermStrich" dem Büro mitgeteilt.';
         Nachricht += '<br><br>';
-        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaubsplanung jetzt öffnen</a>';
+        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaub - Homeoffice - Planung jetzt öffnen</a>';
         Nachricht += '<br><br>' + this.Pool.GetFilledSignatur(Freigebender,true);
 
         Empfaenger.push({
@@ -1140,7 +1446,7 @@ export class DatabaseUrlaubService {
         Nachricht += '<td><b>Status</b></td>';
         Nachricht += '</tr>';
 
-        for(let Zeitspanne of Urlaub.Zeitspannen) {
+        for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
           if(Zeitspanne.Status === this.Urlaubstatusvarianten.Genehmigt && Zeitspanne.FreigabeantwortOfficeSended === false) {
 
@@ -1170,7 +1476,7 @@ export class DatabaseUrlaubService {
 
         Nachricht += '</table>';
         Nachricht += '<br><br>';
-        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaubsplanung jetzt öffnen</a>';
+        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaub - Homeoffice - Planung jetzt öffnen</a>';
         Nachricht += '<br><br>' + this.Pool.GetFilledSignatur(Freigebender,true);
 
         Empfaenger.push({
@@ -1233,7 +1539,7 @@ export class DatabaseUrlaubService {
         Nachricht += '<td><b>Status</b></td>';
         Nachricht += '</tr>';
 
-        for(let Zeitspanne of Urlaub.Zeitspannen) {
+        for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
           if(Zeitspanne.Status === this.Urlaubstatusvarianten.Abgelehnt && Zeitspanne.FreigabeantwortSended === false) {
 
@@ -1263,7 +1569,7 @@ export class DatabaseUrlaubService {
 
         Nachricht += '</table>';
         Nachricht += '<br><br>';
-        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaubsplanung jetzt öffnen</a>';
+        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaub - Homeoffice - Planung jetzt öffnen</a>';
         Nachricht += '<br><br>' + this.Pool.GetFilledSignatur(Freigebender,true);
 
         Empfaenger.push({
@@ -1301,6 +1607,162 @@ export class DatabaseUrlaubService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'SendMitarbeiterFreigabeablehnung', this.Debug.Typen.Service);
+    }
+  }
+
+  public SendMitarbeiterHomeofficeFreigabeablehnung(Mitarbeiter: Mitarbeiterstruktur, Freigebender: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur): Promise<Urlaubsstruktur> {
+
+    try {
+
+      let Betreff: string = 'Ablehnung deiner Homeofficeabfrage';
+      let Nachricht: string;
+      let Empfaenger: Outlookemailadressstruktur[] = [];
+      let SendAntwort: boolean = false;
+      let Heute: Moment = moment().locale('de');
+
+      return new Promise((resolve, reject) => {
+
+        Nachricht  = "Hallo " + Mitarbeiter.Vorname + " " + Mitarbeiter.Name + ",<br><br>leider muss ich deine Homeofficeanfrage für nachfolgende Tage ablehnen:<br><br>";
+        Nachricht += '<table border="1" cellspacing="0" cellpadding="0">';
+        Nachricht += '<tr>';
+        Nachricht += '<td style="width: 100px; text-align: center;  padding: 2px; font-weight: bold;">Datum</td>';
+        Nachricht += '<td style="width: 100px; text-align: center;  padding: 2px; font-weight: bold;">Status</td>';
+        Nachricht += '</tr>';
+
+        for(let Zeitspanne of Urlaub.Homeofficezeitspannen) {
+
+          if(Zeitspanne.Status === this.Homeofficestatusvarianten.Abgelehnt && Zeitspanne.FreigabeantwortSended === false) {
+
+            Zeitspanne.FreigabeantwortSended       = true;
+            Zeitspanne.Freigabeantwortzeitstempel  = Heute.valueOf();
+
+            SendAntwort = true;
+
+            Nachricht += '<tr>';
+            Nachricht += '<td style="text-align: center; padding: 2px;">' + Zeitspanne.Startstring + '</td>';
+            Nachricht += '<td style="text-align: center; padding: 2px; color: red">Abgelehnt</td>';
+            Nachricht += '</tr>';
+          }
+        }
+
+        Nachricht += '</table>';
+        Nachricht += '<br><br>';
+        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaub - Homeoffice - Planung jetzt öffnen</a>';
+        Nachricht += '<br><br>' + this.Pool.GetFilledSignatur(Freigebender,true);
+
+        Empfaenger.push({
+
+          emailAddress: {
+
+            address: Freigebender.Email,
+            name: Freigebender.Vorname + ' ' + Freigebender.Name
+          }
+        });
+
+        if(SendAntwort === true) {
+
+          this.Graph.SendMail(Empfaenger, Betreff, Nachricht).then(() => {
+
+            console.log('Homeofficeablehnung wurde an ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' gesendet.');
+
+            resolve(Urlaub);
+
+          }).catch((error: any) => {
+
+            // debugger;
+
+            reject(error);
+          });
+        }
+        else {
+
+          console.log('Es wurde keine Homeofficeablehnung gesendet.');
+
+          resolve(Urlaub);
+        }
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'SendMitarbeiterHomeofficeFreigabeablehnung', this.Debug.Typen.Service);
+    }
+  }
+
+  public SendMitarbeiterHomeofficeFreigabezusage(Mitarbeiter: Mitarbeiterstruktur, Freigebender: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur): Promise<Urlaubsstruktur> {
+
+    try {
+
+      let Betreff: string = 'Genehmigung deiner Homeofficeanfrage';
+      let Nachricht: string;
+      let Empfaenger: Outlookemailadressstruktur[] = [];
+      let SendAntwort: boolean = false;
+      let Heute: Moment = moment().locale('de');
+
+      return new Promise((resolve, reject) => {
+
+        Nachricht  = "Hallo " + Mitarbeiter.Vorname + " " + Mitarbeiter.Name + ",<br><br>leider muss ich deine Homeofficeanfrage für nachfolgende Tage ablehnen:<br><br>";
+        Nachricht += '<table border="1" cellpadding="0" cellspacing="0">';
+        Nachricht += '<tr>';
+        Nachricht += '<td style="width: 100px; text-align: center;  padding: 2px; font-weight: bold;"><b>Datum</b></td>';
+        Nachricht += '<td style="width: 100px; text-align: center;  padding: 2px; font-weight: bold;"><b>Status</b></td>';
+        Nachricht += '</tr>';
+
+        for(let Zeitspanne of Urlaub.Homeofficezeitspannen) {
+
+          if(Zeitspanne.Status === this.Homeofficestatusvarianten.Genehmigt && Zeitspanne.FreigabeantwortSended === false) {
+
+            Zeitspanne.FreigabeantwortSended       = true;
+            Zeitspanne.Freigabeantwortzeitstempel  = Heute.valueOf();
+
+            SendAntwort = true;
+
+            Nachricht += '<tr>';
+            Nachricht += '<td style="text-align: center;  padding: 2px;">' + Zeitspanne.Startstring + '</td>';
+            Nachricht += '<td style="text-align: center; color: green;  padding: 2px;">Genehmigt</td>';
+            Nachricht += '</tr>';
+          }
+        }
+
+        Nachricht += '</table>';
+        Nachricht += '<br><br>';
+        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaub - Homeoffice - Planung jetzt öffnen</a>';
+        Nachricht += '<br><br>' + this.Pool.GetFilledSignatur(Freigebender,true);
+
+        Empfaenger.push({
+
+          emailAddress: {
+
+            address: Freigebender.Email,
+            name: Freigebender.Vorname + ' ' + Freigebender.Name
+          }
+        });
+
+        if(SendAntwort === true) {
+
+          this.Graph.SendMail(Empfaenger, Betreff, Nachricht).then(() => {
+
+            console.log('Homeofficegenehmigung wurde an ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' gesendet.');
+
+            resolve(Urlaub);
+
+          }).catch((error: any) => {
+
+            // debugger;
+
+            reject(error);
+          });
+        }
+        else {
+
+          console.log('Es wurde keine Homeofficegenehmigung gesendet.');
+
+          resolve(Urlaub);
+        }
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'SendMitarbeiterHomeofficeFreigabezusage', this.Debug.Typen.Service);
     }
   }
 
@@ -1404,7 +1866,7 @@ export class DatabaseUrlaubService {
       });
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'ReadFeiertage', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'ReadFeiertage', this.Debug.Typen.Service);
     }
   }
 
@@ -1459,12 +1921,14 @@ export class DatabaseUrlaubService {
 
     try {
 
-      this.Anfragenanzahl             = 0;
+      this.Urlaubsanfragenanzahl      = 0;
       this.Antwortenanzahl            = 0;
       this.Vertretungsanfragenanzahl  = 0;
       this.Vertretungsantwortenanzahl = 0;
       this.Freigabenanfragenanzahl    = 0;
       this.Freigabenantwortenanzahl   = 0;
+      this.Homeofficantwortenanzahl   = 0;
+      this.Homeofficeanfragenanzahl   = 0;
 
       if(this.CurrentMitarbeiter !== null) {
 
@@ -1490,7 +1954,8 @@ export class DatabaseUrlaubService {
       let Gesamturlaub: number;
       let Urlaubstage: number;
 
-      this.Anfragenanzahl             = 0;
+      this.Urlaubsanfragenanzahl      = 0;
+      this.Homeofficeanfragenanzahl   = 0;
       this.Vertretungsanfragenanzahl  = 0;
       this.Vertretungsantwortenanzahl = 0;
       this.Freigabenanfragenanzahl    = 0;
@@ -1528,22 +1993,23 @@ export class DatabaseUrlaubService {
         if(lodash.isUndefined(this.CurrentUrlaub)) {
 
           this.CurrentUrlaub         = this.GetEmptyUrlaub(this.Jahr);
-          this.CurrentZeitspanne     = null;
+          this.CurrentUrlaubzeitspanne     = null;
 
           this.CurrentMitarbeiter.Urlaubsliste.push(this.CurrentUrlaub);
         }
         else {
 
-          this.CurrentZeitspanne  = null;
+          this.CurrentUrlaubzeitspanne  = null;
         }
 
         if(lodash.isUndefined(this.CurrentUrlaub.Projektbeteiligteliste)) this.CurrentUrlaub.Projektbeteiligteliste = [];
         if(lodash.isUndefined(this.CurrentUrlaub.Ferienblockerliste))     this.CurrentUrlaub.Ferienblockerliste     = [];
         if(lodash.isUndefined(this.CurrentUrlaub.Feiertageblockerliste))  this.CurrentUrlaub.Feiertageblockerliste  = [];
-        if(lodash.isUndefined(this.CurrentUrlaub.FreigeberID))            this.CurrentUrlaub.FreigeberID            = null;
+        if(lodash.isUndefined(this.CurrentUrlaub.UrlaubsfreigeberID))     this.CurrentUrlaub.UrlaubsfreigeberID     = null;
+        if(lodash.isUndefined(this.CurrentUrlaub.HomeofficefreigeberID))  this.CurrentUrlaub.HomeofficefreigeberID  = null;
       }
 
-      for(let Zeitspanne of this.CurrentUrlaub.Zeitspannen) {
+      for(let Zeitspanne of this.CurrentUrlaub.Urlaubzeitspannen) {
 
         Zeitspanne = this.InitZeitspanne(Zeitspanne);
       }
@@ -1560,7 +2026,7 @@ export class DatabaseUrlaubService {
 
         if(!lodash.isUndefined(Urlaub)) {
 
-          if(Urlaub.FreigeberID === this.CurrentMitarbeiter._id && lodash.findIndex(this.CurrentUrlaub.Projektbeteiligteliste, {MitarbeiterID:  Mitarbeiter._id}) === -1) {
+          if(Urlaub.UrlaubsfreigeberID === this.CurrentMitarbeiter._id && lodash.findIndex(this.CurrentUrlaub.Projektbeteiligteliste, {MitarbeiterID:  Mitarbeiter._id}) === -1) {
 
             this.CurrentUrlaub.Projektbeteiligteliste.push({
 
@@ -1588,7 +2054,7 @@ export class DatabaseUrlaubService {
             Urlaub.MitarbeiterIDExtern = Mitarbeiter._id;
             Urlaub.NameExtern          = Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
             Urlaub.NameKuerzel         = Mitarbeiter.Kuerzel;
-            Urlaub.Zeitspannen         = lodash.filter(Urlaub.Zeitspannen, (spanne: Urlauzeitspannenstruktur) => {
+            Urlaub.Urlaubzeitspannen         = lodash.filter(Urlaub.Urlaubzeitspannen, (spanne: Urlauzeitspannenstruktur) => {
 
               return spanne.Status !== this.Urlaubstatusvarianten.Abgelehnt;
             });
@@ -1608,7 +2074,7 @@ export class DatabaseUrlaubService {
           Gesamturlaub += Urlaub.Resturlaub;
           Urlaubstage   = 0;
 
-          for(let Zeitspanne of Urlaub.Zeitspannen) {
+          for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
             if(Zeitspanne.Status !== this.Urlaubstatusvarianten.Abgelehnt) Urlaubstage += Zeitspanne.Tageanzahl;
           }
@@ -1695,8 +2161,10 @@ export class DatabaseUrlaubService {
       let Urlaub: Urlaubsstruktur =  {
         Jahr: jahr,
         Resturlaub: 0,
-        Zeitspannen: [],
-        FreigeberID: null,
+        Urlaubzeitspannen: [],
+        Homeofficezeitspannen: [],
+        UrlaubsfreigeberID:    null,
+        HomeofficefreigeberID: null,
         Projektbeteiligteliste: [],
         Ferienblockerliste: [],
         Feiertageblockerliste: []
@@ -1905,7 +2373,7 @@ export class DatabaseUrlaubService {
     }
   }
 
-  public GetEmptyZeitspanne(): Urlauzeitspannenstruktur {
+  public GetEmptyUrlaubszeitspanne(): Urlauzeitspannenstruktur {
 
     try {
 
@@ -1935,6 +2403,32 @@ export class DatabaseUrlaubService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Urlaub', 'GetEmptyZeitspanne', this.Debug.Typen.Service);
+    }
+  }
+
+  public GetEmptyHomeofficezeitspanne(): Homeofficezeitspannenstruktur {
+
+    try {
+
+      return {
+
+        ZeitspannenID: this.Pool.GetNewUniqueID(),
+        Startstempel: null,
+        Endestempel:  null,
+        Startstring: "",
+        Endestring:  "",
+        Status: this.Homeofficestatusvarianten.Geplant,
+        Planungmeldung: '',
+        Vertretungmeldung: '',
+        Freigabemeldung: '',
+        Tageanzahl: 0,
+        FreigabeanfrageSended: false,
+        FreigabeantwortSended: false,
+        Freigabeantwortzeitstempel: null,
+      };
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Urlaub', 'GetEmptyHomeofficezeitspanne', this.Debug.Typen.Service);
     }
   }
 
@@ -1989,7 +2483,7 @@ export class DatabaseUrlaubService {
         Gesamturlaub += this.Pool.Mitarbeiterdaten.Urlaub;
         Gesamturlaub += this.CurrentUrlaub.Resturlaub;
 
-        for(let Zeitspanne of this.CurrentUrlaub.Zeitspannen) {
+        for(let Zeitspanne of this.CurrentUrlaub.Urlaubzeitspannen) {
 
           if(Zeitspanne.Status !== this.Urlaubstatusvarianten.Abgelehnt) Gesamturlaub -= Zeitspanne.Tageanzahl;
         }
@@ -2004,7 +2498,117 @@ export class DatabaseUrlaubService {
     }
   }
 
+  public CountHomeoffice(): number {
 
+    try {
+
+      let Gesamthomeoffice: number = 210;
+
+      if(this.CurrentUrlaub !== null && this.Pool.Mitarbeiterdaten !== null) {
+
+
+        for(let Zeitspanne of this.CurrentUrlaub.Homeofficezeitspannen) {
+
+          if(Zeitspanne.Status !== this.Homeofficestatusvarianten.Abgelehnt) Gesamthomeoffice -= Zeitspanne.Tageanzahl;
+        }
+
+        return Gesamthomeoffice;
+      }
+      else return 0;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'CountHomeoffice', this.Debug.Typen.Service);
+    }
+  }
+
+  public CountHomeGeplant(): number {
+
+    try {
+
+      let Anzahl: number = 0;
+
+      if(this.CurrentUrlaub !== null && this.Pool.Mitarbeiterdaten !== null) {
+
+        for(let Zeitspanne of this.CurrentUrlaub.Homeofficezeitspannen) {
+
+          if(Zeitspanne.Status === this.Homeofficestatusvarianten.Geplant) Anzahl++;
+        }
+      }
+
+      return Anzahl;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'CountHomeGeplant', this.Debug.Typen.Service);
+    }
+  }
+
+  public CountHomeFreigbeanfragen(): number {
+
+    try {
+
+      let Anzahl: number = 0;
+
+      if(this.CurrentUrlaub !== null && this.Pool.Mitarbeiterdaten !== null) {
+
+        for(let Zeitspanne of this.CurrentUrlaub.Homeofficezeitspannen) {
+
+          if(Zeitspanne.Status === this.Homeofficestatusvarianten.Freigabeanfrage) Anzahl++;
+        }
+      }
+
+      return Anzahl;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'CountHomeFreigbeanfragen', this.Debug.Typen.Service);
+    }
+  }
+
+  public CountHomeGenehmigt(): number {
+
+    try {
+
+      let Anzahl: number = 0;
+
+      if(this.CurrentUrlaub !== null && this.Pool.Mitarbeiterdaten !== null) {
+
+        for(let Zeitspanne of this.CurrentUrlaub.Homeofficezeitspannen) {
+
+          if(Zeitspanne.Status === this.Homeofficestatusvarianten.Genehmigt) Anzahl++;
+        }
+      }
+
+      return Anzahl;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'CountHomeGenehmigt', this.Debug.Typen.Service);
+    }
+  }
+
+  public CountHomeAbgelehnt(): number {
+
+    try {
+
+      let Anzahl: number = 0;
+
+      if(this.CurrentUrlaub !== null && this.Pool.Mitarbeiterdaten !== null) {
+
+        for(let Zeitspanne of this.CurrentUrlaub.Homeofficezeitspannen) {
+
+          if(Zeitspanne.Status === this.Homeofficestatusvarianten.Abgelehnt) Anzahl++;
+        }
+      }
+
+      return Anzahl;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'CountHomeAbgelehnt', this.Debug.Typen.Service);
+    }
+  }
 
   public CheckDisplayExternenUrlaub(mitrbeiterid: string):boolean {
 
@@ -2027,7 +2631,7 @@ export class DatabaseUrlaubService {
           if(lodash.isUndefined(Urlaub)) return false;
           else {
 
-            return Beteiligt.Display && Urlaub.Zeitspannen.length > 0;
+            return Beteiligt.Display && Urlaub.Urlaubzeitspannen.length > 0;
           }
 
         }
@@ -2038,6 +2642,58 @@ export class DatabaseUrlaubService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'CheckDisplayExternenUrlaub', this.Debug.Typen.Service);
+    }
+  }
+
+  async HomeofficeAbgelehntLoeschen() {
+
+    try {
+
+      if(this.CurrentUrlaub !== null && this.Pool.Mitarbeiterdaten !== null) {
+
+        this.CurrentUrlaub.Homeofficezeitspannen = lodash.filter(this.CurrentUrlaub.Homeofficezeitspannen, (zeitspanne: Homeofficezeitspannenstruktur) => {
+
+          return zeitspanne.Status !== this.Homeofficestatusvarianten.Abgelehnt;
+        });
+      }
+
+      let Urlaubindex = lodash.findIndex(this.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.Jahr });
+
+      this.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.CurrentUrlaub;
+
+      await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.CurrentMitarbeiter);
+
+      this.ExterneHomeofficeChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'HomeofficeAbgelehntLoeschen', this.Debug.Typen.Service);
+    }
+  }
+
+  async HomeofficeGeplantLoeschen() {
+
+    try {
+
+      if(this.CurrentUrlaub !== null && this.Pool.Mitarbeiterdaten !== null) {
+
+        this.CurrentUrlaub.Homeofficezeitspannen = lodash.filter(this.CurrentUrlaub.Homeofficezeitspannen, (zeitspanne: Homeofficezeitspannenstruktur) => {
+
+          return zeitspanne.Status !== this.Homeofficestatusvarianten.Geplant;
+        });
+      }
+
+      let Urlaubindex = lodash.findIndex(this.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.Jahr });
+
+      this.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.CurrentUrlaub;
+
+      await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.CurrentMitarbeiter);
+
+      this.ExterneHomeofficeChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'HomeofficeGeplantLoeschen', this.Debug.Typen.Service);
     }
   }
 }

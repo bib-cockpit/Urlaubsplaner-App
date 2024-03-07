@@ -17,12 +17,12 @@ export class BasicsProvider {
   public InnerContenthoehe: number    = 0;
   public Waittime: number             = 300;
   public Svgpath: string              = 'assets/svgs/';
-  public AppBuild: string             = '16.02.2024 11:30';
+  public AppBuild: string             = '07.03.2024 22:30';
   public ShowHomeScreenInfos          = true;
   public DebugNoExternalEmail         = true;
   public AppVersionName               = '1.0';
-  public AppVersionDatum              = '01.03.2024';
-  public WebAppUrl                    = 'https://nice-glacier-0c9ec7703.3.azurestaticapps.net';
+  public AppVersionDatum              = '07.03.2024';
+  public WebAppUrl                    = 'https://polite-cliff-084832d03.4.azurestaticapps.net/';
 
 
   public Farben = {

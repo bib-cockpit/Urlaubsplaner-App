@@ -1,6 +1,7 @@
 
   <div *ngIf="Pool.Mitarbeitersettings !== null" class="frameclass">
 
+
     <table class="paddingsmalltable" width="100%">
       <tr>
         <td colspan="8" style="font-size: 120%; font-weight: bold; color: black; text-align: center;">
@@ -48,8 +49,18 @@
               <div
                 (click)="TagClicked(Tag, Wocheindex, Tagindex)" class="tagrahmenclass">
                 <div class="tagdivclass"
-                     [style.background]="Pool.Mitarbeitersettings.UrlaubShowMeinenUrlaub ? Tag.Background : 'none'"
-                     [style.color]="Pool.Mitarbeitersettings.UrlaubShowMeinenUrlaub ? Tag.Color : 'black'">{{Tag.Tagnummer}}</div>
+                     [style.background]="GetTagBackground(Tag)"
+                     [style.color]="Pool.Mitarbeitersettings.UrlaubShowMeinenUrlaub ? Tag.Color : 'black' || Pool.Mitarbeitersettings.ShowHomeoffice ? Tag.Color : 'black'">
+                  <table>
+                    <tr>
+                      <td style="text-align: center">{{Tag.Tagnummer}}</td>
+                    </tr>
+                    <tr *ngIf="Tag.IsHomeoffice && Pool.Mitarbeitersettings.ShowHomeoffice">
+                      <td style="text-align: center">H</td>
+                    </tr>
+                  </table>
+                </div>
+
                 <div *ngIf="DB.ShowFerientage_DE"
                      (mouseenter)="FerientagMouseOverEvent(Tag, 'DE')"
                      (mouseleave)="FerientagCrossedEvent.emit({Name: '', Laendercode: ''})"
@@ -81,25 +92,6 @@
                              [style.background]="ExternKalender[Wocheindex][Tagindex].Background">{{ExternKalender[Wocheindex][Tagindex].Kuerzel}}</div>
                         <div *ngIf="!ExternKalender[Wocheindex][Tagindex].IsUrlaub" class="tagexternemptydivclass"></div>
 
-                  <!--
-                  {{ExternKalender[Wocheindex][Tagindex].Kuerzel + ' ' + ExternKalender[Wocheindex][Tagindex].IsUrlaub}}
-                  <span *ngIf="ExternKalender[Wocheindex][Tagindex].IsUrlaub">{{ExternKalender[Wocheindex][Tagindex].Kuerzel}}</span>
-
-
-                  -->
-                  <!--
-                  <div *ngIf="ExternKalender[Wocheindex][Tagindex].IsUrlaub" class="tagexterndivclass" >{{ExternKalender[Wocheindex][Tagindex].Kuerzel}}</div>
-                  <div *ngIf="!ExternKalender[Wocheindex][Tagindex].IsUrlaub" class="tagexternemptydivclass">{{ExternKalender[Wocheindex][Tagindex].Kuerzel}}</div>
-                  -->
-
-
-                  <!--
-
-                  <ng-container *ngFor="let TagelisteExtern of ExternKalender; let ExternWocheindex = index">
-                    <ng-container *ngFor="let TagExtern of TagelisteExtern; let ExternTagindex = index">
-                    </ng-container>
-                  </ng-container>
-                  -->
 
                 </ng-container>
 

@@ -123,7 +123,7 @@
                     </tr>
                     <ng-container *ngFor="let Urlaub of Mitarbeiter.Urlaubsliste">
                       <ng-container *ngIf="Urlaub.Jahr === DB.Jahr">
-                        <ng-container *ngFor="let Zeitspanne of Urlaub.Zeitspannen">
+                        <ng-container *ngFor="let Zeitspanne of Urlaub.Urlaubzeitspannen">
 
                           <tr *ngIf="DB.CheckVertretungsanwortAge(Zeitspanne) === true &&
                            Zeitspanne.VertreterID === DB.CurrentMitarbeiter._id &&
@@ -135,7 +135,7 @@
                             <td>{{GetDatumlangtext(Zeitspanne.Endestempel)}}</td>
                             <td style="text-align: center">{{Zeitspanne.Tageanzahl}}</td>
                             <td align="center">
-                              <div class="legendedivclass" style="color: black;" [style.background]="DB.GetStatuscolor(Zeitspanne.Status)"></div>
+                              <div class="legendedivclass" style="color: black;" [style.background]="DB.GetUrlaubStatuscolor(Zeitspanne.Status)"></div>
                             </td>
                             <td [innerHTML]="Zeitspanne.Vertretungmeldung"></td>
                             <td>
@@ -186,7 +186,7 @@
                           </td>
                         </tr>
                         -->
-                        <tr *ngIf="Urlaub.FreigeberID === null">
+                        <tr *ngIf="Urlaub.UrlaubsfreigeberID === null">
                           <td colspan="6" style="color: red;">
                             Bitte Person für Urlaubsfreigaben festlegen
                           </td>
@@ -241,7 +241,7 @@
           </table>
         </ion-col>
       </ion-row>
-      <ng-container *ngFor="let Mitarbeiter of DB.Freigabenliste">
+      <ng-container *ngFor="let Mitarbeiter of DB.Urlaubfreigabenliste">
         <ion-row>
           <ion-col>
             <table width="100%">
@@ -271,13 +271,10 @@
                       <td style="font-weight: bold;">Anfrage beantworten</td>
                     </tr>
                     <ng-container *ngFor="let Urlaub of Mitarbeiter.Urlaubsliste">
-                      <ng-container *ngIf="Urlaub.Jahr === DB.Jahr && Urlaub.FreigeberID === DB.CurrentMitarbeiter._id">
-                        <ng-container *ngFor="let Zeitspanne of Urlaub.Zeitspannen">
+                      <ng-container *ngIf="Urlaub.Jahr === DB.Jahr && Urlaub.UrlaubsfreigeberID === DB.CurrentMitarbeiter._id">
+                        <ng-container *ngFor="let Zeitspanne of Urlaub.Urlaubzeitspannen">
 
-
-
-
-                          <tr *ngIf="DB.CheckFreigabeanwortAge(Zeitspanne) === true &&
+                          <tr *ngIf="DB.CheckUrlaubFreigabeanwortAge(Zeitspanne) === true &&
                                      Zeitspanne.VertreterantwortSended === true &&
                                     (Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterfreigabe ||
                                      Zeitspanne.Status === DB.Urlaubstatusvarianten.Genehmigt ||
@@ -288,7 +285,7 @@
                             <td style="text-align: center">{{Zeitspanne.Tageanzahl}}</td>
                             <td>{{GetVertetungName(Zeitspanne)}}</td>
                             <td align="center">
-                              <div class="legendedivclass" [style.background]="DB.GetStatuscolor(Zeitspanne.Status)"></div>
+                              <div class="legendedivclass" [style.background]="DB.GetUrlaubStatuscolor(Zeitspanne.Status)"></div>
                             </td>
                             <td [innerHTML]="Zeitspanne.Freigabemeldung"></td>
                             <td>
@@ -347,6 +344,122 @@
           </table>
         </ion-col>
       </ion-row>
+
+
+      <ion-row>
+        <ion-col>
+          <table width="100%">
+            <tr>
+              <td align="center">
+                <ion-text color="baeblau" style="font-size: 120%; font-weight: bold;">Homeofficefreigaben</ion-text>
+              </td>
+            </tr>
+          </table>
+        </ion-col>
+      </ion-row>
+      <ng-container *ngFor="let Mitarbeiter of DB.Homeofficefreigabenliste">
+        <ion-row>
+          <ion-col>
+            <table width="100%">
+              <tr>
+                <td align="center">
+                  {{Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name}}
+                </td>
+              </tr>
+            </table>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="DB.Homeofficeanfragenanzahl > 0 || DB.Homeofficantwortenanzahl > 0">
+          <ion-col>
+
+            <table width="100%">
+              <tr>
+                <td align="center">
+                  <table class="docinnertable">
+                    <tr>
+                      <td style="font-weight: bold;">Datum</td>
+                      <td style="font-weight: bold;">Status</td>
+                      <td style="font-weight: bold;">Genehmigt</td>
+                      <td style="font-weight: bold;">Abgelehnt</td>
+                    </tr>
+                    <ng-container *ngFor="let Urlaub of Mitarbeiter.Urlaubsliste">
+                      <ng-container *ngIf="Urlaub.Jahr === DB.Jahr && Urlaub.HomeofficefreigeberID === DB.CurrentMitarbeiter._id">
+                        <tr *ngIf="CheckHasAnfragen(Urlaub)">
+                          <td></td>
+                          <td></td>
+                          <td align="center">
+                            <ion-button (click)="HomeofficeGenehmigeAll(Urlaub)" color="gruen" size="small">
+                              <ion-icon name="checkmark-outline"></ion-icon>
+                            </ion-button>
+                          </td>
+                          <td align="center">
+                            <ion-button (click)="HomeofficeAblehnenAll(Urlaub)" color="rot" size="small">
+                              <ion-icon name="close-outline"></ion-icon>
+                            </ion-button>
+                          </td>
+                        </tr>
+                        <ng-container *ngFor="let Zeitspanne of Urlaub.Homeofficezeitspannen">
+                          <ng-container *ngIf="DB.CheckHomeofficeFreigabeanwortAge(Zeitspanne) === true && (
+                              Zeitspanne.Status === DB.Homeofficestatusvarianten.Freigabeanfrage ||
+                              Zeitspanne.Status === DB.Homeofficestatusvarianten.Genehmigt ||
+                              Zeitspanne.Status === DB.Homeofficestatusvarianten.Abgelehnt)">
+
+                              <tr>
+                                <td>{{Zeitspanne.Startstring}}</td>
+                                <td align="center">
+                                  <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(Zeitspanne.Status)"></div>
+                                </td>
+                                <td colspan="2">
+                                  <ion-radio-group [value]="Zeitspanne.Status" (ionChange)="HomeofficeStatusChanged($event, Zeitspanne, Urlaub)">
+                                    <table style="width: 100%" class="nobordertable">
+                                      <tr style="height: 32px;">
+                                        <td align="center" style="width: 50%">
+                                          <ion-radio *ngIf="Zeitspanne.FreigabeantwortSended === false" [value]="DB.Homeofficestatusvarianten.Genehmigt"></ion-radio>
+                                          <span *ngIf="Zeitspanne.FreigabeantwortSended === true && Zeitspanne.Status === DB.Homeofficestatusvarianten.Genehmigt">
+                                            <div style="border-radius: 50%; width: 12px; height: 12px; background: green;"></div>
+                                          </span>
+                                        </td>
+                                        <td align="center" style="width: 50%">
+                                          <ion-radio *ngIf="Zeitspanne.FreigabeantwortSended === false" [value]="DB.Homeofficestatusvarianten.Abgelehnt"></ion-radio>
+                                          <span *ngIf="Zeitspanne.FreigabeantwortSended === true && Zeitspanne.Status === DB.Homeofficestatusvarianten.Abgelehnt">
+                                            <div style="border-radius: 50%; width: 12px; height: 12px; background: red;"></div>
+                                          </span>
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </ion-radio-group>
+                                </td>
+                              </tr>
+                          </ng-container>
+                        </ng-container>
+                        <tr *ngIf="CheckHasAnfragen(Urlaub) === true">
+                          <td colspan="4" align="center">
+                            <ion-button [disabled]="CheckHomeofficeUpdateButtonEnabled(Urlaub) === false" size="small" (click)="SendHomeofficeUpdate(Urlaub, Mitarbeiter)">Aktualisierung senden</ion-button>
+                        </tr>
+                      </ng-container>
+                    </ng-container>
+                  </table>
+                </td>
+              </tr>
+            </table>
+
+          </ion-col>
+        </ion-row>
+        <ng-container *ngIf="DB.Homeofficeanfragenanzahl === 0 && DB.Homeofficantwortenanzahl === 0">
+          <ion-row>
+            <ion-col>
+              <table style="width: 100%">
+                <tr>
+                  <td style="text-align: center; height: 30px">
+                    Keine Freigabeanfragen vorhanden
+                  </td>
+                </tr>
+              </table>
+            </ion-col>
+          </ion-row>
+        </ng-container>
+      </ng-container>
+
     </ng-container>
 
     <div class="legendekeeperdivclass" [style.height.px]="Legendehoehe" [style.width.px]="Legendebreite" [style.right.px]="LegendeVisible ? 0 : -(Legendebreite - 14)">
@@ -420,7 +533,7 @@
               </tr>
               <tr *ngFor="let Urlaub of DB.UrlaublisteExtern; let i = index">
                 <td>
-                  <checkbox-clon [Checked]="DB.CheckDisplayExternenUrlaub(Urlaub.MitarbeiterIDExtern)" (CheckChanged)="DisplayExternCheckChanged($event, Urlaub, i)" [Enabled]="Urlaub.Zeitspannen.length > 0"></checkbox-clon>
+                  <checkbox-clon [Checked]="DB.CheckDisplayExternenUrlaub(Urlaub.MitarbeiterIDExtern)" (CheckChanged)="DisplayExternCheckChanged($event, Urlaub, i)" [Enabled]="Urlaub.Urlaubzeitspannen.length > 0"></checkbox-clon>
                 </td>
                 <td><div class="legendeexterndivclass">{{Urlaub.NameKuerzel}}</div></td><td>{{Urlaub.NameExtern}} {{Urlaub.Text}}</td>
               </tr>
@@ -456,88 +569,6 @@
     </table>
   </page-footer>
 </ion-footer>
-
-
-<!--
-
-
-<table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable">
-  <ng-container *ngIf="DB.Laendercode === 'DE'">
-    <tr>
-      <td><checkbox-clon [Checked]="DB.ShowFeiertage_DE" (CheckChanged)="AnsichtFeiertageCheckChanged($event, 'DE')"></checkbox-clon></td><td>
-      <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage_DE">
-        <ion-icon name="flag-outline" color="weiss" style="font-size: 18px"></ion-icon>
-      </div>
-    </td><td>Feiertage Deutschland</td>
-    </tr>
-    <tr>
-      <td><checkbox-clon [Checked]="DB.ShowFerientage_DE" (CheckChanged)="AnsichtFerientageCheckChanged($event, 'DE')"></checkbox-clon></td><td>
-      <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien_DE">
-        <ion-icon name="school-outline" color="weiss" style="font-size: 18px"></ion-icon>
-      </div>
-    </td><td>Schulferien Deutschland</td>
-    </tr>
-  </ng-container>
-  <ng-container>
-    <tr>
-      <td><checkbox-clon [Checked]="DB.ShowFeiertage_BG" (CheckChanged)="AnsichtFeiertageCheckChanged($event,  'BG')"></checkbox-clon></td><td>
-      <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Feiertage_BG">
-        <ion-icon name="flag-outline" color="gelb" style="font-size: 18px"></ion-icon>
-      </div>
-    </td><td>Feiertage Bulgarien</td>
-    </tr>
-    <tr>
-      <td><checkbox-clon [Checked]="DB.ShowFerientage_BG" (CheckChanged)="AnsichtFerientageCheckChanged($event, 'BG')"></checkbox-clon></td><td>
-      <div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Ferien_BG">
-        <ion-icon name="school-outline" color="gelb" style="font-size: 18px"></ion-icon>
-      </div>
-    </td><td>Schulferien Bulgarien</td>
-    </tr>
-  </ng-container>
-  <tr>
-    <td>
-      <checkbox-clon [Checked]="Pool.Mitarbeitersettings.UrlaubShowMeinenUrlaub" (CheckChanged)="DisplayMeinenUrlaubCheckChanged($event)"></checkbox-clon>
-    </td>
-    <td>
-
-    </td><td>meinen Urlaub anzeigen</td>
-  </tr>
-  <tr>
-    <td>
-    </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Geplant"></div></td><td>geplanter Urlaub</td>
-  </tr>
-  <tr>
-    <td>
-    </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreteranfrage"></div></td><td>Vertretung angefragt</td>
-  </tr>
-  <tr>
-    <td>
-    </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Urlaub mit Vertreterfreigabe</td>
-  </tr>
-  <tr>
-    <td>
-    </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterablehnung"></div></td><td>Vertretung wurde abgelehnt</td>
-  </tr>
-  <tr>
-    <td>
-    </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Genehmigt"></div></td><td>Genehmigter Urlaub</td>
-  </tr>
-  <tr>
-    <td>
-    </td>
-    <td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
-  </tr>
-  <tr *ngFor="let Urlaub of DB.UrlaublisteExtern; let i = index">
-    <td>
-      <checkbox-clon [Checked]="DB.CheckDisplayExternenUrlaub(Urlaub.MitarbeiterIDExtern)" (CheckChanged)="DisplayExternCheckChanged($event, Urlaub, i)" [Enabled]="Urlaub.Zeitspannen.length > 0"></checkbox-clon>
-    </td>
-    <td><div class="legendeexterndivclass">{{Urlaub.NameKuerzel}}</div></td><td>{{Urlaub.NameExtern}} {{Urlaub.Text}}</td>
-  </tr>
-</table>
-
-
-
--->
 
 
 <auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"

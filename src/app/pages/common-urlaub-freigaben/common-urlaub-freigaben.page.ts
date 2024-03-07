@@ -22,6 +22,7 @@ import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {Urlaubsstruktur} from "../../dataclasses/urlaubsstruktur";
 import {cloneDeep} from "lodash-es";
 import {Urlaubprojektbeteiligtestruktur} from "../../dataclasses/urlaubprojektbeteiligtestruktur";
+import {Homeofficezeitspannenstruktur} from "../../dataclasses/homeofficezeitspannenstruktur";
 
 @Component({
   selector: 'common-urlaub-freigaben-page',
@@ -89,7 +90,27 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
     try {
 
+      let Urlaub: Urlaubsstruktur;
 
+      for(let Mitarbeiter of this.DB.Homeofficefreigabenliste) {
+
+        Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
+
+        for(let Zeitspanne of Urlaub.Homeofficezeitspannen) {
+
+          if(Zeitspanne.FreigabeantwortSended === false) {
+
+            Zeitspanne.Status = this.DB.Homeofficestatusvarianten.Freigabeanfrage;
+          }
+        }
+
+        if(Mitarbeiter._id === this.DB.CurrentMitarbeiter._id && Urlaub.Jahr === this.DB.CurrentUrlaub.Jahr) {
+
+          this.DB.CurrentUrlaub = Urlaub;
+        }
+
+        this.DB.CountAnfragenanzahlen();
+      }
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'OnDestroy', this.Debug.Typen.Page);
@@ -127,6 +148,7 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
       this.DB.CheckSetup();
       this.DB.SetPlanungsmonate();
       this.DB.CountAnfragenanzahlen();
+
 
     } catch (error) {
 
@@ -303,11 +325,11 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
       let Available: boolean = false;
 
-      for(let Zeitspanne of Urlaub.Zeitspannen) {
+      for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
         if(lodash.isUndefined(Zeitspanne.VertreterantwortSended)) Zeitspanne.VertreterantwortSended = false;
 
-        if(Urlaub.FreigeberID !== null &&
+        if(Urlaub.UrlaubsfreigeberID !== null &&
            Zeitspanne.VertreterantwortSended === false &&
            Zeitspanne.VertreterID            === this.DB.CurrentMitarbeiter._id &&
           (Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Vertreterablehnung || Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Vertreterfreigabe)) Available = true;
@@ -342,11 +364,11 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
       let Available: boolean = false;
 
-      for(let Zeitspanne of Urlaub.Zeitspannen) {
+      for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
         if(lodash.isUndefined(Zeitspanne.FreigabeantwortSended)) Zeitspanne.FreigabeantwortSended = false;
 
-        if(Urlaub.FreigeberID               !== null &&
+        if(Urlaub.UrlaubsfreigeberID        !== null &&
            Zeitspanne.FreigabeantwortSended === false &&
           (Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Genehmigt || Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Abgelehnt)) Available = true;
       }
@@ -617,6 +639,113 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'SendFreigabeUpdate', this.Debug.Typen.Page);
+    }
+  }
+
+  HomeofficeStatusChanged(event: any, Zeitspanne: Homeofficezeitspannenstruktur, Urlaub: Urlaubsstruktur) {
+
+    try {
+
+      debugger;
+
+      let Status: string = event.detail.value;
+
+      Zeitspanne.Status = Status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'HomeofficeStatusChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  HomeofficeGenehmigeAll(Urlaub: Urlaubsstruktur) {
+
+    try {
+
+      for(let Zeitspanne of Urlaub.Homeofficezeitspannen) {
+
+        if(Zeitspanne.FreigabeantwortSended === false) {
+
+          Zeitspanne.Status = this.DB.Homeofficestatusvarianten.Genehmigt;
+        }
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'HomeofficeGenehmigeAll', this.Debug.Typen.Page);
+    }
+  }
+
+  HomeofficeAblehnenAll(Urlaub: Urlaubsstruktur) {
+
+    try {
+
+      for(let Zeitspanne of Urlaub.Homeofficezeitspannen) {
+
+        if(Zeitspanne.FreigabeantwortSended === false) {
+
+          Zeitspanne.Status = this.DB.Homeofficestatusvarianten.Abgelehnt;
+        }
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'HomeofficeAblehnenAll', this.Debug.Typen.Page);
+    }
+  }
+
+  async SendHomeofficeUpdate(Urlaub: Urlaubsstruktur, Mitarbeiter: Mitarbeiterstruktur) {
+
+    try {
+
+      await this.DB.SendHomeofficeFreigabeantworten(Mitarbeiter, Urlaub);
+      await this.PrepareData();
+
+
+      this.DB.ExterneHomeofficeChanged.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'SendHomeofficeUpdate', this.Debug.Typen.Page);
+    }
+  }
+
+  CheckHomeofficeUpdateButtonEnabled(Urlaub: Urlaubsstruktur) {
+
+    try {
+
+      let Enabled: boolean = false;
+
+      for(let Zeitspanne of Urlaub.Homeofficezeitspannen) {
+
+        if(Zeitspanne.FreigabeantwortSended === false) {
+
+          if(Zeitspanne.Status === this.DB.Homeofficestatusvarianten.Abgelehnt || Zeitspanne.Status === this.DB.Homeofficestatusvarianten.Genehmigt) Enabled = true;
+        }
+      }
+
+      return Enabled;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'CheckHomeofficeUpdateButtonEnabled', this.Debug.Typen.Page);
+    }
+  }
+
+  CheckHasAnfragen(Urlaub: Urlaubsstruktur): boolean {
+
+    try {
+
+      let HasAnfragen: boolean = false;
+
+      for(let Zeitspanne of Urlaub.Homeofficezeitspannen) {
+
+        if(Zeitspanne.FreigabeantwortSended === false) HasAnfragen = true;
+      }
+
+      return HasAnfragen;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'CheckHasAnfragen', this.Debug.Typen.Page);
     }
   }
 }
