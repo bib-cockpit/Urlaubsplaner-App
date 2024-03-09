@@ -121,6 +121,8 @@ export class DatabaseStandorteService {
         Bundesland: 'DE-BY',
         Konfession: 'RK',
         Land: 'DE',
+        Homeofficefreigabepersonen: [],
+        Urlaubfreigabepersonen: [],
         Zeitstempel: Heute.valueOf(),
         Zeitpunkt: Heute.format('DD.MM.YYYY')
       };
@@ -248,12 +250,10 @@ export class DatabaseStandorteService {
 
           next: (ne) => {
 
-            debugger;
 
           },
           complete: () => {
 
-            debugger;
 
             this.UpdateStandortliste(this.CurrentStandort);
 

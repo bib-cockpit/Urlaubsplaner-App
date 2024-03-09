@@ -2,18 +2,30 @@
   <page-header #PageHeader>
     <page-header-menu [ShowSuchleiste]="true" [ShowSandortfilter]="true" [ShowMitarbeitertitle]="true"
                       (SucheChanged)="SucheChanged($event)" (StandortfilterClicked)="StandortFilterClickedHandler()"></page-header-menu>
-    <table class="paddingtable">
-      <tr>
-        <td><checkbox-clon [Checked]="ShowMeOnly" (CheckChanged)="ShowMeCheckedChanged($event)"></checkbox-clon></td>
-        <td style="color: white">Nur meinen Eintrag anzeigen</td>
-        <td style="width: 6px"></td>
-        <td><checkbox-clon [Checked]="ShowAktuelle" (CheckChanged)="ShowAktuelleChanged($event)"></checkbox-clon></td>
-        <td style="color: white">Aktuelle Einträge anzeigen</td>
-        <td style="width: 6px"></td>
-        <td><checkbox-clon [Checked]="ShowArchivierte" (CheckChanged)="ShowArchivierteChanged($event)"></checkbox-clon></td>
-        <td style="color: white">Archivierte Einträge anzeigen</td>
-      </tr>
-    </table>
+
+    <ion-radio-group [value]="Freigabefilter" (ionChange)="FreigabefilterChanged($event)">
+      <table class="paddingtable">
+        <tr>
+          <td><checkbox-clon [Checked]="ShowMeOnly" (CheckChanged)="ShowMeCheckedChanged($event)"></checkbox-clon></td>
+          <td style="color: white">Nur meinen Eintrag anzeigen</td>
+          <td style="width: 6px"></td>
+          <td><checkbox-clon [Checked]="ShowAktuelle" (CheckChanged)="ShowAktuelleChanged($event)"></checkbox-clon></td>
+          <td style="color: white">Aktuelle Einträge anzeigen</td>
+          <td style="width: 6px"></td>
+          <td><checkbox-clon [Checked]="ShowArchivierte" (CheckChanged)="ShowArchivierteChanged($event)"></checkbox-clon></td>
+          <td style="color: white">Archivierte Einträge anzeigen</td>
+          <td style="width: 200px"></td>
+          <td>Freigabefilter:</td>
+          <td style="color: white"><ion-radio [value]="Freigabefiltervarianten.Keiner" style="--color: white; --color-checked: white;"></ion-radio></td><td>keiner</td>
+          <td style="width: 6px"></td>
+          <td style="color: white"><ion-radio [value]="Freigabefiltervarianten.Administrator" style="--color: white; --color-checked: white;"></ion-radio></td><td>Administrator</td>
+          <td style="width: 6px"></td>
+          <td style="color: white"><ion-radio [value]="Freigabefiltervarianten.Urlaubsfreigaben" style="--color: white; --color-checked: white;"></ion-radio></td><td>Urlaubsfreigaben</td>
+          <td style="width: 6px"></td>
+          <td style="color: white"><ion-radio [value]="Freigabefiltervarianten.Homeofficefreigaben" style="--color: white; --color-checked: white;"></ion-radio></td><td>Homeofficefreigaben</td>
+        </tr>
+      </table>
+    </ion-radio-group>
   </page-header>
 </ion-header>
 <ion-content no-shadow no-border>
@@ -29,46 +41,88 @@
           <ion-row>
             <ion-col size="12">
               <div class="kontaktclass">
-                <table class="paddingsmalltable" width="100%">
+                <table style="width: 100%">
                   <tr>
-                    <td>
-                      <table *ngIf="Mitarbeiter !== null && Pool.Mitarbeiterdaten !== null" cellspacing="0" cellpadding="0">
-                        <tr *ngIf="!Mitarbeiter.Filtered">
-                          <td><div [style.background]="Mitarbeiter.Archiviert ? 'red' : 'green'" style="height: 20px; width: 20px;  border-radius: 4px"></div></td>
-                          <td *ngIf="Mitarbeiter.Email === Pool.Mitarbeiterdaten.Email && Mitarbeiter.Kuerzel === '' || Mitarbeiter.StandortID === ''">
-                            <img  src="/assets/svgs/alert.svg" style="height: 26px"/>
-                          </td>
+                    <td style="width: 70%">
+                      <table class="paddingsmalltable" width="100%">
+                        <tr>
                           <td>
-                            {{Mitarbeiter.Name}} {{Mitarbeiter.Vorname}} / {{Mitarbeiter.Kuerzel}}
+                            <table *ngIf="Mitarbeiter !== null && Pool.Mitarbeiterdaten !== null" cellspacing="0" cellpadding="0">
+                              <tr *ngIf="!Mitarbeiter.Filtered">
+                                <td><div [style.background]="Mitarbeiter.Archiviert ? 'red' : 'green'" style="height: 20px; width: 20px;  border-radius: 4px"></div></td>
+                                <td *ngIf="Mitarbeiter.Email === Pool.Mitarbeiterdaten.Email && Mitarbeiter.Kuerzel === '' || Mitarbeiter.StandortID === ''">
+                                  <img  src="/assets/svgs/alert.svg" style="height: 26px"/>
+                                </td>
+                                <td>
+                                  {{Mitarbeiter.Name}} {{Mitarbeiter.Vorname}} / {{Mitarbeiter.Kuerzel}}
+                                </td>
+                              </tr>
+                              <tr *ngIf="Mitarbeiter.Filtered">
+                                <td><div [style.background]="Mitarbeiter.Archiviert ? 'red' : 'green'" style="height: 20px; width: 20px; border-radius: 4px"></div></td>
+                                <td *ngIf="Mitarbeiter.Email === Pool.Mitarbeiterdaten.Email && Mitarbeiter.Kuerzel === '' || Mitarbeiter.StandortID === ''">
+                                  <img src="/assets/svgs/alert.svg" style="height: 26px"/>
+                                </td>
+                                <td>
+                                  <span>{{Mitarbeiter.Text_A}}</span><span style="color: green">{{Mitarbeiter.Text_B}}</span><span>{{Mitarbeiter.Text_C}}</span> / {{Mitarbeiter.Kuerzel}}
+                                </td>
+                              </tr>
+                            </table>
                           </td>
                         </tr>
-                        <tr *ngIf="Mitarbeiter.Filtered">
-                          <td><div [style.background]="Mitarbeiter.Archiviert ? 'red' : 'green'" style="height: 20px; width: 20px; border-radius: 4px"></div></td>
-                          <td *ngIf="Mitarbeiter.Email === Pool.Mitarbeiterdaten.Email && Mitarbeiter.Kuerzel === '' || Mitarbeiter.StandortID === ''">
-                            <img src="/assets/svgs/alert.svg" style="height: 26px"/>
-                          </td>
+                        <tr>
                           <td>
-                            <span>{{Mitarbeiter.Text_A}}</span><span style="color: green">{{Mitarbeiter.Text_B}}</span><span>{{Mitarbeiter.Text_C}}</span> / {{Mitarbeiter.Kuerzel}}
+                            <table class="infotable" style="white-space:nowrap;">
+                              <tr>
+                                <td style="width: 24px"></td>
+                                <td style="width: 80px" class="ergonametextclass">Standort:</td>     <td style="width: 140px">{{DBStandort.GetStandort(Mitarbeiter.StandortID)}}</td><td style="width: 20px"></td>
+                                <td style="width: 60px"  class="ergonametextclass">Email:</td>      <td style="width: 200px">{{Mitarbeiter.Email}}</td><td style="width: 20px"></td>
+                              </tr>
+                              <tr>
+                                <td style="width: 24px"></td>
+                                <td style="width: 80px"  class="ergonametextclass">Possition:</td><td style="width: 140px">{{DB.GetPositionsbezeichnung(Mitarbeiter.PositionID)}}</td><td style="width: 20px"></td>
+                                <td colspan="3"></td>
+                              </tr>
+                            </table>
+                        </tr>
+                      </table>
+
+                    </td>
+                    <td style="width: auto" align="right">
+                      <table width="600px">
+                        <tr>
+                          <td style="width: 30%" valign="top">
+                            <table  *ngIf="Mitarbeiter.Planeradministrator" class="paddingsmalltable">
+                              <tr>
+                                <td><ion-icon name="shield-half-outline" color="rot" style="font-size: 20px"></ion-icon></td><td style="font-size: 90%; font-weight: bold;">Administrator</td>
+                              </tr>
+                            </table>
                           </td>
+                          <td style="width: 30%" valign="top">
+                            <table *ngIf="Mitarbeiter.Urlaubsfreigaben" class="paddingsmalltable">
+                              <tr>
+                                <td><ion-icon name="sunny" color="orange" style="font-size: 20px"></ion-icon></td><td style="font-size: 90%;font-weight: bold;">Urlaubsfreigaben</td>
+                              </tr>
+                              <tr>
+                                <td></td>
+                                <td style="font-size: 80%; color: #444444;">{{GetStandortliste(Mitarbeiter.Urlaubsfreigabeorte)}}</td>
+                              </tr>
+                            </table>
+                          </td>
+                          <td style="width: 30%" valign="top">
+                            <table *ngIf="Mitarbeiter.Homeofficefreigaben" class="paddingsmalltable">
+                              <tr>
+                                  <td><ion-icon name="home" color="blau" style="font-size: 20px"></ion-icon></td><td style="font-size: 90%;font-weight: bold;">Homeofficefreigaben</td>
+                              </tr>
+                              <tr>
+                                <td></td>
+                                <td style="font-size: 80%; color: #444444">{{GetStandortliste(Mitarbeiter.Homeofficefreigabestandorte)}}</td>
+                              </tr>
+                            </table>
+                          </td>
+                          <td style="width:10%"></td>
                         </tr>
                       </table>
                     </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <table class="infotable" style="white-space:nowrap;">
-                        <tr>
-                          <td style="width: 24px"></td>
-                          <td style="width: 80px" class="ergonametextclass">Stadort:</td>     <td style="width: 100px">{{DBStandort.GetStandort(Mitarbeiter.StandortID)}}</td><td style="width: 20px"></td>
-                          <td style="width: 60px"  class="ergonametextclass">Email:</td>      <td style="width: 200px">{{Mitarbeiter.Email}}</td><td style="width: 20px"></td>
-                          <td style="width: 80px"  class="ergonametextclass">Fachbereich:</td><td style="width: 100px">{{Mitarbeiter.Fachbereich}}</td><td style="width: 20px"></td>
-                          <!--
-                          <td style="width: 80px"  class="ergonametextclass">_id:</td>        <td style="width: 100px">{{Mitarbeiter._id}}</td><td style="width: 20px"></td>
-                          <td style="width: 80px"  class="ergonametextclass">Zeitstring:</td> <td style="width: 100px">{{Mitarbeiter.Zeitstring}}</td><td style="width: 20px"></td>
-                          <td style="width: 80px"  class="ergonametextclass">UserID:</td>     <td style="width: 100px">{{Mitarbeiter.UserID}}</td><td style="width: 20px"></td>
-                          -->
-                        </tr>
-                      </table>
                   </tr>
                 </table>
               </div>
@@ -138,12 +192,13 @@
   </page-footer>
 </ion-footer>
 
-<fi-mitarbeiter-editor *ngIf="ShowEditor" [Dialogbreite]="600" [Titel]="GetDialogTitel()" Iconname="people-outline"
+<fi-mitarbeiter-editor *ngIf="ShowEditor" [Dialogbreite]="1280" [Titel]="GetDialogTitel()" Iconname="people-outline"
                        (StandortClickedEvent)="StandortClickedHandler()"
                        (CancelClickedEvent)="ShowEditor = false"
                        (OkClickedEvent)="ShowEditor = false"
-                       (AnredeClickedEvent)="AnredeClickedEventHandler()" (UrlaubClickedEvent)="UrlaubClickedEventHandler()"
-                       (FachbereichClickedEvent)="FachbereichClickedHandler()">
+                       (AnredeClickedEvent)="AnredeClickedEventHandler()"
+                       (PositionClickedEvent)="PositionClickedEventHandler()"
+                       (UrlaubClickedEvent)="UrlaubClickedEventHandler()">
 </fi-mitarbeiter-editor>
 
 <auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex"

@@ -15,6 +15,7 @@ import {Graphservice} from "../../services/graph/graph";
 import {Teamsstruktur} from "../../dataclasses/teamsstruktur";
 import {LoadingAnimationService} from "../../services/loadinganimation/loadinganimation";
 import * as lodash from "lodash-es";
+import {Mitarbeiterpositionstruktur} from "../../dataclasses/mitarbeiterpositionstruktur";
 
 @Component({
   selector: 'fi-mitarbeiter-editor',
@@ -30,7 +31,8 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
   @Output() StandortClickedEvent    = new EventEmitter<boolean>();
   @Output() AnredeClickedEvent      = new EventEmitter<boolean>();
   @Output() UrlaubClickedEvent      = new EventEmitter<boolean>();
-  @Output() FachbereichClickedEvent = new EventEmitter<boolean>();
+  // @Output() FachbereichClickedEvent = new EventEmitter<boolean>();
+  @Output() PositionClickedEvent    = new EventEmitter<boolean>();
 
   @Output() CancelClickedEvent         = new EventEmitter<any>();
   @Output() OkClickedEvent             = new EventEmitter<any>();
@@ -49,6 +51,14 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
   private JoiShema: ObjectSchema;
   public ErrorMessage: string;
   public PositionY: number;
+  public Bereich: string;
+  public AddNewPosition: boolean;
+  public EditPosition: boolean;
+  public Bereiche = {
+
+    Allgemein: 'Allgemein',
+    Positionen: 'Positionen'
+  };
 
   constructor(public Debug: DebugProvider,
               public Tools: ToolsProvider,
@@ -72,6 +82,9 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
       this.EmailinputEnabled  = true;
       this.Teamsliste         = [];
       this.ErrorMessage       = null;
+      this.AddNewPosition     = false;
+      this.EditPosition       = false;
+      this.Bereich            = this.Bereiche.Allgemein;
 
     } catch (error) {
 
@@ -210,7 +223,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
     }
   }
 
-
+  /*
 
   FachbereichClicked() {
 
@@ -223,6 +236,8 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
       this.Debug.ShowErrorMessage(error.message, 'Mitarbeiter Editor', 'FachbereichClicked', this.Debug.Typen.Component);
     }
   }
+
+   */
 
   LoeschenCheckboxChanged(event: {status: boolean; index: number; event: any}) {
 
@@ -326,6 +341,8 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
       this.DB.CurrentMitarbeiter.Homeofficefreigaben = event.status;
 
+      if(event.status === false) this.DB.CurrentMitarbeiter.Homeofficefreigabestandorte = [];
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'HomeofficefreigabenCheckboxChanged', this.Debug.Typen.Component);
@@ -351,6 +368,8 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
       this.DB.CurrentMitarbeiter.Urlaubsfreigaben = event.status;
 
+      if(event.status === false) this.DB.CurrentMitarbeiter.Urlaubsfreigabeorte = [];
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'UrlaubsfreigabenCheckboxChanged', this.Debug.Typen.Component);
@@ -373,6 +392,196 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
       this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'function', this.Debug.Typen.Component);
     }
+  }
+
+  UrlaubsfreigabeChecked(id) {
+
+    try {
+
+      return lodash.indexOf(this.DB.CurrentMitarbeiter.Urlaubsfreigabeorte, id) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'UrlaubsfreigabeChecked', this.Debug.Typen.Page);
+    }
+  }
+
+  UrlaubsfreigabeChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      if(event.status === true) {
+
+        this.DB.CurrentMitarbeiter.Urlaubsfreigabeorte.push(event.value);
+      }
+      else {
+
+        this.DB.CurrentMitarbeiter.Urlaubsfreigabeorte = lodash.filter(this.DB.CurrentMitarbeiter.Urlaubsfreigabeorte, (id) => {
+
+          return id !== event.value;
+        });
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'UrlaubsfreigabeChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  HomeofficefreigabeChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      if(event.status === true) {
+
+        this.DB.CurrentMitarbeiter.Homeofficefreigabestandorte.push(event.value);
+      }
+      else {
+
+        this.DB.CurrentMitarbeiter.Homeofficefreigabestandorte = lodash.filter(this.DB.CurrentMitarbeiter.Homeofficefreigabestandorte, (id) => {
+
+          return id !== event.value;
+        });
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'HomeofficefreigabeChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  HomeofficefreigabeChecked(id: string) {
+
+    try {
+
+      return lodash.indexOf(this.DB.CurrentMitarbeiter.Homeofficefreigabestandorte, id) !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'HomeofficefreigabeChecked', this.Debug.Typen.Component);
+    }
+  }
+
+
+  AllgemeinMenuButtonClicked() {
+
+    try {
+
+      this.Bereich = this.Bereiche.Allgemein;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'AllgemeinMenuButtonClicked', this.Debug.Typen.Component);
+    }
+
+  }
+
+  PositionenMenuButtonClicked() {
+
+    try {
+
+      this.Bereich = this.Bereiche.Positionen;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'PositionenMenuButtonClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  NeuePositionButtonClicked() {
+
+    try {
+
+      this.AddNewPosition     = true;
+      this.DB.CurrentPosition = this.DB.GetEmptyMitarbeiterposition();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'NeuePositionButtonClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  NewPositionTextChanged(event: { Titel: string; Text: string; Valid: boolean }) {
+
+    try {
+
+      this.DB.CurrentPosition.Bezeichnung = event.Text;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'NewPositionTextChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  async PositionOkButtonClicked() {
+
+    try {
+
+      if(this.AddNewPosition) {
+
+        await this.DB.AddMitarbeiterposition(this.DB.CurrentPosition);
+
+        this.AddNewPosition     = false;
+        this.DB.CurrentPosition = null;
+      }
+
+      if(this.EditPosition) {
+
+        await this.DB.UpdateMitarbeiterposition(this.DB.CurrentPosition);
+
+        this.EditPosition       = false;
+        this.DB.CurrentPosition = null;
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'PositionOkButtonClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  PositionCancelButtonClicked() {
+
+    try {
+
+      if(this.AddNewPosition) {
+
+       this.AddNewPosition     = false;
+       this.DB.CurrentPosition = null;
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'PositionCancelButtonClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  PositionButtonClicked(Position: Mitarbeiterpositionstruktur) {
+
+    try {
+
+      if(!this.EditPosition && !this.AddNewPosition) {
+
+        this.DB.CurrentPosition = lodash.cloneDeep(Position);
+        this.EditPosition       = true;
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'PositionButtonClicked', this.Debug.Typen.Component);
+    }
+  }
+
+  PositionClicked() {
+
+    try {
+
+      debugger;
+
+      this.PositionClickedEvent.emit();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'PositionClicked', this.Debug.Typen.Component);
+    }
+
   }
 
 }

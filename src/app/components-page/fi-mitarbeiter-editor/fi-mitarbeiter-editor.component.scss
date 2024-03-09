@@ -32,3 +32,24 @@
   display: flex;
   flex-direction: row;
 }
+
+.menubuttonclass {
+
+  cursor: pointer;
+}
+
+.trennertdclass {
+
+  width: 30px;
+}
+
+.positionclass {
+
+  background: white;
+  height: 30px;
+  width: 300px;
+}
+.positionclass:hover {
+
+  background: silver;
+}

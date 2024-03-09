@@ -18,6 +18,7 @@ import {ObjectSchema} from "joi";
 import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
 import {Regionenstruktur} from "../../dataclasses/regionenstruktur";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
+import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
 
 @Component({
   selector: 'fi-standort-editor',
@@ -50,8 +51,9 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
               public Displayservice: DisplayService,
               public Const: ConstProvider,
               private Tools: ToolsProvider,
-              private Pool: DatabasePoolService,
+              public Pool: DatabasePoolService,
               private DBUrlaub: DatabaseUrlaubService,
+              public DBMitarbeiter: DatabaseMitarbeiterService,
               public DB: DatabaseStandorteService) {
 
     try {
@@ -329,6 +331,70 @@ export class FiStandortEditorComponent implements OnInit, OnDestroy, AfterViewIn
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Standort Editor', 'GetKonfession', this.Debug.Typen.Component);
+    }
+  }
+
+  UrlaubsfreigabeChecked(id: string): boolean {
+
+    try {
+
+      let Index: number = this.DB.CurrentStandort.Urlaubfreigabepersonen.indexOf(id);
+
+      return Index !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'UrlaubsfreigabeChecked', this.Debug.Typen.Component);
+    }
+  }
+
+  HomeofficefreigabeChecked(id: string): boolean {
+
+    try {
+
+      let Index: number = this.DB.CurrentStandort.Homeofficefreigabepersonen.indexOf(id);
+
+      return Index !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'HomeofficefreigabeChecked', this.Debug.Typen.Component);
+    }
+  }
+
+  UrlaubsfreigabeCheckChanged(event: { status: boolean; index: number; event: any; value: string }, id: string) {
+
+    try {
+
+      if(event.status === true) this.DB.CurrentStandort.Urlaubfreigabepersonen.push(id);
+      else {
+
+        this.DB.CurrentStandort.Urlaubfreigabepersonen = lodash.filter(this.DB.CurrentStandort.Urlaubfreigabepersonen, (currentid) => {
+
+           return id !== currentid;
+        });
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'UrlaubsfreigabeCheckChanged', this.Debug.Typen.Component);
+    }
+  }
+
+  HomeofficefreigabeCheckChanged(event: { status: boolean; index: number; event: any; value: string }, id: string) {
+
+    try {
+
+      if(event.status === true) this.DB.CurrentStandort.Homeofficefreigabepersonen.push(id);
+      else {
+
+        this.DB.CurrentStandort.Homeofficefreigabepersonen = lodash.filter(this.DB.CurrentStandort.Homeofficefreigabepersonen, (currentid) => {
+
+          return id !== currentid;
+        });
+      }
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Standort Editor', 'HomeofficefreigabeCheckChanged', this.Debug.Typen.Component);
     }
   }
 }

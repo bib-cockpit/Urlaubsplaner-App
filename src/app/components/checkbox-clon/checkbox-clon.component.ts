@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, SimpleChange, SimpleChanges} from '@angular/core';
 import {BasicsProvider} from "../../services/basics/basics";
 import {DebugProvider} from "../../services/debug/debug";
 import {ToolsProvider} from "../../services/tools/tools";
@@ -35,7 +35,7 @@ export class CheckboxClonComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
+  PrepareData() {
 
     try {
 
@@ -43,6 +43,22 @@ export class CheckboxClonComponent implements OnInit {
 
         this.Background = '#B2BABB';
       }
+      else {
+
+        this.Background = 'white';
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Checkbox', 'PrepareData', this.Debug.Typen.Component);
+    }
+  }
+
+  ngOnInit() {
+
+    try {
+
+      this.PrepareData();
 
     } catch (error) {
 
@@ -65,6 +81,25 @@ export class CheckboxClonComponent implements OnInit {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Checkbox', 'DivClickedHnadler', this.Debug.Typen.Component);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+
+    try {
+
+      let Value: SimpleChange;
+
+      Value = changes.Enabled;
+
+      if(typeof Value !== 'undefined') {
+
+        this.PrepareData();
+      }
+    }
+    catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message,  'Alphabet', 'ngOnChanges', this.Debug.Typen.Component);
     }
   }
 }

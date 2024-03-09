@@ -3,28 +3,15 @@ import {DebugProvider} from "../debug/debug";
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import {ConstProvider} from "../const/const";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
-import {Projektestruktur} from "../../dataclasses/projektestruktur";
-import {Projektpunktestruktur} from "../../dataclasses/projektpunktestruktur";
-import {Protokollstruktur} from "../../dataclasses/protokollstruktur";
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import { v4 as uuidv4 } from 'uuid';
 import * as lodash from "lodash-es";
-import {DatabaseAuthenticationService} from "../database-authentication/database-authentication.service";
 import {Mitarbeitersettingsstruktur} from "../../dataclasses/mitarbeitersettingsstruktur";
-import {Observable} from "rxjs";
-import {Projektpunktanmerkungstruktur} from "../../dataclasses/projektpunktanmerkungstruktur";
 import {Changelogstruktur} from "../../dataclasses/changelogstruktur";
 import {environment} from "../../../environments/environment";
-import {Bautagebuchstruktur} from "../../dataclasses/bautagebuchstruktur";
-import {LOPListestruktur} from "../../dataclasses/loplistestruktur";
-import {Outlookkategoriesstruktur} from "../../dataclasses/outlookkategoriesstruktur";
-import {Notizenkapitelstruktur} from "../../dataclasses/notizenkapitelstruktur";
-import {Fachbereiche, Fachbereichestruktur} from "../../dataclasses/fachbereicheclass";
-import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
-import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
 import {Urlaubsstruktur} from "../../dataclasses/urlaubsstruktur";
-import {Simontabellestruktur} from "../../dataclasses/simontabellestruktur";
 import {BasicsProvider} from "../basics/basics";
+import {Mitarbeiterpositionstruktur} from "../../dataclasses/mitarbeiterpositionstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -33,19 +20,13 @@ export class DatabasePoolService {
 
   public Standorteliste:          Standortestruktur[];
   public Mitarbeiterliste:        Mitarbeiterstruktur[];
-  public Projektpunkteliste:      Projektpunktestruktur[][];
-  public DeletedProjektpunkteliste: Projektpunktestruktur[][];
-  public Protokollliste:          Protokollstruktur[][];
-  public Bautagebuchliste:        Bautagebuchstruktur[][];
-  public LOPListe:                LOPListestruktur[][];
-  public Notizenkapitelliste:     Notizenkapitelstruktur[][];
+  public Mitarbeiterpositionenliste: Mitarbeiterpositionstruktur[];
   public Mitarbeitersettingsliste: Mitarbeitersettingsstruktur[];
   public CockpitserverURL:        string;
   public CockpitdockerURL:        string;
   public Mitarbeiterdaten: Mitarbeiterstruktur;
   public Mitarbeiterstandort: Standortestruktur;
   public Mitarbeitersettings: Mitarbeitersettingsstruktur;
-  public CurrentAufgabenansichten: Aufgabenansichtstruktur;
   public ShowProgress: boolean;
   public MaxProgressValue: number;
   public CurrentProgressValue: number;
@@ -53,39 +34,21 @@ export class DatabasePoolService {
   public Changlogliste: Changelogstruktur[];
   public MitarbeiterdatenHasError:boolean;
   public Emailcontent: string;
-  public Outlookkatekorien: Outlookkategoriesstruktur[];
-  public Fachbereich: Fachbereiche;
-  public Festlegungskategorienliste: Festlegungskategoriestruktur[][];
+  // public Outlookkatekorien: Outlookkategoriesstruktur[];
+  // public Fachbereich: Fachbereiche;
+  // public Festlegungskategorienliste: Festlegungskategoriestruktur[][];
   public ProjektdatenLoaded: boolean;
   public Emailcontentvarinaten: any;
-  public Simontabellenliste: Simontabellestruktur[][];
+  // public Simontabellenliste: Simontabellestruktur[][];
 
   public StandortelisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public MitarbeiterlisteChanged: EventEmitter<any> = new EventEmitter<any>();
+  public MitarbeiterpositionenlisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public MitarbeiterdatenChanged: EventEmitter<any> = new EventEmitter<any>();
   public MitarbeitersettingslisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public MitarbeitersettingsChanged: EventEmitter<any> = new EventEmitter<any>();
   public LoadingAllDataFinished: EventEmitter<any> = new EventEmitter<any>();
-  public ProjektpunktelisteChanged: EventEmitter<any> = new EventEmitter<any>();
-  public ProjektpunktStatusChanged: EventEmitter<any> = new EventEmitter<any>();
-  public ProjektpunktKostengruppeChanged: EventEmitter<any> = new EventEmitter<any>();
-  public ProtokolllisteChanged: EventEmitter<any> = new EventEmitter<any>();
-  public ProtokollprojektpunktChanged: EventEmitter<any> = new EventEmitter<any>();
-  public LOPListeprojektpunktChanged: EventEmitter<any> = new EventEmitter<any>();
-  public ProjektpunktChanged: EventEmitter<any> = new EventEmitter<any>();
   public ChangeloglisteChanged: EventEmitter<any> = new EventEmitter<any>();
-  public BautagebuchlisteChanged: EventEmitter<any> = new EventEmitter<any>();
-  public EmailempfaengerChanged: EventEmitter<any> = new EventEmitter<any>();
-  public LOPListeChanged: EventEmitter<any> = new EventEmitter<any>();
-  public MitarbeiterAuswahlChanged: EventEmitter<any> = new EventEmitter<any>();
-  public BeteiligteAuswahlChanged: EventEmitter<any> = new EventEmitter<any>();
-  public CurrentBeteiligtenChanged: EventEmitter<any> = new EventEmitter<any>();
-  public NotizenkapitellisteChanged: EventEmitter<any> = new EventEmitter<any>();
-  public CurrentLOPGewerkelisteChanged: EventEmitter<any> = new EventEmitter<any>();
-  public FestlegungskategorienlisteChanged: EventEmitter<any> = new EventEmitter<any>();
-  public CurrentFestlegungskategorieChanged: EventEmitter<any> = new EventEmitter<any>();
-  public SimontabelleChanged: EventEmitter<any> = new EventEmitter<any>();
-  public SimontabellenlisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public Signatur: string;
 
   constructor(private Debug: DebugProvider,
@@ -108,6 +71,7 @@ export class DatabasePoolService {
       this.Mitarbeiterdaten         = null;
       this.MitarbeiterdatenHasError = true;
       this.Mitarbeitersettings      = null;
+      this.Mitarbeiterpositionenliste = [];
       this.Mitarbeiterstandort      = null;
       this.ShowProgress             = false;
       this.Mitarbeitersettingsliste = [];
@@ -115,22 +79,12 @@ export class DatabasePoolService {
       this.CurrentProgressValue     = 0;
       this.Standorteliste           = [];
       this.Mitarbeiterliste         = [];
-      this.Projektpunkteliste       = [];
-      this.Projektpunkteliste       = [];
-      this.Protokollliste           = [];
       this.Changlogliste            = [];
-      this.Bautagebuchliste         = [];
-      this.LOPListe                 = [];
-      this.Notizenkapitelliste      = [];
-      this.Outlookkatekorien        = [];
-      this.Simontabellenliste       = [];
+      //  this.Simontabellenliste       = [];
       this.CockpitserverURL         = environment.production === true ? 'https://bae-urlaubsplaner-server.azurewebsites.net' : 'http://localhost:8080';
       this.CockpitdockerURL         = environment.production === true ? 'https://bae-urlaubsplaner-docker.azurewebsites.net' : 'http://localhost:80';
       this.Emailcontent             = this.Emailcontentvarinaten.NONE;
-      this.Fachbereich              = new Fachbereiche();
-      this.CurrentAufgabenansichten = null;
-      this.Festlegungskategorienliste = [];
-      this.DeletedProjektpunkteliste = [];
+      // this.Fachbereich              = new Fachbereiche();
       this.ProjektdatenLoaded         = false;
 
       this.Signatur                 =
@@ -244,41 +198,6 @@ export class DatabasePoolService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Pool', 'GetFilledSignatur', this.Debug.Typen.Service);
-    }
-  }
-
-
-
-  public GetAufgabenansichten(projektid: string): Aufgabenansichtstruktur {
-
-    try {
-      let Ansichtensetup: Aufgabenansichtstruktur;
-
-      if(this.Mitarbeitersettings !== null)  Ansichtensetup = lodash.find(this.Mitarbeitersettings.Aufgabenansicht, {ProjektID: projektid});
-
-      if(lodash.isUndefined(Ansichtensetup)) {
-
-        Ansichtensetup = {
-
-          ProjektID: projektid,
-          AufgabenShowAusfuehrung: true,
-          AufgabenShowBearbeitung: true,
-          AufgabenShowBilder: true,
-          AufgabenShowGeschlossen: false,
-          AufgabenShowMeilensteinOnly: false,
-          AufgabenShowOffen: true,
-          AufgabenShowPlanung: true,
-          AufgabenShowRuecklauf: true,
-          AufgabenShowMeilensteine: true,
-          AufgabenShowPlanungsmatrix: false
-        };
-      }
-
-      return Ansichtensetup;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Database Pool', 'GetAufgabenansichten', this.Debug.Typen.Service);
     }
   }
 
@@ -825,7 +744,50 @@ export class DatabasePoolService {
     }
   }
 
+  public ReadMitarbeiterpositionenliste(): Promise<any> {
 
+    try {
+
+      this.Mitarbeiterpositionenliste = [];
+
+      let headers: HttpHeaders = new HttpHeaders({
+
+        'content-type': 'application/json',
+      });
+
+      return new Promise((resolve, reject) => {
+
+        let MitarbeiterpositionnObservable = this.Http.get(this.CockpitdockerURL + '/mitarbeiterpositionen', { headers: headers } );
+
+        MitarbeiterpositionnObservable.subscribe({
+
+          next: (data) => {
+
+            this.Mitarbeiterpositionenliste = <Mitarbeiterpositionstruktur[]>data;
+
+          },
+          complete: () => {
+
+            this.MitarbeiterpositionenlisteChanged.emit();
+
+            resolve(true);
+
+          },
+          error: (error: HttpErrorResponse) => {
+
+            console.log(error.message);
+            console.log('Mitarbeiterpositionenliste lesen war fehlerhaft.');
+
+            reject(error);
+          }
+        });
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'ReadMitarbeiterpositionenliste', this.Debug.Typen.Service);
+    }
+  }
 
   public ReadChangelogliste(): Promise<any> {
 
@@ -912,6 +874,9 @@ export class DatabasePoolService {
               if(lodash.isUndefined(Standort.Konfession)) Standort.Konfession = 'RK';
               if(lodash.isUndefined(Standort.Bundesland)) Standort.Bundesland = 'DE-BY';
               if(lodash.isUndefined(Standort.Land))       Standort.Land       = 'DE';
+
+              if(lodash.isUndefined(Standort.Homeofficefreigabepersonen)) Standort.Homeofficefreigabepersonen = [];
+              if(lodash.isUndefined(Standort.Urlaubfreigabepersonen))     Standort.Urlaubfreigabepersonen     = [];
             }
 
             this.StandortelisteChanged.emit();
@@ -1032,6 +997,21 @@ export class DatabasePoolService {
       if(lodash.isUndefined(mitarbeiter.Homeofficefreigaben)) {
 
         mitarbeiter.Homeofficefreigaben = false;
+      }
+
+      if(lodash.isUndefined(mitarbeiter.Homeofficefreigabestandorte)) {
+
+        mitarbeiter.Homeofficefreigabestandorte = [];
+      }
+
+      if(lodash.isUndefined(mitarbeiter.Urlaubsfreigabeorte)) {
+
+        mitarbeiter.Urlaubsfreigabeorte = [];
+      }
+
+      if(lodash.isUndefined(mitarbeiter.PositionID)) {
+
+        mitarbeiter.PositionID = null;
       }
 
       for(let Eintrag of mitarbeiter.Meinewocheliste) {
@@ -1310,8 +1290,6 @@ export class DatabasePoolService {
           if(lodash.isUndefined(Settings.UrlaubShowMeinenUrlaub))         Settings.UrlaubShowMeinenUrlaub         = true;
           if(lodash.isUndefined(Settings.ShowHomeoffice))                 Settings.ShowHomeoffice                 = true;
 
-          this.CurrentAufgabenansichten = this.GetAufgabenansichten(null);
-
           return Settings;
         }
       }
@@ -1321,4 +1299,7 @@ export class DatabasePoolService {
       this.Debug.ShowErrorMessage(error.message, 'Database Pool', 'InitMitarbeitersettings', this.Debug.Typen.Service);
     }
   }
+
+
+
 }

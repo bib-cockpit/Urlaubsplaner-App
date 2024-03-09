@@ -10,32 +10,15 @@ import {AuthProviderCallback, Client, GraphError, ResponseType} from '@microsoft
 import {User} from "@microsoft/microsoft-graph-types";
 import {ToolsProvider} from "../tools/tools";
 import * as lodash from 'lodash-es';
-import {Projektestruktur} from "../../dataclasses/projektestruktur";
 import {DatabasePoolService} from "../database-pool/database-pool.service";
 import {Teamsstruktur} from "../../dataclasses/teamsstruktur";
 import {Teamsfilesstruktur} from "../../dataclasses/teamsfilesstruktur";
 import {Teamsdownloadstruktur} from "../../dataclasses/teamsdownloadstruktur";
-import {GraphErrorHandler} from "@microsoft/microsoft-graph-client/lib/es/src/GraphErrorHandler";
 import {Teamsmitgliederstruktur} from "../../dataclasses/teamsmitgliederstruktur";
-import {Observable} from "rxjs";
-import {group} from "@angular/animations";
-import {Outlookkontaktestruktur} from "../../dataclasses/outlookkontaktestruktur";
-import {ExtendedTemplateCheckerImpl} from "@angular/compiler-cli/src/ngtsc/typecheck/extended";
-import {Projektbeteiligtestruktur} from "../../dataclasses/projektbeteiligtestruktur";
 import moment, {Moment} from "moment";
-import {Outlookemailstruktur} from "../../dataclasses/outlookemailstruktur";
-import {Outlookemailattachmentstruktur} from "../../dataclasses/outlookemailattachmentstruktur";
-import {Emailfolderstruktur} from "../../dataclasses/emailfolderstruktur";
-import {folder} from "ionicons/icons";
-import {DatabaseOutlookemailService} from "../database-email/database-outlookemail.service";
-import {Outlookkalenderstruktur} from "../../dataclasses/outlookkalenderstruktur";
-import {Outlookpresetcolorsstruktur} from "../../dataclasses/outlookpresetcolorsstruktur";
-import {Outlookkategoriesstruktur} from "../../dataclasses/outlookkategoriesstruktur";
-import {Notizenkapitelstruktur} from "../../dataclasses/notizenkapitelstruktur";
-import {Thumbnailstruktur} from "../../dataclasses/thumbnailstrucktur";
+// import {DatabaseOutlookemailService} from "../database-email/database-outlookemail.service";
 import {BasicsProvider} from "../basics/basics";
 import {Outlookemailadressstruktur} from "../../dataclasses/outlookemailadressstruktur";
-import {EmitFlags} from "@angular/compiler-cli";
 
 @Injectable({
   providedIn: 'root'
@@ -51,10 +34,10 @@ export class Graphservice {
   public TeamsCurrentfilelist: Teamsfilesstruktur[];
   public TeamsSubdirectorylist: Teamsfilesstruktur[];
   public CurrentTeamsID: string;
-  public Outlookkontakteliste: Outlookkontaktestruktur[];
+  // public Outlookkontakteliste: Outlookkontaktestruktur[];
   public CurrentPDFDownload: Teamsdownloadstruktur;
   public KalenderKW: number;
-  public Outlookpresetcolors:Outlookpresetcolorsstruktur[];
+  // public Outlookpresetcolors:Outlookpresetcolorsstruktur[];
   private BAESiteID: string;
   public FilebrowserModus: string;
   public FilebrowserModusvarianten = {
@@ -67,14 +50,9 @@ export class Graphservice {
   constructor(
               @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
               private Debug: DebugProvider,
-              private authService: MsalService,
               private Const: ConstProvider,
-              private http: HttpClient,
               private AuthService: DatabaseAuthenticationService,
               private Tools: ToolsProvider,
-              private DBEmail: DatabaseOutlookemailService,
-              private Http:  HttpClient,
-              private Pool: DatabasePoolService,
               public Basics: BasicsProvider,
               private domSanitizer: DomSanitizer,
   ) {
@@ -88,9 +66,10 @@ export class Graphservice {
       this.TeamsSubdirectorylist = [];
       this.CurrentTeamsID        = 'ea457111-b3f1-4c73-a8ae-cb1cbaf6d244'; // Köferinger Straße 20
       this.CurrentPDFDownload    = null;
-      this.Outlookkontakteliste  = [];
+      // this.Outlookkontakteliste  = [];
       this.FilebrowserModus      = this.FilebrowserModusvarianten.Alle_Projekte;
       this.KalenderKW            = moment().locale('de').isoWeek();
+      /*
       this.Outlookpresetcolors   = [
 
         { Name: 'none',     Value: 'none',    Fontcolor: 'white' },
@@ -123,6 +102,8 @@ export class Graphservice {
         { Name: 'PresetFeiertag', Value: '#b0d6f2', Fontcolor: 'black' },
       ];
 
+       */
+
       this.BAESiteID = 'baeeu.sharepoint.com,1b93d6ea-3f8b-4416-9ff1-a50aaba6f8ca,134790cc-e062-4882-ae5e-18813809cc87'; // Projekte Seite
 
 
@@ -133,6 +114,7 @@ export class Graphservice {
   }
 
 
+  /*
   public async GetOwnOutlookcontacts(withemailonly: boolean): Promise<any> {
 
     try {
@@ -257,6 +239,9 @@ export class Graphservice {
       this.Debug.ShowErrorMessage(error, 'Graph', 'GetOwnOutlookcontacts', this.Debug.Typen.Service);
     }
   }
+  */
+
+  /*
 
   public OutlookcontactToBeteiligte(kontakt: Outlookkontaktestruktur): Projektbeteiligtestruktur {
 
@@ -305,152 +290,7 @@ export class Graphservice {
       this.Debug.ShowErrorMessage(error, 'Graph', 'OutlookcontactToBeteiligte', this.Debug.Typen.Service);
     }
   }
-
-  public async GetOwnCalendar(): Promise<any> {
-
-    try {
-
-      let token = await this.AuthService.RequestToken('user.read');
-      let data: any;
-      let Valueliste: any[]    = [];
-      let nexturl: any;
-      let count: number;
-      let Kalenderliste: any[];
-      let Tag: Moment = moment().isoWeek(this.KalenderKW).locale('de');
-      let Montag: Moment = Tag.clone().startOf('week');
-      let Sonntag: Moment = Tag.clone().endOf('week');
-      let Datumsteile: string[];
-      let Zeitteile: string[];
-      let Uhrzeitteile: string[];
-      let Eintrag: Outlookkalenderstruktur;
-      let Zeitpunkt: Moment;
-      let utcstart: any;
-      let utcende: any;
-
-      console.log(Montag.format('DD.MM.YYYY'));
-      console.log(Sonntag.format('DD.MM.YYYY'));
-
-      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
-
-          done(null, token);
-        }
-      });
-
-      try {
-
-        // '2023-01-01'
-        // '2023-03-30'
-
-        data = await graphClient.api('/me/calendarview')
-              .header('Prefer', 'UTC')
-              .query({startDateTime: Montag.format('YYYY-MM-DD'), endDateTime: Sonntag.format('YYYY-MM-DD') }).count().get();
-
-      }
-      catch (error: any) {
-
-
-      }
-
-      if(!lodash.isUndefined(data['@odata.count'])) count = data['@odata.count'];
-
-      if(!lodash.isUndefined(data.value)) {
-
-        Valueliste.push(data.value);
-
-        if(!lodash.isUndefined(data['@odata.nextLink'])) {
-
-          do {
-
-            nexturl = data['@odata.nextLink'];
-            data    = await graphClient.api(nexturl).get();
-
-            if(!lodash.isUndefined(data.value)) Valueliste.push(data.value);
-          }
-          while(!lodash.isUndefined(data['@odata.nextLink']));
-
-          if(!lodash.isUndefined(data.value)) Valueliste.push(data.value);
-        }
-      }
-
-      Kalenderliste = [];
-
-      for(let Liste of Valueliste) {
-
-        for(Eintrag of Liste) {
-
-          Zeitteile    = Eintrag.start.dateTime.split('T');
-          Datumsteile  = Zeitteile[0].split('-');
-          Uhrzeitteile = Zeitteile[1].split('.');
-          Uhrzeitteile = Uhrzeitteile[0].split(':');
-
-          /*
-          Zeitpunkt = moment(
-            {
-              year:   parseInt(Datumsteile[0]),
-              month:  parseInt(Datumsteile[1]) - 1,
-              day:    parseInt(Datumsteile[2]),
-              hour:   parseInt(Uhrzeitteile[0]),
-              minute: parseInt(Uhrzeitteile[1]),
-              second: parseInt(Uhrzeitteile[2])
-            });
-
-           */
-
-          utcstart = moment.utc({
-            year:   parseInt(Datumsteile[0]),
-            month:  parseInt(Datumsteile[1]) - 1,
-            day:    parseInt(Datumsteile[2]),
-            hour:   parseInt(Uhrzeitteile[0]),
-            minute: parseInt(Uhrzeitteile[1]),
-            second: parseInt(Uhrzeitteile[2])
-          });
-
-          Eintrag.start.Zeitstempel = utcstart.locale('de').valueOf();
-          // Eintrag.start.Zeitstempel = Zeitpunkt.valueOf();
-
-          Zeitteile    = Eintrag.end.dateTime.split('T');
-          Datumsteile  = Zeitteile[0].split('-');
-          Uhrzeitteile = Zeitteile[1].split('.');
-          Uhrzeitteile = Uhrzeitteile[0].split(':');
-
-          /*
-          Zeitpunkt = moment(
-            {
-              year:   parseInt(Datumsteile[0]),
-              month:  parseInt(Datumsteile[1]) - 1,
-              day:    parseInt(Datumsteile[2]),
-              hour:   parseInt(Uhrzeitteile[0]),
-              minute: parseInt(Uhrzeitteile[1]),
-              second: parseInt(Uhrzeitteile[2])
-            });
-
-           */
-
-          utcende = moment.utc(
-            {
-              year:   parseInt(Datumsteile[0]),
-              month:  parseInt(Datumsteile[1]) - 1,
-              day:    parseInt(Datumsteile[2]),
-              hour:   parseInt(Uhrzeitteile[0]),
-              minute: parseInt(Uhrzeitteile[1]),
-              second: parseInt(Uhrzeitteile[2])
-            });
-
-          // Eintrag.end.Zeitstempel = Zeitpunkt.valueOf();
-          Eintrag.end.Zeitstempel = utcende.locale('de').valueOf();
-
-          Kalenderliste.push(Eintrag);
-        }
-      }
-
-
-      return Kalenderliste;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Graph', 'GetOwnCalendar', this.Debug.Typen.Service);
-    }
-  }
+  */
 
   public async GetOwnUserinfo(): Promise<any> {
 
@@ -510,173 +350,7 @@ export class Graphservice {
     }
   }
 
-  public async GetOwnEmail(emailid: string): Promise<Outlookemailstruktur>  {
-
-    try {
-
-      let token = await this.AuthService.RequestToken('user.read');
-      let Email: Outlookemailstruktur;
-      let Datum: string;
-      let Empfangstag: Moment;
-
-      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
-
-          done(null, token);
-        }
-      });
-
-
-      return new Promise <Outlookemailstruktur>((resolve, reject) => {
-
-        if(token !== null) {
-
-          graphClient.api('/me/messages/' + emailid + '?$expand=attachments').get().then((email: Outlookemailstruktur) => {
-
-            Email         = email;
-            Email.subject = Email.subject.replace('🏢', '');
-            Datum         = Email.receivedDateTime.replace('T', ' ');
-            Datum         = Datum.replace('Z', '');
-            Empfangstag   = moment(Datum);
-
-            Email.Zeitstempel = Empfangstag.valueOf();
-            Email.Zeitstring  = Empfangstag.format('DD.MM.YYYY HH:mm');
-
-            resolve(Email);
-
-          }).catch((error: GraphError) => {
-
-            switch (error.code) {
-
-              case "InvalidAuthenticationToken":
-
-                debugger;
-
-                // this.AuthService.AccessTokenExpired = true;
-                this.AuthService.UnsetActiveUser();
-
-                this.Tools.SetRootPage(this.Const.Pages.HomePage);
-
-                break;
-
-              default:
-
-                debugger;
-
-                break;
-            }
-
-            reject(null);
-          });
-        }
-        else {
-
-          reject(null);
-        }
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Graph', 'GetOwnEmail', this.Debug.Typen.Service);
-    }
-  }
-
-  public async GetOwnEmailAttachemntlist(emailid: string): Promise<Outlookemailattachmentstruktur[]> {
-
-    try {
-
-      let token = await this.AuthService.RequestToken('user.read');
-
-      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
-
-          done(null, token);
-        }
-      });
-
-      return new Promise <Outlookemailattachmentstruktur[]>((resolve, reject) => {
-
-        if(token !== null) {
-
-          graphClient.api('/me/messages/' + emailid + '/attachments').get().then((result: any) => {
-
-            resolve(lodash.isUndefined(result.value) ? [] : result.value);
-
-          }).catch((error: GraphError) => {
-
-            switch (error.code) {
-
-              case "InvalidAuthenticationToken":
-
-                debugger;
-
-                // this.AuthService.AccessTokenExpired = true;
-                this.AuthService.UnsetActiveUser();
-
-                this.Tools.SetRootPage(this.Const.Pages.HomePage);
-
-                break;
-
-              default:
-
-                debugger;
-
-                break;
-            }
-
-            reject(error);
-          });
-        }
-        else {
-
-          reject(false);
-        }
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Graph', 'GetOwnEmailAttachemntlist', this.Debug.Typen.Service);
-    }
-  }
-
-  public async GetOwnEmailfolders(): Promise<Emailfolderstruktur[]> {
-
-    try {
-
-      let token = await this.AuthService.RequestToken('user.read');
-      let data: any;
-      let Liste: Emailfolderstruktur[] = [];
-
-      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
-
-          done(null, token);
-        }
-      });
-
-      try {
-
-        data = await graphClient.api('/me/mailFolders').get();
-
-        if(!lodash.isUndefined(data.value)) {
-
-          for(let Eintrag of data.value) {
-
-            Liste.push(Eintrag);
-
-            console.log(Eintrag.id);
-          }
-        }
-
-        return Liste;
-      }
-      catch(error: any) {
-
-        return error;
-      }
-    }
-    catch (error)  {
-
-      this.Debug.ShowErrorMessage(error, 'Graph', 'GetOwnEmailfolders', this.Debug.Typen.Service);
-    }
-  }
+  /*
 
   public async GetOwnOutlookCategories(): Promise<Outlookkategoriesstruktur[]> {
 
@@ -734,533 +408,7 @@ export class Graphservice {
   }
 
 
-  public async GetOwnEmailliste(folderid: string): Promise<any> {
-
-    try {
-
-      let data: any;
-      let Valueliste: any[]    = [];
-      let nexturl: any;
-      let count: number;
-      let Emailliste: Outlookemailstruktur[] = [];
-      let token = await this.AuthService.RequestToken('user.read');
-      let Empfangstag: Moment;
-      let Datum: string;
-
-      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
-
-          done(null, token);
-        }
-      });
-
-      try {
-
-        // Inbox
-
-        Datum = this.DBEmail.Emaildatum.format('YYYY-MM-DD');
-        data  = await graphClient.api('/me/mailFolders/' + folderid + '/messages?$filter=receivedDateTime ge ' + Datum + 'T01:00:00Z')
-          .select('id, subject, isRead, sentDateTime, receivedDateTime, from, sender, toRecipients, ccRecipients, hasAttachments')
-          .count().get();
-
-
-        //  meetingCancelled
-        //  meetingRequest
-        // &meetingMessageType ne meetingRequest
-        // , meetingMessageType, meetingRequestType, meetingRequestType
-
-        //
-      }
-      catch(error: any) {
-
-        debugger;
-
-        return error;
-      }
-
-      if(!lodash.isUndefined(data['@odata.count'])) count = data['@odata.count'];
-
-      if(!lodash.isUndefined(data.value)) {
-
-        Valueliste.push(data.value);
-
-        if(!lodash.isUndefined(data['@odata.nextLink'])) {
-
-          do {
-
-            nexturl = data['@odata.nextLink'];
-            data    = await graphClient.api(nexturl).get();
-
-            if(!lodash.isUndefined(data.value)) Valueliste.push(data.value);
-          }
-          while(!lodash.isUndefined(data['@odata.nextLink']));
-
-          if(!lodash.isUndefined(data.value)) Valueliste.push(data.value);
-        }
-      }
-
-      for(let Liste of Valueliste) {
-
-        for(let Eintrag of Liste) {
-
-          Datum       = Eintrag.receivedDateTime.replace('T', ' ');
-          Datum       = Datum.replace('Z', '');
-          Empfangstag = moment(Datum);
-
-          if(!lodash.isUndefined(Eintrag.from)) {
-
-            if(lodash.isUndefined(lodash.find(Emailliste, {id: Eintrag.id}))) {
-
-              Eintrag.Zeitstempel = Empfangstag.valueOf();
-              Eintrag.Zeitstring  = Empfangstag.format('DD.MM.YYYY HH:mm');
-              Eintrag.subject     = Eintrag.subject.replace('🏢', '');
-
-              if(Eintrag.subject.indexOf('anythingbutnothing') !== -1) {
-
-
-              }
-
-              Emailliste.push(Eintrag);
-            }
-          }
-          else {
-
-
-          }
-        }
-      }
-
-      // debugger;
-
-      Emailliste = lodash.filter(Emailliste, (Eintrag: Outlookemailstruktur) => {
-
-        return lodash.isUndefined(Eintrag['@odata.type']);
-      });
-
-
-      return Emailliste;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Graph', 'GetOwnEmailliste', this.Debug.Typen.Service);
-    }
-  }
-
-  public async GetOtherUserinfo(userid: string): Promise<Graphuserstruktur> {
-
-    try {
-
-      let OtherUser: Graphuserstruktur;
-      let token = await this.AuthService.RequestToken('user.read.all');
-
-      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
-
-          done(null, token);
-        }
-      });
-
-      return new Promise <Graphuserstruktur>((resolve, reject) => {
-
-        if(token !== null) {
-
-          graphClient.api('/users/' + userid).select('*').get().then((result: User) => {
-
-            OtherUser = <Graphuserstruktur>result;
-
-            resolve(OtherUser);
-
-          }).catch((error: GraphError) => {
-
-            switch (error.code) {
-
-              case "InvalidAuthenticationToken":
-
-                break;
-
-              default:
-
-                debugger;
-
-                break;
-            }
-
-            reject(error);
-          });
-        }
-        else {
-
-          reject(false);
-        }
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Graph', 'GetOwnUserinfo', this.Debug.Typen.Service);
-    }
-  }
-
-  public async GetOtherTeamsinfo(teamsid: string): Promise <Teamsstruktur> {
-
-    try {
-
-      let OtherTeams: Teamsstruktur;
-      let token = await this.AuthService.RequestToken('team.readbasic.all');
-
-      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
-
-          done(null, token);
-        }
-      });
-
-      debugger;
-
-      return new Promise <Teamsstruktur>((resolve, reject) => {
-
-        if(token !== null) {
-
-          graphClient.api('/teams/' + teamsid).get().then((result: User) => {
-
-            OtherTeams = <Teamsstruktur>result;
-
-            debugger;
-
-            resolve(OtherTeams);
-
-          }).catch((error: GraphError) => {
-
-            debugger;
-
-            switch (error.code) {
-
-              case "InvalidAuthenticationToken":
-
-                break;
-
-              default:
-
-                debugger;
-
-                break;
-            }
-
-            reject(error);
-          });
-        }
-        else {
-
-          reject(false);
-        }
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Graph', 'GetOwnUserinfo', this.Debug.Typen.Service);
-    }
-  }
-
-  public async ReadDrives(): Promise<any> {
-
-    try {
-
-      let data: any;
-      let IDListe: string[] = [];
-      let FolderID: string = 'b!XZkHnfB1aUS9CAl7ACx42jN1tORayIZBnpNxgMZWN2yIJmx4iz54T59g6GswaFyl';
-
-      let token = await this.AuthService.RequestToken('Files.ReadWrite.All');
-
-      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
-
-          done(null, token);
-        }
-      });
-
-      // GET /me/joinedTeams
-      // GET /me/memberOf
-
-      if(token !== null) {
-
-        data = await graphClient.api('/drives/' + FolderID + '/items/root/children').get();
-
-        data.value.forEach((Eintrag) => {
-
-          if(Eintrag.name === 'Dokumente') {
-
-            debugger;
-          }
-          console.log(Eintrag.name);
-        });
-        // debugger;
-      }
-      else {
-
-        return Promise.reject(false);
-      }
-
-    } catch (error) {
-
-      debugger;
-
-      this.Debug.ShowErrorMessage(error, 'Graph', 'ReadDrives', this.Debug.Typen.Service);
-    }
-  }
-
-  public async GetSiteRootfilelist(showfiles: boolean) {
-
-    try {
-
-      let token = await this.AuthService.RequestToken('user.read');
-      let Eintrag: Teamsfilesstruktur;
-      let Dateiliste: Teamsfilesstruktur[] = [];
-      let Verzeichnisliste: Teamsfilesstruktur[] = [];
-
-      this.TeamsRootfilelist     = [];
-      this.TeamsCurrentfilelist  = [];
-      this.TeamsSubdirectorylist = [];
-
-      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
-
-          done(null, token);
-        }
-      });
-
-      return new Promise((resolve, reject) => {
-
-        if(token !== null) {
-
-          graphClient.api('/sites/' + this.BAESiteID + '/drive/items/root/children').get().then((result: any) => {
-
-
-            this.TeamsRootfilelist     = [];
-            this.TeamsCurrentfilelist  = [];
-            this.TeamsSubdirectorylist = [];
-
-            for(Eintrag of result.value) {
-
-              if(lodash.isUndefined(Eintrag.file)) {
-
-                Eintrag.isfolder = true;
-
-                Verzeichnisliste.push(Eintrag);
-              }
-              else {
-
-                Eintrag.isfolder = false;
-
-                Dateiliste.push(Eintrag);
-              }
-            }
-
-            Verzeichnisliste.sort((a: Teamsfilesstruktur, b: Teamsfilesstruktur) => {
-
-              if (a.name < b.name) return -1;
-              if (a.name > b.name) return  1;
-
-              return 0;
-            });
-
-            Dateiliste.sort((a: Teamsfilesstruktur, b: Teamsfilesstruktur) => {
-
-              if (a.name < b.name) return -1;
-              if (a.name > b.name) return  1;
-
-              return 0;
-            });
-
-            if(showfiles === false) {
-
-              this.TeamsRootfilelist = Verzeichnisliste;
-            }
-            else {
-
-              this.TeamsRootfilelist = Verzeichnisliste;
-              this.TeamsRootfilelist = this.TeamsRootfilelist.concat(Dateiliste);
-            }
-
-            this.TeamsCurrentfilelist = this.TeamsRootfilelist;
-
-            resolve(true);
-
-          }).catch((error: GraphError) => {
-
-            debugger;
-
-            reject(error);
-          });
-        }
-        else {
-
-          reject(false);
-        }
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Graph', 'GetSiteRootfilelist', this.Debug.Typen.Service);
-    }
-  }
-
-
-  public async GetSiteThumbnailContent(thumb: Thumbnailstruktur, size: string) : Promise<string> {
-
-    try {
-
-      let token = await this.AuthService.RequestToken('user.read');
-
-      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
-
-          done(null, token);
-        }
-      });
-
-      let Url = '/sites/' + this.BAESiteID + '/drive/items/' + thumb.id + '/thumbnails/0/' + size + '/content';
-
-      let Image        = await graphClient.api(Url).get();
-      let Imagebuffuer = await Image.arrayBuffer();
-
-      let binary = '';
-      let bytes  = new Uint8Array( Imagebuffuer );
-      let len    = bytes.byteLength;
-
-      for (let i = 0; i < len; i++) {
-
-        binary += String.fromCharCode( bytes[ i ] );
-      }
-
-      return window.btoa( binary );
-    }
-    catch(error) {
-
-      this.Debug.ShowErrorMessage(error, 'Graph', 'GetSiteThumbnailContent', this.Debug.Typen.Service);
-
-      return Promise.resolve(null);
-    }
-  }
-
-  public async GetSiteThumbnail(file: Teamsfilesstruktur) : Promise<Thumbnailstruktur> {
-
-    try {
-
-      let token = await this.AuthService.RequestToken('user.read');
-      let Thumb: Thumbnailstruktur;
-
-      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
-
-          done(null, token);
-        }
-      });
-
-      return new Promise <Thumbnailstruktur>((resolve, reject) => {
-
-        if(token !== null) {
-
-          graphClient.api('/sites/' + this.BAESiteID + '/drive/items/' + file.id + '/thumbnails').get().then((result: any) => {
-
-            if(!lodash.isUndefined(result.value)) {
-
-              if(!lodash.isUndefined(result.value[0])) {
-
-                Thumb = {
-
-                  id:        file.id,
-                  weburl:    file.webUrl,
-                  filename:  file.name,
-                  size:      file.size,
-                  mediumurl: result.value[0].medium.url,
-                  largeurl:  result.value[0].large.url,
-                  smallurl:  result.value[0].small.url,
-                  content:   "",
-                  height: {
-
-                    small:  result.value[0].small.height,
-                    medium: result.value[0].medium.height,
-                    large:  result.value[0].medium.large,
-                  },
-                  width: {
-
-                    small:  result.value[0].small.width,
-                    medium: result.value[0].medium.width,
-                    large:  result.value[0].large.width,
-                  }
-                };
-
-                resolve(Thumb);
-
-              } else {
-
-                resolve(null);
-              }
-            }
-            else {
-
-              resolve(null);
-            }
-
-          }).catch((error: GraphError) => {
-
-            resolve(null);
-          });
-        }
-        else {
-
-          reject(false);
-        }
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Graph', 'GetSiteThumbnail', this.Debug.Typen.Service);
-    }
-  }
-
-  public RemoveTeamsSubdirectory(file: Teamsfilesstruktur) {
-
-    try {
-
-      let Liste: Teamsfilesstruktur[] = lodash.cloneDeep(this.TeamsSubdirectorylist);
-
-      this.TeamsSubdirectorylist = [];
-
-      for(let Eintrag of Liste) {
-
-        if(Eintrag.id !== file.id) this.TeamsSubdirectorylist.push(file);
-        else break;
-      }
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Graph', 'RemoveTeamsSubdirectory', this.Debug.Typen.Service);
-    }
-  }
-
-  // originalKeywordKind
-
-  // identifierToKeywordKind(identifier)
-
-
-  public RemoveSiteSubdirectory(file: Teamsfilesstruktur) {
-
-    try {
-
-      let Liste: Teamsfilesstruktur[] = lodash.cloneDeep(this.TeamsSubdirectorylist);
-      let Result: Teamsfilesstruktur;
-
-      this.TeamsSubdirectorylist = [];
-
-      for(let Eintrag of Liste) {
-
-        Result = <Teamsfilesstruktur>lodash.find(this.TeamsSubdirectorylist, (eintrag: Teamsfilesstruktur) => {
-
-          return eintrag.id === Eintrag.id;
-        });
-
-        if(lodash.isUndefined(Result)) this.TeamsSubdirectorylist.push(Eintrag);
-
-        if(Eintrag.id === file.id) break;
-      }
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Graph', 'RemoveSiteSubdirectory', this.Debug.Typen.Service);
-    }
-  }
-
+   */
 
   /*
 

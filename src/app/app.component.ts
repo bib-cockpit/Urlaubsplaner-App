@@ -155,7 +155,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
         this.Debug.ShowMessage('Benutzer ist angemeldet: ' + this.AuthService.ActiveUser.username, 'App Component', 'StartApp', this.Debug.Typen.Component);
 
         this.Pool.ShowProgress         = true;
-        this.Pool.MaxProgressValue     = 15;
+        this.Pool.MaxProgressValue     = 8;
         this.Pool.CurrentProgressValue = 0;
 
         try {
@@ -169,7 +169,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
             this.Pool.CurrentProgressValue++;
           }
 
-
           if(this.AuthService.SecurityEnabled === true) {
 
             this.Pool.ProgressMessage = 'Lade eigens Bild';
@@ -179,77 +178,53 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
             this.Pool.CurrentProgressValue++;
           }
 
-          this.Pool.ProgressMessage = 'Lade eigene Outlookkategorien';
-
-          this.Pool.Outlookkatekorien = await this.GraphService.GetOwnOutlookCategories(); // 3
-
-          this.Pool.CurrentProgressValue++;
-
-          this.Pool.ProgressMessage = 'Lade Outlookkategorien';
-
-          await this.GraphService.GetOwnOutlookCategories(); // 3
-
-          this.Pool.CurrentProgressValue++;
-
           this.Pool.ProgressMessage = 'Lade Change Log';
 
-          await this.Pool.ReadChangelogliste();
+          await this.Pool.ReadChangelogliste(); // 1
 
           this.Pool.CurrentProgressValue++;
 
           this.Pool.ProgressMessage = 'Lade Standortliste';
 
-          await this.Pool.ReadStandorteliste(); // 5
+          await this.Pool.ReadStandorteliste(); // 2
 
           this.Pool.CurrentProgressValue++;
 
           this.Pool.ProgressMessage = 'Lade aktuelle Mitarbeiterliste';
 
-          await this.Pool.ReadMitarbeiterliste(); // 6
+          await this.Pool.ReadMitarbeiterliste(); // 3
 
           this.Pool.CurrentProgressValue++;
 
-          /*
+          this.Pool.ProgressMessage = 'Lade Positionenliste';
 
-          this.Pool.ProgressMessage = 'Lade Gesamtprojektliste';
-
-          await this.ProjekteDB.ReadGesamtprojektliste(); // 7
+          await this.Pool.ReadMitarbeiterpositionenliste(); // 4
 
           this.Pool.CurrentProgressValue++;
-
-          this.Pool.ProgressMessage = 'Erstelle Musterprojekt';
-
-          await this.ProjekteDB.AddMusterprojekt(); // 8
-
-
-          this.Pool.CurrentProgressValue++;
-
-           */
 
           this.Pool.ProgressMessage = 'Aktuallisiere Mitarbeiterliste';
 
-          let Liste = await this.GraphService.GetAllUsers(); // 9
+          let Liste = await this.GraphService.GetAllUsers(); // 5
 
           this.Pool.CurrentProgressValue++;
 
           this.Pool.ProgressMessage = 'Lade Bundesländer';
 
-          await this.UrlaubDB.ReadRegionen('DE'); // 4
+          await this.UrlaubDB.ReadRegionen('DE'); // 6
 
           this.Pool.CurrentProgressValue++;
 
           this.Pool.ProgressMessage = 'Lade Ferien Deutschland';
 
-          await this.UrlaubDB.ReadFerien('DE');
+          await this.UrlaubDB.ReadFerien('DE'); // 7
 
           this.Pool.CurrentProgressValue++;
 
           this.Pool.ProgressMessage = 'Lade Ferien Bulgarien';
 
-          await this.UrlaubDB.ReadFerien('BG');
+          await this.UrlaubDB.ReadFerien('BG'); // 8
 
           this.Pool.CurrentProgressValue++;
-
 
           for(let User of Liste) {
 
@@ -358,7 +333,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         if(this.Pool.Mitarbeiterdaten.Planeradministrator === true) {
 
-          Page = this.Const.Pages.HomePage;
+          Page = this.Const.Pages.FiStandortelistePage;
         }
         else {
 

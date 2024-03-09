@@ -7,9 +7,9 @@ import {DatabasePoolService} from "../database-pool/database-pool.service";
 import {Observable} from "rxjs";
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {ConstProvider} from "../const/const";
-import {Meinewochestruktur} from "../../dataclasses/meinewochestruktur";
 import {Graphuserstruktur} from "../../dataclasses/graphuserstruktur";
 import {Urlauzeitspannenstruktur} from "../../dataclasses/urlauzeitspannenstruktur";
+import {Mitarbeiterpositionstruktur} from "../../dataclasses/mitarbeiterpositionstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +17,9 @@ import {Urlauzeitspannenstruktur} from "../../dataclasses/urlauzeitspannenstrukt
 export class DatabaseMitarbeiterService {
 
   public CurrentMitarbeiter: Mitarbeiterstruktur;
-  public CurrentMeinewoche: Meinewochestruktur;
+  public CurrentPosition: Mitarbeiterpositionstruktur;
   private ServerMitarbeiterUrl: string;
+  private ServerMitarbeiterpositionUrl: string;
 
   constructor(private Debug: DebugProvider,
               private http: HttpClient,
@@ -26,10 +27,11 @@ export class DatabaseMitarbeiterService {
               private Pool: DatabasePoolService) {
     try {
 
-      this.ServerMitarbeiterUrl   = this.Pool.CockpitdockerURL + '/mitarbeiter';
-      this.CurrentMeinewoche      = this.GetEmptyMeinewocheeintrag();
+      this.ServerMitarbeiterUrl         = this.Pool.CockpitdockerURL + '/mitarbeiter';
+      this.ServerMitarbeiterpositionUrl = this.Pool.CockpitdockerURL + '/mitarbeiterpositionen';
 
-      // Test
+      this.CurrentMitarbeiter   = null;
+      this.CurrentPosition      = null;
 
     } catch (error) {
 
@@ -181,41 +183,18 @@ export class DatabaseMitarbeiterService {
     }
   }
 
-  public GetEmptyMeinewocheeintrag(): Meinewochestruktur {
+  public GetEmptyMitarbeiterposition() : Mitarbeiterpositionstruktur {
 
     try {
 
       return {
-        ProjektID: "",
-        Projektkey: "",
-        ProjektpunktID: "",
-        Kalenderwoche: moment().isoWeek(),
 
-        Montagsstunden:    0,
-        Dienstagsstunden:  0,
-        Mittwochsstunden:  0,
-        Donnerstagsstunden:0,
-        Freitagsstunden:   0,
-        Samstagsstunden:   0,
-
-        Montagsminuten:     30,
-        Dienstagsminuten:   30,
-        Mittwochsminuten:   30,
-        Donnerstagsminuten: 30,
-        Freitagsminuten:    30,
-        Samstagsminuten:    30,
-
-        Dienstagseinsatz:   false,
-        Donnerstagseinsatz: false,
-        Freitagseinsatz:    false,
-        Mittwochseinsatz:  false,
-        Montagseinsatz:     false,
-        Samstagseinsatz:    false,
+        _id: null,
+        Bezeichnung: ''
       };
-
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'GetEmptyMeinewoche', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'GetEmptyMitarbeiterposition', this.Debug.Typen.Service);
     }
   }
 
@@ -229,6 +208,7 @@ export class DatabaseMitarbeiterService {
 
         _id: null,
         UserID: null,
+        PositionID: null,
         Anrede: this.Const.NONE,
         Urlaub: 30,
         Location: "",
@@ -247,6 +227,8 @@ export class DatabaseMitarbeiterService {
         Deleted: false,
         Planeradministrator: false,
         Homeofficefreigaben: false,
+        Homeofficefreigabestandorte: [],
+        Urlaubsfreigabeorte: [],
         Urlaubsfreigaben: false,
         Favoritenliste: [],
         Meintagliste: [],
@@ -366,6 +348,85 @@ export class DatabaseMitarbeiterService {
     }
   }
 
+
+  public GetPositionsbezeichnung(id: string): string {
+
+    try {
+
+      let Mitarbeiterposition: Mitarbeiterpositionstruktur;
+
+      if(id !== null) {
+
+        Mitarbeiterposition = lodash.find(this.Pool.Mitarbeiterpositionenliste, {_id: id});
+
+        if(!lodash.isUndefined(Mitarbeiterposition)) {
+
+          return Mitarbeiterposition.Bezeichnung;
+        }
+
+      }
+      else return 'Unbekannt';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Mitarbeiter', 'GetPosition', this.Debug.Typen.Service);
+    }
+  }
+
+  public UpdateMitarbeiterposition(mitarbeiterposition: Mitarbeiterpositionstruktur) {
+
+    try {
+
+      let Observer: Observable<any>;
+      let Params = new HttpParams();
+      let Merker: Mitarbeiterpositionstruktur;
+
+      delete mitarbeiterposition.__v;
+
+      Params.set('id', mitarbeiterposition._id);
+
+      return new Promise<any>((resove, reject) => {
+
+        // PUT für update
+
+        Observer = this.http.put(this.ServerMitarbeiterpositionUrl, mitarbeiterposition);
+
+        Observer.subscribe({
+
+          next: (ne) => {
+
+            Merker = ne.Mitarbeiterposition;
+          },
+          complete: () => {
+
+            if(Merker !== null) {
+
+              this.CurrentPosition = Merker;
+
+              this.UpdateMitarbeiterpositionliste(this.CurrentPosition);
+              this.Pool.MitarbeiterpositionenlisteChanged.emit();
+            }
+            else {
+
+              reject(new Error('Mitarbeiterposition auf Server nicht gefunden.'));
+            }
+
+            resove(true);
+
+          },
+          error: (error: HttpErrorResponse) => {
+
+            reject(error);
+          }
+        });
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'UpdateMitarbeiterposition', this.Debug.Typen.Page);
+    }
+  }
+
   public UpdateMitarbeiterUrlaub(mitarbeiter: Mitarbeiterstruktur) {
 
     try {
@@ -464,6 +525,40 @@ export class DatabaseMitarbeiterService {
     }
   }
 
+  private UpdateMitarbeiterpositionliste(mitarbeiterposition: Mitarbeiterpositionstruktur) {
+
+    try {
+
+      let Index: number;
+
+      Index = lodash.findIndex(this.Pool.Mitarbeiterpositionenliste, {_id : mitarbeiterposition._id});
+
+      if(Index !== -1) {
+
+        this.Pool.Mitarbeiterpositionenliste[Index] = mitarbeiterposition; // aktualisieren
+
+        this.Debug.ShowMessage('Mitarbeiterliste updated: ' + mitarbeiterposition.Bezeichnung, 'Database Mitarbeiter', 'UpdateMitarbeiterpositionliste', this.Debug.Typen.Service);
+      }
+      else {
+
+        this.Debug.ShowMessage('Mitarbeiterposition nicht gefunden -> neuen Mitarbeiter hinzufügen', 'Database Mitarbeiter', 'UpdateMitarbeiterpositionliste', this.Debug.Typen.Service);
+
+        this.Pool.Mitarbeiterpositionenliste.push(mitarbeiterposition); // neuen
+      }
+
+      this.Pool.Mitarbeiterpositionenliste.sort((a: Mitarbeiterpositionstruktur, b: Mitarbeiterpositionstruktur) => {
+
+        if (a.Bezeichnung < b.Bezeichnung) return -1;
+        if (a.Bezeichnung > b.Bezeichnung) return 1;
+        return 0;
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'UpdateMitarbeiterpositionliste', this.Debug.Typen.Service);
+    }
+  }
+
   public AddMitarbeiter(mitarbeiter: Mitarbeiterstruktur) {
 
     try {
@@ -475,7 +570,6 @@ export class DatabaseMitarbeiterService {
 
         // POST für neuen Eintrag
 
-        debugger;
 
         console.log('POST new Mitarbeiter:');
         console.log(mitarbeiter);
@@ -509,6 +603,52 @@ export class DatabaseMitarbeiterService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'AddMitarbeiter', this.Debug.Typen.Service);
+    }
+  }
+
+  public AddMitarbeiterposition(mitarbeiterposition: Mitarbeiterpositionstruktur) {
+
+    try {
+
+      let Observer: Observable<any>;
+      let Mitarbeiterposition: Mitarbeiterpositionstruktur;
+
+      return new Promise((resolve, reject) => {
+
+        // POST für neuen Eintrag
+
+        console.log('POST new Mitarbeiterposition:');
+        console.log(mitarbeiterposition);
+
+        Observer = this.http.post(this.ServerMitarbeiterpositionUrl, mitarbeiterposition);
+
+        Observer.subscribe({
+
+          next: (result) => {
+
+            Mitarbeiterposition = result.Mitarbeiterposition;
+
+          },
+          complete: () => {
+
+
+            this.UpdateMitarbeiterpositionliste(Mitarbeiterposition);
+            this.Pool.MitarbeiterpositionenlisteChanged.emit();
+
+            resolve(Mitarbeiterposition);
+
+          },
+          error: (error: HttpErrorResponse) => {
+
+            reject(error);
+          }
+        });
+
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'AddMitarbeiterposition', this.Debug.Typen.Service);
     }
   }
 
@@ -605,6 +745,50 @@ export class DatabaseMitarbeiterService {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Standorte', 'DeleteMitarbeiter', this.Debug.Typen.Service);
+    }
+  }
+
+  GetHomeofficefreigeberliste(_id: string): Mitarbeiterstruktur[] {
+
+    try {
+
+      let Freigeberliste: Mitarbeiterstruktur[] = lodash.filter(this.Pool.Mitarbeiterliste, (mitarbeiter: Mitarbeiterstruktur) => {
+
+        return mitarbeiter.Homeofficefreigaben === true;
+      });
+
+      Freigeberliste = lodash.filter(Freigeberliste, (mitarbeiter: Mitarbeiterstruktur) => {
+
+        return mitarbeiter.Homeofficefreigabestandorte.indexOf(_id) !== -1;
+      });
+
+      return Freigeberliste;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'GetHomeofficefreigeberliste', this.Debug.Typen.Service);
+    }
+  }
+
+  GetUrlausbsfreigeberliste(_id: string): Mitarbeiterstruktur[] {
+
+    try {
+
+      let Freigeberliste: Mitarbeiterstruktur[] = lodash.filter(this.Pool.Mitarbeiterliste, (mitarbeiter: Mitarbeiterstruktur) => {
+
+        return mitarbeiter.Urlaubsfreigaben === true;
+      });
+
+      Freigeberliste = lodash.filter(Freigeberliste, (mitarbeiter: Mitarbeiterstruktur) => {
+
+        return mitarbeiter.Urlaubsfreigabeorte.indexOf(_id) !== -1;
+      });
+
+      return Freigeberliste;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'GetUrlausbsfreigeberliste', this.Debug.Typen.Component);
     }
   }
 }

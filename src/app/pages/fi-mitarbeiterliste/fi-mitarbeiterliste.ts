@@ -5,7 +5,6 @@ import {ToolsProvider} from "../../services/tools/tools";
 import {ConstProvider} from "../../services/const/const";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {AlphabetComponent} from "../../components/alphabet/alphabet";
-import {IonSearchbar} from "@ionic/angular";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 import {Subscription} from "rxjs";
 import {PageHeaderComponent} from "../../components/page-header/page-header";
@@ -16,8 +15,6 @@ import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/da
 import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
 import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
 import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
-import {Fachbereiche} from "../../dataclasses/fachbereicheclass";
-import {Bautagebuchstruktur} from "../../dataclasses/bautagebuchstruktur";
 
 @Component({
   selector: 'fi-mitarbeiterliste-page',
@@ -55,6 +52,14 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
   public ShowMeOnly: boolean;
   public ShowArchivierte: boolean;
   public ShowAktuelle: boolean;
+  public Freigabefiltervarianten = {
+
+    Keiner:              'keiner',
+    Administrator:       'Administrator',
+    Urlaubsfreigaben:    'Urlaubsfreigaben',
+    Homeofficefreigaben: 'Homeofficefreigaben'
+  };
+  public Freigabefilter: string;
 
   constructor(public Basics: BasicsProvider,
               public Debug: DebugProvider,
@@ -88,6 +93,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
       this.ShowMeOnly      = false;
       this.ShowArchivierte = false;
       this.ShowAktuelle    = true;
+      this.Freigabefilter  = this.Freigabefiltervarianten.Keiner;
 
     }
     catch (error) {
@@ -334,9 +340,33 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
             Liste = [];
           }
-
         }
 
+        // Freigabefilter
+
+        if(this.Freigabefilter !== this.Freigabefiltervarianten.Keiner) {
+
+          switch (this.Freigabefilter) {
+
+            case this.Freigabefiltervarianten.Administrator:
+
+              Liste = lodash.filter(Liste, {Planeradministrator: true});
+
+              break;
+
+            case this.Freigabefiltervarianten.Urlaubsfreigaben:
+
+              Liste = lodash.filter(Liste, { Urlaubsfreigaben: true});
+
+              break;
+
+            case this.Freigabefiltervarianten.Homeofficefreigaben:
+
+              Liste = lodash.filter(Liste, { Homeofficefreigaben: true});
+
+              break;
+          }
+        }
 
         // Standortfilter anwenden
 
@@ -492,6 +522,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
         Index++;
       }
 
+
       this.Auswahlindex = lodash.findIndex(this.Pool.Standorteliste, {_id: this.DB.CurrentMitarbeiter.StandortID});
 
     } catch (error) {
@@ -524,9 +555,9 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
           break;
 
-        case this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Editor_Fachbereich:
+        case this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Liste_Position:
 
-          this.DB.CurrentMitarbeiter.Fachbereich = data;
+          this.DB.CurrentMitarbeiter.PositionID = data;
 
           break;
 
@@ -555,37 +586,6 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
-    }
-  }
-
-  FachbereichClickedHandler() {
-
-    try {
-
-
-      this.ShowAuswahl  = true;
-      this.Auswahltitel = 'Fachbereich festlegen';
-      this.Auswahlliste = [];
-
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Editor_Fachbereich;
-
-      this.Auswahlliste.push({Index: 0, FirstColumn: this.Pool.Fachbereich.Unbekannt.Bezeichnung,      SecoundColumn: this.Pool.Fachbereich.Unbekannt.Kuerzel,      Data: this.Pool.Fachbereich.Unbekannt.Key});
-      this.Auswahlliste.push({Index: 1, FirstColumn: this.Pool.Fachbereich.Elektrotechnik.Bezeichnung, SecoundColumn: this.Pool.Fachbereich.Elektrotechnik.Kuerzel, Data: this.Pool.Fachbereich.Elektrotechnik.Key});
-      this.Auswahlliste.push({Index: 2, FirstColumn: this.Pool.Fachbereich.HLS.Bezeichnung,            SecoundColumn: this.Pool.Fachbereich.HLS.Kuerzel,            Data: this.Pool.Fachbereich.HLS.Key});
-      this.Auswahlliste.push({Index: 3, FirstColumn: this.Pool.Fachbereich.HLSE.Bezeichnung,               SecoundColumn: this.Pool.Fachbereich.HLSE.Kuerzel,            Data: this.Pool.Fachbereich.HLSE.Key});
-      this.Auswahlliste.push({Index: 4, FirstColumn: this.Pool.Fachbereich.H.Bezeichnung,              SecoundColumn: this.Pool.Fachbereich.H.Kuerzel,              Data: this.Pool.Fachbereich.H.Key});
-      this.Auswahlliste.push({Index: 5, FirstColumn: this.Pool.Fachbereich.L.Bezeichnung,              SecoundColumn: this.Pool.Fachbereich.L.Kuerzel,              Data: this.Pool.Fachbereich.L.Key});
-      this.Auswahlliste.push({Index: 6, FirstColumn: this.Pool.Fachbereich.S.Bezeichnung,              SecoundColumn: this.Pool.Fachbereich.S.Kuerzel,              Data: this.Pool.Fachbereich.S.Key});
-      this.Auswahlliste.push({Index: 7, FirstColumn: this.Pool.Fachbereich.K.Bezeichnung,              SecoundColumn: this.Pool.Fachbereich.K.Kuerzel,              Data: this.Pool.Fachbereich.K.Key});
-      this.Auswahlliste.push({Index: 8, FirstColumn: this.Pool.Fachbereich.MSR.Bezeichnung,            SecoundColumn: this.Pool.Fachbereich.MSR.Kuerzel,            Data: this.Pool.Fachbereich.MSR.Key});
-
-      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.DB.CurrentMitarbeiter.Fachbereich} );
-
-      if(this.Auswahlindex === -1) this.Auswahlindex = 0;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'StandortClickedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -794,5 +794,92 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'ShowAktuelleChanged', this.Debug.Typen.Page);
     }
 
+  }
+
+  GetStandortliste(Urlaubsfreigabeorte: string[]): string {
+
+    try {
+
+      let Standort: Standortestruktur;
+      let Standortliste: Standortestruktur[] = [];
+      let Text: string = '';
+      let Index: number = 0;
+
+
+      for(let id of Urlaubsfreigabeorte) {
+
+        Standort = lodash.find(this.Pool.Standorteliste, {_id: id});
+
+        if(!lodash.isUndefined(Standort)) Standortliste.push(Standort);
+      }
+
+      Standortliste.sort((a: Standortestruktur, b: Standortestruktur) => {
+
+        if (a.Ort < b.Ort) return -1;
+        if (a.Ort > b.Ort) return 1;
+
+        return 0;
+      });
+
+      for(Standort of Standortliste) {
+
+        Text += Standort.Ort.substring(0, 3).toUpperCase();
+
+        if(Index < Standortliste.length - 1) Text += ', ';
+
+        Index++;
+      }
+
+      return Text;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'GetStandortliste', this.Debug.Typen.Page);
+    }
+  }
+
+  FreigabefilterChanged(event: any) {
+
+    try {
+
+      this.Freigabefilter = event.detail.value;
+
+      this.PrepareDaten();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'FreigabefilterChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  PositionClickedEventHandler() {
+
+    try {
+
+      let Index = 0;
+
+      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Liste_Position;
+
+      this.ShowAuswahl   = true;
+      this.Auswahltitel  = 'Possition festlegen';
+      this.Auswahlliste  = [];
+
+      for(let Eintrag of this.Pool.Mitarbeiterpositionenliste) {
+
+        this.Auswahlliste.push({ Index: Index, FirstColumn: Eintrag.Bezeichnung, SecoundColumn: '', Data: Eintrag._id });
+        Index++;
+      }
+
+      debugger;
+
+
+      this.Auswahlindex = lodash.findIndex(this.Pool.Mitarbeiterpositionenliste, {_id: this.DB.CurrentMitarbeiter.PositionID});
+      this.Auswahlindex++;
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'PositionClickedEventHandler', this.Debug.Typen.Page);
+    }
   }
 }

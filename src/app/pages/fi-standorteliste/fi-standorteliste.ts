@@ -16,6 +16,8 @@ import * as lodash from "lodash-es";
 import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
 import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
 import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
+import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
+import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
 
 @Component({
   selector: 'fi-standorteliste-page',
@@ -56,6 +58,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
               public Tools: ToolsProvider,
               public Const: ConstProvider,
               public DB: DatabaseStandorteService,
+              public DBMitarbeiter: DatabaseMitarbeiterService,
               private DBUrlaub: DatabaseUrlaubService,
               public Auswahlservice: AuswahlDialogService,
               public  Pool: DatabasePoolService) {
@@ -506,6 +509,34 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Standorteliste', 'KonfessionClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  CheckMitarbeiterIsStandortUrlaubsfreigabe(id: string, Standort: Standortestruktur): boolean {
+
+    try {
+
+      let Index: number = Standort.Urlaubfreigabepersonen.indexOf(id);
+
+      return Index !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'CheckMitarbeiterIsStandortUrlaubsfreigabe', this.Debug.Typen.Page);
+    }
+  }
+
+  CheckMitarbeiterIsStandortHomeofficefreigabe(id: string, Standort: Standortestruktur): boolean {
+
+    try {
+
+      let Index: number = Standort.Homeofficefreigabepersonen.indexOf(id);
+
+      return Index !== -1;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Standorteliste', 'CheckMitarbeiterIsStandortHomeofficefreigabe', this.Debug.Typen.Page);
     }
   }
 }

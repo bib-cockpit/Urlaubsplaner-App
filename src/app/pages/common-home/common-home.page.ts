@@ -18,8 +18,6 @@ import {
   DatabaseMitarbeitersettingsService
 } from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
-import {Projektestruktur} from "../../dataclasses/projektestruktur";
-import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
 import {environment} from "../../../environments/environment";
 
 

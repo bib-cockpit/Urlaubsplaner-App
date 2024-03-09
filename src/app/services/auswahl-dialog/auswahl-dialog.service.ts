@@ -32,6 +32,7 @@ export class AuswahlDialogService {
     Mitarbeiter_Editor_Anrede:                         'Mitarbeiter_Editor_Anrede',
     Mitarbeiter_Editor_Urlaub:                         'Mitarbeiter_Editor_Urlaub',
     Mitarbeiter_Liste_Standortfilter:                  'Mitarbeiter_Liste_Standortfilter',
+    Mitarbeiter_Liste_Position:                        'Mitarbeiter_Liste_Position',
 
     Aufgabenliste_ZustaendigExtern:                    'Aufgabenliste_ZustaendigExtern',
     Aufgabenliste_ZustaendigIntern:                    'Aufgabenliste_ZustaendigIntern',

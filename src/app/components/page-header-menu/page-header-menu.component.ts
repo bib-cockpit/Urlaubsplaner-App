@@ -26,10 +26,6 @@ import {HttpErrorResponse} from "@angular/common/http";
 import moment, {Moment} from "moment";
 import {DatabaseMitarbeitersettingsService} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {Graphservice} from "../../services/graph/graph";
-import {DatabaseOutlookemailService} from "../../services/database-email/database-outlookemail.service";
-import {Fachbereichestruktur} from "../../dataclasses/fachbereicheclass";
-import {Aufgabenansichtstruktur} from "../../dataclasses/aufgabenansichtstruktur";
-import {Festlegungskategoriestruktur} from "../../dataclasses/festlegungskategoriestruktur";
 import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
 import {environment} from "../../../environments/environment";
 
@@ -97,7 +93,6 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public Auswahlservice: AuswahlDialogService,
               public  DBStandort: DatabaseStandorteService,
-              public DBEmail: DatabaseOutlookemailService,
               public DBUrlaub: DatabaseUrlaubService,
               public GraphService: Graphservice,
               public  AuthService: DatabaseAuthenticationService,
@@ -187,31 +182,6 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
-  ProjektsortierungChangedHandler(event: { status: boolean; index: number; event: any }) {
-
-    try {
-
-      this.DBEmail.Projektsortierung = event.status;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ProjektsortierungChangedHandler', this.Debug.Typen.Component);
-    }
-  }
-
-  ShowUngelesenCheckChanged(event: { status: boolean; index: number; event: any }) {
-
-    try {
-
-      this.DBEmail.ShowUngelesenOnly = event.status;
-
-      this.ShowUngelesenOnlyChanged.emit();
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'ShowUngelesenCheckChanged', this.Debug.Typen.Component);
-    }
-  }
 
   async ngAfterViewInit() {
 
@@ -967,31 +937,6 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
-  GetMailDatum(): any {
-
-    try {
-
-      return this.DBEmail.Emaildatum;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'GetMailDatum', this.Debug.Typen.Component);
-    }
-  }
-
-  EmailDatumChangedHandler(datum: moment.Moment) {
-
-    try {
-
-      this.DBEmail.Emaildatum = datum.clone();
-
-      this.EmailDatumChanged.emit();
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Page Header Menu', 'EmailDatumChangedHandler', this.Debug.Typen.Component);
-    }
-  }
 
   GetDatumtext(tag: string): string {
 

@@ -15,6 +15,8 @@ export interface Standortestruktur  {
     Land: string;
     Bundesland: string;
     Konfession: string;
+    Homeofficefreigabepersonen: string[];
+    Urlaubfreigabepersonen: string[];
     Filtered?: boolean;
     Text_A?: string;
     Text_B?: string;

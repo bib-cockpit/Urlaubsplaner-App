@@ -8,6 +8,7 @@ export interface Mitarbeiterstruktur  {
     _id: string;
     UserID: string;
     StandortID:  string;
+    PositionID: string;
     Anrede: string;
     Urlaub: number;
     Jobtitel:   string;
@@ -27,6 +28,9 @@ export interface Mitarbeiterstruktur  {
     Planeradministrator: boolean;
     Urlaubsfreigaben:    boolean;
     Homeofficefreigaben: boolean;
+    Homeofficefreigabestandorte: string[];
+    Urlaubsfreigabeorte:         string[];
+
 
     Meintagliste:    Meintagstruktur[];
     Meinewocheliste: Meinewochestruktur[];
