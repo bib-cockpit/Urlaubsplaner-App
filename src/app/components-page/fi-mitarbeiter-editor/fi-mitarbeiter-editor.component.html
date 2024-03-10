@@ -44,14 +44,6 @@
           <ng-container *ngIf="Bereich === Bereiche.Allgemein">
             <ion-grid *ngIf="DB.CurrentMitarbeiter">
               <ion-row>
-                <ion-col [size]="Tools.GetButtonvalueSize()">
-                  <input-clone  [Enabled]="false" [Clickable]="true" [Value]="DB.CurrentMitarbeiter.Fachbereich" [DisabledColor]="'gray'"   Titel="Fachbereich"></input-clone>
-                </ion-col>
-                <ion-col [size]="Tools.GetButtonvalueSize()">
-                  <input-clone [(Value)]="DB.CurrentMitarbeiter.Jobtitel" [Required]="true" [MinLength]="3" [MaxLength]="100"  Titel="Jobtitel" (TextChanged)="TextChanged($event)"></input-clone>
-                </ion-col>
-              </ion-row>
-              <ion-row>
                 <ion-col>
                   <ion-text color="baeblau"><b>Mitarbeiter</b></ion-text>
                 </ion-col>

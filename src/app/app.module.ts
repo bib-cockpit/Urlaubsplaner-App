@@ -46,6 +46,10 @@ const clientdockerregistration: string = '0caad6ac-8087-46ce-99ca-690c083121a8';
 // Benutzername: peter.hornburger@b-a-e.eu
 // Passwort:     Spekyland4##
 
+// Azure Account
+// Benutzername: urlaubsplanung@-a-e-e.eu
+// Passwort:     Q@699025237410ut
+
 // AZURE MOngo DB
 
 // Collection  Indexes
