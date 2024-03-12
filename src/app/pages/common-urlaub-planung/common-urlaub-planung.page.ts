@@ -25,6 +25,7 @@ import {Urlaubprojektbeteiligtestruktur} from "../../dataclasses/urlaubprojektbe
 import {ToolsProvider} from "../../services/tools/tools";
 import {cloneDeep} from "lodash-es";
 import {Homeofficezeitspannenstruktur} from "../../dataclasses/homeofficezeitspannenstruktur";
+import {Standortestruktur} from "../../dataclasses/standortestruktur";
 
 @Component({
   selector: 'common-urlaub-planung-page',
@@ -114,14 +115,26 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit(): void {
+  public ionViewDidEnter() {
 
     try {
 
       this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
 
+      this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
+
       this.Legendebreite = 400;
-      this.Legendehoehe  = this.Basics.InnerContenthoehe + 20;
+      this.Legendehoehe  = this.Basics.InnerContenthoehe;
+    }
+    catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Urlaub Einstellungen Page', 'ionViewDidEnter', this.Debug.Typen.Page);
+    }
+  }
+
+  ngOnInit(): void {
+
+    try {
 
       this.DataSubscription = this.Pool.LoadingAllDataFinished.subscribe(() => {
 
@@ -472,7 +485,6 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'MonatBackButtonClicked', this.Debug.Typen.Page);
     }
-
   }
 
   MonatForwardButtonClicked() {
@@ -828,12 +840,13 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     try {
 
       let Available: boolean = false;
+      let Standort: Standortestruktur = lodash.find(this.Pool.Standorteliste, {_id: this.DB.CurrentMitarbeiter.StandortID});
 
       if(this.DB.CurrentUrlaub !== null) {
 
         for(let Zeitspanne of this.DB.CurrentUrlaub.Homeofficezeitspannen) {
 
-          if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Geplant && this.DB.CurrentUrlaub.HomeofficefreigeberID !== null) Available = true;
+          if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Geplant && Standort.Homeofficefreigabepersonen.length > 0) Available = true;
         }
       }
 

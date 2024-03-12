@@ -12,14 +12,6 @@ import {DomSanitizer} from "@angular/platform-browser";
 import Cookies from "js-cookie";
 import * as lodash from "lodash-es";
 
-const GRAPH_ENDPOINT          = 'https://graph.microsoft.com/v1.0/me';
-const GRAPH_ENDPOINT_PHOTO    = 'https://graph.microsoft.com/v1.0/me/photo/$value';
-const GRAPH_ENDPOINT_CALENDAR = 'https://graph.microsoft.com/v1.0/me/calendar';
-
-const Keys = {
-
-  AccessToken: 'AccessToken',
-};
 
 @Injectable({
   providedIn: 'root'
@@ -37,9 +29,7 @@ export class DatabaseAuthenticationService {
               private Debug: DebugProvider,
               private authService: MsalService,
               private Const: ConstProvider,
-              private http: HttpClient,
               private router: Router,
-              private domSanitizer: DomSanitizer,
               private MSALService: MsalService
   ) {
     try {
@@ -197,9 +187,17 @@ export class DatabaseAuthenticationService {
 
           if(err) {
 
+            debugger;
+
             switch (err.errorCode) {
 
               case 'login_required':
+
+                this.Login();
+
+                break;
+
+              case 'monitor_window_timeout':
 
                 this.Login();
 
@@ -210,7 +208,6 @@ export class DatabaseAuthenticationService {
           return of(err != null);
 
         })).subscribe((response: AuthenticationResult) => {
-
 
           if(response.accessToken) {
 

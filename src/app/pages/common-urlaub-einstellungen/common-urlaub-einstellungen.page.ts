@@ -22,6 +22,7 @@ import {Ferienstruktur} from "../../dataclasses/ferienstruktur";
 import {Feiertagestruktur} from "../../dataclasses/feiertagestruktur";
 import {Urlaubprojektbeteiligtestruktur} from "../../dataclasses/urlaubprojektbeteiligtestruktur";
 import {Subscription} from "rxjs";
+import {Standortestruktur} from "../../dataclasses/standortestruktur";
 
 @Component({
   selector: 'common-urlaub-einstellungen-page',
@@ -97,11 +98,22 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit(): void {
+  public ionViewDidEnter() {
 
     try {
 
       this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
+    }
+    catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Urlaub Einstellungen Page', 'ionViewDidEnter', this.Debug.Typen.Page);
+    }
+  }
+
+  ngOnInit(): void {
+
+    try {
+
 
       this.DataSubscription = this.Pool.LoadingAllDataFinished.subscribe(() => {
 
@@ -121,6 +133,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
     try {
 
       let Mitarbeiter: Mitarbeiterstruktur;
+      let Standort: Standortestruktur;
 
       this.DB.Init();
       this.DB.CheckSetup();
@@ -143,14 +156,15 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
         return 0;
       });
 
+      Standort = lodash.find(this.Pool.Standorteliste, {_id: this.DB.CurrentMitarbeiter.StandortID});
+
       this.Urlaubsfreigeberliste = [];
 
-      for (let Mitarbeiter of this.Pool.Mitarbeiterliste) {
+      for(let MitarbeterID of Standort.Urlaubfreigabepersonen) {
 
-        if(Mitarbeiter.Urlaubsfreigaben === true) {
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: MitarbeterID});
 
-          this.Urlaubsfreigeberliste.push(Mitarbeiter);
-        }
+        if(!lodash.isUndefined(Mitarbeiter)) this.Urlaubsfreigeberliste.push(Mitarbeiter);
       }
 
       this.Urlaubsfreigeberliste.sort((a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
@@ -162,12 +176,11 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
       this.Homeofficefreigeberliste = [];
 
-      for (let Mitarbeiter of this.Pool.Mitarbeiterliste) {
+      for(let MitarbeterID of Standort.Homeofficefreigabepersonen) {
 
-        if(Mitarbeiter.Homeofficefreigaben === true) {
+        Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: MitarbeterID});
 
-          this.Homeofficefreigeberliste.push(Mitarbeiter);
-        }
+        if(!lodash.isUndefined(Mitarbeiter)) this.Homeofficefreigeberliste.push(Mitarbeiter);
       }
 
       this.Homeofficefreigeberliste.sort((a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
@@ -308,20 +321,6 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
       switch (this.Auswahldialogorigin) {
 
-        case 'Resturlaub':
-
-          this.DB.CurrentUrlaub.Resturlaub = data;
-
-          Urlaub = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
-
-          if (!lodash.isUndefined(Urlaub)) {
-
-            Urlaub.Resturlaub = data;
-
-            this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter);
-          }
-
-          break;
 
         case 'Urlaub':
 
@@ -379,72 +378,6 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
   }
 
 
-  ResturlaubClickedEvent() {
-
-    try {
-
-      this.MitarbeiterMultiselect = false;
-
-      this.Auswahldialogorigin = 'Resturlaub';
-      this.Auswahlhoehe = 600;
-      this.Auswahltitel = 'Resturlaub festlegen';
-      this.Auswahlliste = [];
-
-      this.Auswahlliste.push({Index: 0, FirstColumn: '0,5', SecoundColumn: 'Tage', Data: 0.5});
-      this.Auswahlliste.push({Index: 1, FirstColumn: '1,0', SecoundColumn: 'Tag', Data: 1.0});
-      this.Auswahlliste.push({Index: 2, FirstColumn: '1,5', SecoundColumn: 'Tage', Data: 1.5});
-      this.Auswahlliste.push({Index: 3, FirstColumn: '2,0', SecoundColumn: 'Tage', Data: 2.0});
-      this.Auswahlliste.push({Index: 4, FirstColumn: '2,5', SecoundColumn: 'Tage', Data: 2.5});
-      this.Auswahlliste.push({Index: 5, FirstColumn: '3,0', SecoundColumn: 'Tage', Data: 3.0});
-      this.Auswahlliste.push({Index: 6, FirstColumn: '3,5', SecoundColumn: 'Tage', Data: 3.5});
-      this.Auswahlliste.push({Index: 7, FirstColumn: '4,0', SecoundColumn: 'Tage', Data: 4.0});
-      this.Auswahlliste.push({Index: 8, FirstColumn: '4,5', SecoundColumn: 'Tage', Data: 4.5});
-      this.Auswahlliste.push({Index: 9, FirstColumn: '5,0', SecoundColumn: 'Tage', Data: 5.0});
-      this.Auswahlliste.push({Index: 10, FirstColumn: '5,5', SecoundColumn: 'Tage', Data: 5.5});
-      this.Auswahlliste.push({Index: 11, FirstColumn: '6,0', SecoundColumn: 'Tage', Data: 6.0});
-      this.Auswahlliste.push({Index: 12, FirstColumn: '6,5', SecoundColumn: 'Tage', Data: 6.5});
-      this.Auswahlliste.push({Index: 13, FirstColumn: '7,0', SecoundColumn: 'Tage', Data: 7.0});
-      this.Auswahlliste.push({Index: 14, FirstColumn: '7,5', SecoundColumn: 'Tage', Data: 7.5});
-      this.Auswahlliste.push({Index: 15, FirstColumn: '8,0', SecoundColumn: 'Tage', Data: 8.0});
-      this.Auswahlliste.push({Index: 16, FirstColumn: '8,5', SecoundColumn: 'Tage', Data: 8.5});
-      this.Auswahlliste.push({Index: 17, FirstColumn: '9,0', SecoundColumn: 'Tage', Data: 9.0});
-      this.Auswahlliste.push({Index: 18, FirstColumn: '9,5', SecoundColumn: 'Tage', Data: 9.5});
-      this.Auswahlliste.push({Index: 19, FirstColumn: '10,0', SecoundColumn: 'Tage', Data: 10.0});
-
-      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, (Eintrag: Auswahldialogstruktur) => {
-
-        return Eintrag.Data === this.DB.CurrentUrlaub.Resturlaub;
-      });
-
-      this.ShowAuswahl = true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'ResturlaubClickedEvent', this.Debug.Typen.Page);
-    }
-  }
-
-  GetResturlaub(): string {
-
-    try {
-
-      let Text = this.DB.CurrentUrlaub.Resturlaub.toString();
-
-      if (this.DB.CurrentUrlaub.Resturlaub === 1) {
-
-        Text += ' Tag';
-      } else {
-
-        Text += ' Tage';
-      }
-
-      return Text;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'GetResturlaub', this.Debug.Typen.Page);
-    }
-  }
 
   GetDatum(stempel: number) {
 
@@ -651,62 +584,6 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'GetFreigeberName', this.Debug.Typen.Page);
-    }
-  }
-
-  UrlaubsfreigeberChanged(event: any) {
-
-    try {
-
-      let Urlaub: Urlaubsstruktur;
-
-      Urlaub = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
-
-      if (!lodash.isUndefined(Urlaub)) {
-
-        Urlaub.UrlaubsfreigeberID = event.detail.value;
-        this.DB.CurrentUrlaub     = Urlaub;
-
-        this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
-
-          this.PrepareData();
-        });
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'UrlaubsfreigeberChanged', this.Debug.Typen.Page);
-    }
-  }
-
-  HomeofficefreigeberChanged(event: any) {
-
-    try {
-
-      let Urlaub: Urlaubsstruktur;
-      let Urlaubindex: number;
-
-      Urlaub = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
-
-      if (!lodash.isUndefined(Urlaub)) {
-
-        Urlaub.HomeofficefreigeberID = event.detail.value;
-        this.DB.CurrentUrlaub        = Urlaub;
-
-        Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
-
-        this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
-
-        this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
-
-          this.PrepareData();
-        });
-
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'HomeofficefreigeberChanged', this.Debug.Typen.Page);
     }
   }
 }

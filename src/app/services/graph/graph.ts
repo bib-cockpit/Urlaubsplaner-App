@@ -1191,7 +1191,7 @@ export class Graphservice {
     }
   }
 
-  public async SendMail(Empfaenger: Outlookemailadressstruktur[], Betreff: string, Nachricht: string): Promise<any> {
+  public async SendMail(Empfaengerliste: Outlookemailadressstruktur[], Betreff: string, Nachricht: string): Promise<any> {
 
     try {
 
@@ -1207,7 +1207,7 @@ export class Graphservice {
 
       if(this.Basics.DebugNoExternalEmail === true) {
 
-        for(let Eintrag of Empfaenger) {
+        for(let Eintrag of Empfaengerliste) {
 
           Eintrag.emailAddress.address = 'p.hornburger@gmail.com';
         }
@@ -1222,7 +1222,7 @@ export class Graphservice {
               contentType: 'html',
               content: Nachricht
             },
-            toRecipients: Empfaenger,
+            toRecipients: Empfaengerliste,
           },
           saveToSentItems: 'true'
         };

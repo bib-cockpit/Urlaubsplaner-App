@@ -26,6 +26,7 @@ export class MenueService {
 
     Planung:       'Planung',
     Uebersicht:    'Uebersicht',
+    Gesamtplanung: 'Gesamtplanung',
     Einstellungen: 'Einstellungen',
     Freigaben:     'Freigaben'
   };
@@ -127,6 +128,12 @@ export class MenueService {
             case this.UrlaubMenuebereiche.Uebersicht:
 
               this.Tools.SetRootPage(this.Const.Pages.UrlaubUebersichtPage);
+
+              break;
+
+            case this.UrlaubMenuebereiche.Gesamtplanung:
+
+              this.Tools.SetRootPage(this.Const.Pages.UrlaubsgesamtuebersichtPage);
 
               break;
 

@@ -29,6 +29,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/common-urlaub-uebersicht/common-urlaub-uebersicht.module').then(m => m.CommonUrlaubsuebersichtPageModule),
   },
   {
+    path: 'UrlaubsgesamtuebersichtPage',
+    loadChildren: () => import('./pages/common-urlaub-gesamtuebersicht/common-urlaub-gesamtuebersicht.module').then(m => m.CommonUrlaubsgesamtuebersichtPageModule),
+  },
+  {
     path: 'UrlaubFreigabenPage',
     loadChildren: () => import('./pages/common-urlaub-freigaben/common-urlaub-freigaben.module').then(m => m.CommonUrlaubFreigabenPageModule),
   },

@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import {
+  CommonUrlaubsgesamtuebersichtPageModule
+} from "../../pages/common-urlaub-gesamtuebersicht/common-urlaub-gesamtuebersicht.module";
 
 const _MitarbeiterdatenKeys = {
 
@@ -192,6 +195,7 @@ const _Pages = {
   UrlaubEinstellungenPage: 'UrlaubEinstellungenPage',
   UrlaubUebersichtPage: 'UrlaubUebersichtPage',
   UrlaubFreigabenPage: 'UrlaubFreigabenPage',
+  UrlaubsgesamtuebersichtPage: 'UrlaubsgesamtuebersichtPage',
 
   // Firma
 

@@ -211,6 +211,7 @@ export class DatabaseMitarbeiterService {
         PositionID: null,
         Anrede: this.Const.NONE,
         Urlaub: 30,
+        Resturlaub: 0,
         Location: "",
         Jobtitel: "",
         Vorname: "",
@@ -265,6 +266,12 @@ export class DatabaseMitarbeiterService {
 
     try {
 
+      for(let Mitarbeiter of this.Pool.Mitarbeiterliste) {
+
+        if(Mitarbeiter.StandortID === this.Pool.Mitarbeiterdaten.StandortID) Mitarbeiter.ShowInGesamtuebersicht = true;
+        else Mitarbeiter.ShowInGesamtuebersicht = false;
+      }
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Database Mitarbeiter', 'InitService', this.Debug.Typen.Service);
@@ -286,12 +293,12 @@ export class DatabaseMitarbeiterService {
     try {
 
       let Observer: Observable<any>;
-      let Params = new HttpParams();
       let Merker: Mitarbeiterstruktur;
+      // let Params = new HttpParams();
 
       delete mitarbeiter.__v;
 
-      Params.set('id', mitarbeiter._id);
+      // Params.set('id', mitarbeiter._id);
 
       for(let Urlaubsliste of mitarbeiter.Urlaubsliste) {
 

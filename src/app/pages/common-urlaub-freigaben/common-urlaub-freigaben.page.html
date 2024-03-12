@@ -186,7 +186,7 @@
                           </td>
                         </tr>
                         -->
-                        <tr *ngIf="Urlaub.UrlaubsfreigeberID === null">
+                        <tr *ngIf="this.DB.CountUrlaubsvertretungen(Mitarbeiter) === 0">
                           <td colspan="6" style="color: red;">
                             Bitte Person für Urlaubsfreigaben festlegen
                           </td>
@@ -271,7 +271,7 @@
                       <td style="font-weight: bold;">Anfrage beantworten</td>
                     </tr>
                     <ng-container *ngFor="let Urlaub of Mitarbeiter.Urlaubsliste">
-                      <ng-container *ngIf="Urlaub.Jahr === DB.Jahr && Urlaub.UrlaubsfreigeberID === DB.CurrentMitarbeiter._id">
+                      <ng-container *ngIf="Urlaub.Jahr === DB.Jahr && this.DB.CheckUrlaubsfreigeberAvailable(Mitarbeiter) === true">
                         <ng-container *ngFor="let Zeitspanne of Urlaub.Urlaubzeitspannen">
 
                           <tr *ngIf="DB.CheckUrlaubFreigabeanwortAge(Zeitspanne) === true &&
@@ -383,7 +383,7 @@
                       <td style="font-weight: bold;">Abgelehnt</td>
                     </tr>
                     <ng-container *ngFor="let Urlaub of Mitarbeiter.Urlaubsliste">
-                      <ng-container *ngIf="Urlaub.Jahr === DB.Jahr && Urlaub.HomeofficefreigeberID === DB.CurrentMitarbeiter._id">
+                      <ng-container *ngIf="Urlaub.Jahr === DB.Jahr && DB.CheckHomeofficefreigeberAvailable(Mitarbeiter) === true">
                         <tr *ngIf="CheckHasAnfragen(Urlaub)">
                           <td></td>
                           <td></td>

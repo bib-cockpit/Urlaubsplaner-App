@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren} from '@angular/core';
 import {DebugProvider} from "../../services/debug/debug";
-import {InputCloneComponent} from "../../components/input-clone/input-clone.component";
 import {ToolsProvider} from "../../services/tools/tools";
 import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
@@ -11,11 +10,10 @@ import * as Joi from "joi";
 import {ObjectSchema} from "joi";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {BasicsProvider} from "../../services/basics/basics";
-import {Graphservice} from "../../services/graph/graph";
 import {Teamsstruktur} from "../../dataclasses/teamsstruktur";
-import {LoadingAnimationService} from "../../services/loadinganimation/loadinganimation";
 import * as lodash from "lodash-es";
 import {Mitarbeiterpositionstruktur} from "../../dataclasses/mitarbeiterpositionstruktur";
+import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
 
 @Component({
   selector: 'fi-mitarbeiter-editor',
@@ -37,6 +35,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
   @Output() CancelClickedEvent         = new EventEmitter<any>();
   @Output() OkClickedEvent             = new EventEmitter<any>();
   @Output() ErrorEvent                 = new EventEmitter<any>();
+  @Output() ResturlaubEvent            = new EventEmitter<any>();
 
 
   @Input() Titel: string;
@@ -67,6 +66,7 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
               public Basics: BasicsProvider,
               public Displayservice: DisplayService,
               public StandortDB: DatabaseStandorteService,
+              public UrlaubDB: DatabaseUrlaubService,
               public DB: DatabaseMitarbeiterService) {
 
     try {

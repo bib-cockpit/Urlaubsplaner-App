@@ -297,16 +297,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         this.Pool.ProgressMessage = 'Syncronisiere Gesamtprojektliste';
 
-        /*
-
-        await this.ProjekteDB.SyncronizeGesamtprojektlisteWithTeams(this.GraphService.Teamsliste); // 10
-
-        this.Pool.CurrentProgressValue++;
-
-         */
-
-        // this.ProjekteDB.CheckMyProjektdaten();
-
         this.Pool.Mitarbeitersettings = this.Pool.InitMitarbeitersettings(); // fehlende Settingseintraege initialisieren
 
         this.Pool.ProgressMessage = 'Aktualisiere Mitarbeitereinstellungen';
@@ -329,11 +319,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
         this.MitarbeiterDB.InitService();
         this.StandortDB.InitService();
 
+
         this.Pool.ShowProgress = false;
 
         if(this.Pool.Mitarbeiterdaten.Planeradministrator === true) {
 
-          Page = this.Const.Pages.FiStandortelistePage;
+          Page = this.Const.Pages.UrlaubPlanungPage;
         }
         else {
 
@@ -396,6 +387,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
           this.Menuservice.MainMenuebereich   = this.Menuservice.MainMenuebereiche.Urlaubsplanung;
           this.Menuservice.UrlaubMenuebereich = this.Menuservice.UrlaubMenuebereiche.Uebersicht;
+
+          break;
+
+        case this.Const.Pages.UrlaubsgesamtuebersichtPage:
+
+          this.Menuservice.MainMenuebereich   = this.Menuservice.MainMenuebereiche.Urlaubsplanung;
+          this.Menuservice.UrlaubMenuebereich = this.Menuservice.UrlaubMenuebereiche.Gesamtplanung;
 
           break;
 

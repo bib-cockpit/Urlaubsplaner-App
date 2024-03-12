@@ -879,6 +879,7 @@ export class DatabasePoolService {
               if(lodash.isUndefined(Standort.Urlaubfreigabepersonen))     Standort.Urlaubfreigabepersonen     = [];
             }
 
+
             this.StandortelisteChanged.emit();
 
             resolve(true);
@@ -972,6 +973,11 @@ export class DatabasePoolService {
       if(lodash.isUndefined(mitarbeiter.Urlaub)) {
 
         mitarbeiter.Urlaub = 30;
+      }
+
+      if(lodash.isUndefined(mitarbeiter.Resturlaub)) {
+
+        mitarbeiter.Resturlaub = 0;
       }
 
       if(lodash.isUndefined(mitarbeiter.Urlaubsliste)) {

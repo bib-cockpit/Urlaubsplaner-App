@@ -113,6 +113,11 @@
                   <button-value [Buttontext]="'Urlaubstage'" [Wert_A]="DB.CurrentMitarbeiter.Urlaub + ' Tage'" (ButtonClicked)="UrlaubClickedEvent.emit()"></button-value>
                 </ion-col>
               </ion-row>
+              <ion-row>
+                <ion-col size="6">
+                  <button-value [Buttontext]="'Resturlaub'" [Wert_A]="DB.CurrentMitarbeiter.Resturlaub.toString()" (ButtonClicked)="ResturlaubEvent.emit()"></button-value>
+                </ion-col>
+              </ion-row>
 
               <ion-row *ngIf="DB.CurrentMitarbeiter._id !== null && Pool.Mitarbeiterdaten !== null">
                 <ion-col>

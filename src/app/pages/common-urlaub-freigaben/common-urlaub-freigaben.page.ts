@@ -23,6 +23,7 @@ import {Urlaubsstruktur} from "../../dataclasses/urlaubsstruktur";
 import {cloneDeep} from "lodash-es";
 import {Urlaubprojektbeteiligtestruktur} from "../../dataclasses/urlaubprojektbeteiligtestruktur";
 import {Homeofficezeitspannenstruktur} from "../../dataclasses/homeofficezeitspannenstruktur";
+import {Standortestruktur} from "../../dataclasses/standortestruktur";
 
 @Component({
   selector: 'common-urlaub-freigaben-page',
@@ -324,12 +325,13 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
     try {
 
       let Available: boolean = false;
+      let Standort: Standortestruktur = lodash.find(this.Pool.Standorteliste, {_id: Mitareiter.StandortID});
 
       for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
         if(lodash.isUndefined(Zeitspanne.VertreterantwortSended)) Zeitspanne.VertreterantwortSended = false;
 
-        if(Urlaub.UrlaubsfreigeberID !== null &&
+        if(Standort.Urlaubfreigabepersonen.length > 0 &&
            Zeitspanne.VertreterantwortSended === false &&
            Zeitspanne.VertreterID            === this.DB.CurrentMitarbeiter._id &&
           (Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Vertreterablehnung || Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Vertreterfreigabe)) Available = true;
@@ -368,8 +370,7 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
         if(lodash.isUndefined(Zeitspanne.FreigabeantwortSended)) Zeitspanne.FreigabeantwortSended = false;
 
-        if(Urlaub.UrlaubsfreigeberID        !== null &&
-           Zeitspanne.FreigabeantwortSended === false &&
+        if(Zeitspanne.FreigabeantwortSended === false &&
           (Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Genehmigt || Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Abgelehnt)) Available = true;
       }
 

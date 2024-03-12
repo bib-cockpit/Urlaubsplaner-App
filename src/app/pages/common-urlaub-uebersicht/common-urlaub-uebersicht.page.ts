@@ -134,6 +134,23 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
     }
   }
 
+  public ionViewDidEnter() {
+
+    try {
+
+      this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
+
+      this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
+
+      this.Legendebreite = 400;
+      this.Legendehoehe  = this.Basics.InnerContenthoehe;
+    }
+    catch (error) {
+
+      this.Debug.ShowErrorMessage(error.message, 'Urlaubsuebersicht Page', 'ionViewDidEnter', this.Debug.Typen.Page);
+    }
+  }
+
   ngOnInit(): void {
 
     try {
@@ -143,11 +160,6 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
 
       if(Monat <= 6) this.Ansichtvariante = this.Ansichtenvarinaten.HalbjahrEins;
       else           this.Ansichtvariante = this.Ansichtenvarinaten.HalbjahrZwei;
-
-      this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
-
-      this.Legendebreite = 400;
-      this.Legendehoehe  = this.Basics.InnerContenthoehe + 20;
 
       this.DataSubscription = this.Pool.LoadingAllDataFinished.subscribe(() => {
 

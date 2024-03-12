@@ -40,20 +40,17 @@
     </ion-row>
     <ion-row>
       <ion-col size="6">
-        <ion-radio-group [value]="DB.CurrentUrlaub.UrlaubsfreigeberID" (ionChange)="UrlaubsfreigeberChanged($event)">
-          <table class="paddingtable">
-            <tr *ngIf="DB.CurrentUrlaub.UrlaubsfreigeberID === null">
-              <td><img src="assets/svgs/alert.svg" style="width: 24px"></td>
-              <td>
-                Bitte zuständige Person für die Urlaubsfreigaben festlegen.
-              </td>
-            </tr>
-            <tr *ngFor="let Mitarbeiter of Urlaubsfreigeberliste">
-              <td><ion-radio [value]="Mitarbeiter._id"></ion-radio></td>
-              <td>{{Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name}}</td>
-            </tr>
-          </table>
-        </ion-radio-group>
+        <table class="paddingtable">
+          <tr *ngIf="Urlaubsfreigeberliste.length === 0">
+            <td><img src="assets/svgs/alert.svg" style="width: 24px"></td>
+            <td>
+              Für dich sind keine Personen für deine Urlaubsfreigaben eingetragen. Bitte wende dich an das Office.
+            </td>
+          </tr>
+          <tr *ngFor="let Mitarbeiter of Urlaubsfreigeberliste">
+            <td>{{Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name}}</td>
+          </tr>
+        </table>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -63,35 +60,17 @@
     </ion-row>
     <ion-row>
       <ion-col size="6">
-        <ion-radio-group [value]="DB.CurrentUrlaub.HomeofficefreigeberID" (ionChange)="HomeofficefreigeberChanged($event)">
-          <table class="paddingtable">
-            <tr *ngIf="DB.CurrentUrlaub.HomeofficefreigeberID === null">
-              <td><img src="assets/svgs/alert.svg" style="width: 24px"></td>
-              <td>
-                Bitte zuständige Person für die Homeofficefreigaben festlegen.
-              </td>
-            </tr>
-            <tr *ngFor="let Mitarbeiter of Homeofficefreigeberliste">
-              <td><ion-radio [value]="Mitarbeiter._id"></ion-radio></td>
-              <td>{{Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name}}</td>
-            </tr>
-          </table>
-        </ion-radio-group>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-text color="baeblau" style="font-size: 120%"><b>Urlaubstage</b></ion-text>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="6">
-        <button-value [Buttontext]="'Urlaubsanspruch ' + DB.Jahr.toString()" [Wert_A]="DB.CurrentMitarbeiter.Urlaub.toString() + ' Tage'" (ButtonClicked)="UrlaubClickedEvent()"></button-value>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="6">
-        <button-value [Buttontext]="'Resturlaub ' + (DB.Jahr - 1).toString()" [Wert_A]="GetResturlaub()" (ButtonClicked)="ResturlaubClickedEvent()"></button-value>
+        <table class="paddingtable">
+          <tr *ngIf="Homeofficefreigeberliste.length === 0">
+            <td><img src="assets/svgs/alert.svg" style="width: 24px"></td>
+            <td>
+              Für dich sind keine Personen für deine Homeofficefreigaben eingetragen. Bitte wende dich an das Office.
+            </td>
+          </tr>
+          <tr *ngFor="let Mitarbeiter of Homeofficefreigeberliste">
+            <td>{{Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name}}</td>
+          </tr>
+        </table>
       </ion-col>
     </ion-row>
     <ion-row>

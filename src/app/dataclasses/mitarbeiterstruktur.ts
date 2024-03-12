@@ -9,6 +9,7 @@ export interface Mitarbeiterstruktur  {
     UserID: string;
     StandortID:  string;
     PositionID: string;
+    Resturlaub: number;
     Anrede: string;
     Urlaub: number;
     Jobtitel:   string;
@@ -43,5 +44,6 @@ export interface Mitarbeiterstruktur  {
     Text_C?: string;
     Selected?: boolean;
     Color?:    string;
+    ShowInGesamtuebersicht?: boolean;
     __v?: any;
 };

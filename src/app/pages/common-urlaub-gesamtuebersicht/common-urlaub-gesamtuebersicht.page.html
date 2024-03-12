@@ -1,0 +1,178 @@
+<ion-header class="ion-no-border">
+  <page-header #PageHeader>
+    <page-header-menu (UrlaubMitarbeiterClicked)="MitarbeiterWechselnClicked()"></page-header-menu>
+  </page-header>
+</ion-header>
+<ion-content>
+
+  <div class="contentdivclass" style="padding: 4px;">
+
+    <div style="height: 100%; position: absolute; overflow: scroll" [style.width.px]="Basics.Contentbreite">
+
+      <table style="width: 100%">
+        <tr>
+          <td align="center">
+
+            <table class="paddingsmalltable">
+              <tr>
+                <td>
+                  <div  (click)="MonatBackButtonClicked()" class="monatedivclass">
+                    <ion-icon name="caret-back-outline" style="font-size: 20px"></ion-icon>
+                  </div>
+                </td>
+                <td *ngFor="let Monat of DB.Monateliste; let Monatindex = index">
+                  <div [style.color]="GetMonatButtonColor(Monatindex)" (click)="MonatButtonClicked(Monatindex)" class="monatedivclass">{{Monat}}</div>
+                </td>
+                <td>
+                  <div  (click)="MonatForwardButtonClicked()" class="monatedivclass">
+                    <ion-icon name="caret-forward-outline" style="font-size: 20px"></ion-icon>
+                  </div>
+                </td>
+              </tr>
+            </table>
+
+          </td>
+        </tr>
+        <tr>
+          <td style="height: 10px;"></td>
+        </tr>
+        <tr>
+          <td align="center">
+
+            <table class="docinnertable">
+              <tr>
+                <td [colSpan]="Tagesumme + 1" align="center" style="height: 40px; font-size: 120%;"><b>{{Monatname}} {{DB.Jahr}}</b></td>
+              </tr>
+              <tr>
+                <td rowspan="3"></td>
+                <ng-container *ngFor="let Kalenderwoche of Kalenderwochenliste">
+                  <td [colSpan]="Kalenderwoche.Tageanzahl" style="text-align: center"><b>KW {{Kalenderwoche.Nummer}}</b></td>
+                </ng-container>
+              </tr>
+              <tr>
+                <td *ngFor="let Datum of Kalendertageliste" style="width: 40px;" align="center"><ion-text color="baeblau"><b>{{Datum.Tag}}</b></ion-text></td>
+              </tr>
+              <tr>
+                <td *ngFor="let Datum of Kalendertageliste" style="width: 40px;" align="center">
+                  <ion-text [color]="Datum.Hauptmonat ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Silber"><b>{{Datum.Tagnummer}}</b></ion-text>
+                </td>
+              </tr>
+              <ng-container *ngFor="let Standort of Standortliste">
+                <tr>
+                  <td><b>{{Standort.Standort}}</b></td>
+                  <td [colSpan]="Tagesumme"></td>
+                </tr>
+                <tr *ngFor="let Mitarbeiter of Mitrbeiterliste[Standort._id]">
+                  <td>{{Mitarbeiter.Vorname}} {{Mitarbeiter.Name}}</td>
+                  <td *ngFor="let Datum of Kalendertageliste" style="width: 48px; height: 30px;" align="center">
+                    <ng-container *ngIf="DB.CheckIsUrlaubstag(Mitarbeiter, Datum) !== null">
+                      <div class="urlaubclass" [style.background]="DB.GetUrlaubStatuscolor(DB.CheckIsUrlaubstag(Mitarbeiter, Datum).Status)">
+                        {{Mitarbeiter.Kuerzel}}
+                      </div>
+                    </ng-container>
+                  </td>
+                </tr>
+              </ng-container>
+            </table>
+
+          </td>
+        </tr>
+      </table>
+
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+
+    </div>
+
+    <div class="legendekeeperdivclass" [style.height.px]="Legendehoehe" [style.width.px]="Legendebreite" [style.right.px]="LegendeVisible ? 0 : -(Legendebreite - 14)">
+
+      <div (click)="LegendeVisible = !LegendeVisible" class="legendebuttonclass" [style.height.px]="Legendehoehe">
+        <ion-icon color="weiss" [name]="LegendeVisible ? 'caret-forward-outline' : 'caret-back-outline'"></ion-icon>
+      </div>
+      <div style="width: 100%; overflow: auto" [style.height.px]="Legendehoehe">
+        <table class="paddingtable">
+          <tr>
+            <td colspan="4"><ion-text color="schwarz"><b>Allgemein</b></ion-text>
+          </tr>
+          <tr>
+            <td style="width: 32px;"></td>
+            <td><checkbox-clon (CheckChanged)="SettingsCheckedChanged($event)" [Value]="DB.Urlaubstatusvarianten.Geplant" [Checked]="DB.GesamtuebersichtSetting.ShowGeplant"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Geplant"></div></td><td>geplanter Urlaub</td>
+          </tr>
+          <tr>
+            <td></td><td><checkbox-clon (CheckChanged)="SettingsCheckedChanged($event)" [Value]="DB.Urlaubstatusvarianten.Vertreteranfrage" [Checked]="DB.GesamtuebersichtSetting.ShowVertreteranfragen"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreteranfrage"></div></td><td>Vertretung angefragt</td>
+          </tr>
+          <tr>
+            <td></td><td><checkbox-clon (CheckChanged)="SettingsCheckedChanged($event)" [Value]="DB.Urlaubstatusvarianten.Vertreterfreigabe" [Checked]="DB.GesamtuebersichtSetting.ShowVertreterfreigaben"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Urlaub mit Vertreterfreigabe</td>
+          </tr>
+          <tr>
+            <td></td><td><checkbox-clon (CheckChanged)="SettingsCheckedChanged($event)" [Value]="DB.Urlaubstatusvarianten.Vertreterablehnung" [Checked]="DB.GesamtuebersichtSetting.ShowVertreterablehnungen"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterablehnung"></div></td><td>Vertretung wurde abgelehnt</td>
+          </tr>
+          <tr>
+            <td></td><td><checkbox-clon (CheckChanged)="SettingsCheckedChanged($event)" [Value]="DB.Urlaubstatusvarianten.Genehmigt" [Checked]="DB.GesamtuebersichtSetting.ShowUrlaubsgenehmigungen"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Genehmigt"></div></td><td>Genehmigter Urlaub</td>
+          </tr>
+          <tr>
+            <td></td><td><checkbox-clon (CheckChanged)="SettingsCheckedChanged($event)" [Value]="DB.Urlaubstatusvarianten.Abgelehnt" [Checked]="DB.GesamtuebersichtSetting.ShowUrlaubsablehnungen"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
+          </tr>
+        </table>
+        <table class="paddingtable">
+          <ng-container *ngFor="let Standort of Pool.Standorteliste">
+            <tr>
+              <td><checkbox-clon [Value]="Standort._id" [Checked]="Standort.ShowInGesamtuebersicht" (CheckChanged)="StandortCheckChanged($event)"></checkbox-clon></td><td><ion-text color="schwarz"><b>{{Standort.Standort}}</b></ion-text></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <table class="paddingtable">
+                  <ng-container *ngFor="let Mitarbeiter of Pool.Mitarbeiterliste">
+                    <tr *ngIf="Mitarbeiter.StandortID === Standort._id && Mitarbeiter.Archiviert === false">
+                      <checkbox-clon [Value]="Mitarbeiter._id" [Checked]="Mitarbeiter.ShowInGesamtuebersicht" (CheckChanged)="MitarbeiterCheckChanged($event)"></checkbox-clon><td>{{Mitarbeiter.Vorname}} {{Mitarbeiter.Name}}</td>
+                    </tr>
+                  </ng-container>
+                </table>
+
+              </td>
+            </tr>
+          </ng-container>
+        </table>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+      </div>
+    </div>
+  </div>
+
+</ion-content>
+<ion-footer>
+  <page-footer #PageFooter>
+
+  </page-footer>
+</ion-footer>
+
+<auswahl-dialog *ngIf="ShowAuswahl" [Auswahlliste]="Auswahlliste" [Auswahlindex]="Auswahlindex" [ZIndex]="5000"
+                [Dialogbreite]="400"  [PositionY]="100"
+                [Titel]="Auswahltitel" [Iconname]="''"
+                (OkClickedEvent)="AuswahlOkButtonClicked($event)"
+                (CancelClickedEvent)="ShowAuswahl = false">
+</auswahl-dialog>
+
+<fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
+                        [Titel]="MitarbeiterauswahlTitel"
+                        [Dialogbreite]="600" [ZIndex]="4000"
+                        [Multiselect]="false"
+                        [OnlyProjektmitarbeiter]="false"
+                        Iconname="people-outline"
+                        [AuswahlIDliste]="AuswahlIDliste"
+                        (CancelClickedEvent)="ShowMitarbeiterauswahl = false"
+                        (OkClickedEvent)="MitarbeiterauswahlOkButtonClicked($event)"
+                        (StandortfilterClickedEvent)="MitarebiterStandortfilterClickedHandler()"></fi-mitarbeiter-auswahl>
+
+
+
+
+

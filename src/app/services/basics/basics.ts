@@ -78,6 +78,8 @@ export class BasicsProvider {
 
       if(typeof header !== 'undefined' && header !== null) {
 
+
+
         this.Headerhoehe = header.PageHeaderDiv.nativeElement.clientHeight;
       }
       else this.Headerhoehe = 56;

@@ -561,6 +561,12 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
           break;
 
+        case 'Resturlaub':
+
+          this.DB.CurrentMitarbeiter.Resturlaub = data;
+
+          break;
+
         case this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Liste_Standortfilter:
 
           this.DBStandort.CurrentStandortfilter        = data;
@@ -882,4 +888,49 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'PositionClickedEventHandler', this.Debug.Typen.Page);
     }
   }
+
+
+  ResturlaubClicked() {
+
+    try {
+
+      this.Auswahldialogorigin = 'Resturlaub';
+      this.Auswahltitel = 'Resturlaub festlegen';
+      this.Auswahlliste = [];
+
+      this.Auswahlliste.push({Index: 0, FirstColumn:   '0', SecoundColumn: 'Tage', Data: 0});
+      this.Auswahlliste.push({Index: 1, FirstColumn: '0,5', SecoundColumn: 'Tage', Data: 0.5});
+      this.Auswahlliste.push({Index: 2, FirstColumn: '1,0', SecoundColumn: 'Tag', Data: 1.0});
+      this.Auswahlliste.push({Index: 3, FirstColumn: '1,5', SecoundColumn: 'Tage', Data: 1.5});
+      this.Auswahlliste.push({Index: 4, FirstColumn: '2,0', SecoundColumn: 'Tage', Data: 2.0});
+      this.Auswahlliste.push({Index: 5, FirstColumn: '2,5', SecoundColumn: 'Tage', Data: 2.5});
+      this.Auswahlliste.push({Index: 6, FirstColumn: '3,0', SecoundColumn: 'Tage', Data: 3.0});
+      this.Auswahlliste.push({Index: 7, FirstColumn: '3,5', SecoundColumn: 'Tage', Data: 3.5});
+      this.Auswahlliste.push({Index: 8, FirstColumn: '4,0', SecoundColumn: 'Tage', Data: 4.0});
+      this.Auswahlliste.push({Index: 9, FirstColumn: '4,5', SecoundColumn: 'Tage', Data: 4.5});
+      this.Auswahlliste.push({Index: 10, FirstColumn: '5,0', SecoundColumn: 'Tage', Data: 5.0});
+      this.Auswahlliste.push({Index: 11, FirstColumn: '5,5', SecoundColumn: 'Tage', Data: 5.5});
+      this.Auswahlliste.push({Index: 12, FirstColumn: '6,0', SecoundColumn: 'Tage', Data: 6.0});
+      this.Auswahlliste.push({Index: 13, FirstColumn: '6,5', SecoundColumn: 'Tage', Data: 6.5});
+      this.Auswahlliste.push({Index: 14, FirstColumn: '7,0', SecoundColumn: 'Tage', Data: 7.0});
+      this.Auswahlliste.push({Index: 15, FirstColumn: '7,5', SecoundColumn: 'Tage', Data: 7.5});
+      this.Auswahlliste.push({Index: 16, FirstColumn: '8,0', SecoundColumn: 'Tage', Data: 8.0});
+      this.Auswahlliste.push({Index: 17, FirstColumn: '8,5', SecoundColumn: 'Tage', Data: 8.5});
+      this.Auswahlliste.push({Index: 18, FirstColumn: '9,0', SecoundColumn: 'Tage', Data: 9.0});
+      this.Auswahlliste.push({Index: 19, FirstColumn: '9,5', SecoundColumn: 'Tage', Data: 9.5});
+      this.Auswahlliste.push({Index: 20, FirstColumn: '10,0', SecoundColumn: 'Tage', Data: 10.0});
+
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, (Eintrag: Auswahldialogstruktur) => {
+
+        return Eintrag.Data === this.DB.CurrentMitarbeiter.Resturlaub;
+      });
+
+      this.ShowAuswahl = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Mitarbeiterliste', 'ResturlaubClicked', this.Debug.Typen.Page);
+    }
+  }
+
 }

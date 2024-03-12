@@ -63,6 +63,16 @@ export class DatabaseStandorteService {
         this.Pool.Mitarbeiterstandort = null;
       }
 
+      for(let Standort of this.Pool.Standorteliste) {
+
+        if(Standort._id === this.Pool.Mitarbeiterdaten.StandortID) Standort.ShowInGesamtuebersicht = true;
+        else {
+
+          Standort.ShowInGesamtuebersicht = false;
+        }
+      }
+
+
       this.StandortfilterChanged.emit();
 
     } catch (error) {
@@ -236,9 +246,11 @@ export class DatabaseStandorteService {
     try {
 
       let Observer: Observable<any>;
-      let Params = new HttpParams();
+      // let Params = new HttpParams();
 
-      Params.set('id', this.CurrentStandort._id);
+      // Params.set('id', this.CurrentStandort._id);
+
+      delete this.CurrentStandort.__v;
 
       return new Promise<any>((resove, reject) => {
 

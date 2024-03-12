@@ -5,9 +5,8 @@ import {Homeofficezeitspannenstruktur} from "./homeofficezeitspannenstruktur";
 export type Urlaubsstruktur = {
 
   Jahr:                  number;
-  Resturlaub:            number;
-  UrlaubsfreigeberID:    string;
-  HomeofficefreigeberID: string;
+  // UrlaubsfreigeberID:    string;
+  // HomeofficefreigeberID: string;
   Projektbeteiligteliste: Urlaubprojektbeteiligtestruktur[];
   Ferienblockerliste: number[];
   Feiertageblockerliste: number[];

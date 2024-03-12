@@ -21,4 +21,6 @@ export interface Standortestruktur  {
     Text_A?: string;
     Text_B?: string;
     Text_C?: string;
+    __v?: string;
+    ShowInGesamtuebersicht?: boolean;
 };
