@@ -5,85 +5,104 @@
 </ion-header>
 <ion-content>
 
-  <div class="contentdivclass" style="padding: 4px;">
+  <div class="contentdivclass">
 
     <div style="height: 100%; position: absolute; overflow: scroll" [style.width.px]="Basics.Contentbreite">
 
-      <table style="width: 100%">
-        <tr>
-          <td align="center">
+      <div class="headerdivclass" [style.height.px]="Headerhoehe">
 
-            <table class="paddingsmalltable">
-              <tr>
-                <td>
-                  <div  (click)="MonatBackButtonClicked()" class="monatedivclass">
-                    <ion-icon name="caret-back-outline" style="font-size: 20px"></ion-icon>
-                  </div>
-                </td>
-                <td *ngFor="let Monat of DB.Monateliste; let Monatindex = index">
-                  <div [style.color]="GetMonatButtonColor(Monatindex)" (click)="MonatButtonClicked(Monatindex)" class="monatedivclass">{{Monat}}</div>
-                </td>
-                <td>
-                  <div  (click)="MonatForwardButtonClicked()" class="monatedivclass">
-                    <ion-icon name="caret-forward-outline" style="font-size: 20px"></ion-icon>
-                  </div>
-                </td>
-              </tr>
-            </table>
+        <table style="width: 100%">
+          <tr>
+            <td align="center">
 
-          </td>
-        </tr>
-        <tr>
-          <td style="height: 10px;"></td>
-        </tr>
-        <tr>
-          <td align="center">
-
-            <table class="docinnertable">
-              <tr>
-                <td [colSpan]="Tagesumme + 1" align="center" style="height: 40px; font-size: 120%;"><b>{{Monatname}} {{DB.Jahr}}</b></td>
-              </tr>
-              <tr>
-                <td rowspan="3"></td>
-                <ng-container *ngFor="let Kalenderwoche of Kalenderwochenliste">
-                  <td [colSpan]="Kalenderwoche.Tageanzahl" style="text-align: center"><b>KW {{Kalenderwoche.Nummer}}</b></td>
-                </ng-container>
-              </tr>
-              <tr>
-                <td *ngFor="let Datum of Kalendertageliste" style="width: 40px;" align="center"><ion-text color="baeblau"><b>{{Datum.Tag}}</b></ion-text></td>
-              </tr>
-              <tr>
-                <td *ngFor="let Datum of Kalendertageliste" style="width: 40px;" align="center">
-                  <ion-text [color]="Datum.Hauptmonat ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Silber"><b>{{Datum.Tagnummer}}</b></ion-text>
-                </td>
-              </tr>
-              <ng-container *ngFor="let Standort of Standortliste">
+              <table class="paddingsmalltable">
                 <tr>
-                  <td><b>{{Standort.Standort}}</b></td>
-                  <td [colSpan]="Tagesumme"></td>
-                </tr>
-                <tr *ngFor="let Mitarbeiter of Mitrbeiterliste[Standort._id]">
-                  <td>{{Mitarbeiter.Vorname}} {{Mitarbeiter.Name}}</td>
-                  <td *ngFor="let Datum of Kalendertageliste" style="width: 48px; height: 30px;" align="center">
-                    <ng-container *ngIf="DB.CheckIsUrlaubstag(Mitarbeiter, Datum) !== null">
-                      <div class="urlaubclass" [style.background]="DB.GetUrlaubStatuscolor(DB.CheckIsUrlaubstag(Mitarbeiter, Datum).Status)">
-                        {{Mitarbeiter.Kuerzel}}
-                      </div>
-                    </ng-container>
+                  <td>
+                    <div  (click)="MonatBackButtonClicked()" class="monatedivclass">
+                      <ion-icon name="caret-back-outline" style="font-size: 20px"></ion-icon>
+                    </div>
+                  </td>
+                  <td *ngFor="let Monat of DB.Monateliste; let Monatindex = index">
+                    <div [style.color]="GetMonatButtonColor(Monatindex)" (click)="MonatButtonClicked(Monatindex)" class="monatedivclass">{{Monat}}</div>
+                  </td>
+                  <td>
+                    <div  (click)="MonatForwardButtonClicked()" class="monatedivclass">
+                      <ion-icon name="caret-forward-outline" style="font-size: 20px"></ion-icon>
+                    </div>
                   </td>
                 </tr>
-              </ng-container>
-            </table>
+              </table>
 
-          </td>
-        </tr>
-      </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="height: 10px;"></td>
+          </tr>
+          <tr>
+            <td align="center">
 
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
+              <table class="docinnertable">
+                <tr>
+                  <td [colSpan]="Tagesumme + 1" align="center" style="height: 40px; font-size: 120%;"><b>{{Monatname}} {{DB.Jahr}}</b></td>
+                </tr>
+                <tr>
+                  <td rowspan="3" style="width: 200px;"></td>
+                  <ng-container *ngFor="let Kalenderwoche of Kalenderwochenliste">
+                    <td [colSpan]="Kalenderwoche.Tageanzahl" style="text-align: center"><b>KW {{Kalenderwoche.Nummer}}</b></td>
+                  </ng-container>
+                </tr>
+                <tr>
+                  <td *ngFor="let Datum of Kalendertageliste" style="width: 48px;" align="center"><ion-text color="baeblau"><b>{{Datum.Tag}}</b></ion-text></td>
+                </tr>
+                <tr>
+                  <td *ngFor="let Datum of Kalendertageliste" style="width: 40px;" align="center">
+                    <ion-text [color]="Datum.Hauptmonat ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Silber"><b>{{Datum.Tagnummer}}</b></ion-text>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+        </table>
+
+      </div>
+
+      <div class="innercontentdivclass" [style.top.px]="Headerhoehe" [style.height.px]="Contenthoehe">
+        <table style="width: 100%">
+          <tr>
+            <td align="center">
+
+              <table class="docinnertable">
+                <ng-container *ngFor="let Standort of Standortliste">
+                  <tr>
+                    <td style="width: 200px;"><b>{{Standort.Standort}}</b></td>
+                    <td [colSpan]="Tagesumme"></td>
+                  </tr>
+                  <tr *ngFor="let Mitarbeiter of Mitrbeiterliste[Standort._id]">
+                    <td>{{Mitarbeiter.Vorname}} {{Mitarbeiter.Name}}</td>
+                    <td *ngFor="let Datum of Kalendertageliste" style="width: 48px; height: 30px;" align="center">
+                      <ng-container *ngIf="DB.CheckIsUrlaubstag(Mitarbeiter, Datum) !== null">
+                        <div class="urlaubclass" [style.background]="DB.GetUrlaubStatuscolor(DB.CheckIsUrlaubstag(Mitarbeiter, Datum).Status)">
+                          {{Mitarbeiter.Kuerzel}}
+                        </div>
+                      </ng-container>
+                    </td>
+                  </tr>
+                </ng-container>
+              </table>
+
+            </td>
+          </tr>
+        </table>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+      </div>
+
 
     </div>
 

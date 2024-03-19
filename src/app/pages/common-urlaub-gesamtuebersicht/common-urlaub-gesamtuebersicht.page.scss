@@ -30,6 +30,22 @@
   flex-direction: row;
 }
 
+.headerdivclass {
+
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+}
+
+.innercontentdivclass {
+
+  position: absolute;
+  left: 0px;
+  width: 100%;
+  overflow: auto;
+}
+
 .urlaubclass {
 
   width: 38px;

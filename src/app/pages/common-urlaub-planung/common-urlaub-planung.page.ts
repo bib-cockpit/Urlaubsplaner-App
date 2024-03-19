@@ -90,7 +90,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
       this.AddHomeofficeRunning  = false;
       this.ShowMitarbeiterauswahl = false;
       this.AuswahlIDliste         = [];
-      this.MitarbeiterauswahlTitel = '';
+      this.MitarbeiterauswahlTitel = 'Mitarbeiter wechseln';
       this.LegendeVisible          = false;
       this.Legendehoehe            = 0;
       this.Legendebreite           = 0;
@@ -118,8 +118,6 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
   public ionViewDidEnter() {
 
     try {
-
-      this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
 
       this.Basics.MeassureInnercontent(this.PageHeader, this.PageFooter);
 
@@ -260,8 +258,8 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
           Zeitspanne = lodash.find(this.DB.CurrentUrlaub.Urlaubzeitspannen, {ZeitspannenID: this.DB.CurrentUrlaubzeitspanne.ZeitspannenID});
 
-          this.DB.CurrentUrlaubzeitspanne.VertreterID = data;
-          Zeitspanne.VertreterID                = data;
+          this.DB.CurrentUrlaubzeitspanne.UrlaubsvertreterID = data;
+          Zeitspanne.UrlaubsvertreterID                = data;
           Zeitspanne.Status                     = this.DB.Urlaubstatusvarianten.Geplant;
           Zeitspanne.FreigabeantwortSended      = false;
           Zeitspanne.FreigabeanfrageSended      = false;
@@ -764,7 +762,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
       this.Auswahltitel            = 'Stellvertreter/in festlegen';
       this.Auswahldialogorigin     = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Vertreter_Festlegen;
       this.ShowAuswahl             = true;
-      this.Auswahlindex            = lodash.findIndex(this.DB.CurrentUrlaub.Projektbeteiligteliste, {MitarbeiterID: Zeitspanne.VertreterID});
+      this.Auswahlindex            = lodash.findIndex(this.DB.CurrentUrlaub.Projektbeteiligteliste, {MitarbeiterID: Zeitspanne.UrlaubsvertreterID});
 
     } catch (error) {
 
@@ -776,7 +774,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
     try {
 
-      let Mitarbeiter: Mitarbeiterstruktur = lodash.find(this.Pool.Mitarbeiterliste, {_id: Zeitspanne.VertreterID});
+      let Mitarbeiter: Mitarbeiterstruktur = lodash.find(this.Pool.Mitarbeiterliste, {_id: Zeitspanne.UrlaubsvertreterID});
 
       if(lodash.isUndefined(Mitarbeiter)) return 'unbekannt';
       else return Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
@@ -823,7 +821,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
         for(let Zeitspanne of this.DB.CurrentUrlaub.Urlaubzeitspannen) {
 
-          if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Geplant && Zeitspanne.VertreterID !== null) Available = true;
+          if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Geplant && Zeitspanne.UrlaubsvertreterID !== null) Available = true;
         }
       }
 

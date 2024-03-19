@@ -1,9 +1,10 @@
 export type Urlauzeitspannenstruktur = {
 
-  ZeitspannenID:     string;
-  Startstempel:      number;
-  Endestempel:       number;
-  VertreterID:       string;
+  ZeitspannenID:      string;
+  Startstempel:       number;
+  Endestempel:        number;
+  UrlaubsvertreterID: string;
+  UrlaubsfreigeberID: string;
   Startstring:       string;
   Endestring:        string;
   Status:            string;

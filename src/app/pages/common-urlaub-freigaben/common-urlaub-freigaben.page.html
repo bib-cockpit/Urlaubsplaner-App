@@ -126,7 +126,7 @@
                         <ng-container *ngFor="let Zeitspanne of Urlaub.Urlaubzeitspannen">
 
                           <tr *ngIf="DB.CheckVertretungsanwortAge(Zeitspanne) === true &&
-                           Zeitspanne.VertreterID === DB.CurrentMitarbeiter._id &&
+                           Zeitspanne.UrlaubsvertreterID === DB.CurrentMitarbeiter._id &&
                           (Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreteranfrage ||
                            Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterfreigabe ||
                            Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterablehnung)">

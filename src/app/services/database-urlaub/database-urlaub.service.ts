@@ -239,6 +239,7 @@ export class DatabaseUrlaubService {
       let Urlaub: Urlaubsstruktur;
       let CountAnfrage: boolean;
       let CountAntwort: boolean;
+      let Standort: Standortestruktur;
 
         this.Freigabenanfragenanzahl  = 0;
         this.Freigabenantwortenanzahl = 0;
@@ -248,6 +249,8 @@ export class DatabaseUrlaubService {
         if(this.CurrentMitarbeiter !== null) {
 
           for(let Mitarbeiter of this.Pool.Mitarbeiterliste) {
+
+            Standort = lodash.find(this.Pool.Standorteliste, {_id: Mitarbeiter.StandortID});
 
             Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, (urlaub: Urlaubsstruktur) => {
 
@@ -263,7 +266,7 @@ export class DatabaseUrlaubService {
 
                 Zeitspanne = this.InitZeitspanne(Zeitspanne);
 
-                if (this.CheckUrlaubFreigabeanwortAge(Zeitspanne) === true &&
+                if (Zeitspanne.UrlaubsfreigeberID === this.CurrentMitarbeiter._id && this.CheckUrlaubFreigabeanwortAge(Zeitspanne) === true &&
                    (Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterfreigabe ||
                     Zeitspanne.Status === this.Urlaubstatusvarianten.Abgelehnt ||
                     Zeitspanne.Status === this.Urlaubstatusvarianten.Genehmigt)) {
@@ -379,7 +382,7 @@ export class DatabaseUrlaubService {
       let Datum: Moment;
       let Dauer: number;
 
-      if(Zeitspanne.VertreterID === this.CurrentMitarbeiter._id && Zeitspanne.VertreterantwortSended === true &&
+      if(Zeitspanne.UrlaubsvertreterID === this.CurrentMitarbeiter._id && Zeitspanne.VertreterantwortSended === true &&
         (Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterfreigabe ||
          Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterablehnung)) {
 
@@ -546,7 +549,7 @@ export class DatabaseUrlaubService {
 
                    Zeitspanne = this.InitZeitspanne(Zeitspanne);
 
-                   if(Zeitspanne.VertreterID === this.CurrentMitarbeiter._id  && this.CheckVertretungsanwortAge(Zeitspanne) === true &&
+                   if(Zeitspanne.UrlaubsvertreterID === this.CurrentMitarbeiter._id  && this.CheckVertretungsanwortAge(Zeitspanne) === true &&
                       (Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreteranfrage  ||
                        Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterfreigabe ||
                        Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterablehnung)) {
@@ -715,11 +718,11 @@ export class DatabaseUrlaubService {
       for(let Zeitspanne of this.CurrentUrlaub.Urlaubzeitspannen) {
 
         if(Zeitspanne.Status === this.Urlaubstatusvarianten.Geplant &&
-          Zeitspanne.VertreterID !== null &&
-          lodash.indexOf(VertreterIDListe, Zeitspanne.VertreterID) === -1) {
+          Zeitspanne.UrlaubsvertreterID !== null &&
+          lodash.indexOf(VertreterIDListe, Zeitspanne.UrlaubsvertreterID) === -1) {
 
           Gesamtanzahl++;
-          VertreterIDListe.push(Zeitspanne.VertreterID);
+          VertreterIDListe.push(Zeitspanne.UrlaubsvertreterID);
         }
       }
 
@@ -734,7 +737,7 @@ export class DatabaseUrlaubService {
 
           for(let Zeitspanne of this.CurrentUrlaub.Urlaubzeitspannen) {
 
-            if(Zeitspanne.Status === this.Urlaubstatusvarianten.Geplant && Zeitspanne.VertreterID === VertreterID) {
+            if(Zeitspanne.Status === this.Urlaubstatusvarianten.Geplant && Zeitspanne.UrlaubsvertreterID === VertreterID) {
 
               CurrentUrlaubzeitspannen.push(Zeitspanne);
 
@@ -949,7 +952,7 @@ export class DatabaseUrlaubService {
         for(let Zeitspanne of Urlaubzeitspannen) {
 
           if(Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreteranfrage &&
-             Zeitspanne.VertreterID === Vertretung._id &&
+             Zeitspanne.UrlaubsvertreterID === Vertretung._id &&
              Zeitspanne.VertreteranfrageSended === false) {
 
             SendMail = true;
@@ -1114,7 +1117,7 @@ export class DatabaseUrlaubService {
         for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
           if(Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterfreigabe &&
-             Zeitspanne.VertreterID === Vertretung._id &&
+             Zeitspanne.UrlaubsvertreterID === Vertretung._id &&
             Zeitspanne.VertreterantwortSended === false) {
 
             SendAntwort = true;
@@ -1221,7 +1224,7 @@ export class DatabaseUrlaubService {
         if(Zeitspanne.Status === this.Urlaubstatusvarianten.Genehmigt || Zeitspanne.Status === this.Urlaubstatusvarianten.Abgelehnt) {
 
           Freigebender = lodash.cloneDeep(this.Pool.Mitarbeiterdaten); //  lodash.find(this.Pool.Mitarbeiterliste, { _id: Urlaub.UrlaubsfreigeberID });
-          // Vertretung   = lodash.find(this.Pool.Mitarbeiterliste, { _id: Zeitspanne.VertreterID });
+          // Vertretung   = lodash.find(this.Pool.Mitarbeiterliste, { _id: Zeitspanne.UrlaubsvertreterID });
 
           if(Zeitspanne.Status === this.Urlaubstatusvarianten.Genehmigt) {
 
@@ -1278,7 +1281,7 @@ export class DatabaseUrlaubService {
         for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
           if(Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterablehnung &&
-             Zeitspanne.VertreterID === Vertretung._id &&
+             Zeitspanne.UrlaubsvertreterID === Vertretung._id &&
              Zeitspanne.VertreterantwortSended === false) {
 
             SendAntwort = true;
@@ -1362,7 +1365,7 @@ export class DatabaseUrlaubService {
           if(Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterfreigabe && Zeitspanne.FreigabeanfrageSended === false) {
 
             SendAntwort = true;
-            Vertreter   = lodash.find(this.Pool.Mitarbeiterliste, {_id: Zeitspanne.VertreterID});
+            Vertreter   = lodash.find(this.Pool.Mitarbeiterliste, {_id: Zeitspanne.UrlaubsvertreterID});
 
             Zeitspanne.FreigabeanfrageSended      = true;
             Zeitspanne.Freigabeantwortzeitstempel = Heute.valueOf();
@@ -1451,8 +1454,9 @@ export class DatabaseUrlaubService {
           if(Zeitspanne.Status === this.Urlaubstatusvarianten.Genehmigt && Zeitspanne.FreigabeantwortSended === false) {
 
             Zeitspanne.FreigabeantwortSended      = true;
+            Zeitspanne.UrlaubsfreigeberID         = Freigebender._id;
             Zeitspanne.Freigabeantwortzeitstempel = Heute.valueOf();
-            Vertretung = this.DBMitarbeiter.GetMitarbeiterByID(Zeitspanne.VertreterID);
+            Vertretung = this.DBMitarbeiter.GetMitarbeiterByID(Zeitspanne.UrlaubsvertreterID);
 
             SendAntwort = true;
 
@@ -1549,7 +1553,7 @@ export class DatabaseUrlaubService {
 
             Zeitspanne.FreigabeantwortOfficeSended = true;
             Zeitspanne.Freigabeantwortzeitstempel  = Heute.valueOf();
-            Vertretung = this.DBMitarbeiter.GetMitarbeiterByID(Zeitspanne.VertreterID);
+            Vertretung = this.DBMitarbeiter.GetMitarbeiterByID(Zeitspanne.UrlaubsvertreterID);
 
             SendAntwort = true;
 
@@ -1641,8 +1645,9 @@ export class DatabaseUrlaubService {
           if(Zeitspanne.Status === this.Urlaubstatusvarianten.Abgelehnt && Zeitspanne.FreigabeantwortSended === false) {
 
             Zeitspanne.FreigabeantwortSended       = true;
+            Zeitspanne.UrlaubsfreigeberID          = Freigebender._id;
             Zeitspanne.Freigabeantwortzeitstempel  = Heute.valueOf();
-            Vertretung = this.DBMitarbeiter.GetMitarbeiterByID(Zeitspanne.VertreterID);
+            Vertretung = this.DBMitarbeiter.GetMitarbeiterByID(Zeitspanne.UrlaubsvertreterID);
 
             SendAntwort = true;
 
@@ -2122,6 +2127,8 @@ export class DatabaseUrlaubService {
 
       // Erstmal potentielle Freigabenanfragen mit einfügen in die Projektbeteiligteliste
 
+      /*
+
       for(Mitarbeiter of this.Pool.Mitarbeiterliste) {
 
         Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
@@ -2138,6 +2145,8 @@ export class DatabaseUrlaubService {
           }
         }
       }
+
+       */
 
       // Mitarbeiter aus Projektbeteiligtenliste einfügen
 
@@ -2197,7 +2206,8 @@ export class DatabaseUrlaubService {
 
     try {
 
-      if(lodash.isUndefined(Zeitspanne.VertreterID) || Zeitspanne.VertreterID === '') Zeitspanne.VertreterID = null;
+      if(lodash.isUndefined(Zeitspanne.UrlaubsvertreterID) || Zeitspanne.UrlaubsvertreterID === '') Zeitspanne.UrlaubsvertreterID = null;
+      if(lodash.isUndefined(Zeitspanne.UrlaubsfreigeberID) || Zeitspanne.UrlaubsfreigeberID === '') Zeitspanne.UrlaubsfreigeberID = null;
 
       if(lodash.isUndefined(Zeitspanne.Planungmeldung))    Zeitspanne.Planungmeldung    = '';
       if(lodash.isUndefined(Zeitspanne.Vertretungmeldung)) Zeitspanne.Vertretungmeldung = '';
@@ -2560,7 +2570,8 @@ export class DatabaseUrlaubService {
         Endestempel:  null,
         Startstring: "",
         Endestring:  "",
-        VertreterID: null,
+        UrlaubsvertreterID: null,
+        UrlaubsfreigeberID: null,
         Status: this.Urlaubstatusvarianten.Geplant,
         Planungmeldung: '',
         Vertretungmeldung: '',

@@ -150,7 +150,7 @@
                   <tr  *ngIf="AddUrlaubRunning === false && AddHomeofficeRunning === false && DB.CurrentUrlaub.Urlaubzeitspannen.length > 0">
                     <td align="center">
 
-                      <table class="docinnertable">
+                      <table class="docinnertablesmall">
                         <tr>
                           <td style="font-weight: bold;">Von</td>
                           <td style="font-weight: bold;">Bis</td>
@@ -167,8 +167,8 @@
                             <td>{{GetDatum(Zeitspanne.Endestempel)}}</td>
                             <td style="text-align: center">{{Zeitspanne.Tageanzahl}}</td>
                             <td>
-                              <ion-button *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant || Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterablehnung" size="small" color="grau" (click)="StellvertreterFestlegenClicked(Zeitspanne)">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</ion-button>
-                              <span       *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant && Zeitspanne.Status !== DB.Urlaubstatusvarianten.Vertreterablehnung">{{Zeitspanne.VertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</span>
+                              <ion-button *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant || Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterablehnung" size="small" color="grau" (click)="StellvertreterFestlegenClicked(Zeitspanne)">{{Zeitspanne.UrlaubsvertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</ion-button>
+                              <span       *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant && Zeitspanne.Status !== DB.Urlaubstatusvarianten.Vertreterablehnung">{{Zeitspanne.UrlaubsvertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</span>
                             </td>
                             <td align="center">
                               <div (click)="StatusClickedHandler(Zeitspanne)" class="legendedivclass"

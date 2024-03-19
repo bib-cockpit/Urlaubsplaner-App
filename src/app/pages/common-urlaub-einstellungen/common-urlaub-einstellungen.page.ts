@@ -142,12 +142,15 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
       this.Projektbeteiligteliste = [];
 
 
+
       for (let Eintrag of this.DB.CurrentUrlaub.Projektbeteiligteliste) {
 
         Mitarbeiter = this.DBMitarbeiter.GetMitarbeiterByID(Eintrag.MitarbeiterID);
 
         if (Mitarbeiter !== null) this.Projektbeteiligteliste.push(Mitarbeiter);
       }
+
+      debugger;
 
       this.Projektbeteiligteliste.sort((a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
 
@@ -214,18 +217,22 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
     try {
 
-      let Urlaub: Urlaubsstruktur;
       let Eintrag: Urlaubprojektbeteiligtestruktur;
       let Mitarbeiter: Mitarbeiterstruktur;
+      let Index: number;
 
       switch (this.Auswahldialogorigin) {
 
         case this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Projektbeteiligte_Auswahl:
 
+          // Projektbeteiligte auf die IDListe begrezen / gelöschte entfernen
+
           this.DB.CurrentUrlaub.Projektbeteiligteliste = lodash.filter( this.DB.CurrentUrlaub.Projektbeteiligteliste, (beteiligt: Urlaubprojektbeteiligtestruktur) => {
 
             return idliste.indexOf(beteiligt.MitarbeiterID) !== -1;
           });
+
+          // Neue Eintraege hinzufügen wenn nicht bereits vorhanden
 
           for(let id of idliste) {
 
@@ -237,20 +244,16 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
             });
           }
 
-          Urlaub = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.CurrentUrlaub.Jahr});
+          Index = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.CurrentUrlaub.Jahr });
 
-          if (!lodash.isUndefined(Urlaub)) {
+          debugger;
 
-            Urlaub.Projektbeteiligteliste = this.DB.CurrentUrlaub.Projektbeteiligteliste;
+          this.DB.CurrentMitarbeiter.Urlaubsliste[Index] = this.DB.CurrentUrlaub;
 
-            this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
+          this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
 
-              this.PrepareData();
-            });
-          }
-
-          break;
-
+            this.PrepareData();
+          });
 
           break;
 

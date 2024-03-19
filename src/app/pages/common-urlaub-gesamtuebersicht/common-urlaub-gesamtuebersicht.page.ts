@@ -64,6 +64,8 @@ export class CommonUrlaubGesamtuebersichtPage implements OnInit, OnDestroy {
   public ShowAuswahl: boolean;
   public MitarbeiterauswahlTitel: string;
   public Auswahlhoehe: number;
+  public Headerhoehe: number;
+  public Contenthoehe: number;
 
   constructor(public Menuservice: MenueService,
               public Basics: BasicsProvider,
@@ -97,6 +99,8 @@ export class CommonUrlaubGesamtuebersichtPage implements OnInit, OnDestroy {
       this.Kalendertageliste       = [];
       this.Kalenderwochenliste     = [];
       this.Mitrbeiterliste         = [];
+      this.Headerhoehe             = 0;
+      this.Contenthoehe            = 0;
       this.Tagesumme = 0;
 
     } catch (error) {
@@ -226,6 +230,7 @@ export class CommonUrlaubGesamtuebersichtPage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error.message, 'Urlaubsplanung Page', 'MitarebiterStandortfilterClickedHandler', this.Debug.Typen.Page);
     }
   }
+
 
   ngOnInit(): void {
 
@@ -379,6 +384,10 @@ export class CommonUrlaubGesamtuebersichtPage implements OnInit, OnDestroy {
 
       this.Legendebreite = 320;
       this.Legendehoehe  = this.Basics.InnerContenthoehe;
+
+
+      this.Headerhoehe  = 160;
+      this.Contenthoehe = this.Basics.InnerContenthoehe - this.Headerhoehe;
 
     }
     catch (error) {

@@ -333,7 +333,7 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
         if(Standort.Urlaubfreigabepersonen.length > 0 &&
            Zeitspanne.VertreterantwortSended === false &&
-           Zeitspanne.VertreterID            === this.DB.CurrentMitarbeiter._id &&
+           Zeitspanne.UrlaubsvertreterID     === this.DB.CurrentMitarbeiter._id &&
           (Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Vertreterablehnung || Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Vertreterfreigabe)) Available = true;
       }
 
@@ -612,7 +612,7 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
       let Vertretung: Mitarbeiterstruktur;
 
-      Vertretung = this.DBMitarbeiter.GetMitarbeiterByID(Zeitspanne.VertreterID);
+      Vertretung = this.DBMitarbeiter.GetMitarbeiterByID(Zeitspanne.UrlaubsvertreterID);
 
       if(!lodash.isUndefined(Vertretung)) {
 
