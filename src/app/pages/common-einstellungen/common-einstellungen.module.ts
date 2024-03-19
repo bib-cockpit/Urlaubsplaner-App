@@ -10,7 +10,6 @@ import {PageFooterModule} from "../../components/page-footer/page-footer.module"
 import {CheckboxClonModule} from "../../components/checkbox-clon/checkbox-clon.module";
 import {ButtonValueModule} from "../../components/button-value/button-value.module";
 import {AuswahlDialogModule} from "../../components/auswahl-dialog/auswahl-dialog.module";
-import {EditorComponent} from "@tinymce/tinymce-angular";
 import {SafePipeModule} from "../../pipes/safe.pipe.module";
 
 const routes: Routes = [
@@ -32,7 +31,6 @@ const routes: Routes = [
         CheckboxClonModule,
         ButtonValueModule,
         AuswahlDialogModule,
-        EditorComponent,
         SafePipeModule,
     ],
   declarations: [CommonEinstellungenPage]

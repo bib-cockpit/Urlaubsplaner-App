@@ -27,7 +27,6 @@ import {
 } from "@azure/msal-angular";
 import {BrowserCacheLocation, InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication} from "@azure/msal-browser";
 import {environment} from "../environments/environment";
-import { EditorModule } from '@tinymce/tinymce-angular';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 const appurl: string                   = environment.production === false ? 'http://localhost:4200' : 'https://polite-cliff-084832d03.4.azurestaticapps.net';
@@ -159,7 +158,6 @@ const MSALGuardConfigFactory = (): MsalGuardConfiguration => {
     BrowserAnimationsModule,
     HttpClientModule,
     MsalModule,
-    EditorModule,
     FontAwesomeModule,
   ],
   providers: [

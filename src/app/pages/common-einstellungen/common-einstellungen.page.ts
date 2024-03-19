@@ -9,7 +9,6 @@ import {
 import {ConstProvider} from "../../services/const/const";
 import {BasicsProvider} from "../../services/basics/basics";
 import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
-import {EventObj} from "@tinymce/tinymce-angular/editor/Events";
 import {Subscription} from "rxjs";
 
 @Component({
@@ -194,17 +193,6 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
     }
   }
 
-  SignaturTextChangedHandler(event: EventObj<any>) {
-
-    try {
-
-
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Mitarbeiter Settings', 'SignaturTextChangedHandler', this.Debug.Typen.Page);
-    }
-  }
 
   FavoritenanzahlClicked() {
 
