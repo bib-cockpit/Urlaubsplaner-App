@@ -141,7 +141,6 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
         Name:      Joi.string().required().max(100),
         Vorname:   Joi.string().required().max(100),
         Kuerzel:   Joi.string().required().min(3).max(10),
-        Jobtitel:  Joi.string().required().min(3).max(100),
         Email:     Joi.string().required().max(255).email({ tlds: { allow: false } }).required(),
 
       }).options({ stripUnknown: true });

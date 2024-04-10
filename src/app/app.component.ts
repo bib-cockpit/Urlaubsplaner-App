@@ -259,10 +259,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
           // Mitarbeiter neu Anlegen
 
+
+
           this.Debug.ShowMessage('Mitarbeiter neu eingetragen.', 'App Component', 'StartApp', this.Debug.Typen.Component);
 
           Mitarbeiter = this.MitarbeiterDB.ConvertGraphuserToMitarbeiter(this.GraphService.Graphuser);
-          Mitarbeiter = <Mitarbeiterstruktur>await this.MitarbeiterDB.AddMitarbeiter(Mitarbeiter);
+
+          if(Mitarbeiter.Email !== null) Mitarbeiter = <Mitarbeiterstruktur>await this.MitarbeiterDB.AddMitarbeiter(Mitarbeiter);
         }
         else {
 

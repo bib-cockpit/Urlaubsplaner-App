@@ -543,7 +543,40 @@ export class CommonUrlaubGesamtuebersichtPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'function', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'SettingsCheckedChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  SettingsHomeofficeCheckedChanged(event: {status: boolean; index: number; event: any; value: string}) {
+
+    try {
+
+      switch (event.value) {
+
+        case this.DB.Homeofficestatusvarianten.Geplant:
+
+          this.DB.GesamtuebersichtSetting.ShowHomeofficeGeplant = event.status;
+
+          break;
+
+        case this.DB.Homeofficestatusvarianten.Freigabeanfrage:
+
+          this.DB.GesamtuebersichtSetting.ShowHomeofficeAnfrage = event.status;
+
+          break;
+
+        case this.DB.Homeofficestatusvarianten.Genehmigt:
+
+          this.DB.GesamtuebersichtSetting.ShowHomeofficeGenehmigt = event.status;
+
+          break;
+
+      }
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'SettingsHomeofficeCheckedChanged', this.Debug.Typen.Page);
     }
   }
 }

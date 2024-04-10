@@ -42,6 +42,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
   private Auswahldialogorigin: string;
   public ShowMitarbeiterauswahl: boolean;
+  public BlockCurrentMitarbeiter: boolean;
   public AuswahlIDliste: string[];
   public MitarbeiterauswahlTitel: string;
   public Projektbeteiligteliste: Mitarbeiterstruktur[];
@@ -77,6 +78,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
       this.Projektbeteiligteliste   = [];
       this.Urlaubsfreigeberliste    = [];
       this.Homeofficefreigeberliste = [];
+      this.BlockCurrentMitarbeiter  = false;
 
     } catch (error) {
 
@@ -365,6 +367,7 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
       this.Auswahldialogorigin     = this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Projektbeteiligte_Auswahl;
       this.MitarbeiterauswahlTitel = 'Mitarbeiter/innen auswählen';
       this.ShowMitarbeiterauswahl  = true;
+      this.BlockCurrentMitarbeiter = true;
       this.AuswahlIDliste          = [];
       this.MitarbeiterMultiselect  = true;
 
@@ -539,54 +542,15 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
     try {
 
-      this.Auswahldialogorigin    = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Mitarbeiter_Wechseln;
-      this.ShowMitarbeiterauswahl = true;
-      this.AuswahlIDliste         = [];
+      this.Auswahldialogorigin     = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Mitarbeiter_Wechseln;
+      this.ShowMitarbeiterauswahl  = true;
+      this.BlockCurrentMitarbeiter = false;
+      this.AuswahlIDliste          = [];
 
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'MitarbeiterWechselnClicked', this.Debug.Typen.Page);
-    }
-  }
-
-  /*
-  FreigabeAuswahlClicked() {
-
-    try {
-
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.UrlaubEinstellungen_Freigeber_Auswahl;
-      this.ShowMitarbeiterauswahl = true;
-      this.AuswahlIDliste = this.DB.CurrentUrlaub.UrlaubsfreigeberID !== null ? [this.DB.CurrentUrlaub.UrlaubsfreigeberID] : [];
-      this.MitarbeiterauswahlTitel = 'Vertreter/innen auswählen';
-      this.MitarbeiterMultiselect = false;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'FreigabeAuswahlClicked', this.Debug.Typen.Page);
-    }
-  }
-
-   */
-
-  GetFreigeberName(FreigeberID: string): string {
-
-    try {
-
-      let Mitarbeiter: Mitarbeiterstruktur = this.DBMitarbeiter.GetMitarbeiterByID(FreigeberID);
-
-      if(Mitarbeiter !== null) {
-
-        return Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
-      }
-      else {
-
-        return 'unbekannt';
-      }
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'GetFreigeberName', this.Debug.Typen.Page);
     }
   }
 }

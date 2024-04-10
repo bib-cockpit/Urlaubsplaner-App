@@ -1132,65 +1132,6 @@ export class Graphservice {
     }
   }
 
-  public async GetTeamsMitglieder(teamsid: string): Promise<Teamsmitgliederstruktur[]> {
-
-    try {
-
-      let Liste: Teamsmitgliederstruktur[] = [];
-      let token = await this.AuthService.RequestToken('user.read');
-
-
-      let GroupID: string = "2d2ff358-7380-442c-8fdc-b91c3df8baa5";
-
-      const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
-
-          done(null, token);
-        }
-      });
-
-      return new Promise <Teamsmitgliederstruktur[]>((resolve, reject) => {
-
-        if(token !== null) {
-
-          graphClient.api('/teams/' + teamsid + '/members').get().then((result: any) => {
-
-            if(!lodash.isUndefined(result.value)) {
-
-              Liste = <Teamsmitgliederstruktur[]>result.value;
-
-              for(let Eintrag of Liste) {
-
-                Eintrag.UserImageSRC = null;
-              }
-            }
-
-            Liste = lodash.filter(Liste, (Mitglied: Teamsmitgliederstruktur) => {
-
-              return Mitglied.email !== 'microsoft@burnicklgroup.onmicrosoft.com';
-            });
-
-            resolve(Liste);
-
-          }).catch((error: GraphError) => {
-
-
-            debugger;
-
-            reject(error);
-          });
-        }
-        else {
-
-          reject(false);
-        }
-      });
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error, 'Graph', 'GetTeamsMitglieder', this.Debug.Typen.Service);
-    }
-  }
-
   public async SendMail(Empfaengerliste: Outlookemailadressstruktur[], Betreff: string, Nachricht: string): Promise<any> {
 
     try {

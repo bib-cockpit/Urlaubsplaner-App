@@ -19,6 +19,8 @@ import * as lodash from "lodash-es";
 import {Subscription} from "rxjs";
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import {DisplayService} from "../../services/diplay/display.service";
+import {loadFromPath} from "@ionic/cli/lib/ssh-config";
+import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
 
 @Component({
   selector: 'fi-mitarbeiter-auswahl',
@@ -36,6 +38,8 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
   @Input() Dialogbreite: number;
   @Input() ZIndex: number;
   @Input() OnlyProjektmitarbeiter: boolean;
+  @Input() BlockCurrentMitarbeiter: boolean;
+
 
 
   @Output() OkClickedEvent     = new EventEmitter<string[]>();
@@ -60,6 +64,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
               public Tools: ToolsProvider,
               public DBStandort: DatabaseStandorteService,
               public Const: ConstProvider,
+              private DBUrlaub: DatabaseUrlaubService,
               public Displayservice: DisplayService,
               private Pool: DatabasePoolService) {
 
@@ -81,6 +86,7 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
       this.Mitarbeiterliste            = [];
       this.FilterSubscription          = null;
       this.OnlyProjektmitarbeiter      = true;
+      this.BlockCurrentMitarbeiter     = false;
 
     } catch (error) {
 
@@ -194,6 +200,14 @@ export class FiMitarbeiterAuswahlComponent implements OnInit, OnDestroy {
           if (a.Name > b.Name) return 1;
           return 0;
         });
+
+        if(this.BlockCurrentMitarbeiter && this.DBUrlaub.CurrentMitarbeiter !== null) {
+
+          Liste = lodash.filter(Liste, (currentmit: Mitarbeiterstruktur) => {
+
+            return currentmit._id !== this.DBUrlaub.CurrentMitarbeiter._id;
+          });
+        }
 
         // Standort Filter anwenden
 

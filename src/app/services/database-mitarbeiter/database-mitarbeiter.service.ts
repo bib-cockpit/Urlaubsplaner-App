@@ -328,8 +328,8 @@ export class DatabaseMitarbeiterService {
 
 
               this.CurrentMitarbeiter    = Merker;
-              this.Pool.Mitarbeiterdaten = Merker;
-              this.Pool.MitarbeiterdatenChanged.emit();
+              // this.Pool.Mitarbeiterdaten = Merker;
+              // this.Pool.MitarbeiterdatenChanged.emit();
 
               this.UpdateMitarbeiterliste(this.CurrentMitarbeiter);
               this.Pool.MitarbeiterlisteChanged.emit();

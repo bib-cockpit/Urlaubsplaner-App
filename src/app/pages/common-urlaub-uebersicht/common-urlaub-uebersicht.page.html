@@ -162,6 +162,24 @@
                 </td>
                 <td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
               </tr>
+              <tr>
+                <td>
+                </td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Geplant">H</div></td><td>geplantes Homeoffice</td>
+              </tr>
+              <tr>
+              <tr>
+                <td>
+                </td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Freigabeanfrage">H</div></td><td>Homeoffice Freigabe angefragt</td>
+              </tr>
+              <tr>
+                <td>
+                </td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Genehmigt">H</div></td><td>Genehmigter Urlaub</td>
+              </tr>
+              <tr>
+                <td>
+                </td>
+                <td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Abgelehnt">H</div></td><td>Abgelehnter Urlaub</td>
+              </tr>
               <tr *ngFor="let Urlaub of DB.UrlaublisteExtern; let i = index">
                 <td>
                   <checkbox-clon [Checked]="DB.CheckDisplayExternenUrlaub(Urlaub.MitarbeiterIDExtern)" (CheckChanged)="DisplayExternCheckChanged($event, Urlaub, i)" [Enabled]="Urlaub.Urlaubzeitspannen.length > 0"></checkbox-clon>

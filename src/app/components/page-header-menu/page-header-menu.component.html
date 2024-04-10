@@ -20,7 +20,7 @@
                   <table class="paddingsmalltable">
                     <tr>
                       <td>
-                        <ion-icon name="home-outline"
+                        <ion-icon style="font-size: 16px" name="home-outline"
                                   [color]="HomeMouseOver ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Weiss">
                         </ion-icon>
                       </td>
@@ -47,7 +47,7 @@
                       <table class="paddingsmalltable">
                         <tr>
                           <td>
-                            <ion-icon name="log-out-outline"
+                            <ion-icon style="font-size: 18px" name="log-out-outline"
                                       [color]="LogoutMouseOver ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Weiss">
                             </ion-icon>
                           </td>
@@ -62,7 +62,7 @@
                     <div  class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Planung)">
                       <table class="paddingsmalltable">
                         <tr>
-                          <td><ion-icon name="create-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Planung)"></ion-icon></td>
+                          <td><ion-icon style="font-size: 16px" name="create-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Planung)"></ion-icon></td>
                           <td style="white-space: nowrap;" [style.color]="GetUrlaubMenueFontcolor(Menuservice.UrlaubMenuebereiche.Planung)">Planung</td>
                         </tr>
                       </table>
@@ -73,7 +73,7 @@
                     <div class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Uebersicht)">
                       <table class="paddingsmalltable">
                         <tr>
-                          <td><ion-icon name="calendar-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Uebersicht)"></ion-icon></td>
+                          <td><ion-icon style="font-size: 16px" name="calendar-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Uebersicht)"></ion-icon></td>
                           <td [style.color]="GetUrlaubMenueFontcolor(Menuservice.UrlaubMenuebereiche.Uebersicht)">Übersicht</td>
                         </tr>
                       </table>
@@ -85,7 +85,7 @@
                       <div class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Gesamtplanung)">
                         <table class="paddingsmalltable">
                           <tr>
-                            <td><ion-icon name="apps-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Gesamtplanung)"></ion-icon></td>
+                            <td><ion-icon style="font-size: 16px" name="apps-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Gesamtplanung)"></ion-icon></td>
                             <td [style.color]="GetUrlaubMenueFontcolor(Menuservice.UrlaubMenuebereiche.Gesamtplanung)">Gesamtplanung</td>
                           </tr>
                         </table>
@@ -98,7 +98,7 @@
                       <div class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Freigaben)">
                         <table class="paddingsmalltable">
                           <tr>
-                            <td><ion-icon name="thumbs-up-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Freigaben)"></ion-icon></td>
+                            <td><ion-icon style="font-size: 16px" name="thumbs-up-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Freigaben)"></ion-icon></td>
                             <td [style.color]="GetUrlaubMenueFontcolor(Menuservice.UrlaubMenuebereiche.Freigaben)">Anfragen</td>
                             <td *ngIf="DBUrlaub.Urlaubsanfragenanzahl > 0 || DBUrlaub.Homeofficeanfragenanzahl > 0">
                               <ion-badge color="rot">{{(DBUrlaub.Urlaubsanfragenanzahl + DBUrlaub.Homeofficeanfragenanzahl).toString()}}</ion-badge>
@@ -113,7 +113,7 @@
                     <div class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Einstellungen)">
                       <table class="paddingsmalltable">
                         <tr>
-                          <td><ion-icon name="settings-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Einstellungen)"></ion-icon></td>
+                          <td><ion-icon style="font-size: 16px" name="settings-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Einstellungen)"></ion-icon></td>
                           <td [style.color]="GetUrlaubMenueFontcolor(Menuservice.UrlaubMenuebereiche.Einstellungen)">Einstellungen</td>
                         </tr>
                       </table>
@@ -137,7 +137,7 @@
                 <table class="paddingsmalltable">
                   <tr>
                     <td>
-                      <ion-icon name="arrow-back-circle-outline"
+                      <ion-icon style="font-size: 16px" name="arrow-back-circle-outline"
                                 [color]="BackMouseOver ? Basics.Ionicfarben.BAEBlau : Basics.Ionicfarben.Weiss">
                       </ion-icon>
                     </td>
@@ -147,55 +147,6 @@
               </div>
 
             </td>
-
-            <!--
-
-            <td align="center" style="width: 12px" *ngIf="Menuservice.MainMenuebereich !== Menuservice.MainMenuebereiche.Urlaubsplanung">
-              <div [class]="Menuservice.MainMenuebereich === Menuservice.MainMenuebereiche.Projekte ? 'trennerbigdivclass' : 'trennerdivclass'"></div>
-            </td>
-              <td *ngIf="ShowStandorttitle === true">
-                <div class="menubuttonclass">
-                  <table class="paddingsmalltable">
-                    <tr>
-                      <td><ion-icon name="location-outline" [color]="Basics.Ionicfarben.Schwarz"></ion-icon></td>
-                      <td [style.color]="'#000000'">Standorte</td>
-                    </tr>
-                  </table>
-                </div>
-              </td>
-
-              <td *ngIf="ShowMitarbeitertitle === true">
-                <div class="menubuttonclass">
-                  <table class="paddingsmalltable">
-                    <tr>
-                      <td><ion-icon name="people-outline" [color]="Basics.Ionicfarben.Schwarz"></ion-icon></td>
-                      <td [style.color]="'#000000'">Mitarbeiter</td>
-                    </tr>
-                  </table>
-                </div>
-              </td>
-              <td *ngIf="ShowProjektetitle === true">
-                <div class="menubuttonclass">
-                  <table class="paddingsmalltable">
-                    <tr>
-                      <td><ion-icon name="business-outline" [color]="Basics.Ionicfarben.Schwarz"></ion-icon></td>
-                      <td [style.color]="'#000000'">Projekte</td>
-                    </tr>
-                  </table>
-                </div>
-              </td>
-              <td *ngIf="ShowFavoritentitle === true">
-                <div class="menubuttonclass" (click)="FirmaMenueButtonClicked(Menuservice.FirmaMenuebereiche.Favoriten)">
-                  <table class="paddingsmalltable">
-                    <tr>
-                      <td><ion-icon name="bookmarks-outline" [color]="Basics.Ionicfarben.Schwarz"></ion-icon></td>
-                      <td [style.color]="'#000000'">Favoriten</td>
-                    </tr>
-                  </table>
-                </div>
-              </td>
-
-              -->
 
 
             <ng-container *ngIf="ShowSuchleiste">
@@ -210,7 +161,7 @@
                 <div class="menufilterbuttonclass" (click)="StandortButtonClicked()">
                   <table class="paddingsmalltable">
                     <tr>
-                      <td><ion-icon name="funnel-outline" color="weiss"></ion-icon></td>
+                      <td><ion-icon style="font-size: 16px" name="funnel-outline" color="weiss"></ion-icon></td>
                       <td style="color: white;">{{DBStandort.GetStandortfiller()}}</td>
                     </tr>
                   </table>
@@ -242,43 +193,6 @@
       </td>
     </tr>
 
-    <!-- Meine Woche 2. Menüzeile -->
-
-    <!--
-    <ng-container *ngIf="this.Menuservice.MainMenuebereich === this.Menuservice.MainMenuebereiche.Projekte && Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.LOPListe">
-        <tr>
-          <td colspan="2" style="padding-left: 8px; padding-right: 8px">
-            <div style="width: 100%; height: 1px; background: white"></div>
-          </td>
-        </tr>
-        <tr>
-          <td style="width: 360px;">
-            <table class="paddingtable">
-              <tr>
-                <td>
-                    <button-value *ngIf="Pool.Mitarbeitersettings !== null" [Buttontext]="'Geschlossene Einträge ausblenden nach'"
-                                  (ButtonClicked)="LOPListeZeitspanneEvent.emit()"
-                                  [Wert_A]="Pool.Mitarbeitersettings.LOPListeGeschlossenZeitfilter.toString() + ' Tage'"></button-value>
-
-                </td>
-                <td style="width: 100px"></td>
-                <td><checkbox-clon [Checked]="DBLOPliste.ShowLOPListeInfoeintraege" (CheckChanged)="ShowLOPListeInfoeintraegeChangedHandler($event)"></checkbox-clon></td>
-                <td>Info Einträge anzeigen</td>
-                <td style="width: 100px"></td>
-
-                <ng-container *ngFor="let Gewerk of Pool.Fachbereich.Gewerkeliste">
-                  <ng-container *ngIf="Gewerk.Anzahl > 0">
-                    <td><checkbox-clon [Checked]="Gewerk.Visible" (CheckChanged)="ShowLOPListeGewerkChangedHandler($event, Gewerk)"></checkbox-clon></td>
-                    <td>{{Gewerk.Bezeichnung}} [{{Gewerk.Anzahl}}]</td>
-                  </ng-container>
-                </ng-container>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-    </ng-container>
-    -->
     <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Projekte &&
                          Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste &&
                          Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Meine_Woche">
@@ -318,310 +232,10 @@
             </tr>
           </table>
         </td>
-        <!--
-        <td></td>
-        -->
       </tr>
 
 
     </ng-container>
-
-    <!--
-
-    <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Projekte &&
-                         Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Festlegungen &&
-                         DBProjekte.CurrentProjekt        !== null">
-      <tr>
-        <td colspan="2" style="padding-left: 8px; padding-right: 8px">
-          <div style="width: 100%; height: 1px; background: white"></div>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2">
-
-          <div style="width: 100%; height: 100%; background: none">
-
-
-            <table *ngIf="Pool.Mitarbeitersettings !== null" class="paddingtable" width="100%">
-              <tr>
-                <td style="width: 380px">
-                  <button-value [Buttontext]="'Leitungsphase'"
-                                (ButtonClicked)="LeistungsphaseFilterClicked.emit()"
-                                [Wert_A]="Pool.Mitarbeitersettings.LeistungsphaseFilter !== Const.Leistungsphasenvarianten.UNBEKANNT ? Pool.Mitarbeitersettings.LeistungsphaseFilter : 'Alle'">
-                  </button-value>
-                </td>
-                <td style="width: 40px">
-                  <ion-button (click)="ExpandFestlegungeEvent.emit(true)" color="burnicklbraun"><ion-icon name="add-circle-outline"></ion-icon></ion-button>
-                </td>
-                <td style="width: 40px">
-                  <ion-button (click)="ExpandFestlegungeEvent.emit(false)" color="burnicklbraun"><ion-icon name="remove-circle-outline"></ion-icon></ion-button>
-                </td>
-                <td style="width: 280px">
-                  <ng-content>
-
-                  </ng-content>
-                </td>
-                <td style="width: auto">
-                  <table class="paddingtable">
-                    <tr>
-                      <td><checkbox-clon [Checked]="ShowOpenFestlegungOnly" (CheckChanged)="ShowOpenFestlegungOnlyChanged($event)"></checkbox-clon></td>
-                      <td>nur offene Festlegungen anzeigen</td>
-                    </tr>
-                  </table>
-                </td>
-                <td style="width: 120px;" align="right">
-                </td>
-              </tr>
-            </table>
-          </div>
-        </td>
-      </tr>
-
-
-    </ng-container>
-
--->
-
-    <!--
-
-    <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Projekte &&
-                         Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Planungsmatrix">
-      <tr>
-        <td colspan="2" style="padding-left: 8px; padding-right: 8px">
-          <div style="width: 100%; height: 1px; background: white"></div>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2">
-
-          <div style="width: 100%; height: 100%; background: none">
-
-
-            <table *ngIf="Pool.Mitarbeitersettings !== null && DBProjekte.CurrentProjekt !== null" class="paddingtable" width="100%">
-              <tr>
-                <td style="width: 380px">
-                  <button-value [Buttontext]="'Leitungsphase'"
-                                (ButtonClicked)="PlanungsmatrixLeistungsphaseClicked.emit()"
-                                [Wert_A]="DBProjekte.CurrentProjekt.Leistungsphase">
-                  </button-value>
-                </td>
-                <td style="width: auto">
-
-                  <table class="paddingtable">
-                    <tr>
-                      <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayBeschreibungen" (CheckChanged)="ShowBeschereibungenChanged($event)"></checkbox-clon></td>
-                      <td>Beschreibungen anzeigen</td>
-                      <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayUngenutzte" (CheckChanged)="ShowUngenutzteChanged($event)"></checkbox-clon></td>
-                      <td>Ungenutze anzeigen</td>
-                      <td style="width: 80px"></td>
-                      <ng-container *ngIf="DBProjekte.CurrentProjekt !== null">
-                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG410" (CheckChanged)="DisplayKG410Changed($event)"></checkbox-clon></td><td>KG 410</td>
-                        <td style="width: 14px"></td>
-                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG420" (CheckChanged)="DisplayKG420Changed($event)"></checkbox-clon></td><td>KG 420</td>
-                        <td style="width: 14px"></td>
-                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG430" (CheckChanged)="DisplayKG430Changed($event)"></checkbox-clon></td><td>KG 430</td>
-                        <td style="width: 14px"></td>
-                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG434" (CheckChanged)="DisplayKG434Changed($event)"></checkbox-clon></td><td>KG 434</td>
-                        <td style="width: 14px"></td>
-                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG440" (CheckChanged)="DisplayKG440Changed($event)"></checkbox-clon></td><td>KG 440</td>
-                        <td style="width: 14px"></td>
-                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG450" (CheckChanged)="DisplayKG450Changed($event)"></checkbox-clon></td><td>KG 450</td>
-                        <td style="width: 14px"></td>
-                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG460" (CheckChanged)="DisplayKG460Changed($event)"></checkbox-clon></td><td>KG 460</td>
-                        <td style="width: 14px"></td>
-                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG475" (CheckChanged)="DisplayKG475Changed($event)"></checkbox-clon></td><td>KG 475</td>
-                        <td style="width: 14px"></td>
-                        <td><checkbox-clon [Checked]="DBProjekte.CurrentProjekt.DisplayKG480" (CheckChanged)="DisplayKG480Changed($event)"></checkbox-clon></td><td>KG 480</td>
-                      </ng-container>
-                    </tr>
-                  </table>
-
-                </td>
-              </tr>
-            </table>
-          </div>
-        </td>
-      </tr>
-
-
-    </ng-container>
-
-    -->
-
-
-
-    <!-- Einzelprojekt 3. Menüzeile -->
-
-    <!--
-     || Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Alle
-     -->
-
-    <!--
-
-    <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Projekte &&
-                         Menuservice.ProjekteMenuebereich === Menuservice.ProjekteMenuebereiche.Aufgabenliste &&
-                         (Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt)  &&
-                         DBProjekte.CurrentProjekt        !== null">
-      <tr>
-        <td colspan="2" style="padding-left: 8px; padding-right: 8px">
-          <div style="width: 100%; height: 1px; background: white"></div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-
-          <div style="width: 100%; height: 100%; background: none">
-
-
-            <table class="paddingtable">
-              <tr>
-                <td style="width: 360px;">
-                  <button-value [Buttontext]="GetZeitfilterButtontext()"
-                                (ButtonClicked)="ZeitspaneClickedHandler(Auswahlservice.Auswahloriginvarianten.Aufgabenliste_Filter_Zeitspanne)"
-                                [Wert_A]="GetZeitfilterButtonwert()"></button-value>
-                </td>
-
-                <ng-container *ngIf="DBProjekte.CurrentFavoritprojektindex !== 1500">
-                  <td align="center" class="trennertdclass"><div class="trennerdivclass"></div>
-                  <td><checkbox-clon [Checked]="GetAufgabenansicht().AufgabenShowOffen"  (CheckChanged)="StatusFilterChanged($event, Const.Projektpunktstatustypen.Offen.Name)"></checkbox-clon></td>
-                  <td><div class="statusvaianteclass" style="background: teal;">Offen</div></td><td style="width: 6px"></td>
-                  <td><checkbox-clon [Checked]="GetAufgabenansicht().AufgabenShowGeschlossen" (CheckChanged)="StatusFilterChanged($event, Const.Projektpunktstatustypen.Geschlossen.Name)"></checkbox-clon></td>
-                  <td><div class="statusvaianteclass" style="background: #c7d304;">Geschlossen</div></td><td style="width: 6px"></td>
-                  <td><checkbox-clon [Checked]="GetAufgabenansicht().AufgabenShowBearbeitung" (CheckChanged)="StatusFilterChanged($event, Const.Projektpunktstatustypen.Bearbeitung.Name)"></checkbox-clon></td>
-                  <td><div class="statusvaianteclass" style="background: #616A6B;">In Bearbeitung</div></td><td style="width: 6px"></td>
-                  <td><checkbox-clon [Checked]="GetAufgabenansicht().AufgabenShowRuecklauf"   (CheckChanged)="StatusFilterChanged($event, Const.Projektpunktstatustypen.Ruecklauf.Name)"></checkbox-clon></td>
-                  <td><div class="statusvaianteclass" style="background: #0020C2;">Rücklauf ausstehend</div></td><td style="width: 6px"></td>
-                  <td><checkbox-clon [Checked]="GetAufgabenansicht().AufgabenShowBilder"   (CheckChanged)="StatusFilterChanged($event, 'Bilder')"></checkbox-clon></td>
-                  <td><div class="statusvaianteclass" style="background: none;">Bilder anzeigen</div></td><td style="width: 6px"></td>
-                </ng-container>
-
-
-
-                [Checked]="DBProjekte.CurrentProjekt.Aufgabenlistefilter.FilterShowFaelligOnly"
-                <td><checkbox-clon (CheckChanged)="StatusFilterShowFaelligOnlyChanged($event)"></checkbox-clon></td>
-                <td><div class="statusvaianteclass" style="background: red;">Nur fällige Aufgaben</div></td>
-
-              </tr>
-            </table>
-
-
-          </div>
-
-        </td>
-        <td></td>
-      </tr>
-    </ng-container>
-
-    -->
-
-    <!--
-    <ng-container *ngIf="Menuservice.MainMenuebereich     === Menuservice.MainMenuebereiche.Email">
-      <tr>
-        <td colspan="2">
-
-          <table style="width: 100%;">
-            <tr>
-              <td style="width: 50%">
-
-
-                <table>
-                  <tr>
-                    <td style="width: 10px"></td>
-                    <td>
-
-                    </td>
-                    <td style="width: 10px"></td>
-                    <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
-                    <td style="width: 10px"></td>
-
-                    <td>
-
-                      <ion-text color="weiss">
-                        <b>
-                          Email
-                        </b>
-                      </ion-text>
-
-                    </td>
-
-                    <td style="width: 100px"></td>
-                    <td>
-
-                      <table  *ngIf="DBProjekte.CurrentProjekt !== null" class="paddingtable">
-                        <tr>
-                          <td>
-                            <ion-button (click)="ProjektGoBackClicked()" slot="icon-only"
-                                        [color]="GetProjektBackButtoncolor()" size="small">
-                              <ion-icon name="arrow-back-circle" style="font-size: 22px"></ion-icon>
-                            </ion-button>
-                          </td>
-                          <td>
-                            <div (click)="ProjektClicked()" [style.border-color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt ? '#c7d304' : 'white'"  class="buttonclass">
-                              <table>
-                                <tr>
-                                  <td [style.color]="Menuservice.Aufgabenlisteansicht === Menuservice.Aufgabenlisteansichten.Projekt ? '#c7d304' : 'white'">
-                                    {{DBProjekte.CurrentProjekt.Projektkurzname}}
-                                  </td>
-                                </tr>
-                              </table>
-                            </div>
-                          </td>
-                          <td>
-                            <ion-button (click)="ProjektGoForwardClicked()" slot="icon-only"
-                                        [color]="GetProjektForwardButtoncolor()" size="small">
-                              <ion-icon name="arrow-forward-circle" style="font-size: 22px"></ion-icon>
-                            </ion-button>
-                          </td>
-                        </tr>
-                      </table>
-
-
-
-                    </td>
-
-
-                  </tr>
-                </table>
-
-
-
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2" style="padding-left: 8px; padding-right: 8px">
-          <div style="width: 100%; height: 1px; background: white"></div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-
-          <div style="width: 100%; height: 100%; background: none">
-
-            <table class="paddingtable">
-              <tr>
-                <td>
-                  <checkbox-clon [Checked]="DBEmail.ShowUngelesenOnly" (CheckChanged)="ShowUngelesenCheckChanged($event)"></checkbox-clon>
-                </td>
-                <td>
-                  Nur ungelesene Emails anzeigen
-                </td>
-                <td>
-                  <checkbox-clon [Checked]="DBEmail.Projektsortierung" (CheckChanged)="ProjektsortierungChangedHandler($event)"></checkbox-clon>
-                </td>
-                <td>
-                  Sortieren nach Projekten
-                </td>
-              </tr>
-            </table>
-
-          </div>
-        </td>
-      </tr>
-          </table>
-
-    </ng-container>
-
-    -->
 
 
 
@@ -630,9 +244,6 @@
 </ng-container>
 
 
-<!--
-Mainmenu Bereich: {{Menuservice.MainMenuebereich}} | Projekt Menubereich: {{Menuservice.ProjekteMenuebereich}} | Aufgabenlistenansicht: {{Menuservice.Aufgabenlisteansicht}}
--->
 
 
 

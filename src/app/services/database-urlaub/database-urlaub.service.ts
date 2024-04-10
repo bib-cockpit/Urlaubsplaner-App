@@ -92,7 +92,10 @@ export class DatabaseUrlaubService {
     ShowVertreterfreigaben:   true,
     ShowVertreterablehnungen: false,
     ShowUrlaubsgenehmigungen: true,
-    ShowUrlaubsablehnungen:   false
+    ShowUrlaubsablehnungen:   false,
+    ShowHomeofficeGeplant:    true,
+    ShowHomeofficeGenehmigt:  true,
+    ShowHomeofficeAnfrage:    true,
   };
 
   public Homeofficestatusvarianten = {
@@ -254,7 +257,7 @@ export class DatabaseUrlaubService {
 
             Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, (urlaub: Urlaubsstruktur) => {
 
-              return urlaub.Jahr === this.Jahr && this.CurrentMitarbeiter.StandortID === this.Pool.Mitarbeiterdaten.StandortID;
+              return urlaub.Jahr === this.Jahr; //  && this.CurrentMitarbeiter.StandortID === this.Pool.Mitarbeiterdaten.StandortID;
             });
 
             if(!lodash.isUndefined(Urlaub)) {
@@ -266,7 +269,7 @@ export class DatabaseUrlaubService {
 
                 Zeitspanne = this.InitZeitspanne(Zeitspanne);
 
-                if (Zeitspanne.UrlaubsfreigeberID === this.CurrentMitarbeiter._id && this.CheckUrlaubFreigabeanwortAge(Zeitspanne) === true &&
+                if (Standort.Urlaubfreigabepersonen.indexOf(this.CurrentMitarbeiter._id) !== -1 && this.CurrentMitarbeiter.Urlaubsfreigaben && this.CheckUrlaubFreigabeanwortAge(Zeitspanne) === true &&
                    (Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterfreigabe ||
                     Zeitspanne.Status === this.Urlaubstatusvarianten.Abgelehnt ||
                     Zeitspanne.Status === this.Urlaubstatusvarianten.Genehmigt)) {
@@ -399,7 +402,7 @@ export class DatabaseUrlaubService {
           Datum = moment(Zeitspanne.Vertretungantwortzeitstempel).locale('de');
           Dauer = moment.duration(Heute.diff(Datum)).asMinutes();
 
-          return Dauer <= 180;
+          return Dauer <= 5;
 
         }
       }
@@ -436,7 +439,7 @@ export class DatabaseUrlaubService {
           Datum = moment(Zeitspanne.Freigabeantwortzeitstempel).locale('de');
           Dauer = moment.duration(Heute.diff(Datum)).asMinutes();
 
-          return Dauer <= 180;
+          return Dauer <= 5;
 
         }
       }
@@ -776,7 +779,7 @@ export class DatabaseUrlaubService {
 
     try {
 
-      let Vertretungsliste: Mitarbeiterstruktur[];
+      let Freigeberliste: Mitarbeiterstruktur[];
       let CurrentHomeofficezeitspannen: Homeofficezeitspannenstruktur[] = [];
       let UpdatedHomeofficezeitspannen: Homeofficezeitspannenstruktur[] = [];
       let Index;
@@ -785,7 +788,7 @@ export class DatabaseUrlaubService {
 
       // Vertretung                   = lodash.find(this.Pool.Mitarbeiterliste, {_id: this.CurrentUrlaub.UrlaubsfreigeberID});
       CurrentHomeofficezeitspannen = [];
-      Vertretungsliste             = [];
+      Freigeberliste               = [];
 
       Standort = lodash.find(this.Pool.Standorteliste, {_id: this.CurrentMitarbeiter.StandortID});
 
@@ -793,7 +796,7 @@ export class DatabaseUrlaubService {
 
         Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: MitarbeiterID});
 
-        if(!lodash.isUndefined(Mitarbeiter)) Vertretungsliste.push(Mitarbeiter);
+        if(!lodash.isUndefined(Mitarbeiter)) Freigeberliste.push(Mitarbeiter);
       }
 
 
@@ -811,7 +814,7 @@ export class DatabaseUrlaubService {
         }
       }
 
-      UpdatedHomeofficezeitspannen = await this.SendHomeofficefreigabeanfrage(this.CurrentMitarbeiter, Vertretungsliste, UpdatedHomeofficezeitspannen);
+      UpdatedHomeofficezeitspannen = await this.SendHomeofficefreigabeanfrage(this.CurrentMitarbeiter, Freigeberliste, UpdatedHomeofficezeitspannen);
       CurrentHomeofficezeitspannen = CurrentHomeofficezeitspannen.concat(UpdatedHomeofficezeitspannen);
 
 
@@ -842,7 +845,7 @@ export class DatabaseUrlaubService {
 
       let Standort: Standortestruktur = lodash.find(this.Pool.Standorteliste, {_id: Mitarbeiter.StandortID});
 
-      return Standort.Urlaubfreigabepersonen.indexOf(this.Pool.Mitarbeiterdaten.StandortID) !== -1;
+      return Standort.Urlaubfreigabepersonen.indexOf(this.CurrentMitarbeiter._id) !== -1;
 
     } catch (error) {
 
@@ -856,7 +859,7 @@ export class DatabaseUrlaubService {
 
       let Standort: Standortestruktur = lodash.find(this.Pool.Standorteliste, {_id: Mitarbeiter.StandortID});
 
-      return Standort.Homeofficefreigabepersonen.indexOf(this.Pool.Mitarbeiterdaten.StandortID) !== -1;
+      return Standort.Homeofficefreigabepersonen.indexOf(this.Pool.Mitarbeiterdaten._id) !== -1;
 
     } catch (error) {
 
@@ -918,7 +921,7 @@ export class DatabaseUrlaubService {
 
       Urlaub = await this.SendVertreterzusage(Mitarbeiter, Stellvertreter, Freigebender, Urlaub);
       Urlaub = await this.SendVertreterabsage(Mitarbeiter, Stellvertreter, Freigebender, Urlaub);
-      Urlaub = await this.SendFreigabeanfrage(Mitarbeiter, Freigebender, Urlaub);
+      Urlaub = await this.SendFreigabeanfrage(Mitarbeiter, Urlaub);
 
       let Urlaubindex = lodash.findIndex(Mitarbeiter.Urlaubsliste, { Jahr: this.Jahr });
 
@@ -1340,20 +1343,48 @@ export class DatabaseUrlaubService {
     }
   }
 
-  public SendFreigabeanfrage(Mitarbeiter: Mitarbeiterstruktur,  Freigebender: Mitarbeiterstruktur, Urlaub: Urlaubsstruktur): Promise<Urlaubsstruktur> {
+  public SendFreigabeanfrage(Mitarbeiter: Mitarbeiterstruktur,   Urlaub: Urlaubsstruktur): Promise<Urlaubsstruktur> {
 
     try {
 
       let Betreff: string = 'Anfrage Urlaubsfreigabe von ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
       let Nachricht: string;
-      let Empfaenger: Outlookemailadressstruktur[] = [];
+      let Empfaengerliste: Outlookemailadressstruktur[] = [];
       let SendAntwort: boolean = false;
       let Vertreter: Mitarbeiterstruktur;
       let Heute: Moment = moment().locale('de');
+      let Freigebender: Mitarbeiterstruktur;
+      let Standort: Standortestruktur = lodash.find(this.Pool.Standorteliste, {_id: Mitarbeiter.StandortID});
+
+      for(let FreigeberID of Standort.Urlaubfreigabepersonen) {
+
+        Freigebender = lodash.find(this.Pool.Mitarbeiterliste, {_id: FreigeberID});
+
+        if(!lodash.isUndefined(Freigebender)) {
+
+          Empfaengerliste.push({
+
+            emailAddress: {
+
+              address: Freigebender.Email,
+              name: Freigebender.Vorname + ' ' + Freigebender.Name
+            }
+          });
+        }
+      }
+
 
       return new Promise((resolve, reject) => {
 
-        Nachricht  = "Hallo " + Freigebender.Vorname + "<br><br> es liegen neue Anfragen zur Urlaufsfreigabe von ";
+        Nachricht = '';
+
+        for(let Eintrag of Empfaengerliste) {
+
+          Nachricht  += "Hallo " + Eintrag.emailAddress.name + ",<br>";
+        }
+
+        Nachricht += "<br>";
+        Nachricht += "es liegen neue Anfragen zur Urlaufsfreigabe von ";
         Nachricht += Mitarbeiter.Vorname + " " + Mitarbeiter.Name + " vor:<br><br>";
         Nachricht += '<table border="1">';
         Nachricht += '<tr>';
@@ -1388,18 +1419,9 @@ export class DatabaseUrlaubService {
         Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaub - Homeoffice - Planung jetzt öffnen</a>';
         Nachricht += '<br><br>' + this.Pool.GetFilledSignatur(Mitarbeiter,true);
 
-        Empfaenger.push({
-
-          emailAddress: {
-
-            address: Freigebender.Email,
-            name: Freigebender.Vorname + ' ' + Freigebender.Name
-          }
-        });
-
         if(SendAntwort === true) {
 
-          this.Graph.SendMail(Empfaenger, Betreff, Nachricht).then(() => {
+          this.Graph.SendMail(Empfaengerliste, Betreff, Nachricht).then(() => {
 
             console.log('Freigabe Anfrage wurde versendet.');
 
@@ -2182,7 +2204,7 @@ export class DatabaseUrlaubService {
 
           Gesamturlaub  = 0;
           Gesamturlaub += Mitarbeiter.Urlaub;
-          Gesamturlaub += this.DBMitarbeiter.CurrentMitarbeiter.Resturlaub;
+          Gesamturlaub += Mitarbeiter.Resturlaub;
           Urlaubstage   = 0;
 
           for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
@@ -2394,13 +2416,64 @@ export class DatabaseUrlaubService {
         }
       }
 
-
-
       return null;
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'CheckIsUrlaubstag', this.Debug.Typen.Service);
+    }
+  }
+
+  public CheckIsHomeofficetag(Mitarbeiter: Mitarbeiterstruktur, Tag: Kalendertagestruktur): Homeofficezeitspannenstruktur {
+
+    try {
+
+      let CurrentTag: Moment = moment(Tag.Tagstempel);
+      let Starttag: Moment;
+      let Endetag: Moment;
+      let Homeoffice: Urlaubsstruktur;
+      let Index: number = lodash.findIndex(Mitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
+
+      if(Index !== -1) {
+
+        Homeoffice = Mitarbeiter.Urlaubsliste[Index];
+
+        for(let Eintrag of Homeoffice.Homeofficezeitspannen) {
+
+          Starttag = moment(Eintrag.Startstempel);
+          Endetag  = moment(Eintrag.Endestempel);
+
+          if(CurrentTag.isSameOrAfter(Starttag, 'day') && CurrentTag.isSameOrBefore(Endetag, 'day') && Eintrag.Status !== this.Homeofficestatusvarianten.Abgelehnt) {
+
+            switch (Eintrag.Status) {
+
+              case this.Homeofficestatusvarianten.Geplant:
+
+                if(this.GesamtuebersichtSetting.ShowHomeofficeGeplant === true) return Eintrag;
+
+                break;
+
+              case this.Homeofficestatusvarianten.Genehmigt:
+
+                if(this.GesamtuebersichtSetting.ShowHomeofficeGenehmigt === true) return Eintrag;
+
+                break;
+
+              case this.Homeofficestatusvarianten.Freigabeanfrage:
+
+                if(this.GesamtuebersichtSetting.ShowHomeofficeAnfrage === true) return Eintrag;
+
+                break;
+            }
+          }
+        }
+      }
+
+      return null;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'CheckIsHomeofficetag', this.Debug.Typen.Service);
     }
   }
 
@@ -2516,6 +2589,8 @@ export class DatabaseUrlaubService {
       this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'CheckIsFeiertag', this.Debug.Typen.Service);
     }
   }
+
+
 
   GetFeiertag(currenttag: Kalendertagestruktur, landcode: string): Kalendertagestruktur {
 

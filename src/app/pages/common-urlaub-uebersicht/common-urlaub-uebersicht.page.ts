@@ -372,8 +372,6 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
 
       if(!lodash.isUndefined(Beteiligt)) Beteiligt.Display = event.status;
 
-      debugger;
-
       let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
 
       this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;

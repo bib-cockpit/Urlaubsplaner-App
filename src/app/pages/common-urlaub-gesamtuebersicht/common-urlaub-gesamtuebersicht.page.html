@@ -86,6 +86,12 @@
                           {{Mitarbeiter.Kuerzel}}
                         </div>
                       </ng-container>
+                      <ng-container *ngIf="DB.CheckIsHomeofficetag(Mitarbeiter, Datum) !== null">
+                        <div class="homeofficeclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.CheckIsHomeofficetag(Mitarbeiter, Datum).Status)">
+                          {{Mitarbeiter.Kuerzel}}<br>HO
+                        </div>
+                      </ng-container>
+
                     </td>
                   </tr>
                 </ng-container>
@@ -134,6 +140,15 @@
           </tr>
           <tr>
             <td></td><td><checkbox-clon (CheckChanged)="SettingsCheckedChanged($event)" [Value]="DB.Urlaubstatusvarianten.Abgelehnt" [Checked]="DB.GesamtuebersichtSetting.ShowUrlaubsablehnungen"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Abgelehnt"></div></td><td>Abgelehnter Urlaub</td>
+          </tr>
+          <tr>
+            <td></td><td><checkbox-clon (CheckChanged)="SettingsHomeofficeCheckedChanged($event)" [Value]="DB.Homeofficestatusvarianten.Geplant" [Checked]="DB.GesamtuebersichtSetting.ShowHomeofficeGeplant"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Geplant">HO</div></td><td>Homeoffice geplant</td>
+          </tr>
+          <tr>
+            <td></td><td><checkbox-clon (CheckChanged)="SettingsHomeofficeCheckedChanged($event)" [Value]="DB.Homeofficestatusvarianten.Freigabeanfrage" [Checked]="DB.GesamtuebersichtSetting.ShowHomeofficeAnfrage"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Freigabeanfrage">HO</div></td><td>Homeoffice Anfrage</td>
+          </tr>
+          <tr>
+            <td></td><td><checkbox-clon (CheckChanged)="SettingsHomeofficeCheckedChanged($event)" [Value]="DB.Homeofficestatusvarianten.Genehmigt" [Checked]="DB.GesamtuebersichtSetting.ShowHomeofficeGenehmigt"></checkbox-clon></td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Genehmigt">HO</div></td><td>Homeoffice genehmigt</td>
           </tr>
         </table>
         <table class="paddingtable">
