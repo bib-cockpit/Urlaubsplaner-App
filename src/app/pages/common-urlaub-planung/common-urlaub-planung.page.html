@@ -5,364 +5,502 @@
 </ion-header>
 <ion-content>
 
-  <div class="contentdivclass">
-    <table style="width: 100%">
-      <tr>
-        <td style="height: 20px;"></td>
-      </tr>
-      <tr>
-        <td align="center">
+  <div class="contentkeeperdivclass" *ngIf="Pool.Mitarbeiterdaten !== null">
 
-          <table class="paddingsmalltable">
-            <tr>
-              <td>
-                <div  (click)="MonatBackButtonClicked()"  class="monatedivclass">
-                  <ion-icon name="caret-back-outline" style="font-size: 20px"></ion-icon>
-                </div>
-              </td>
-              <td *ngFor="let Monat of DB.Monateliste; let Monatindex = index">
-                <div [style.color]="GetMonatButtonColor(Monatindex)" (click)="MonatButtonClicked(Monatindex)"  class="monatedivclass">{{Monat}}</div>
-              </td>
-              <td>
-                <div  (click)="MonatForwardButtonClicked()"  class="monatedivclass">
-                  <ion-icon name="caret-forward-outline" style="font-size: 20px"></ion-icon>
-                </div>
-              </td>
-            </tr>
-          </table>
+    <div class="contentdivclass">
 
-        </td>
-      </tr>
-      <tr>
-        <td align="center" valign="top">
+      <table style="width: 100%">
+        <tr>
+          <td style="height: 20px;"></td>
+        </tr>
+        <tr>
+          <td align="center">
 
-          <table class="paddingtable">
-            <tr>
+            <table class="paddingsmalltable">
+              <tr>
+                <td>
+                  <div  (click)="MonatBackButtonClicked()"  class="monatedivclass">
+                    <ion-icon name="caret-back-outline" style="font-size: 20px"></ion-icon>
+                  </div>
+                </td>
+                <td *ngFor="let Monat of DB.Monateliste; let Monatindex = index">
+                  <div [style.color]="GetMonatButtonColor(Monatindex)" (click)="MonatButtonClicked(Monatindex)"  class="monatedivclass">{{Monat}}</div>
+                </td>
+                <td>
+                  <div  (click)="MonatForwardButtonClicked()"  class="monatedivclass">
+                    <ion-icon name="caret-forward-outline" style="font-size: 20px"></ion-icon>
+                  </div>
+                </td>
+              </tr>
+            </table>
 
-              <td style="width: 500px" valign="top">
-                <urlaubsplanung-kalender
-                  [Jahr]="DB.Jahr"
-                  [Monatindex]="DB.FirstMonatIndex"
-                  [AddUrlaubRunning]="AddUrlaubRunning"
-                  [AddHomeofficerunning]="AddHomeofficeRunning"
-                  (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
-                  (AddHomeofficeEvent)="AddHomeoffice()"
-                  (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
-                  (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
-                </urlaubsplanung-kalender>
-              </td>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" valign="top">
 
-              <td style="width: 500px" valign="top">
-                <urlaubsplanung-kalender
-                  [Jahr]="DB.Jahr"
-                  [ShowYear]="true"
-                  [Monatindex]="DB.CurrentMonatindex"
-                  [AddUrlaubRunning]="AddUrlaubRunning"
-                  [AddHomeofficerunning]="AddHomeofficeRunning"
-                  (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
-                  (AddHomeofficeEvent)="AddHomeoffice()"
-                  (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
-                  (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
-                </urlaubsplanung-kalender>
-              </td>
+            <table class="paddingtable">
+              <tr>
 
-              <td style="width: 500px" valign="top">
-                <urlaubsplanung-kalender
-                  [Jahr]="DB.Jahr"
-                  [Monatindex]="DB.LastMonatIndex"
-                  [AddUrlaubRunning]="AddUrlaubRunning"
-                  [AddHomeofficerunning]="AddHomeofficeRunning"
-                  (AddUrlaubFinished)="AddUrlaubFinishedHandler()"
-                  (AddHomeofficeEvent)="AddHomeoffice()"
-                  (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
-                  (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
-                </urlaubsplanung-kalender>
-              </td>
+                <td style="width: 500px" valign="top">
+                  <urlaubsplanung-kalender
+                    [Jahr]="DB.Jahr"
+                    [Monatindex]="DB.FirstMonatIndex"
+                    [AddUrlaubRunning]="AddUrlaubRunning"
+                    [AddHomeofficerunning]="AddHomeofficeRunning"
+                    (AddUrlaubFinishedEvent)="AddUrlaubFinishedHandler()"
+                    (AddHomeofficeFinishedEvent)="AddHomeofficeFinishedHandler()"
+                    (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
+                    (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
+                  </urlaubsplanung-kalender>
+                </td>
 
-            </tr>
-          </table>
+                <td style="width: 500px" valign="top">
+                  <urlaubsplanung-kalender
+                    [Jahr]="DB.Jahr"
+                    [ShowYear]="true"
+                    [Monatindex]="DB.CurrentMonatindex"
+                    [AddUrlaubRunning]="AddUrlaubRunning"
+                    [AddHomeofficerunning]="AddHomeofficeRunning"
+                    (AddUrlaubFinishedEvent)="AddUrlaubFinishedHandler()"
+                    (AddHomeofficeFinishedEvent)="AddHomeofficeFinishedHandler()"
+                    (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
+                    (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
+                  </urlaubsplanung-kalender>
+                </td>
 
-        </td>
+                <td style="width: 500px" valign="top">
+                  <urlaubsplanung-kalender
+                    [Jahr]="DB.Jahr"
+                    [Monatindex]="DB.LastMonatIndex"
+                    [AddUrlaubRunning]="AddUrlaubRunning"
+                    [AddHomeofficerunning]="AddHomeofficeRunning"
+                    (AddUrlaubFinishedEvent)="AddUrlaubFinishedHandler()"
+                    (AddHomeofficeFinishedEvent)="AddHomeofficeFinishedHandler()"
+                    (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
+                    (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
+                  </urlaubsplanung-kalender>
+                </td>
 
-      </tr>
-      <tr *ngIf="DB.CurrentUrlaub !== null">
-        <td valign="top">
+              </tr>
+            </table>
 
-          <table style="width: 100%">
-            <tr>
-              <td valign="top" align="center" style="width: 50%; padding: 4px;">
+          </td>
 
-                <table>
-                  <tr *ngIf="AddUrlaubRunning === false && AddHomeofficeRunning === false">
-                    <td align="center">
-                      <table class="paddingsmalltable">
-                        <tr>
-                          <td align="center">
-                            <ion-button [disabled]="DB.CountResturlaub() <= 0" size="small" (click)="AddUrlaub()">Urlaub eintragen</ion-button>
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                  <tr *ngIf="AddUrlaubRunning === true">
-                    <td align="center">
-                      <table class="paddingsmalltable">
-                        <tr>
-                          <td>
-                            <!--Startdatum</td><td> -->
-                            <div class="datumdivclass">
-                              {{this.DB.CurrentUrlaubzeitspanne !== null && DB.CurrentUrlaubzeitspanne.Startstempel !== null ? this.DB.CurrentUrlaubzeitspanne.Startstring : 'Bitte Startdatum im Kalender oben anklicken'}}
-                            </div>
-                          </td>
-                          <ng-container *ngIf="this.DB.CurrentUrlaubzeitspanne !== null && DB.CurrentUrlaubzeitspanne.Startstempel !== null">
-                            <td style="width: 100px; text-align: center;">bis zum</td>
-                            <td>
-                              <div class="datumdivclass">
-                                {{this.DB.CurrentUrlaubzeitspanne !== null && DB.CurrentUrlaubzeitspanne.Endestempel !== null ? this.DB.CurrentUrlaubzeitspanne.Endestempel : 'Bitte Endedatum im Kalender oben anklicken'}}
-                              </div>
-                              <!--Endedatum</td><td>{{this.DB.CurrentUrlaubzeitspanne !== null ? this.DB.CurrentUrlaubzeitspanne.Endestring : 'Bitte festlegen'}} -->
+        </tr>
+        <tr *ngIf="DB.CurrentUrlaub !== null">
+          <td valign="top">
+
+            <table style="width: 100%">
+              <tr>
+                <td valign="top" align="center" style="width: 50%; padding: 4px;">
+
+                  <table>
+                    <tr *ngIf="AddUrlaubRunning === false && AddHomeofficeRunning === false">
+                      <td align="center">
+                        <table class="paddingsmalltable">
+                          <tr>
+                            <td align="center">
+                              <ion-button [disabled]="DB.CountResturlaub() <= 0" size="small" (click)="AddUrlaub()">Urlaub eintragen</ion-button>
                             </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr *ngIf="AddUrlaubRunning === true">
+                      <td align="center">
+                        <table class="paddingsmalltable">
+                          <tr>
+                            <td>
+                              <!--Startdatum</td><td> -->
+                              <div class="datumdivclass">
+                                {{this.DB.CurrentUrlaubzeitspanne !== null && DB.CurrentUrlaubzeitspanne.Startstempel !== null ? this.DB.CurrentUrlaubzeitspanne.Startstring : 'Bitte Startdatum im Kalender oben anklicken'}}
+                              </div>
+                            </td>
+                            <ng-container *ngIf="this.DB.CurrentUrlaubzeitspanne !== null && DB.CurrentUrlaubzeitspanne.Startstempel !== null">
+                              <td style="width: 100px; text-align: center;">bis zum</td>
+                              <td>
+                                <div class="datumdivclass">
+                                  {{this.DB.CurrentUrlaubzeitspanne !== null && DB.CurrentUrlaubzeitspanne.Endestempel !== null ? this.DB.CurrentUrlaubzeitspanne.Endestempel : 'Bitte Endedatum im Kalender oben anklicken'}}
+                                </div>
+                                <!--Endedatum</td><td>{{this.DB.CurrentUrlaubzeitspanne !== null ? this.DB.CurrentUrlaubzeitspanne.Endestring : 'Bitte festlegen'}} -->
+                              </td>
+                            </ng-container>
+
+                            <td *ngIf="AddUrlaubRunning === true">
+                              <div class="datumcanceldivclass" (click)="CancelDatumClicked()">
+                                <ion-icon name="close-outline" style="font-size: 36px" color="weiss"></ion-icon>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                          </tr>
+                        </table>
+
+                      </td>
+                    </tr>
+                    <tr *ngIf="AddHomeofficeRunning === false && AddUrlaubRunning === false && DB.CurrentUrlaub.Urlaubzeitspannen.length === 0">
+                      <td align="center">
+
+                        <table style="width: 520px;" class="docinnertable">
+                          <tr>
+                            <td style="text-align: center">Momentan ist noch kein Urlaub eingetragen. Du hast {{DB.CountResturlaub()}} Urlaubstage.</td>
+                          </tr>
+                        </table>
+
+                      </td>
+                    </tr>
+                    <tr  *ngIf="AddUrlaubRunning === false && AddHomeofficeRunning === false && DB.CurrentUrlaub.Urlaubzeitspannen.length > 0">
+                      <td align="center">
+
+                        <table class="docinnertablesmall">
+                          <tr>
+                            <td style="font-weight: bold;">Von</td>
+                            <td style="font-weight: bold;">Bis</td>
+                            <td style="font-weight: bold; text-align: center">Tage</td>
+                            <td style="font-weight: bold;">Stellvertreter</td>
+                            <td style="font-weight: bold;">Status</td>
+                            <td style="font-weight: bold; min-width: 600px">Statusmeldung</td>
+                            <td style="width:30px"></td>
+                            <td style="width: 30px"></td>
+                          </tr>
+                          <ng-container *ngIf="DB.CurrentUrlaub.Urlaubzeitspannen.length > 0">
+                            <tr *ngFor="let Zeitspanne of DB.CurrentUrlaub.Urlaubzeitspannen">
+                              <td>{{GetDatum(Zeitspanne.Startstempel)}}</td>
+                              <td>{{GetDatum(Zeitspanne.Endestempel)}}</td>
+                              <td style="text-align: center">{{Zeitspanne.Tageanzahl}}</td>
+                              <td>
+                                <ion-button *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant || Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterablehnung" size="small" color="grau" (click)="StellvertreterFestlegenClicked(Zeitspanne)">{{Zeitspanne.UrlaubsvertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</ion-button>
+                                <span       *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant && Zeitspanne.Status !== DB.Urlaubstatusvarianten.Vertreterablehnung">{{Zeitspanne.UrlaubsvertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</span>
+                              </td>
+                              <td align="center">
+                                <div (click)="StatusClickedHandler(Zeitspanne)" class="legendedivclass"
+                                     [style.cursor]="Pool.Mitarbeiterdaten.Urlaubsfreigaben === true ? 'pointer' : 'default'"
+                                     [style.background]="DB.GetUrlaubStatuscolor(Zeitspanne.Status)">
+                                </div>
+                              </td>
+                              <td [innerHTML]="Zeitspanne.Planungmeldung"></td>
+                              <td>
+                                <ion-button size="small" color="grau" (click)="UrlaubSuchen(Zeitspanne)"><ion-icon name="search" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
+                              </td>
+                              <td><ion-button size="small" color="rot" (click)="UrlaubLoeschen(Zeitspanne)" [disabled]="CheckUrlaubLoschenEnabled(Zeitspanne) === false"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button></td>
+                            </tr>
+                          </ng-container>
+                          <ng-container *ngIf="DB.CurrentUrlaub.Urlaubzeitspannen.length === 0">
+                            <tr>
+                              <td colspan="8"></td>
+                            </tr>
+                          </ng-container>
+                          <tr>
+                            <td colspan="2" style="text-align: right; font-weight: bold">Resturlaub</td>
+                            <td style="text-align: center">{{DB.CountResturlaub()}}</td>
+                            <td colspan="5"></td>
+                          </tr>
+                          <tr>
+                            <td align="center" colspan="8">
+                              <ion-button [disabled]="CheckUrlaubUpdatesAvailable() === false"  size="small" (click)="DB.UpdateVertreteranfragen()">Aktualisierung senden</ion-button>
+                            </td>
+                          </tr>
+                        </table>
+
+                      </td>
+                    </tr>
+
+                  </table>
+
+
+
+
+                </td>
+                <td valign="top" align="center" style="width: 50%; padding: 4px;">
+
+                  <table>
+                    <tr *ngIf="AddUrlaubRunning === false && AddHomeofficeRunning === false">
+                      <td align="center">
+
+                        <table class="paddingsmalltable">
+                          <tr>
+                            <td align="center">
+                              <ion-button [disabled]="DB.CountHomeoffice() <= 0" size="small" (click)="AddHomeofficeStart()">Homeoffice eintragen</ion-button>
+                            </td>
+                          </tr>
+                        </table>
+
+                      </td>
+                    </tr>
+                    <tr *ngIf="AddHomeofficeRunning === true">
+                      <td>
+
+                        <table class="paddingsmalltable">
+                          <tr>
+                            <td align="center">
+                              <div class="datumokdivclass" (click)="SaveHomeofficeEventHandler()">
+                                <table>
+                                  <tr>
+                                    <td style="color: white; font-size: 120%"><b>Fertig</b></td>
+                                    <td><ion-icon name="checkmark-outline" style="font-size: 36px" color="weiss"></ion-icon></td>
+                                  </tr>
+                                </table>
+
+                              </div>
+                            </td>
+                          </tr>
+                        </table>
+
+                      </td>
+                    </tr>
+                    <tr *ngIf="AddHomeofficeRunning === false && AddUrlaubRunning === false && DB.CurrentUrlaub.Homeofficezeitspannen.length === 0">
+                      <td align="center">
+
+                        <table style="width: 520px;" class="docinnertable">
+                          <tr>
+                            <td style="text-align: center">Momentan ist noch kein Homeoffice eingetragen. Du hast {{DB.CountHomeoffice()}} Homeofficetage.</td>
+                          </tr>
+                        </table>
+
+                      </td>
+                    </tr>
+                    <tr  *ngIf="AddUrlaubRunning === false && AddHomeofficeRunning === false && DB.CurrentUrlaub.Homeofficezeitspannen.length > 0">
+                      <td align="center">
+
+                        <table class="docinnertable">
+                          <tr>
+                            <td style="font-weight: bold; text-align: left; width: 660px;">Tage</td>
+                            <td style="font-weight: bold; text-align: center;">Status</td>
+                            <td style="font-weight: bold; text-align: center; width: 50px;"></td>
+                          </tr>
+                          <ng-container *ngIf="DB.CountHomeGenehmigt() > 0">
+                          <tr>
+                            <td>
+                              <table class="nobordertable" style="width: 100%;">
+                                <ng-container *ngFor="let Zeitspannemonatsliste of DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Genehmigt); let Monatindex = index">
+                                  <ng-container *ngIf="Zeitspannemonatsliste.length > 0">
+                                    <tr>
+                                      <td style="width: 70px; font-weight: bold;" valign="top">
+                                        <div class="monatlableclass">
+                                          {{DB.Monateliste[Monatindex]}}
+                                        </div>
+                                      </td>
+                                      <td style="width: auto">
+                                        <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; min-height: 30px;">
+                                          <div *ngFor="let Zeitspanne of Zeitspannemonatsliste; let Zeitspanneindex = index" style="width: 114px;">
+                                            <table class="nobordertable">
+                                              <tr>
+                                                <td>{{Zeitspanne.Startstring}}</td>
+                                                <td><checkbox-clon [Checked]="Zeitspanne.Checked" (CheckChanged)="ZeitspanneCheckChanged($event, Zeitspanne)"></checkbox-clon></td>
+                                                <td *ngIf="Zeitspanneindex < Zeitspannemonatsliste.length - 1">|</td>
+                                              </tr>
+                                            </table>
+                                          </div>
+                                        </div>
+                                      </td>
+                                    </tr>
+
+                                  </ng-container>
+                                </ng-container>
+                              </table>
+                                    <!--
+                              <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; min-height: 30px;">
+                                <ng-container *ngFor="let Zeitspanne of DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Genehmigt); let i = index">
+                                  <div style="width: 114px;">
+                                    <table class="nobordertable">
+                                      <tr>
+                                        <td>{{Zeitspanne.Startstring}}</td>
+                                        <td><checkbox-clon [Checked]="Zeitspanne.Checked" (CheckChanged)="ZeitspanneCheckChanged($event, Zeitspanne)"></checkbox-clon></td>
+                                        <td *ngIf="i < DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Genehmigt).length - 1">|</td>
+                                      </tr>
+                                    </table>
+                                  </div>
+                                </ng-container>
+                              </div>
+                                    -->
+                            </td>
+                            <td align="center">
+                              <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Genehmigt)">H</div>
+                            </td>
+                            <td>
+                              <ion-button *ngIf="Pool.Mitarbeiterdaten.Homeofficefreigaben === true" size="small" color="rot" (click)="DB.HomeofficeLoeschen(DB.Homeofficestatusvarianten.Genehmigt)" [disabled]="CheckHomeofficeLoschenEnabled(DB.Homeofficestatusvarianten.Genehmigt) === false"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
+                            </td>
+                          </tr>
+                          </ng-container>
+                          <ng-container *ngIf="DB.CountHomeAbgelehnt() > 0">
+                          <tr>
+                            <td>
+                              <table class="nobordertable" style="width: 100%;">
+                                <ng-container *ngFor="let Zeitspannemonatsliste of DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Abgelehnt); let Monatindex = index">
+                                  <ng-container *ngIf="Zeitspannemonatsliste.length > 0">
+                                    <tr>
+                                      <td style="width: 70px; font-weight: bold;" valign="top">
+                                        <div class="monatlableclass">
+                                          {{DB.Monateliste[Monatindex]}}
+                                        </div>
+                                      </td>
+                                      <td style="width: auto">
+                                        <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; min-height: 30px;">
+                                          <div *ngFor="let Zeitspanne of Zeitspannemonatsliste; let Zeitspanneindex = index" style="width: 114px;">
+                                            <table class="nobordertable">
+                                              <tr>
+                                                <td>{{Zeitspanne.Startstring}}</td>
+                                                <td><checkbox-clon [Checked]="Zeitspanne.Checked" (CheckChanged)="ZeitspanneCheckChanged($event, Zeitspanne)"></checkbox-clon></td>
+                                                <td *ngIf="Zeitspanneindex < Zeitspannemonatsliste.length - 1">|</td>
+                                              </tr>
+                                            </table>
+                                          </div>
+                                        </div>
+                                      </td>
+                                    </tr>
+
+                                  </ng-container>
+                                </ng-container>
+                              </table>
+                                    <!--
+                              <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; min-height: 30px;">
+                                <ng-container *ngFor="let Zeitspanne of DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Abgelehnt); let i = index">
+
+                                  <div style="width: 114px;">
+                                    <table class="nobordertable">
+                                      <tr>
+                                        <td>{{Zeitspanne.Startstring}}</td>
+                                        <td><checkbox-clon [Checked]="Zeitspanne.Checked" (CheckChanged)="ZeitspanneCheckChanged($event, Zeitspanne)"></checkbox-clon></td>
+                                        <td *ngIf="i < DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Abgelehnt).length - 1">|</td>
+                                      </tr>
+                                    </table>
+                                  </div>
+
+                                </ng-container>
+                              </div>
+                                    -->
+                            </td>
+                            <td align="center">
+                              <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Abgelehnt)">H</div>
+                            </td>
+                            <td>
+                              <ion-button size="small" color="rot" (click)="DB.HomeofficeLoeschen(DB.Homeofficestatusvarianten.Abgelehnt)"  [disabled]="CheckHomeofficeLoschenEnabled(DB.Homeofficestatusvarianten.Abgelehnt) === false"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
+                            </td>
+                          </tr>
+                          </ng-container>
+                          <ng-container *ngIf="DB.CountHomeFreigbeanfragen() > 0">
+                            <tr>
+                              <td>
+
+                                <table class="nobordertable" style="width: 100%;">
+                                  <ng-container *ngFor="let Zeitspannemonatsliste of DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Freigabeanfrage); let Monatindex = index">
+                                      <ng-container *ngIf="Zeitspannemonatsliste.length > 0">
+                                        <tr>
+                                          <td style="width: 70px; font-weight: bold;" valign="top">
+                                            <div class="monatlableclass">
+                                              {{DB.Monateliste[Monatindex]}}
+                                            </div>
+                                          </td>
+                                          <td style="width: auto">
+                                            <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; min-height: 30px;">
+                                              <div *ngFor="let Zeitspanne of Zeitspannemonatsliste; let Zeitspanneindex = index" style="width: 114px;">
+                                                <table class="nobordertable">
+                                                  <tr>
+                                                    <td>{{Zeitspanne.Startstring}}</td>
+                                                    <td><checkbox-clon [Checked]="Zeitspanne.Checked" (CheckChanged)="ZeitspanneCheckChanged($event, Zeitspanne)"></checkbox-clon></td>
+                                                    <td *ngIf="Zeitspanneindex < Zeitspannemonatsliste.length - 1">|</td>
+                                                  </tr>
+                                                </table>
+                                              </div>
+                                            </div>
+                                          </td>
+                                        </tr>
+
+                                      </ng-container>
+                                    </ng-container>
+                                  </table>
+
+                              </td>
+                              <td align="center">
+                                <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Freigabeanfrage)">H</div>
+                              </td>
+                              <td><ion-button *ngIf="Pool.Mitarbeiterdaten.Homeofficefreigaben === true" size="small" color="rot" (click)="DB.HomeofficeLoeschen(DB.Homeofficestatusvarianten.Freigabeanfrage)" [disabled]="CheckHomeofficeLoschenEnabled(DB.Homeofficestatusvarianten.Freigabeanfrage) === false"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button></td>
+                            </tr>
+                          </ng-container>
+                          <ng-container *ngIf="DB.CountHomeGeplant() > 0">
+                            <tr>
+                              <td>
+                                <table class="nobordertable" style="width: 100%;">
+                                  <ng-container *ngFor="let Zeitspannemonatsliste of DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Geplant); let Monatindex = index">
+                                    <ng-container *ngIf="Zeitspannemonatsliste.length > 0">
+                                      <tr>
+                                        <td style="width: 70px; font-weight: bold;" valign="top">
+                                          <div class="monatlableclass">
+                                            {{DB.Monateliste[Monatindex]}}
+                                          </div>
+                                        </td>
+                                        <td style="width: auto">
+                                          <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; min-height: 30px;">
+                                            <div *ngFor="let Zeitspanne of Zeitspannemonatsliste; let Zeitspanneindex = index" style="width: 114px;">
+                                              <table class="nobordertable">
+                                                <tr>
+                                                  <td>{{Zeitspanne.Startstring}}</td>
+                                                  <td><checkbox-clon [Checked]="Zeitspanne.Checked" (CheckChanged)="ZeitspanneCheckChanged($event, Zeitspanne)"></checkbox-clon></td>
+                                                  <td *ngIf="Zeitspanneindex < Zeitspannemonatsliste.length - 1">|</td>
+                                                </tr>
+                                              </table>
+                                            </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+
+                                    </ng-container>
+                                  </ng-container>
+                                </table>
+                                      <!--
+                                <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; min-height: 30px;">
+                                  <ng-container *ngFor="let Zeitspanne of DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Geplant); let i = index">
+                                    <div style="width: 114px;">
+                                      <table class="nobordertable">
+                                        <tr>
+                                          <td>{{Zeitspanne.Startstring}}</td>
+                                          <td><checkbox-clon [Checked]="Zeitspanne.Checked" (CheckChanged)="ZeitspanneCheckChanged($event, Zeitspanne)"></checkbox-clon></td>
+                                          <td *ngIf="i < DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Geplant).length - 1">|</td>
+                                        </tr>
+                                      </table>
+                                    </div>
+                                  </ng-container>
+                                </div>
+                                      -->
+                              </td>
+                              <td align="center">
+                                <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Geplant)">H</div>
+                              </td>
+                              <td>
+                                <ion-button size="small" color="rot" (click)="DB.HomeofficeLoeschen(DB.Homeofficestatusvarianten.Geplant)" [disabled]="CheckHomeofficeLoschenEnabled(DB.Homeofficestatusvarianten.Geplant) === false"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
+                              </td>
+                            </tr>
                           </ng-container>
 
-                          <td *ngIf="AddUrlaubRunning === true">
-                            <div class="datumcanceldivclass" (click)="CancelDatumClicked()">
-                              <ion-icon name="close-outline" style="font-size: 36px" color="weiss"></ion-icon>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                        </tr>
-                      </table>
-
-                    </td>
-                  </tr>
-                  <tr *ngIf="AddHomeofficeRunning === false && AddUrlaubRunning === false && DB.CurrentUrlaub.Urlaubzeitspannen.length === 0">
-                    <td align="center">
-
-                      <table style="width: 520px;" class="docinnertable">
-                        <tr>
-                          <td style="text-align: center">Momentan ist noch kein Urlaub eingetragen. Du hast {{DB.CountResturlaub()}} Urlaubstage.</td>
-                        </tr>
-                      </table>
-
-                    </td>
-                  </tr>
-                  <tr  *ngIf="AddUrlaubRunning === false && AddHomeofficeRunning === false && DB.CurrentUrlaub.Urlaubzeitspannen.length > 0">
-                    <td align="center">
-
-                      <table class="docinnertablesmall">
-                        <tr>
-                          <td style="font-weight: bold;">Von</td>
-                          <td style="font-weight: bold;">Bis</td>
-                          <td style="font-weight: bold; text-align: center">Tage</td>
-                          <td style="font-weight: bold;">Stellvertreter</td>
-                          <td style="font-weight: bold;">Status</td>
-                          <td style="font-weight: bold; min-width: 600px">Statusmeldung</td>
-                          <td style="width:30px"></td>
-                          <td style="width: 30px"></td>
-                        </tr>
-                        <ng-container *ngIf="DB.CurrentUrlaub.Urlaubzeitspannen.length > 0">
-                          <tr *ngFor="let Zeitspanne of DB.CurrentUrlaub.Urlaubzeitspannen">
-                            <td>{{GetDatum(Zeitspanne.Startstempel)}}</td>
-                            <td>{{GetDatum(Zeitspanne.Endestempel)}}</td>
-                            <td style="text-align: center">{{Zeitspanne.Tageanzahl}}</td>
-                            <td>
-                              <ion-button *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant || Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterablehnung" size="small" color="grau" (click)="StellvertreterFestlegenClicked(Zeitspanne)">{{Zeitspanne.UrlaubsvertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</ion-button>
-                              <span       *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant && Zeitspanne.Status !== DB.Urlaubstatusvarianten.Vertreterablehnung">{{Zeitspanne.UrlaubsvertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</span>
-                            </td>
-                            <td align="center">
-                              <div (click)="StatusClickedHandler(Zeitspanne)" class="legendedivclass"
-                                   [style.cursor]="Pool.Mitarbeiterdaten.Urlaubsfreigaben === true ? 'pointer' : 'default'"
-                                   [style.background]="DB.GetUrlaubStatuscolor(Zeitspanne.Status)">
-                              </div>
-                            </td>
-                            <td [innerHTML]="Zeitspanne.Planungmeldung"></td>
-                            <td>
-                              <ion-button size="small" color="grau" (click)="UrlaubSuchen(Zeitspanne)"><ion-icon name="search" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
-                            </td>
-                            <td><ion-button size="small" color="rot" (click)="UrlaubLoeschen(Zeitspanne)" [disabled]="CheckLoschenEnabled(Zeitspanne) === false"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button></td>
-                          </tr>
-                        </ng-container>
-                        <ng-container *ngIf="DB.CurrentUrlaub.Urlaubzeitspannen.length === 0">
+                          <!--
                           <tr>
-                            <td colspan="8"></td>
+                            <td colspan="3" style="text-align: left;">
+                              <span style="font-weight: bold;">Resthomeoffice</span> {{DB.CountHomeoffice()}} Tage</td>
                           </tr>
-                        </ng-container>
-                        <tr>
-                          <td colspan="2" style="text-align: right; font-weight: bold">Resturlaub</td>
-                          <td style="text-align: center">{{DB.CountResturlaub()}}</td>
-                          <td colspan="5"></td>
-                        </tr>
-                        <tr>
-                          <td align="center" colspan="8">
-                            <ion-button [disabled]="CheckUrlaubUpdatesAvailable() === false"  size="small" (click)="DB.UpdateVertreteranfragen()">Aktualisierung senden</ion-button>
-                          </td>
-                        </tr>
-                      </table>
-
-                    </td>
-                  </tr>
-
-                </table>
-
-
-
-
-              </td>
-              <td valign="top" align="center" style="width: 50%; padding: 4px;">
-
-                <table>
-                  <tr *ngIf="AddUrlaubRunning === false && AddHomeofficeRunning === false">
-                    <td align="center">
-
-                      <table class="paddingsmalltable">
-                        <tr>
-                          <td align="center">
-                            <ion-button [disabled]="DB.CountHomeoffice() <= 0" size="small" (click)="AddHomeofficeStart()">Homeoffice eintragen</ion-button>
-                          </td>
-                        </tr>
-                      </table>
-
-                    </td>
-                  </tr>
-                  <tr *ngIf="AddHomeofficeRunning === true">
-                    <td>
-
-                      <table class="paddingsmalltable">
-                        <tr>
-                          <td align="center">
-                            <div class="datumokdivclass" (click)="SaveHomeofficeEventHandler()">
-                              <table>
-                                <tr>
-                                  <td style="color: white; font-size: 120%"><b>Fertig</b></td>
-                                  <td><ion-icon name="checkmark-outline" style="font-size: 36px" color="weiss"></ion-icon></td>
-                                </tr>
-                              </table>
-
-                            </div>
-                          </td>
-                        </tr>
-                      </table>
-
-                    </td>
-                  </tr>
-                  <tr *ngIf="AddHomeofficeRunning === false && AddUrlaubRunning === false && DB.CurrentUrlaub.Homeofficezeitspannen.length === 0">
-                    <td align="center">
-
-                      <table style="width: 520px;" class="docinnertable">
-                        <tr>
-                          <td style="text-align: center">Momentan ist noch kein Homeoffice eingetragen. Du hast {{DB.CountHomeoffice()}} Homeofficetage.</td>
-                        </tr>
-                      </table>
-
-                    </td>
-                  </tr>
-                  <tr  *ngIf="AddUrlaubRunning === false && AddHomeofficeRunning === false && DB.CurrentUrlaub.Homeofficezeitspannen.length > 0">
-                    <td align="center">
-
-                      <table class="docinnertable">
-                        <tr>
-                          <td style="font-weight: bold; text-align: left; width: 500px;">Tage</td>
-                          <td style="font-weight: bold; text-align: center;">Status</td>
-                          <td style="font-weight: bold; text-align: center; width: 50px;"></td>
-                        </tr>
-                        <ng-container *ngIf="DB.CountHomeGenehmigt() > 0">
-                        <tr>
-                          <td>
-                            <ng-container *ngFor="let Zeitspanne of GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Genehmigt); let i = index">
-                              <span>
-                                {{Zeitspanne.Startstring}}
-                              </span>
-                              <span *ngIf="i < GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Genehmigt).length - 1">|</span>
-                            </ng-container>
-                          </td>
-                          <td align="center">
-                            <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Genehmigt)">
-                            </div>
-                          </td>
-                          <td></td>
-                        </tr>
-                        </ng-container>
-                        <ng-container *ngIf="DB.CountHomeAbgelehnt() > 0">
-                        <tr>
-                          <td>
-                            <ng-container *ngFor="let Zeitspanne of GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Abgelehnt); let i = index">
-                              <span *ngIf="Zeitspanne.Status === DB.Homeofficestatusvarianten.Abgelehnt">
-                                {{Zeitspanne.Startstring}}
-                              </span>
-                              <span *ngIf="i < GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Abgelehnt).length - 1">|</span>
-                            </ng-container>
-                          </td>
-                          <td align="center">
-                            <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Abgelehnt)">
-                            </div>
-                          </td>
-                          <td>
-                            <ion-button size="small" color="rot" (click)="DB.HomeofficeAbgelehntLoeschen()"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
-                          </td>
-                        </tr>
-                        </ng-container>
-                        <ng-container *ngIf="DB.CountHomeFreigbeanfragen() > 0">
+                          -->
                           <tr>
-                            <td>
-                              <ng-container *ngFor="let Zeitspanne of GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Freigabeanfrage); let i = index">
-                                <span *ngIf="Zeitspanne.Status === DB.Homeofficestatusvarianten.Freigabeanfrage">
-                                  {{Zeitspanne.Startstring}}
-                                </span>
-                                <span *ngIf="i < GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Freigabeanfrage).length - 1">|</span>
-                              </ng-container>
-                            </td>
-                            <td align="center">
-                              <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Freigabeanfrage)">
-                              </div>
-                            </td>
-                            <td></td>
-                          </tr>
-                        </ng-container>
-                        <ng-container *ngIf="DB.CountHomeGeplant() > 0">
-                          <tr>
-                            <td>
-                              <ng-container *ngFor="let Zeitspanne of GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Geplant); let i = index">
-                              <span>
-                                {{Zeitspanne.Startstring}}
-                              </span>
-                              <span *ngIf="i < GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Geplant).length - 1">|</span>
-                              </ng-container>
-                            </td>
-                            <td align="center">
-                              <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Geplant)">
-                              </div>
-                            </td>
-                            <td>
-                              <ion-button size="small" color="rot" (click)="DB.HomeofficeGeplantLoeschen()"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
+                            <td align="center" colspan="8">
+                              <ion-button [disabled]="CheckHomeofficeUpdatesAvailable() === false"  size="small" (click)="DB.UpdateHomeofficefreigabeanfragen()">Aktualisierung senden</ion-button>
                             </td>
                           </tr>
-                        </ng-container>
+                        </table>
 
-                        <tr>
-                          <td colspan="3" style="text-align: left;">
-                            <span style="font-weight: bold;">Resthomeoffice</span> {{DB.CountHomeoffice()}} Tage</td>
-                        </tr>
-                        <tr>
-                          <td align="center" colspan="8">
-                            <ion-button [disabled]="CheckHomeofficeUpdatesAvailable() === false"  size="small" (click)="DB.UpdateHomeofficefreigabeanfragen()">Aktualisierung senden</ion-button>
-                          </td>
-                        </tr>
-                      </table>
+                      </td>
+                    </tr>
+                  </table>
 
-                    </td>
-                  </tr>
-                </table>
-
-              </td>
-            </tr>
-          </table>
+                </td>
+              </tr>
+            </table>
 
 
-        </td>
-      </tr>
+          </td>
+        </tr>
 
-    </table>
+      </table>
+
+    </div>
 
     <div class="legendekeeperdivclass" [style.height.px]="Legendehoehe" [style.width.px]="Legendebreite" [style.right.px]="LegendeVisible ? 0 : -(Legendebreite - 14)">
 
@@ -440,16 +578,16 @@
               <tr>
               <tr>
                 <td>
-                </td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Freigabeanfrage">H</div></td><td>Homeoffice Freigabe angefragt</td>
+                </td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Freigabeanfrage">H</div></td><td>Homeoffice angefragt</td>
               </tr>
               <tr>
                 <td>
-                </td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Genehmigt">H</div></td><td>Genehmigter Urlaub</td>
+                </td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Genehmigt">H</div></td><td>Homeoffice genehmigt</td>
               </tr>
               <tr>
                 <td>
                 </td>
-                <td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Abgelehnt">H</div></td><td>Abgelehnter Urlaub</td>
+                <td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Abgelehnt">H</div></td><td>Homeoffice abgelehnt</td>
               </tr>
 
 

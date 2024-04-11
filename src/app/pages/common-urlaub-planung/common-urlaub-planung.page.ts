@@ -545,8 +545,6 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
         this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
 
-          // debugger;
-          // this.DB.CurrentUrlaubzeitspanne = null;
         });
       }
     } catch (error) {
@@ -583,6 +581,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'UrlaubLoeschen', this.Debug.Typen.Page);
     }
   }
+
 
   AnsichtCheckChanged(event: { status: boolean; index: number; event: any; value: string }, origin: string) {
 
@@ -854,7 +853,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     }
   }
 
-  CheckLoschenEnabled(Zeitspanne: Urlauzeitspannenstruktur): boolean {
+  CheckUrlaubLoschenEnabled(Zeitspanne: Urlauzeitspannenstruktur): boolean {
 
     try {
 
@@ -869,9 +868,37 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
       }
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'CheckLoschenEnabled', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'CheckUrlaubLoschenEnabled', this.Debug.Typen.Page);
     }
   }
+
+  CheckHomeofficeLoschenEnabled(Satus: string): boolean {
+
+    try {
+
+      let Enabled: boolean = false;
+
+      let Liste: Homeofficezeitspannenstruktur[] = lodash.filter(this.DB.CurrentUrlaub.Homeofficezeitspannen, {Status: Satus});
+
+      for(let Eintrag of Liste) {
+
+        if(Eintrag.Checked) {
+
+          Enabled = true;
+
+          break;
+        }
+      }
+
+      return Enabled;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'CheckHomeofficeLoschenEnabled', this.Debug.Typen.Page);
+    }
+  }
+
+
 
   CancelDatumClicked() {
 
@@ -914,7 +941,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     }
   }
 
-  AddHomeoffice() {
+  AddHomeofficeFinishedHandler() {
 
     try {
 
@@ -930,7 +957,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'AddHomeofficeFinished', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'AddHomeofficeFinishedHandler', this.Debug.Typen.Page);
     }
   }
 
@@ -952,15 +979,16 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     }
   }
 
-  GetHomeofficezeitspannenByStataus(Status: string): Homeofficezeitspannenstruktur[] {
+
+  ZeitspanneCheckChanged(event: { status: boolean; index: number; event: any; value: string }, Zeitspanne: Homeofficezeitspannenstruktur) {
 
     try {
 
-      return lodash.filter(this.DB.CurrentUrlaub.Homeofficezeitspannen, {Status: Status});
+      Zeitspanne.Checked = event.status;
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'GetHomeofficezeitspannenByStataus', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'ZeitspanneCheckChanged', this.Debug.Typen.Page);
     }
   }
 }

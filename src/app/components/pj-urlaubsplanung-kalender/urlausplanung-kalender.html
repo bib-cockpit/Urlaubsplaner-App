@@ -47,7 +47,7 @@
           <ng-container *ngIf="Tagindex < 5">
             <ng-container *ngIf="Tag.Hauptmonat === true && Pool.Mitarbeitersettings !== null">
               <div
-                (click)="TagClicked(Tag, Wocheindex, Tagindex)" class="tagrahmenclass">
+                (click)="TagClicked($event, Tag, Wocheindex, Tagindex)" class="tagrahmenclass">
                 <div class="tagdivclass"
                      [style.background]="GetTagBackground(Tag)"
                      [style.color]="Pool.Mitarbeitersettings.UrlaubShowMeinenUrlaub ? Tag.Color : 'black' || Pool.Mitarbeitersettings.ShowHomeoffice ? Tag.Color : 'black'">

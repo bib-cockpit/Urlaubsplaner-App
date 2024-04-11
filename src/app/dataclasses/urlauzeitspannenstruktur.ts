@@ -21,5 +21,6 @@ export type Urlauzeitspannenstruktur = {
   FreigabeanfrageSended: boolean;
   FreigabeantwortSended: boolean;
   FreigabeantwortOfficeSended: boolean;
+  Checked?: boolean;
 
 };

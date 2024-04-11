@@ -45,8 +45,8 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
   @Output() FeiertagCrossedEvent  = new EventEmitter<{Name: string; Laendercode: string}>();
   @Output() FerientagCrossedEvent = new EventEmitter<{Name: string; Laendercode: string}>();
-  @Output() AddUrlaubFinished            = new EventEmitter<boolean>();
-  @Output() AddHomeofficeEvent          = new EventEmitter<boolean>();
+  @Output() AddUrlaubFinishedEvent       = new EventEmitter<boolean>();
+  @Output() AddHomeofficeFinishedEvent   = new EventEmitter<boolean>();
 
   public Kalendertageliste: Kalendertagestruktur[][];
   public KalendertageExternliste: Kalendertagestruktur[][][];
@@ -451,7 +451,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
     }
   }
 
-  TagClicked(Tag: Kalendertagestruktur, Wocheindex: number, Tagindex: number) {
+  TagClicked(event: MouseEvent, Tag: Kalendertagestruktur, Wocheindex: number, Tagindex: number) {
 
     try {
 
@@ -463,6 +463,9 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
       let Resturlaub: number;
       let IsUrlaub: boolean = Tag.IsUrlaub;
       let IsHomeoffice: boolean = Tag.IsHomeoffice;
+
+      event.stopPropagation();
+      event.preventDefault();
 
       if(this.AddUrlaubRunning) {
 
@@ -510,7 +513,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
               if (Resturlaub - Anzahl >= 0) {
 
-                this.AddUrlaubFinished.emit(true);
+                this.AddUrlaubFinishedEvent.emit(true);
               } else {
 
                 this.Tools.ShowHinweisDialog('Du hast nur noch ' + Resturlaub + ' Tage Resturlaub.');
@@ -532,7 +535,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                     }
                   }
 
-                  this.AddUrlaubFinished.emit(false);
+                  this.AddUrlaubFinishedEvent.emit(false);
 
                 }, 3000);
 
@@ -553,7 +556,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
       if(this.AddHomeofficerunning) {
 
-
         if(IsFeiertag === false && IsUrlaub === false && IsHomeoffice === false) {
 
           this.DB.CurrentHomeofficezeitspanne = this.DB.GetEmptyHomeofficezeitspanne();
@@ -569,14 +571,16 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
           Kalendertag.IsHomeoffice = true;
           Kalendertag.Color        = 'white';
 
+          this.AddHomeofficeFinishedEvent.emit(true);
+
         } else {
 
           if (IsFeiertag)   this.Tools.ShowHinweisDialog('Dieser Tag ist ein Feiertag.');
           else if(IsUrlaub) this.Tools.ShowHinweisDialog('Dieser Tag ist ein Urlaubstag.');
           else              this.Tools.ShowHinweisDialog('Dieser Tag ist bereits ein Homeofficetag.');
-        }
 
-        this.AddHomeofficeEvent.emit(true);
+          this.DB.CurrentHomeofficezeitspanne = null;
+        }
       }
     } catch (error) {
 

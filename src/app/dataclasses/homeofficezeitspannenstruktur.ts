@@ -13,5 +13,6 @@ export type Homeofficezeitspannenstruktur = {
   Tageanzahl:    number;
   FreigabeanfrageSended: boolean;
   FreigabeantwortSended: boolean;
+  Checked?: boolean;
 
 };

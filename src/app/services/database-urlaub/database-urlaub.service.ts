@@ -267,9 +267,9 @@ export class DatabaseUrlaubService {
 
               for (let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
-                Zeitspanne = this.InitZeitspanne(Zeitspanne);
+                Zeitspanne = this.InitUrlaubzeitspanne(Zeitspanne);
 
-                if (Standort.Urlaubfreigabepersonen.indexOf(this.CurrentMitarbeiter._id) !== -1 && this.CurrentMitarbeiter.Urlaubsfreigaben && this.CheckUrlaubFreigabeanwortAge(Zeitspanne) === true &&
+                if (Standort.Urlaubfreigabepersonen.indexOf(this.Pool.Mitarbeiterdaten._id) !== -1 && this.Pool.Mitarbeiterdaten.Urlaubsfreigaben && this.CheckUrlaubFreigabeanwortAge(Zeitspanne) === true &&
                    (Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterfreigabe ||
                     Zeitspanne.Status === this.Urlaubstatusvarianten.Abgelehnt ||
                     Zeitspanne.Status === this.Urlaubstatusvarianten.Genehmigt)) {
@@ -313,7 +313,12 @@ export class DatabaseUrlaubService {
                 CountAnfrage = false;
                 CountAntwort = false;
 
-                if (this.CheckHomeofficeFreigabeanwortAge(Zeitspanne) === true &&
+                if(Mitarbeiter.Name === 'Hornburger') {
+
+                  // debugger;
+                }
+
+                if (Standort.Homeofficefreigabepersonen.indexOf(this.Pool.Mitarbeiterdaten._id) !== -1 && this.Pool.Mitarbeiterdaten.Homeofficefreigaben && this.CheckHomeofficeFreigabeanwortAge(Zeitspanne) === true &&
                   ( Zeitspanne.Status === this.Homeofficestatusvarianten.Freigabeanfrage ||
                     Zeitspanne.Status === this.Homeofficestatusvarianten.Abgelehnt ||
                     Zeitspanne.Status === this.Homeofficestatusvarianten.Genehmigt)) {
@@ -474,7 +479,7 @@ export class DatabaseUrlaubService {
           Datum = moment(Zeitspanne.Freigabeantwortzeitstempel).locale('de');
           Dauer = moment.duration(Heute.diff(Datum)).asMinutes();
 
-          return Dauer <= 180;
+          return Dauer <= 5;
 
         }
       }
@@ -550,7 +555,7 @@ export class DatabaseUrlaubService {
 
                  for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
-                   Zeitspanne = this.InitZeitspanne(Zeitspanne);
+                   Zeitspanne = this.InitUrlaubzeitspanne(Zeitspanne);
 
                    if(Zeitspanne.UrlaubsvertreterID === this.CurrentMitarbeiter._id  && this.CheckVertretungsanwortAge(Zeitspanne) === true &&
                       (Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreteranfrage  ||
@@ -2138,37 +2143,20 @@ export class DatabaseUrlaubService {
         // if(lodash.isUndefined(this.CurrentUrlaub.HomeofficefreigeberID))  this.CurrentUrlaub.HomeofficefreigeberID  = null;
       }
 
-      for(let Zeitspanne of this.CurrentUrlaub.Urlaubzeitspannen) {
+      for(let Urlaubzeitspanne of this.CurrentUrlaub.Urlaubzeitspannen) {
 
-        Zeitspanne = this.InitZeitspanne(Zeitspanne);
+        Urlaubzeitspanne = this.InitUrlaubzeitspanne(Urlaubzeitspanne);
+      }
+
+      for(let Homeofficezeitspanne of this.CurrentUrlaub.Homeofficezeitspannen) {
+
+        Homeofficezeitspanne = this.InitHomeofficezeitspanne(Homeofficezeitspanne);
+
       }
 
       // Fremde Urlaube zur Einsicht vorbereiten
 
       this.UrlaublisteExtern = [];
-
-      // Erstmal potentielle Freigabenanfragen mit einfügen in die Projektbeteiligteliste
-
-      /*
-
-      for(Mitarbeiter of this.Pool.Mitarbeiterliste) {
-
-        Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
-
-        if(!lodash.isUndefined(Urlaub)) {
-
-          if(lodash.findIndex(this.CurrentUrlaub.Projektbeteiligteliste, {MitarbeiterID:  Mitarbeiter._id}) === -1) {
-
-            this.CurrentUrlaub.Projektbeteiligteliste.push({
-
-              MitarbeiterID: Mitarbeiter._id,
-              Display: true
-            });
-          }
-        }
-      }
-
-       */
 
       // Mitarbeiter aus Projektbeteiligtenliste einfügen
 
@@ -2187,7 +2175,7 @@ export class DatabaseUrlaubService {
             Urlaub.MitarbeiterIDExtern = Mitarbeiter._id;
             Urlaub.NameExtern          = Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
             Urlaub.NameKuerzel         = Mitarbeiter.Kuerzel;
-            Urlaub.Urlaubzeitspannen         = lodash.filter(Urlaub.Urlaubzeitspannen, (spanne: Urlauzeitspannenstruktur) => {
+            Urlaub.Urlaubzeitspannen   = lodash.filter(Urlaub.Urlaubzeitspannen, (spanne: Urlauzeitspannenstruktur) => {
 
               return spanne.Status !== this.Urlaubstatusvarianten.Abgelehnt;
             });
@@ -2224,7 +2212,25 @@ export class DatabaseUrlaubService {
     }
   }
 
-  private InitZeitspanne(Zeitspanne: Urlauzeitspannenstruktur): Urlauzeitspannenstruktur {
+
+
+  private InitHomeofficezeitspanne(Homeoffizezeitspanne: Homeofficezeitspannenstruktur): Homeofficezeitspannenstruktur {
+
+    try {
+
+      if(lodash.isUndefined(Homeoffizezeitspanne.Checked))    Homeoffizezeitspanne.Checked    = false;
+
+      return Homeoffizezeitspanne;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'InitHomeofficezeitspanne', this.Debug.Typen.Service);
+    }
+  }
+
+
+
+  private InitUrlaubzeitspanne(Zeitspanne: Urlauzeitspannenstruktur): Urlauzeitspannenstruktur {
 
     try {
 
@@ -2246,6 +2252,8 @@ export class DatabaseUrlaubService {
       if(lodash.isUndefined(Zeitspanne.Vertretungantwortzeitstempel))     Zeitspanne.Vertretungantwortzeitstempel     = null;
       if(lodash.isUndefined(Zeitspanne.Freigabeantwortzeitstempel))       Zeitspanne.Freigabeantwortzeitstempel       = null;
       if(lodash.isUndefined(Zeitspanne.FreigabeantwortOfficezeitstempel)) Zeitspanne.FreigabeantwortOfficezeitstempel = null;
+      if(lodash.isUndefined(Zeitspanne.Checked))                          Zeitspanne.Checked                          = false;
+
 
       if(Zeitspanne.Status === 'Beantragt') Zeitspanne.Status = this.Urlaubstatusvarianten.Geplant;
 
@@ -2253,7 +2261,7 @@ export class DatabaseUrlaubService {
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'InitZeitspanne', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'InitUrlaubzeitspanne', this.Debug.Typen.Service);
     }
   }
 
@@ -2907,55 +2915,63 @@ export class DatabaseUrlaubService {
     }
   }
 
-  async HomeofficeAbgelehntLoeschen() {
+  async HomeofficeLoeschen(Status: string) {
 
     try {
 
-      if(this.CurrentUrlaub !== null && this.Pool.Mitarbeiterdaten !== null) {
+      let Homeofficeliste: Homeofficezeitspannenstruktur[] = lodash.filter(this.CurrentUrlaub.Homeofficezeitspannen, (eintrag: Homeofficezeitspannenstruktur) => {
 
-        this.CurrentUrlaub.Homeofficezeitspannen = lodash.filter(this.CurrentUrlaub.Homeofficezeitspannen, (zeitspanne: Homeofficezeitspannenstruktur) => {
+        return eintrag.Status === Status && eintrag.Checked === false || eintrag.Status !== Status;
+      });
 
-          return zeitspanne.Status !== this.Homeofficestatusvarianten.Abgelehnt;
-        });
-      }
+      this.CurrentUrlaub = lodash.find(this.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
+      this.CurrentUrlaub.Homeofficezeitspannen = Homeofficeliste;
 
-      let Urlaubindex = lodash.findIndex(this.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.Jahr });
+      let Urlaubindex = lodash.findIndex(this.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
 
       this.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.CurrentUrlaub;
 
-      await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.CurrentMitarbeiter);
+      // await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.CurrentMitarbeiter);
 
       this.ExterneHomeofficeChanged.emit();
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'HomeofficeAbgelehntLoeschen', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'HomeofficeLoeschen', this.Debug.Typen.Service);
     }
   }
 
-  async HomeofficeGeplantLoeschen() {
+  GetHomeofficezeitspannenByStataus(Status: string): Homeofficezeitspannenstruktur[][] {
 
     try {
 
-      if(this.CurrentUrlaub !== null && this.Pool.Mitarbeiterdaten !== null) {
+      let Liste: Homeofficezeitspannenstruktur[] = lodash.filter(this.CurrentUrlaub.Homeofficezeitspannen, {Status: Status});
+      let Gesamtliste: Homeofficezeitspannenstruktur[][] = [];
+      let Datum: Moment;
 
-        this.CurrentUrlaub.Homeofficezeitspannen = lodash.filter(this.CurrentUrlaub.Homeofficezeitspannen, (zeitspanne: Homeofficezeitspannenstruktur) => {
+      Liste.sort((a: Homeofficezeitspannenstruktur, b: Homeofficezeitspannenstruktur) => {
 
-          return zeitspanne.Status !== this.Homeofficestatusvarianten.Geplant;
+        if (a.Startstempel < b.Startstempel) return -1;
+        if (a.Startstempel > b.Startstempel) return 1;
+        return 0;
+      });
+
+      for(let Monatindex = 0; Monatindex < this.Monateliste.length; Monatindex++) {
+
+        Gesamtliste[Monatindex] = [];
+        Gesamtliste[Monatindex] = lodash.filter(Liste, (eintrag: Homeofficezeitspannenstruktur) => {
+
+          Datum = moment(eintrag.Startstempel);
+
+          return Datum.month() === Monatindex;
         });
       }
 
-      let Urlaubindex = lodash.findIndex(this.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.Jahr });
-
-      this.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.CurrentUrlaub;
-
-      await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.CurrentMitarbeiter);
-
-      this.ExterneHomeofficeChanged.emit();
+      return Gesamtliste;
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'HomeofficeGeplantLoeschen', this.Debug.Typen.Service);
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'GetHomeofficezeitspannenByStataus', this.Debug.Typen.Service);
     }
   }
 }

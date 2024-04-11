@@ -1289,12 +1289,12 @@ export class DatabasePoolService {
           if(lodash.isUndefined(Settings.UrlaubShowVertreterfreigabe)) Settings.UrlaubShowVertreterfreigabe = true;
           if(lodash.isUndefined(Settings.UrlaubShowGenehmigt))         Settings.UrlaubShowGenehmigt         = true;
           if(lodash.isUndefined(Settings.UrlaubShowAbgelehnt))         Settings.UrlaubShowAbgelehnt         = true;
-          if(lodash.isUndefined(Settings.UrlaubShowFerien_DE))            Settings.UrlaubShowFerien_DE            = true;
-          if(lodash.isUndefined(Settings.UrlaubShowFerien_BG))            Settings.UrlaubShowFerien_BG            = true;
-          if(lodash.isUndefined(Settings.UrlaubShowFeiertage_DE))         Settings.UrlaubShowFeiertage_DE         = true;
-          if(lodash.isUndefined(Settings.UrlaubShowFeiertage_BG))         Settings.UrlaubShowFeiertage_BG         = true;
-          if(lodash.isUndefined(Settings.UrlaubShowMeinenUrlaub))         Settings.UrlaubShowMeinenUrlaub         = true;
-          if(lodash.isUndefined(Settings.ShowHomeoffice))                 Settings.ShowHomeoffice                 = true;
+          if(lodash.isUndefined(Settings.UrlaubShowFerien_DE))         Settings.UrlaubShowFerien_DE         = false;
+          if(lodash.isUndefined(Settings.UrlaubShowFerien_BG))         Settings.UrlaubShowFerien_BG         = false;
+          if(lodash.isUndefined(Settings.UrlaubShowFeiertage_DE))      Settings.UrlaubShowFeiertage_DE      = false;
+          if(lodash.isUndefined(Settings.UrlaubShowFeiertage_BG))      Settings.UrlaubShowFeiertage_BG      = false;
+          if(lodash.isUndefined(Settings.UrlaubShowMeinenUrlaub))      Settings.UrlaubShowMeinenUrlaub      = true;
+          if(lodash.isUndefined(Settings.ShowHomeoffice))              Settings.ShowHomeoffice              = true;
 
           return Settings;
         }

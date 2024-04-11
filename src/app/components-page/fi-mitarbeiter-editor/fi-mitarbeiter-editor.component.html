@@ -174,48 +174,47 @@
           </ng-container>
           <ng-container *ngIf="Bereich === Bereiche.Positionen">
 
-            <table style="width: 100%">
-              <tr>
-                <td style="width: 50%;" valign="top">
+            <div class="keeperdivclass">
 
-                  <ion-list>
-                    <ion-item class="ion-text-wrap" class="ion-no-padding" *ngFor="let Position of Pool.Mitarbeiterpositionenliste" (click)="PositionButtonClicked(Position)">
+              <div class="poslisteclass">
+                <ion-list>
+                  <ion-item class="ion-text-wrap" class="ion-no-padding" *ngFor="let Position of Pool.Mitarbeiterpositionenliste" (click)="PositionButtonClicked(Position)">
+                    <table class="paddingtable">
+                      <tr>
+                        <td>
+                          <div class="positionclass">{{Position.Bezeichnung}}</div>
+                        </td>
+                      </tr>
+                    </table>
+
+                  </ion-item>
+                </ion-list>
+
+              </div>
+              <div class="poseditorclass">
+
+                <table class="paddingtable">
+                  <tr *ngIf="AddNewPosition === false && EditPosition === false">
+                    <td><ion-button color="grau" size="small" (click)="NeuePositionButtonClicked()">Neue Position eintragen</ion-button></td>
+                  </tr>
+                  <tr *ngIf="AddNewPosition === true || EditPosition === true">
+                    <td style="width: 400px;">
+                      <input-clone [(Value)]="DB.CurrentPosition.Bezeichnung"  [Required]="true" [MaxLength]="200"  [Titel]="AddNewPosition ? 'Neue Position' : 'Position bearbeiten'" (TextChanged)="NewPositionTextChanged($event)"></input-clone>
+                    </td>
+                  </tr>
+                  <tr *ngIf="AddNewPosition || EditPosition === true">
+                    <td>
                       <table class="paddingtable">
                         <tr>
-                          <td>
-                            <div class="positionclass">{{Position.Bezeichnung}}</div>
-                          </td>
-                        </tr>
-                      </table>
-
-                    </ion-item>
-                  </ion-list>
-
-                </td>
-                <td style="width: 50%;" valign="top">
-
-                  <table class="paddingtable">
-                    <tr *ngIf="AddNewPosition === false && EditPosition === false">
-                      <td><ion-button color="grau" size="small" (click)="NeuePositionButtonClicked()">Neue Position eintragen</ion-button></td>
-                    </tr>
-                    <tr *ngIf="AddNewPosition === true || EditPosition === true">
-                      <td style="width: 400px;">
-                        <input-clone [(Value)]="DB.CurrentPosition.Bezeichnung"  [Required]="true" [MaxLength]="200"  [Titel]="AddNewPosition ? 'Neue Position' : 'Position bearbeiten'" (TextChanged)="NewPositionTextChanged($event)"></input-clone>
-                      </td>
-                    </tr>
-                    <tr *ngIf="AddNewPosition || EditPosition === true">
-                      <td>
-                        <table class="paddingtable">
-                          <tr>
                           <td><ion-button (click)="PositionCancelButtonClicked()" color="rot" size="small"><ion-icon name="close-outline"></ion-icon></ion-button></td>
                           <td><ion-button (click)="PositionOkButtonClicked()" color="gruen" size="small"><ion-icon name="checkmark-outline"></ion-icon></ion-button></td>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+              </div>
+            </div>
           </ng-container>
 
         </div>

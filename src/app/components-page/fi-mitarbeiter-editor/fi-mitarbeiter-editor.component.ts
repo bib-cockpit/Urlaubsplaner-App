@@ -547,6 +547,13 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
        this.AddNewPosition     = false;
        this.DB.CurrentPosition = null;
       }
+
+      if(this.EditPosition) {
+
+        this.EditPosition       = false;
+        this.DB.CurrentPosition = null;
+      }
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Mitarbeiter Editor', 'PositionCancelButtonClicked', this.Debug.Typen.Component);
