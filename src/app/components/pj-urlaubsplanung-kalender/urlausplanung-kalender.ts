@@ -97,11 +97,22 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
     try {
 
-      let Monatindexvalue: SimpleChange = changes.Monatindex;
+      let Monatindexvalue: SimpleChange           = changes.Monatindex;
+      let AddHomeofficerunningvalue: SimpleChange = changes.AddHomeofficerunning;
 
       if(!lodash.isUndefined(Monatindexvalue)) {
 
         this.PrepareData();
+      }
+
+      if(!lodash.isUndefined(AddHomeofficerunningvalue)) {
+
+        debugger;
+
+        if(AddHomeofficerunningvalue.firstChange === false && AddHomeofficerunningvalue.previousValue === false && AddHomeofficerunningvalue.currentValue === true) {
+
+          this.DB.CurrentHomeofficecounter = 0;
+        }
       }
 
     } catch (error) {
@@ -570,6 +581,8 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
           Kalendertag.Background   = this.DB.Homeofficefarben.Geplant;
           Kalendertag.IsHomeoffice = true;
           Kalendertag.Color        = 'white';
+
+          this.DB.CurrentHomeofficecounter++;
 
           this.AddHomeofficeFinishedEvent.emit(true);
 

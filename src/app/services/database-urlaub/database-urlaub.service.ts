@@ -32,6 +32,7 @@ export class DatabaseUrlaubService {
   public UrlaubStatusChanged:   EventEmitter<any> = new EventEmitter<any>();
   public HomeofficeStatusChanged: EventEmitter<any> = new EventEmitter<any>();
 
+  public CurrentHomeofficecounter: number;
   public Bundeslandkuerzel: string;
   public Bundesland: string;
   public Regionenliste: Regionenstruktur[];
@@ -173,6 +174,7 @@ export class DatabaseUrlaubService {
       this.Freigabenantwortenanzahl   = 0;
       this.Homeofficeanfragenanzahl   = 0;
       this.Homeofficantwortenanzahl   = 0;
+      this.CurrentHomeofficecounter   = 0;
       this.CurrentMitarbeiter      = null;
       this.CorrectSetup            = false;
       this.Officeemailadress       = 'office@b-a-e.eu';

@@ -39,6 +39,7 @@ export class DatabasePoolService {
   // public Festlegungskategorienliste: Festlegungskategoriestruktur[][];
   public ProjektdatenLoaded: boolean;
   public Emailcontentvarinaten: any;
+
   // public Simontabellenliste: Simontabellestruktur[][];
 
   public StandortelisteChanged: EventEmitter<any> = new EventEmitter<any>();

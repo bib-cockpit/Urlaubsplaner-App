@@ -233,6 +233,16 @@
 
                         <table class="paddingsmalltable">
                           <tr>
+                            <td>
+                              <div class="datumdivclass">
+                                <ng-container *ngIf="DB.CurrentHomeofficecounter === 0">
+                                  Bitte Tage einzeln klicken um Homeoffice einzutragen.
+                                </ng-container>
+                                <ng-container *ngIf="DB.CurrentHomeofficecounter !== 0">
+                                  {{DB.CurrentHomeofficecounter}} Homeoffice {{DB.CurrentHomeofficecounter === 1 ? 'Tag' : 'Tage'}}
+                                </ng-container>
+                              </div>
+                            </td>
                             <td align="center">
                               <div class="datumokdivclass" (click)="SaveHomeofficeEventHandler()">
                                 <table>
