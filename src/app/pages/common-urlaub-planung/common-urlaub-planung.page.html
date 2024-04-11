@@ -297,7 +297,7 @@
                                             <table class="nobordertable">
                                               <tr>
                                                 <td>{{Zeitspanne.Startstring}}</td>
-                                                <td><checkbox-clon [Checked]="Zeitspanne.Checked" (CheckChanged)="ZeitspanneCheckChanged($event, Zeitspanne)"></checkbox-clon></td>
+                                                <td *ngIf="Pool.Mitarbeiterdaten.Homeofficefreigaben === true"><checkbox-clon [Checked]="Zeitspanne.Checked" (CheckChanged)="ZeitspanneCheckChanged($event, Zeitspanne)"></checkbox-clon></td>
                                                 <td *ngIf="Zeitspanneindex < Zeitspannemonatsliste.length - 1">|</td>
                                               </tr>
                                             </table>
@@ -309,21 +309,7 @@
                                   </ng-container>
                                 </ng-container>
                               </table>
-                                    <!--
-                              <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; min-height: 30px;">
-                                <ng-container *ngFor="let Zeitspanne of DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Genehmigt); let i = index">
-                                  <div style="width: 114px;">
-                                    <table class="nobordertable">
-                                      <tr>
-                                        <td>{{Zeitspanne.Startstring}}</td>
-                                        <td><checkbox-clon [Checked]="Zeitspanne.Checked" (CheckChanged)="ZeitspanneCheckChanged($event, Zeitspanne)"></checkbox-clon></td>
-                                        <td *ngIf="i < DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Genehmigt).length - 1">|</td>
-                                      </tr>
-                                    </table>
-                                  </div>
-                                </ng-container>
-                              </div>
-                                    -->
+
                             </td>
                             <td align="center">
                               <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Genehmigt)">H</div>
@@ -363,23 +349,6 @@
                                   </ng-container>
                                 </ng-container>
                               </table>
-                                    <!--
-                              <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; min-height: 30px;">
-                                <ng-container *ngFor="let Zeitspanne of DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Abgelehnt); let i = index">
-
-                                  <div style="width: 114px;">
-                                    <table class="nobordertable">
-                                      <tr>
-                                        <td>{{Zeitspanne.Startstring}}</td>
-                                        <td><checkbox-clon [Checked]="Zeitspanne.Checked" (CheckChanged)="ZeitspanneCheckChanged($event, Zeitspanne)"></checkbox-clon></td>
-                                        <td *ngIf="i < DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Abgelehnt).length - 1">|</td>
-                                      </tr>
-                                    </table>
-                                  </div>
-
-                                </ng-container>
-                              </div>
-                                    -->
                             </td>
                             <td align="center">
                               <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Abgelehnt)">H</div>
@@ -408,7 +377,7 @@
                                                 <table class="nobordertable">
                                                   <tr>
                                                     <td>{{Zeitspanne.Startstring}}</td>
-                                                    <td><checkbox-clon [Checked]="Zeitspanne.Checked" (CheckChanged)="ZeitspanneCheckChanged($event, Zeitspanne)"></checkbox-clon></td>
+                                                    <td *ngIf="Pool.Mitarbeiterdaten.Homeofficefreigaben === true"><checkbox-clon [Checked]="Zeitspanne.Checked" (CheckChanged)="ZeitspanneCheckChanged($event, Zeitspanne)"></checkbox-clon></td>
                                                     <td *ngIf="Zeitspanneindex < Zeitspannemonatsliste.length - 1">|</td>
                                                   </tr>
                                                 </table>
@@ -458,21 +427,7 @@
                                     </ng-container>
                                   </ng-container>
                                 </table>
-                                      <!--
-                                <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; min-height: 30px;">
-                                  <ng-container *ngFor="let Zeitspanne of DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Geplant); let i = index">
-                                    <div style="width: 114px;">
-                                      <table class="nobordertable">
-                                        <tr>
-                                          <td>{{Zeitspanne.Startstring}}</td>
-                                          <td><checkbox-clon [Checked]="Zeitspanne.Checked" (CheckChanged)="ZeitspanneCheckChanged($event, Zeitspanne)"></checkbox-clon></td>
-                                          <td *ngIf="i < DB.GetHomeofficezeitspannenByStataus(DB.Homeofficestatusvarianten.Geplant).length - 1">|</td>
-                                        </tr>
-                                      </table>
-                                    </div>
-                                  </ng-container>
-                                </div>
-                                      -->
+
                               </td>
                               <td align="center">
                                 <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Geplant)">H</div>
