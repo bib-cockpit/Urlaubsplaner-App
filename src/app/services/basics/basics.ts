@@ -21,7 +21,7 @@ export class BasicsProvider {
   public ShowHomeScreenInfos          = true;
   public DebugNoExternalEmail         = true;
   public AppVersionName               = '1.05';
-  public AppVersionDatum              = '18.04.2024';
+  public AppVersionDatum              = '18.0.2024';
   public WebAppUrl                    = 'https://polite-cliff-084832d03.4.azurestaticapps.net/';
 
 
