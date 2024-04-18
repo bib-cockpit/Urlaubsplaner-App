@@ -16,6 +16,7 @@ export type Urlauzeitspannenstruktur = {
   Freigabeantwortzeitstempel: number;
   FreigabeantwortOfficezeitstempel: number;
   Tageanzahl:    number;
+  Halbertag: boolean;
   VertreteranfrageSended: boolean;
   VertreterantwortSended: boolean;
   FreigabeanfrageSended: boolean;

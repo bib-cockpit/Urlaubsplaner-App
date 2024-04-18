@@ -55,8 +55,11 @@
                     <tr>
                       <td style="text-align: center">{{Tag.Tagnummer}}</td>
                     </tr>
-                    <tr *ngIf="Tag.IsHomeoffice && Pool.Mitarbeitersettings.ShowHomeoffice">
+                    <tr *ngIf="Tag.IsHalberUrlaubstag">
                       <td style="text-align: center">H</td>
+                    </tr>
+                    <tr *ngIf="Tag.IsHomeoffice && Pool.Mitarbeitersettings.ShowHomeoffice">
+                      <td style="text-align: center">HO</td>
                     </tr>
                   </table>
                 </div>

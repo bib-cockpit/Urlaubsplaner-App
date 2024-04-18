@@ -481,8 +481,6 @@ export class DatabaseMitarbeiterService {
 
               reject(new Error('Mitarbeiter auf Server nicht gefunden.'));
             }
-
-
           },
           error: (error: HttpErrorResponse) => {
 

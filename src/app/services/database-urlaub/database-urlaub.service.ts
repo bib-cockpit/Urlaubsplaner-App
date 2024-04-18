@@ -2255,6 +2255,7 @@ export class DatabaseUrlaubService {
       if(lodash.isUndefined(Zeitspanne.Freigabeantwortzeitstempel))       Zeitspanne.Freigabeantwortzeitstempel       = null;
       if(lodash.isUndefined(Zeitspanne.FreigabeantwortOfficezeitstempel)) Zeitspanne.FreigabeantwortOfficezeitstempel = null;
       if(lodash.isUndefined(Zeitspanne.Checked))                          Zeitspanne.Checked                          = false;
+      if(lodash.isUndefined(Zeitspanne.Halbertag))                        Zeitspanne.Halbertag                        = false;
 
 
       if(Zeitspanne.Status === 'Beantragt') Zeitspanne.Status = this.Urlaubstatusvarianten.Geplant;
@@ -2661,6 +2662,7 @@ export class DatabaseUrlaubService {
         Planungmeldung: '',
         Vertretungmeldung: '',
         Freigabemeldung: '',
+        Halbertag: false,
         Tageanzahl: 0,
         VertreteranfrageSended: false,
         VertreterantwortSended: false,

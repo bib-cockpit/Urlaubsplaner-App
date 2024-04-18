@@ -49,6 +49,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
   public Message: string;
   public ShowMitarbeitereditor: boolean;
   public AddUrlaubRunning: boolean;
+  public AddHalberUrlaubstagRunning: boolean;
   public AddHomeofficeRunning: boolean;
   private Auswahldialogorigin: string;
   private DataSubscription: Subscription;
@@ -95,6 +96,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
       this.Legendehoehe            = 0;
       this.Legendebreite           = 0;
       this.Flagsource              = '';
+      this.AddHalberUrlaubstagRunning = false;
 
     } catch (error) {
 
@@ -516,6 +518,19 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     }
   }
 
+  AddHalbenUrlaubstag() {
+
+    try {
+
+      this.DB.CurrentUrlaubzeitspanne = null;
+      this.AddHalberUrlaubstagRunning = true;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'AddHalbenUrlaubstag', this.Debug.Typen.Page);
+    }
+  }
+
   AddHomeofficeStart() {
 
     try {
@@ -533,11 +548,15 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
     try {
 
-      this.AddUrlaubRunning = false;
+      this.AddUrlaubRunning           = false;
+      this.AddHalberUrlaubstagRunning = false;
 
       if(this.DB.CurrentUrlaubzeitspanne !== null) {
 
         this.DB.CurrentUrlaub.Urlaubzeitspannen.push(this.DB.CurrentUrlaubzeitspanne);
+
+        debugger;
+
 
         let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
 
@@ -904,7 +923,8 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
     try {
 
-      this.AddUrlaubRunning     = false;
+      this.AddUrlaubRunning           = false;
+      this.AddHalberUrlaubstagRunning = false;
       this.DB.CurrentUrlaubzeitspanne = null;
 
     } catch (error) {

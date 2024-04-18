@@ -754,57 +754,21 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
   UrlaubClickedEventHandler() {
 
+    let Index: number = 0;
+
     this.ShowAuswahl  = true;
     this.Auswahltitel = 'Urlaubstage festlegen';
     this.Auswahlliste = [];
 
     this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Editor_Urlaub;
 
-    this.Auswahlliste.push({ Index:  0, FirstColumn:  '0', SecoundColumn: '', Data:  0 });
-    this.Auswahlliste.push({ Index:  1, FirstColumn:  '1', SecoundColumn: '', Data:  1 });
-    this.Auswahlliste.push({ Index:  2, FirstColumn:  '2', SecoundColumn: '', Data:  2 });
-    this.Auswahlliste.push({ Index:  3, FirstColumn:  '3', SecoundColumn: '', Data:  3 });
-    this.Auswahlliste.push({ Index:  4, FirstColumn:  '4', SecoundColumn: '', Data:  4 });
-    this.Auswahlliste.push({ Index:  5, FirstColumn:  '5', SecoundColumn: '', Data:  5 });
-    this.Auswahlliste.push({ Index:  6, FirstColumn:  '6', SecoundColumn: '', Data:  6 });
-    this.Auswahlliste.push({ Index:  7, FirstColumn:  '7', SecoundColumn: '', Data:  7 });
-    this.Auswahlliste.push({ Index:  8, FirstColumn:  '8', SecoundColumn: '', Data:  8 });
-    this.Auswahlliste.push({ Index:  9, FirstColumn:  '9', SecoundColumn: '', Data:  9 });
-    this.Auswahlliste.push({ Index: 10, FirstColumn: '10', SecoundColumn: '', Data: 10 });
-    this.Auswahlliste.push({ Index: 11, FirstColumn: '11', SecoundColumn: '', Data: 11 });
-    this.Auswahlliste.push({ Index: 12, FirstColumn: '12', SecoundColumn: '', Data: 12 });
-    this.Auswahlliste.push({ Index: 13, FirstColumn: '13', SecoundColumn: '', Data: 13 });
-    this.Auswahlliste.push({ Index: 14, FirstColumn: '14', SecoundColumn: '', Data: 14 });
-    this.Auswahlliste.push({ Index: 15, FirstColumn: '15', SecoundColumn: '', Data: 15 });
-    this.Auswahlliste.push({ Index: 16, FirstColumn: '16', SecoundColumn: '', Data: 16 });
-    this.Auswahlliste.push({ Index: 17, FirstColumn: '17', SecoundColumn: '', Data: 17 });
-    this.Auswahlliste.push({ Index: 18, FirstColumn: '18', SecoundColumn: '', Data: 18 });
-    this.Auswahlliste.push({ Index: 19, FirstColumn: '19', SecoundColumn: '', Data: 19 });
-    this.Auswahlliste.push({ Index: 20, FirstColumn: '20', SecoundColumn: '', Data: 20 });
-    this.Auswahlliste.push({ Index: 21, FirstColumn: '21', SecoundColumn: '', Data: 21 });
-    this.Auswahlliste.push({ Index: 22, FirstColumn: '22', SecoundColumn: '', Data: 22 });
-    this.Auswahlliste.push({ Index: 23, FirstColumn: '23', SecoundColumn: '', Data: 23 });
-    this.Auswahlliste.push({ Index: 24, FirstColumn: '24', SecoundColumn: '', Data: 24 });
-    this.Auswahlliste.push({ Index: 25, FirstColumn: '25', SecoundColumn: '', Data: 25 });
-    this.Auswahlliste.push({ Index: 26, FirstColumn: '26', SecoundColumn: '', Data: 26 });
-    this.Auswahlliste.push({ Index: 27, FirstColumn: '27', SecoundColumn: '', Data: 27 });
-    this.Auswahlliste.push({ Index: 28, FirstColumn: '28', SecoundColumn: '', Data: 28 });
-    this.Auswahlliste.push({ Index: 29, FirstColumn: '29', SecoundColumn: '', Data: 29 });
-    this.Auswahlliste.push({ Index: 30, FirstColumn: '30', SecoundColumn: '', Data: 30 });
-    this.Auswahlliste.push({ Index: 31, FirstColumn: '31', SecoundColumn: '', Data: 31 });
-    this.Auswahlliste.push({ Index: 32, FirstColumn: '32', SecoundColumn: '', Data: 32 });
-    this.Auswahlliste.push({ Index: 33, FirstColumn: '33', SecoundColumn: '', Data: 33 });
-    this.Auswahlliste.push({ Index: 34, FirstColumn: '34', SecoundColumn: '', Data: 34 });
-    this.Auswahlliste.push({ Index: 35, FirstColumn: '35', SecoundColumn: '', Data: 35 });
-    this.Auswahlliste.push({ Index: 36, FirstColumn: '36', SecoundColumn: '', Data: 36 });
-    this.Auswahlliste.push({ Index: 37, FirstColumn: '37', SecoundColumn: '', Data: 36 });
-    this.Auswahlliste.push({ Index: 38, FirstColumn: '38', SecoundColumn: '', Data: 36 });
-    this.Auswahlliste.push({ Index: 39, FirstColumn: '39', SecoundColumn: '', Data: 36 });
-    this.Auswahlliste.push({ Index: 40, FirstColumn: '40', SecoundColumn: '', Data: 40 });
+    for(let i = 0; i <= 40; i = i + 0.5) {
 
+      this.Auswahlliste.push({ Index: Index, FirstColumn:i.toFixed(1), SecoundColumn: i === 1 ? 'Tag' : 'Tage', Data: i });
+      Index++;
+    }
 
     this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: this.DB.CurrentMitarbeiter.Urlaub});
-
 
   } catch (error) {
 
@@ -918,53 +882,23 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
 
     try {
 
+      let Index: number = 0;
+
       this.Auswahldialogorigin = 'Resturlaub';
       this.Auswahltitel = 'Resturlaub festlegen';
       this.Auswahlliste = [];
 
-      this.Auswahlliste.push({Index:  0, FirstColumn: '-10,0', SecoundColumn: 'Tage', Data: -10.0});
-      this.Auswahlliste.push({Index:  1, FirstColumn:  '-9,5', SecoundColumn: 'Tage', Data: -9.5});
-      this.Auswahlliste.push({Index:  2, FirstColumn:  '-9,0', SecoundColumn: 'Tage', Data: -9.0});
-      this.Auswahlliste.push({Index:  3, FirstColumn:  '-8,5', SecoundColumn: 'Tage', Data: -8.5});
-      this.Auswahlliste.push({Index:  4, FirstColumn:  '-8,0', SecoundColumn: 'Tage', Data: -8.0});
-      this.Auswahlliste.push({Index:  5, FirstColumn:  '-7,5', SecoundColumn: 'Tage', Data: -7.5});
-      this.Auswahlliste.push({Index:  6, FirstColumn:  '-7,0', SecoundColumn: 'Tage', Data: -7.0});
-      this.Auswahlliste.push({Index:  7, FirstColumn:  '-6,5', SecoundColumn: 'Tage', Data: -6.5});
-      this.Auswahlliste.push({Index:  8, FirstColumn:  '-6,0', SecoundColumn: 'Tage', Data: -6.0});
-      this.Auswahlliste.push({Index:  9, FirstColumn:  '-5,5', SecoundColumn: 'Tage', Data: -5.5});
-      this.Auswahlliste.push({Index: 10, FirstColumn:  '-5,0', SecoundColumn: 'Tage', Data: -5.0});
-      this.Auswahlliste.push({Index: 11, FirstColumn:  '-4,5', SecoundColumn: 'Tage', Data: -4.5});
-      this.Auswahlliste.push({Index: 12, FirstColumn:  '-4,0', SecoundColumn: 'Tage', Data: -4.0});
-      this.Auswahlliste.push({Index: 13, FirstColumn:  '-3,5', SecoundColumn: 'Tage', Data: -3.5});
-      this.Auswahlliste.push({Index: 14, FirstColumn:  '-3,0', SecoundColumn: 'Tage', Data: -3.0});
-      this.Auswahlliste.push({Index: 15, FirstColumn:  '-2,5', SecoundColumn: 'Tage', Data: -2.5});
-      this.Auswahlliste.push({Index: 16, FirstColumn:  '-2,0', SecoundColumn: 'Tage', Data: -2.0});
-      this.Auswahlliste.push({Index: 17, FirstColumn:  '-1,5', SecoundColumn: 'Tage', Data: -1.5});
-      this.Auswahlliste.push({Index: 18, FirstColumn:  '-1,0', SecoundColumn: 'Tag', Data:  -1.0});
-      this.Auswahlliste.push({Index: 19, FirstColumn:  '-0,5', SecoundColumn: 'Tage', Data: -0.5});
+      for(let i = -25; i < 0; i = i + 0.5) {
 
-      this.Auswahlliste.push({Index: 20, FirstColumn:     '0', SecoundColumn: 'Tage', Data: 0});
+        this.Auswahlliste.push({ Index: Index, FirstColumn:i.toFixed(1), SecoundColumn: i === - 1 ? 'Tag' : 'Tage', Data: i });
+        Index++;
+      }
 
-      this.Auswahlliste.push({Index: 21, FirstColumn:   '0,5', SecoundColumn: 'Tage', Data: 0.5});
-      this.Auswahlliste.push({Index: 22, FirstColumn:   '1,0', SecoundColumn: 'Tag',  Data: 1.0});
-      this.Auswahlliste.push({Index: 33, FirstColumn:   '1,5', SecoundColumn: 'Tage', Data: 1.5});
-      this.Auswahlliste.push({Index: 24, FirstColumn:   '2,0', SecoundColumn: 'Tage', Data: 2.0});
-      this.Auswahlliste.push({Index: 25, FirstColumn:   '2,5', SecoundColumn: 'Tage', Data: 2.5});
-      this.Auswahlliste.push({Index: 26, FirstColumn:   '3,0', SecoundColumn: 'Tage', Data: 3.0});
-      this.Auswahlliste.push({Index: 27, FirstColumn:   '3,5', SecoundColumn: 'Tage', Data: 3.5});
-      this.Auswahlliste.push({Index: 28, FirstColumn:   '4,0', SecoundColumn: 'Tage', Data: 4.0});
-      this.Auswahlliste.push({Index: 29, FirstColumn:   '4,5', SecoundColumn: 'Tage', Data: 4.5});
-      this.Auswahlliste.push({Index: 30, FirstColumn:   '5,0', SecoundColumn: 'Tage', Data: 5.0});
-      this.Auswahlliste.push({Index: 31, FirstColumn:   '5,5', SecoundColumn: 'Tage', Data: 5.5});
-      this.Auswahlliste.push({Index: 32, FirstColumn:   '6,0', SecoundColumn: 'Tage', Data: 6.0});
-      this.Auswahlliste.push({Index: 33, FirstColumn:   '6,5', SecoundColumn: 'Tage', Data: 6.5});
-      this.Auswahlliste.push({Index: 34, FirstColumn:   '7,0', SecoundColumn: 'Tage', Data: 7.0});
-      this.Auswahlliste.push({Index: 35, FirstColumn:   '7,5', SecoundColumn: 'Tage', Data: 7.5});
-      this.Auswahlliste.push({Index: 36, FirstColumn:   '8,0', SecoundColumn: 'Tage', Data: 8.0});
-      this.Auswahlliste.push({Index: 37, FirstColumn:   '8,5', SecoundColumn: 'Tage', Data: 8.5});
-      this.Auswahlliste.push({Index: 38, FirstColumn:   '9,0', SecoundColumn: 'Tage', Data: 9.0});
-      this.Auswahlliste.push({Index: 39, FirstColumn:   '9,5', SecoundColumn: 'Tage', Data: 9.5});
-      this.Auswahlliste.push({Index: 30, FirstColumn:  '10,0', SecoundColumn: 'Tage', Data: 10.0});
+      for(let i = 0; i <= 25; i = i + 0.5) {
+
+        this.Auswahlliste.push({ Index: Index, FirstColumn:i.toFixed(1), SecoundColumn: i === 1 ? 'Tag' : 'Tage', Data: i });
+        Index++;
+      }
 
       this.Auswahlindex = lodash.findIndex(this.Auswahlliste, (Eintrag: Auswahldialogstruktur) => {
 

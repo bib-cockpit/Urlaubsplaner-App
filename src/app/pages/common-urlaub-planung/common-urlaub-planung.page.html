@@ -48,6 +48,7 @@
                     [Monatindex]="DB.FirstMonatIndex"
                     [AddUrlaubRunning]="AddUrlaubRunning"
                     [AddHomeofficerunning]="AddHomeofficeRunning"
+                    [AddHalberUrlaubstagRunning]="AddHalberUrlaubstagRunning"
                     (AddUrlaubFinishedEvent)="AddUrlaubFinishedHandler()"
                     (AddHomeofficeFinishedEvent)="AddHomeofficeFinishedHandler()"
                     (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
@@ -62,6 +63,7 @@
                     [Monatindex]="DB.CurrentMonatindex"
                     [AddUrlaubRunning]="AddUrlaubRunning"
                     [AddHomeofficerunning]="AddHomeofficeRunning"
+                    [AddHalberUrlaubstagRunning]="AddHalberUrlaubstagRunning"
                     (AddUrlaubFinishedEvent)="AddUrlaubFinishedHandler()"
                     (AddHomeofficeFinishedEvent)="AddHomeofficeFinishedHandler()"
                     (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
@@ -75,6 +77,7 @@
                     [Monatindex]="DB.LastMonatIndex"
                     [AddUrlaubRunning]="AddUrlaubRunning"
                     [AddHomeofficerunning]="AddHomeofficeRunning"
+                    [AddHalberUrlaubstagRunning]="AddHalberUrlaubstagRunning"
                     (AddUrlaubFinishedEvent)="AddUrlaubFinishedHandler()"
                     (AddHomeofficeFinishedEvent)="AddHomeofficeFinishedHandler()"
                     (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
@@ -96,12 +99,34 @@
                 <td valign="top" align="center" style="width: 50%; padding: 4px;">
 
                   <table>
-                    <tr *ngIf="AddUrlaubRunning === false && AddHomeofficeRunning === false">
+                    <tr *ngIf="AddUrlaubRunning === false && AddHalberUrlaubstagRunning === false && AddHomeofficeRunning === false">
                       <td align="center">
                         <table class="paddingsmalltable">
                           <tr>
                             <td align="center">
-                              <ion-button [disabled]="DB.CountResturlaub() <= 0" size="small" (click)="AddUrlaub()">Urlaub eintragen</ion-button>
+                              <ion-button [disabled]="DB.CountResturlaub() <= 0" size="small" (click)="AddUrlaub()">Urlaubszeitspanne eintragen</ion-button>
+                            </td>
+                            <td align="center">
+                              <ion-button [disabled]="DB.CountResturlaub() <= 0" size="small" (click)="AddHalbenUrlaubstag()">Halben Urlaubstag eintragen</ion-button>
+                            </td>
+
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr *ngIf="AddHalberUrlaubstagRunning === true">
+                      <td align="center">
+                        <table class="paddingsmalltable">
+                          <tr>
+                            <td>
+                              <div class="datumdivclass">
+                                Bitte Datum für den halben Urlaubstag auswählen
+                              </div>
+                            </td>
+                            <td>
+                              <div class="datumcanceldivclass" (click)="CancelDatumClicked()">
+                                <ion-icon name="close-outline" style="font-size: 36px" color="weiss"></ion-icon>
+                              </div>
                             </td>
                           </tr>
                         </table>
@@ -127,7 +152,7 @@
                               </td>
                             </ng-container>
 
-                            <td *ngIf="AddUrlaubRunning === true">
+                            <td>
                               <div class="datumcanceldivclass" (click)="CancelDatumClicked()">
                                 <ion-icon name="close-outline" style="font-size: 36px" color="weiss"></ion-icon>
                               </div>
@@ -312,7 +337,7 @@
 
                             </td>
                             <td align="center">
-                              <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Genehmigt)">H</div>
+                              <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Genehmigt)">HO</div>
                             </td>
                             <td>
                               <ion-button *ngIf="Pool.Mitarbeiterdaten.Homeofficefreigaben === true" size="small" color="rot" (click)="DB.HomeofficeLoeschen(DB.Homeofficestatusvarianten.Genehmigt)" [disabled]="CheckHomeofficeLoschenEnabled(DB.Homeofficestatusvarianten.Genehmigt) === false"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
@@ -351,7 +376,7 @@
                               </table>
                             </td>
                             <td align="center">
-                              <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Abgelehnt)">H</div>
+                              <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Abgelehnt)">HO</div>
                             </td>
                             <td>
                               <ion-button size="small" color="rot" (click)="DB.HomeofficeLoeschen(DB.Homeofficestatusvarianten.Abgelehnt)"  [disabled]="CheckHomeofficeLoschenEnabled(DB.Homeofficestatusvarianten.Abgelehnt) === false"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
@@ -392,7 +417,7 @@
 
                               </td>
                               <td align="center">
-                                <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Freigabeanfrage)">H</div>
+                                <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Freigabeanfrage)">HO</div>
                               </td>
                               <td><ion-button *ngIf="Pool.Mitarbeiterdaten.Homeofficefreigaben === true" size="small" color="rot" (click)="DB.HomeofficeLoeschen(DB.Homeofficestatusvarianten.Freigabeanfrage)" [disabled]="CheckHomeofficeLoschenEnabled(DB.Homeofficestatusvarianten.Freigabeanfrage) === false"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button></td>
                             </tr>
@@ -430,7 +455,7 @@
 
                               </td>
                               <td align="center">
-                                <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Geplant)">H</div>
+                                <div class="legendedivclass" [style.background]="DB.GetHomeofficeStatuscolor(DB.Homeofficestatusvarianten.Geplant)">HO</div>
                               </td>
                               <td>
                                 <ion-button size="small" color="rot" (click)="DB.HomeofficeLoeschen(DB.Homeofficestatusvarianten.Geplant)" [disabled]="CheckHomeofficeLoschenEnabled(DB.Homeofficestatusvarianten.Geplant) === false"><ion-icon name="trash" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
@@ -538,21 +563,21 @@
               </tr>
               <tr>
                 <td>
-                </td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Geplant">H</div></td><td>geplantes Homeoffice</td>
+                </td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Geplant">HO</div></td><td>geplantes Homeoffice</td>
               </tr>
               <tr>
               <tr>
                 <td>
-                </td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Freigabeanfrage">H</div></td><td>Homeoffice angefragt</td>
+                </td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Freigabeanfrage">HO</div></td><td>Homeoffice angefragt</td>
               </tr>
               <tr>
                 <td>
-                </td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Genehmigt">H</div></td><td>Homeoffice genehmigt</td>
+                </td><td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Genehmigt">HO</div></td><td>Homeoffice genehmigt</td>
               </tr>
               <tr>
                 <td>
                 </td>
-                <td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Abgelehnt">H</div></td><td>Homeoffice abgelehnt</td>
+                <td><div class="legendedivclass" [style.background]="DB.Homeofficefarben.Abgelehnt">HO</div></td><td>Homeoffice abgelehnt</td>
               </tr>
 
 

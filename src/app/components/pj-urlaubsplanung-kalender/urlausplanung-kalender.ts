@@ -41,6 +41,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
   @Input() Jahr: number;
   @Input() AddUrlaubRunning: boolean;
   @Input() AddHomeofficerunning: boolean;
+  @Input() AddHalberUrlaubstagRunning: boolean;
   @Input() ShowYear: boolean;
 
   @Output() FeiertagCrossedEvent  = new EventEmitter<{Name: string; Laendercode: string}>();
@@ -106,8 +107,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
       }
 
       if(!lodash.isUndefined(AddHomeofficerunningvalue)) {
-
-        debugger;
 
         if(AddHomeofficerunningvalue.firstChange === false && AddHomeofficerunningvalue.previousValue === false && AddHomeofficerunningvalue.currentValue === true) {
 
@@ -225,6 +224,36 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                 Tag.Color      = 'white';
 
                 break;
+              }
+            }
+          }
+
+          // Halbe Urlaubstage eintragen
+
+          Tag.Background         = 'white';
+          Tag.Color              = 'black';
+          Tag.IsUrlaub           = false;
+          Tag.IsHalberUrlaubstag = false;
+
+          if(this.DB.CurrentUrlaub !== null) {
+
+            for(let Zeitspanne of this.DB.CurrentUrlaub.Urlaubzeitspannen) {
+
+              if(Zeitspanne.Halbertag) {
+
+                Startdatum = moment(Zeitspanne.Startstempel);
+                Endedatum  = moment(Zeitspanne.Endestempel);
+
+                if(Datum.isSame(Startdatum, 'day')  === true &&
+                  this.DB.CheckIsFeiertag(Tag, this.DB.Laendercode) === false) {
+
+                  Tag.IsHalberUrlaubstag = true;
+                  Tag.IsUrlaub           = true;
+                  Tag.Background         = this.DB.GetUrlaubStatuscolor(Zeitspanne.Status);
+                  Tag.Color              = 'white';
+
+                  break;
+                }
               }
             }
           }
@@ -514,6 +543,12 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                   Kalendertag.IsUrlaub = true;
                   Kalendertag.Color = 'white';
 
+                  /*
+                  if(Datum.isSame(Startdatum, 'day') && Kalendertag.Tag) Anzahl = Anzahl + 0.5;
+                  else Anzahl = Anzahl + 1;
+
+                   */
+
                   Anzahl++;
                 }
               }
@@ -588,13 +623,48 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
         } else {
 
-          if (IsFeiertag)   this.Tools.ShowHinweisDialog('Dieser Tag ist ein Feiertag.');
-          else if(IsUrlaub) this.Tools.ShowHinweisDialog('Dieser Tag ist ein Urlaubstag.');
-          else              this.Tools.ShowHinweisDialog('Dieser Tag ist bereits ein Homeofficetag.');
+          if (IsFeiertag)       this.Tools.ShowHinweisDialog('Dieser Tag ist ein Feiertag.');
+          else if(IsHomeoffice) this.Tools.ShowHinweisDialog('Dieser Tag ist ein Homeofficetag.');
+          else                  this.Tools.ShowHinweisDialog('Dieser Tag ist bereits ein Urlaubstag.');
 
           this.DB.CurrentHomeofficezeitspanne = null;
         }
       }
+
+      if(this.AddHalberUrlaubstagRunning) {
+
+        if(IsFeiertag === false && IsUrlaub === false && IsHomeoffice === false) {
+
+          this.DB.CurrentUrlaubzeitspanne = this.DB.GetEmptyUrlaubszeitspanne();
+
+          this.DB.CurrentUrlaubzeitspanne.Halbertag    = true;
+          this.DB.CurrentUrlaubzeitspanne.Startstempel = Tag.Tagstempel;
+          this.DB.CurrentUrlaubzeitspanne.Endestempel  = Tag.Tagstempel;
+          this.DB.CurrentUrlaubzeitspanne.Startstring  = Tag.Datumstring;
+          this.DB.CurrentUrlaubzeitspanne.Endestring   = Tag.Datumstring;
+          this.DB.CurrentUrlaubzeitspanne.Tageanzahl   = 0.5;
+
+          Kalendertag                    = this.Kalendertageliste[Wocheindex][Tagindex];
+          Kalendertag.Background         = this.DB.Urlaubsfaben.Geplant;
+          Kalendertag.IsUrlaub           = true;
+          Kalendertag.IsHalberUrlaubstag = true;
+          Kalendertag.Color              = 'white';
+
+
+          this.AddUrlaubFinishedEvent.emit(true);
+
+        } else {
+
+          if (IsFeiertag)   this.Tools.ShowHinweisDialog('Dieser Tag ist ein Feiertag.');
+          else if(IsUrlaub) this.Tools.ShowHinweisDialog('Dieser Tag ist ein Urlaubstag.');
+          else              this.Tools.ShowHinweisDialog('Dieser Tag ist bereits ein Homeofficetag.');
+
+          this.DB.CurrentUrlaubzeitspanne = null;
+        }
+      }
+
+
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Kalender', 'TagClicked', this.Debug.Typen.Component);
@@ -620,6 +690,8 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
   GetTagBackground(Tag: Kalendertagestruktur): string {
 
     try {
+
+
 
       if(Tag.IsUrlaub === true || Tag.IsHomeoffice === true) {
 
