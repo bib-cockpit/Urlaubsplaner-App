@@ -148,7 +148,6 @@
                                 <div class="datumdivclass">
                                   {{this.DB.CurrentUrlaubzeitspanne !== null && DB.CurrentUrlaubzeitspanne.Endestempel !== null ? this.DB.CurrentUrlaubzeitspanne.Endestempel : 'Bitte Endedatum im Kalender oben anklicken'}}
                                 </div>
-                                <!--Endedatum</td><td>{{this.DB.CurrentUrlaubzeitspanne !== null ? this.DB.CurrentUrlaubzeitspanne.Endestring : 'Bitte festlegen'}} -->
                               </td>
                             </ng-container>
 
@@ -183,10 +182,11 @@
                             <td style="font-weight: bold;">Von</td>
                             <td style="font-weight: bold;">Bis</td>
                             <td style="font-weight: bold; text-align: center">Tage</td>
-                            <td style="font-weight: bold;">Stellvertreter</td>
+                            <td style="font-weight: bold; text-align: center;">BU</td>
+                            <td style="font-weight: bold; width: 120px;">Stellvertreter</td>
                             <td style="font-weight: bold;">Status</td>
-                            <td style="font-weight: bold; min-width: 600px">Statusmeldung</td>
-                            <td style="width:30px"></td>
+                            <td style="font-weight: bold; min-width: 450px">Statusmeldung</td>
+                            <td style="width: 30px"></td>
                             <td style="width: 30px"></td>
                           </tr>
                           <ng-container *ngIf="DB.CurrentUrlaub.Urlaubzeitspannen.length > 0">
@@ -195,8 +195,12 @@
                               <td>{{GetDatum(Zeitspanne.Endestempel)}}</td>
                               <td style="text-align: center">{{Zeitspanne.Tageanzahl}}</td>
                               <td>
-                                <ion-button *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant || Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterablehnung" size="small" color="grau" (click)="StellvertreterFestlegenClicked(Zeitspanne)">{{Zeitspanne.UrlaubsvertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</ion-button>
-                                <span       *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant && Zeitspanne.Status !== DB.Urlaubstatusvarianten.Vertreterablehnung">{{Zeitspanne.UrlaubsvertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</span>
+                                <checkbox-clon *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant" [Checked]="Zeitspanne.Betriebsurlaub" (CheckChanged)="BetriebsurlaubCheckedChanged($event, Zeitspanne)"></checkbox-clon>
+                                <div *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant" style="width: 20px; height: 20px; background: #307ac1; border-radius: 100%"></div>
+                              </td>
+                              <td align="center">
+                                <ion-button *ngIf="(Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant || Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterablehnung)  && Zeitspanne.Betriebsurlaub === false" size="small" color="grau" (click)="StellvertreterFestlegenClicked(Zeitspanne)">Festlegen</ion-button>
+                                <span       *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant && Zeitspanne.Status !== DB.Urlaubstatusvarianten.Vertreterablehnung && Zeitspanne.Status !== DB.Urlaubstatusvarianten.Vertreterfreigabe">{{Zeitspanne.UrlaubsvertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</span>
                               </td>
                               <td align="center">
                                 <div (click)="StatusClickedHandler(Zeitspanne)" class="legendedivclass"
@@ -219,11 +223,19 @@
                           <tr>
                             <td colspan="2" style="text-align: right; font-weight: bold">Resturlaub</td>
                             <td style="text-align: center">{{DB.CountResturlaub()}}</td>
-                            <td colspan="5"></td>
+                            <td colspan="6"></td>
                           </tr>
                           <tr>
-                            <td align="center" colspan="8">
-                              <ion-button [disabled]="CheckUrlaubUpdatesAvailable() === false"  size="small" (click)="DB.UpdateVertreteranfragen()">Aktualisierung senden</ion-button>
+                            <td align="center" colspan="9">
+                              <table style="width: 100%" class="nobordertable">
+                                <tr>
+                                  <td style="width: 33%; font-size: 80%">BU = Betriebsurlaub</td>
+                                  <td style="width: 33%" align="center">
+                                    <ion-button [disabled]="CheckUrlaubUpdatesAvailable() === false"  size="small" (click)="DB.UpdateVertreteranfragen()">Aktualisierung senden</ion-button>
+                                  </td>
+                                  <td style="width: 33%"></td>
+                                </tr>
+                              </table>
                             </td>
                           </tr>
                         </table>
@@ -474,6 +486,8 @@
                               <ion-button [disabled]="CheckHomeofficeUpdatesAvailable() === false"  size="small" (click)="DB.UpdateHomeofficefreigabeanfragen()">Aktualisierung senden</ion-button>
                             </td>
                           </tr>
+
+
                         </table>
 
                       </td>
@@ -546,7 +560,7 @@
               </tr>
               <tr>
                 <td>
-                </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Urlaub mit Vertreterfreigabe</td>
+                </td><td><div class="legendedivclass" [style.background]="DB.Urlaubsfaben.Vertreterfreigabe"></div></td><td>Genehmigungsanfrage Urlaub</td>
               </tr>
               <tr>
                 <td>

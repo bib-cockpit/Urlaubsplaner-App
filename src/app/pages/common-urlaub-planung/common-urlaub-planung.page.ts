@@ -178,8 +178,6 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
           if(data !== null && data !== this.DB.CurrentUrlaubzeitspanne.Status) {
 
-            debugger;
-
             Zeitspanne = lodash.find(this.DB.CurrentUrlaub.Urlaubzeitspannen, {ZeitspannenID: this.DB.CurrentUrlaubzeitspanne.ZeitspannenID});
 
             Zeitspanne.Status                     = data;
@@ -555,9 +553,6 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
         this.DB.CurrentUrlaub.Urlaubzeitspannen.push(this.DB.CurrentUrlaubzeitspanne);
 
-        debugger;
-
-
         let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
 
         this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
@@ -684,8 +679,6 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
           Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: idliste[0]});
 
           this.DB.CurrentMitarbeiter = Mitarbeiter;
-
-          debugger;
 
           this.PrepareData();
 
@@ -838,6 +831,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
         for(let Zeitspanne of this.DB.CurrentUrlaub.Urlaubzeitspannen) {
 
           if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Geplant && Zeitspanne.UrlaubsvertreterID !== null) Available = true;
+          if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Geplant && Zeitspanne.Betriebsurlaub     === true) Available = true;
         }
       }
 
@@ -1009,6 +1003,50 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'ZeitspanneCheckChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  BetriebsurlaubCheckedChanged(event: { status: boolean; index: number; event: any; value: string }, Zeitspanne: Urlauzeitspannenstruktur) {
+
+    try {
+
+      let CurrentZeitspanne: Urlauzeitspannenstruktur = lodash.find(this.DB.CurrentUrlaub.Urlaubzeitspannen, (eintrag: Urlauzeitspannenstruktur) => {
+
+        return eintrag.ZeitspannenID === Zeitspanne.ZeitspannenID;
+      });
+
+      CurrentZeitspanne.Betriebsurlaub = event.status;
+
+      if(CurrentZeitspanne.Betriebsurlaub === false) {
+
+        CurrentZeitspanne.VertreteranfrageSended = false;
+        CurrentZeitspanne.VertreterantwortSended = false;
+        CurrentZeitspanne.Status                 = this.DB.Urlaubstatusvarianten.Geplant;
+        CurrentZeitspanne.Planungmeldung         = '';
+      }
+      else {
+
+        CurrentZeitspanne.VertreteranfrageSended = true;
+        CurrentZeitspanne.VertreterantwortSended = true ;
+        CurrentZeitspanne.Status                 = this.DB.Urlaubstatusvarianten.Geplant;
+        CurrentZeitspanne.Planungmeldung         = 'keine Urlaubsvertretung notwendig :-)';
+      }
+
+
+      let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+      this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
+
+      this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
+
+        this.DB.PlanungsmonateChanged.emit();
+      });
+
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'BetriebsurlaubCheckedChanged', this.Debug.Typen.Page);
     }
   }
 }

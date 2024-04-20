@@ -614,14 +614,22 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
       Vertretung = this.DBMitarbeiter.GetMitarbeiterByID(Zeitspanne.UrlaubsvertreterID);
 
-      if(!lodash.isUndefined(Vertretung)) {
+      if(Zeitspanne.Betriebsurlaub === false) {
 
-        return Vertretung.Vorname + ' ' + Vertretung.Name;
+        if(!lodash.isUndefined(Vertretung)) {
+
+          return Vertretung.Vorname + ' ' + Vertretung.Name;
+        }
+        else {
+
+          return 'unbekannt';
+        }
       }
       else {
 
-        return 'unbekannt';
+        return '';
       }
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'GetVertetungName', this.Debug.Typen.Page);

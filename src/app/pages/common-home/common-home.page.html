@@ -48,25 +48,26 @@
                     </div>
                   </td>
                   <td style="width: 10px"></td>
-                  <td>
-                    <div class="menubuttonclass" [style.cursor]="EinstellungenMouseOver ? 'pointer': 'default'"
-                         (mouseenter)="EinstellungenMouseOver = true"
-                         (mouseleave)="EinstellungenMouseOver = false"
-                         (click)="EinstellungenButtonClicked()">
-                      <table class="paddingsmalltable">
-                        <tr>
-                          <td>
-                            <ion-icon name="settings-outline"
-                                      [color]="EinstellungenMouseOver ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Weiss">
-                            </ion-icon>
-                          </td>
-                          <td [style.color]="EinstellungenMouseOver ? '#000000' : 'white'">Einstellungen</td>
-                        </tr>
-                      </table>
-                    </div>
-                  </td>
 
                 </ng-container>
+
+                <td>
+                  <div class="menubuttonclass" [style.cursor]="EinstellungenMouseOver ? 'pointer': 'default'"
+                       (mouseenter)="EinstellungenMouseOver = true"
+                       (mouseleave)="EinstellungenMouseOver = false"
+                       (click)="EinstellungenButtonClicked()">
+                    <table class="paddingsmalltable">
+                      <tr>
+                        <td>
+                          <ion-icon name="settings-outline"
+                                    [color]="EinstellungenMouseOver ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Weiss">
+                          </ion-icon>
+                        </td>
+                        <td [style.color]="EinstellungenMouseOver ? '#000000' : 'white'">Einstellungen</td>
+                      </tr>
+                    </table>
+                  </div>
+                </td>
 
             </tr>
           </table>
