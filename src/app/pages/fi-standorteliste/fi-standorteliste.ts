@@ -4,8 +4,6 @@ import {DebugProvider} from "../../services/debug/debug";
 import {ToolsProvider} from "../../services/tools/tools";
 import {ConstProvider} from "../../services/const/const";
 import {AlphabetComponent} from "../../components/alphabet/alphabet";
-import {IonSearchbar} from "@ionic/angular";
-import * as Moment from 'moment';
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
 import {Subscription} from "rxjs";
 import {PageHeaderComponent} from "../../components/page-header/page-header";
@@ -16,8 +14,8 @@ import * as lodash from "lodash-es";
 import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
 import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
 import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
-import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
+import {SecurityService} from "../../services/security/security.service";
 
 @Component({
   selector: 'fi-standorteliste-page',
@@ -58,6 +56,7 @@ export class FiStandortelistePage implements OnInit, OnDestroy{
               public Tools: ToolsProvider,
               public Const: ConstProvider,
               public DB: DatabaseStandorteService,
+              private Security: SecurityService,
               public DBMitarbeiter: DatabaseMitarbeiterService,
               private DBUrlaub: DatabaseUrlaubService,
               public Auswahlservice: AuswahlDialogService,

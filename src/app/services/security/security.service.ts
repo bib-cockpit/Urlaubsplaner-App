@@ -1,18 +1,53 @@
 import { Injectable } from '@angular/core';
-import {CanLoad, Route, UrlSegment, UrlTree} from "@angular/router";
-import {Observable} from "rxjs";
+import {DebugProvider} from "../debug/debug";
+import {ToolsProvider} from "../tools/tools";
+import {environment} from "../../../environments/environment";
 import {DatabasePoolService} from "../database-pool/database-pool.service";
+import {ConstProvider} from "../const/const";
 
 @Injectable({
   providedIn: 'root'
 })
-export class SecurityService implements CanLoad {
+export class SecurityService {
 
-  constructor(private Pool: DatabasePoolService) { }
+  constructor(private Debug: DebugProvider,
+              private Tools: ToolsProvider,
+              private Const: ConstProvider,
+              private Pool: DatabasePoolService)
 
-  canLoad(route: Route, segments: UrlSegment[]): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+  {
+    try {
 
-    if(this.Pool.Mitarbeiterdaten !== null && this.Pool.Mitarbeiterdaten.Planeradministrator === true) return false;
-    else return false;
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Security', 'constructor', this.Debug.Typen.Service);
+    }
+  }
+
+  public CheckSecurity() {
+
+    try {
+
+      let Securitystatus: boolean = false;
+
+      debugger;
+
+      if(environment.production === false) Securitystatus = true
+      else {
+
+        if(this.Pool.Mitarbeiterdaten && this.Pool.Mitarbeiterdaten.Planeradministrator === true) Securitystatus = true;
+      }
+
+      if(Securitystatus === false) {
+
+        this.Tools.SetRootPage(this.Const.Pages.UrlaubPlanungPage);
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Security', 'CheckSecurity', this.Debug.Typen.Service);
+    }
   }
 }
+
+

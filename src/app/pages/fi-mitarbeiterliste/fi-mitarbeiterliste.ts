@@ -15,6 +15,7 @@ import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/da
 import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
 import {DatabaseStandorteService} from "../../services/database-standorte/database-standorte.service";
 import {AuswahlDialogService} from "../../services/auswahl-dialog/auswahl-dialog.service";
+import {SecurityService} from "../../services/security/security.service";
 
 @Component({
   selector: 'fi-mitarbeiterliste-page',
@@ -41,11 +42,8 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
   public Standardalphabet: string[];
   public Zusatzbuttonliste: string[];
   public Mitarbeiterfiltertext: string;
-  // public Mitarbeiterfilter: string;
-  public Inputtimer;
   public Listenbreite: number;
   public ShowEditor: boolean;
-  private EditorValid: boolean;
   public ShowAuswahl: boolean;
   private Auswahldialogorigin: string;
   private StandortfilterSubsciption: Subscription;
@@ -65,6 +63,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
               public Debug: DebugProvider,
               public Tools: ToolsProvider,
               public Const: ConstProvider,
+              private Security: SecurityService,
               public DB: DatabaseMitarbeiterService,
               public DBStandort: DatabaseStandorteService,
               public Auswahlservice: AuswahlDialogService,
@@ -83,7 +82,6 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
       this.Mitarbeiterfiltertext = '';
       this.Listenbreite      = 0;
       this.ShowEditor        = false;
-      this.EditorValid       = false;
       this.ShowAuswahl       = false;
       this.Auswahltitel      = 'Standort festlegen';
       this.Auswahlliste      = [];
@@ -126,6 +124,8 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     try {
+
+      this.Security.CheckSecurity();
 
       this.ListeSubscription = this.Pool.MitarbeiterlisteChanged.subscribe(() => {
 
@@ -473,17 +473,6 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
     }
   }
 
-  EditorValidChanged(event: boolean) {
-
-    try {
-
-      this.EditorValid = event;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Mitarbeiterliste', 'EditorValidChanged', this.Debug.Typen.Page);
-    }
-  }
 
   GetDialogTitel(): string {
 

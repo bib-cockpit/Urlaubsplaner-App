@@ -1,15 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MenueService} from "../../services/menue/menue.service";
 import {DebugProvider} from "../../services/debug/debug";
 import {DatabasePoolService} from "../../services/database-pool/database-pool.service";
-import {HttpErrorResponse} from "@angular/common/http";
-import {
-  DatabaseMitarbeitersettingsService
-} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {ConstProvider} from "../../services/const/const";
 import {BasicsProvider} from "../../services/basics/basics";
-import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
-import {Subscription} from "rxjs";
+import {SecurityService} from "../../services/security/security.service";
 
 @Component({
   selector: 'common-einstellungen-page',
@@ -18,15 +12,12 @@ import {Subscription} from "rxjs";
 })
 export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
-  constructor(public MitarbeitersettingsDB: DatabaseMitarbeitersettingsService,
-              public Pool: DatabasePoolService,
+  constructor(public Pool: DatabasePoolService,
               public Const: ConstProvider,
               public Basics: BasicsProvider,
+              private Security: SecurityService,
               public Debug: DebugProvider) {
-
     try {
-
-
 
 
     } catch (error) {
@@ -50,15 +41,14 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
     try {
 
+      this.Security.CheckSecurity();
 
 
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Einstellungen', 'OnInit', this.Debug.Typen.Page);
     }
-
   }
-
 
   DebugNoExternalEmaillCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
 

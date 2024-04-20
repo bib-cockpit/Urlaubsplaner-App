@@ -14,11 +14,9 @@ import {filter, Subscription} from "rxjs";
 import {MsalBroadcastService, MsalService} from "@azure/msal-angular";
 import {AuthenticationResult, EventMessage, EventType, InteractionStatus} from "@azure/msal-browser";
 import {Graphservice} from "../../services/graph/graph";
-import {
-  DatabaseMitarbeitersettingsService
-} from "../../services/database-mitarbeitersettings/database-mitarbeitersettings.service";
 import {Mitarbeiterstruktur} from "../../dataclasses/mitarbeiterstruktur";
 import {environment} from "../../../environments/environment";
+import {SecurityService} from "../../services/security/security.service";
 
 
 @Component({
@@ -55,7 +53,7 @@ export class CommonHomePage implements OnInit, OnDestroy {
               public GraphService: Graphservice,
               public DBChangelog: DatabaseChangelogService,
               public AuthService: DatabaseAuthenticationService,
-              private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
+              private Security: SecurityService,
               private Menuservice: MenueService) {
     try
     {
@@ -86,6 +84,8 @@ export class CommonHomePage implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     try {
+
+      this.Security.CheckSecurity();
 
       this.ChangelogSubscription = this.Pool.ChangeloglisteChanged.subscribe(() => {
 

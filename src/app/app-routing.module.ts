@@ -1,41 +1,35 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import {SecurityService} from "./services/security/security.service";
 
 const routes: Routes = [
+  /*
   {
     path: '**', pathMatch: 'full', loadChildren: () => import('./pages/common-home/common-home.module').then(m => m.CommonHomePageModule),
-    canLoad: [SecurityService]
   },
+   */
   {
     path: 'FiStandortelistePage',
     loadChildren: () => import('./pages/fi-standorteliste/fi-standorteliste.module').then(m => m.FiStandortelistePageModule),
-    canLoad: [SecurityService]
   },
   {
     path: 'FiMitarbeiterlistePage',
     loadChildren: () => import('./pages/fi-mitarbeiterliste/fi-mitarbeiterliste.module').then(m => m.FIMitarbeiterlistePageModule),
-    canLoad: [SecurityService]
   },
   {
     path: '',
     loadChildren: () => import('./pages/common-home/common-home.module').then(m => m.CommonHomePageModule),
-    canLoad: [SecurityService]
   },
   {
     path: 'HomePage',
     loadChildren: () => import('./pages/common-home/common-home.module').then(m => m.CommonHomePageModule),
-    canLoad: [SecurityService]
   },
   {
     path: 'DebugPage',
     loadChildren: () => import('./pages/common-debug/common-debug.module').then(m => m.CommonDebugPageModule),
-    // canLoad: [SecurityService]
   },
   {
     path: 'EinstellungenPage',
     loadChildren: () => import('./pages/common-einstellungen/common-einstellungen.module').then(m => m.CommonEinstellungenPageModule),
-    // canLoad: [SecurityService]
   },
   {
     path: 'UrlaubPlanungPage',
@@ -64,6 +58,5 @@ const routes: Routes = [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
   ],
   exports: [RouterModule],
-  providers: [SecurityService]
 })
 export class AppRoutingModule { }
