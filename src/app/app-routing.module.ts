@@ -3,10 +3,12 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
 
+  /*
   {
     path: '404',  loadChildren: () => import('./pages/common-home/common-home.module').then(m => m.CommonHomePageModule),
   },
 
+   */
   {
     path: 'FiStandortelistePage',
     loadChildren: () => import('./pages/fi-standorteliste/fi-standorteliste.module').then(m => m.FiStandortelistePageModule),
