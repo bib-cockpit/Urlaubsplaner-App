@@ -36,10 +36,14 @@ export class SecurityService {
         if(this.Pool.Mitarbeiterdaten && this.Pool.Mitarbeiterdaten.Planeradministrator === true) Securitystatus = true;
       }
 
+      /*
+
       if(Securitystatus === false) {
 
         this.Tools.SetRootPage(this.Const.Pages.HomePage);
       }
+
+       */
 
     } catch (error) {
 
