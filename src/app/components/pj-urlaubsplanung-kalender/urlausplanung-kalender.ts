@@ -58,6 +58,9 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
   private UrlaubStatusSubscription: Subscription;
   private HomeofficeStatusSubscription: Subscription;
   private ExterneHomeofficeSubscription: Subscription;
+  private CurrentTagindex: number;
+  private CurrentWochenindex: number;
+  private CancelUrlaubSubscription: Subscription;
 
   constructor(private Debug: DebugProvider,
               public Basics: BasicsProvider,
@@ -87,6 +90,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
       this.UrlaubStatusSubscription      = null;
       this.HomeofficeStatusSubscription  = null;
       this.ExterneHomeofficeSubscription = null;
+      this.CancelUrlaubSubscription      = null;
 
     } catch (error) {
 
@@ -171,13 +175,13 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
           Tag = {
 
-            Tagnummer:  Datum.date(),
-            Tag:        Datum.format('dddd'),
-            Datumstring: Datum.format('DD.MM.YYYY'),
-            Hauptmonat: Datum.isSameOrAfter(MonatStartdatum, 'day') && Datum.isSameOrBefore(MonatEndedatum, 'day'),
+            Tagnummer:     Datum.date(),
+            Tag:           Datum.format('dddd'),
+            Datumstring:   Datum.format('DD.MM.YYYY'),
+            Hauptmonat:    Datum.isSameOrAfter(MonatStartdatum, 'day') && Datum.isSameOrBefore(MonatEndedatum, 'day'),
             Kalenderwoche: Datum.isoWeek(),
-            Tagstempel: Datum.valueOf(),
-            Datum:      Datum,
+            Tagstempel:    Datum.valueOf(),
+            Datum:         Datum,
           };
 
           // Feiertag eintragen
@@ -295,22 +299,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
       // Externe Urlaube
 
-      /*
-
-      Tageanzahl = moment(this.Jahr.toString() + '-' + Monattext , "YYYY-MM").daysInMonth(); // 31
-      Tagesumme  = Tageanzahl;
-
-      Tagindex  = MonatStartdatum.isoWeekday();
-      Tage      = Tagindex - 1;
-      Tagesumme = Tagesumme + Tage;
-
-      Startdatum     = MonatStartdatum.clone().subtract(Tage, 'day');
-      Tagindex      = MonatEndedatum.isoWeekday();
-      Tage          = 7 - Tagindex;
-      Tagesumme     = Tagesumme + Tage;
-      Wochenanazahl = Tagesumme / 7;
-
-       */
 
       this.KalendertageExternliste = [];
       Mitarbeiterindex = 0;
@@ -412,6 +400,10 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
         this.PrepareData();
       });
 
+      this.CancelUrlaubSubscription = this.DB.AddUrlaubCancelEvent.subscribe(() => {
+
+        this.CancelUrlaub();
+      });
     }
     catch (error) {
 
@@ -442,6 +434,9 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
       this.ExterneHomeofficeSubscription.unsubscribe();
       this.ExterneHomeofficeSubscription = null;
+
+      this.CancelUrlaubSubscription.unsubscribe();
+      this.CancelUrlaubSubscription = null;
 
     } catch (error) {
 
@@ -491,21 +486,26 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
     }
   }
 
-  TagClicked(event: MouseEvent, Tag: Kalendertagestruktur, Wocheindex: number, Tagindex: number) {
+  TagClicked(event: MouseEvent, Tag: Kalendertagestruktur, Wocheindex: number, CurrentTagindex: number) {
 
     try {
 
-      let Datum: Moment;
+      let EndeDatum: Moment;
       let Startdatum: Moment;
       let Kalendertag: Kalendertagestruktur;
       let Anzahl: number = 0  ;
       let IsFeiertag: boolean = this.DB.Laendercode === 'DE' ? Tag.IsFeiertag_DE : Tag.IsFeiertag_BG;
       let Resturlaub: number;
-      let IsUrlaub: boolean = Tag.IsUrlaub;
+      let IsUrlaub: boolean = Tag.IsUrlaub && this.DB.CurrentUrlaubzeitspanne === null;
       let IsHomeoffice: boolean = Tag.IsHomeoffice;
+      let Starttagindex: number;
+      let Endetagindex: number;
 
       event.stopPropagation();
       event.preventDefault();
+
+      this.CurrentTagindex    = CurrentTagindex;
+      this.CurrentWochenindex = Wocheindex;
 
       if(this.AddUrlaubRunning) {
 
@@ -516,23 +516,25 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
             this.DB.CurrentUrlaubzeitspanne = this.DB.GetEmptyUrlaubszeitspanne();
 
             this.DB.CurrentUrlaubzeitspanne.Startstempel = Tag.Tagstempel;
-            this.DB.CurrentUrlaubzeitspanne.Startstring = Tag.Datumstring;
-
+            this.DB.CurrentUrlaubzeitspanne.Startstring  = Tag.Datumstring;
 
             Tag.Background = this.DB.Urlaubsfaben.Geplant;
-            Tag.IsUrlaub = true;
-            Tag.Color = 'white';
+            Tag.IsUrlaub   = true;
+            Tag.Color      = 'white';
+
           } else {
 
-            Startdatum = moment(this.DB.CurrentUrlaubzeitspanne.Startstempel);
-            Datum = moment(Tag.Tagstempel);
+            Startdatum    = moment(this.DB.CurrentUrlaubzeitspanne.Startstempel);
+            Starttagindex = Startdatum.isoWeekday() - 1;
+            Endetagindex = CurrentTagindex;
+            EndeDatum    = moment(Tag.Tagstempel);
 
-            if (Datum.isSameOrAfter(Startdatum, 'day') === true && Datum.isSame(Startdatum, 'week')) {
+            if (EndeDatum.isSameOrAfter(Startdatum, 'day') === true && EndeDatum.isSame(Startdatum, 'week')) {
 
               this.DB.CurrentUrlaubzeitspanne.Endestempel = Tag.Tagstempel;
-              this.DB.CurrentUrlaubzeitspanne.Endestring = Tag.Datumstring;
+              this.DB.CurrentUrlaubzeitspanne.Endestring  = Tag.Datumstring;
 
-              for (let Index = Tagindex; Index >= 0; Index--) {
+              for (let Index = Starttagindex; Index <= Endetagindex; Index++) {
 
                 Kalendertag = this.Kalendertageliste[Wocheindex][Index];
                 IsFeiertag  = this.DB.Laendercode === 'DE' ? Kalendertag.IsFeiertag_DE : Kalendertag.IsFeiertag_BG;
@@ -540,14 +542,8 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                 if (IsFeiertag === false) {
 
                   Kalendertag.Background = this.DB.Urlaubsfaben.Geplant;
-                  Kalendertag.IsUrlaub = true;
-                  Kalendertag.Color = 'white';
-
-                  /*
-                  if(Datum.isSame(Startdatum, 'day') && Kalendertag.Tag) Anzahl = Anzahl + 0.5;
-                  else Anzahl = Anzahl + 1;
-
-                   */
+                  Kalendertag.IsUrlaub   = true;
+                  Kalendertag.Color      = 'white';
 
                   Anzahl++;
                 }
@@ -560,6 +556,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
               if (Resturlaub - Anzahl >= 0) {
 
                 this.AddUrlaubFinishedEvent.emit(true);
+
               } else {
 
                 this.Tools.ShowHinweisDialog('Du hast nur noch ' + Resturlaub + ' Tage Resturlaub.');
@@ -568,7 +565,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
                 window.setTimeout(() => {
 
-                  for (let Index = Tagindex; Index >= 0; Index--) {
+                  for (let Index = Starttagindex; Index < Endetagindex; Index++) {
 
                     Kalendertag = this.Kalendertageliste[Wocheindex][Index];
                     IsFeiertag = this.DB.Laendercode === 'DE' ? Kalendertag.IsFeiertag_DE : Kalendertag.IsFeiertag_BG;
@@ -576,8 +573,8 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                     if (IsFeiertag === false) {
 
                       Kalendertag.Background = 'none';
-                      Kalendertag.IsUrlaub = false;
-                      Kalendertag.Color = 'black';
+                      Kalendertag.IsUrlaub   = false;
+                      Kalendertag.Color      = 'black';
                     }
                   }
 
@@ -612,7 +609,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
           this.DB.CurrentHomeofficezeitspanne.Endestring   = Tag.Datumstring;
           this.DB.CurrentHomeofficezeitspanne.Tageanzahl   = 1;
 
-          Kalendertag              = this.Kalendertageliste[Wocheindex][Tagindex];
+          Kalendertag              = this.Kalendertageliste[Wocheindex][CurrentTagindex];
           Kalendertag.Background   = this.DB.Homeofficefarben.Geplant;
           Kalendertag.IsHomeoffice = true;
           Kalendertag.Color        = 'white';
@@ -644,7 +641,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
           this.DB.CurrentUrlaubzeitspanne.Endestring   = Tag.Datumstring;
           this.DB.CurrentUrlaubzeitspanne.Tageanzahl   = 0.5;
 
-          Kalendertag                    = this.Kalendertageliste[Wocheindex][Tagindex];
+          Kalendertag                    = this.Kalendertageliste[Wocheindex][CurrentTagindex];
           Kalendertag.Background         = this.DB.Urlaubsfaben.Geplant;
           Kalendertag.IsUrlaub           = true;
           Kalendertag.IsHalberUrlaubstag = true;
@@ -662,9 +659,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
           this.DB.CurrentUrlaubzeitspanne = null;
         }
       }
-
-
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Kalender', 'TagClicked', this.Debug.Typen.Component);
@@ -691,8 +685,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
     try {
 
-
-
       if(Tag.IsUrlaub === true || Tag.IsHomeoffice === true) {
 
         return Tag.Background;
@@ -702,6 +694,22 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Kalender', 'GetTagBackground', this.Debug.Typen.Component);
+    }
+  }
+
+  private CancelUrlaub() {
+
+    try {
+
+      let Kalendertag: Kalendertagestruktur = this.Kalendertageliste[this.CurrentWochenindex][this.CurrentTagindex];
+
+      Kalendertag.Background = 'none';
+      Kalendertag.IsUrlaub   = false;
+      Kalendertag.Color      = 'black';
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Kalender', 'CancelUrlaub', this.Debug.Typen.Component);
     }
   }
 }

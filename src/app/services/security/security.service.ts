@@ -30,8 +30,6 @@ export class SecurityService {
 
       let Securitystatus: boolean = false;
 
-      debugger;
-
       if(environment.production === false) Securitystatus = true
       else {
 
@@ -40,7 +38,7 @@ export class SecurityService {
 
       if(Securitystatus === false) {
 
-        this.Tools.SetRootPage(this.Const.Pages.UrlaubPlanungPage);
+        this.Tools.SetRootPage(this.Const.Pages.HomePage);
       }
 
     } catch (error) {

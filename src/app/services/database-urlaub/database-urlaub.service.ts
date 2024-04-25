@@ -31,6 +31,7 @@ export class DatabaseUrlaubService {
   public ExterneHomeofficeChanged: EventEmitter<any> = new EventEmitter<any>();
   public UrlaubStatusChanged:   EventEmitter<any> = new EventEmitter<any>();
   public HomeofficeStatusChanged: EventEmitter<any> = new EventEmitter<any>();
+  public AddUrlaubCancelEvent: EventEmitter<any> = new EventEmitter<any>();
 
   public CurrentHomeofficecounter: number;
   public Bundeslandkuerzel: string;

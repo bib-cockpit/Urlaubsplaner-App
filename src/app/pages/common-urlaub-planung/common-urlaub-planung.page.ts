@@ -921,6 +921,8 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
       this.AddHalberUrlaubstagRunning = false;
       this.DB.CurrentUrlaubzeitspanne = null;
 
+      this.DB.AddUrlaubCancelEvent.emit(); // Kalenderkomponente den Abbruch mitteilen
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'CancelDatumClicked', this.Debug.Typen.Page);
