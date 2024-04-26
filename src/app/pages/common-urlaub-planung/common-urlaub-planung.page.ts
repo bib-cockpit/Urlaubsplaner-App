@@ -283,26 +283,6 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     }
   }
 
-  BundeslandClickedHandler() {
-
-    try {
-
-      this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Urlaubsliste_Bundesland;
-
-      this.Auswahltitel        = 'Bundesland';
-      this.Auswahlhoehe        = 600;
-      this.Auswahlliste        = this.BundeslandAuswahlliste;
-      this.Auswahlindex        = lodash.findIndex(this.Auswahlliste, {Data:this.DB.Bundeslandkuerzel} );
-      this.ShowAuswahl         = true;
-
-    } catch (error) {
-
-      this.Debug.ShowErrorMessage(error.message, 'Urlaubsplanung Page', 'FortschrittClickedHandler', this.Debug.Typen.Page);
-    }
-  }
-
-
-
   private async PrepareData() {
 
     try {

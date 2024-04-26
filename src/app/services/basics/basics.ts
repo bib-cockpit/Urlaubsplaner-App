@@ -17,11 +17,11 @@ export class BasicsProvider {
   public InnerContenthoehe: number    = 0;
   public Waittime: number             = 300;
   public Svgpath: string              = 'assets/svgs/';
-  public AppBuild: string             = '25.04.2024 06:00';
+  public AppBuild: string             = '26.04.2024 06:00';
   public ShowHomeScreenInfos          = true;
   public DebugNoExternalEmail         = true;
-  public AppVersionName               = '1.08';
-  public AppVersionDatum              = '25.04.2024';
+  public AppVersionName               = '1.09';
+  public AppVersionDatum              = '26.04.2024';
   public WebAppUrl                    = 'https://polite-cliff-084832d03.4.azurestaticapps.net/';
 
 

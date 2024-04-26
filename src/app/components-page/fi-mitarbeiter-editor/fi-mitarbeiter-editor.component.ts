@@ -579,8 +579,6 @@ export class FiMitarbeiterEditorComponent implements OnInit, OnDestroy, AfterVie
 
     try {
 
-      debugger;
-
       this.PositionClickedEvent.emit();
 
     } catch (error) {

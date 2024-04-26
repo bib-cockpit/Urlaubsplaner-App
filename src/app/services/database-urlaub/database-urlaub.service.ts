@@ -2263,6 +2263,10 @@ export class DatabaseUrlaubService {
 
         this.CurrentMitarbeiter = lodash.cloneDeep(this.Pool.Mitarbeiterdaten);
       }
+      else {
+
+        this.CurrentMitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, {_id: this.CurrentMitarbeiter._id});
+      }
 
       if(this.CurrentMitarbeiter !== null) {
 
@@ -2919,9 +2923,9 @@ export class DatabaseUrlaubService {
 
       let Gesamturlaub: number = 0;
 
-      if(this.CurrentUrlaub !== null && this.Pool.Mitarbeiterdaten !== null) {
+      if(this.CurrentUrlaub !== null && this.CurrentMitarbeiter !== null) {
 
-        Gesamturlaub += this.Pool.Mitarbeiterdaten.Urlaub;
+        Gesamturlaub += this.CurrentMitarbeiter.Urlaub;
         Gesamturlaub += this.CurrentMitarbeiter.Resturlaub;
 
         for(let Zeitspanne of this.CurrentUrlaub.Urlaubzeitspannen) {
