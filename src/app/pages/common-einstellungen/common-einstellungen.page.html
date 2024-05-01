@@ -12,6 +12,12 @@
       </td>
       <td>nur Testemails senden / keine BAE Emailadressen verwenden</td>
     </tr>
+    <tr>
+      <td style="width: auto;" valign="top">
+        <checkbox-clon [Checked]="Basics.ShowCurrentMitarbeiterView" (CheckChanged)="ShowCurrentMitarbeiterViewChanged($event)"></checkbox-clon>
+      </td>
+      <td>Zeige Ansicht der aktuellen Person (CurrentMitarbeiter)</td>
+    </tr>
   </table>
 
 

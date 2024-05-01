@@ -1,4 +1,16 @@
+.festlegenbuttondiv {
 
+  background: #444444;
+  border-radius: 4px;
+  padding: 4px;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+  color: white;
+  width: 100%;
+  min-height: 30px;
+  cursor: pointer;
+}
 .datumdivclass {
 
   width: 200px;

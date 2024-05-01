@@ -327,7 +327,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         if(this.Pool.Mitarbeiterdaten.Planeradministrator === true) {
 
-          Page = this.Const.Pages.HomePage; // UrlaubPlanungPage; // HomePage;
+          Page = this.Const.Pages.UrlaubFreigabenPage;  // UrlaubFreigabenPage // UrlaubPlanungPage // HomePage // HomePage
         }
         else {
 

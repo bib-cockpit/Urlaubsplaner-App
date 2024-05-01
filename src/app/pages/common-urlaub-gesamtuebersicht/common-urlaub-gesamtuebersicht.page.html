@@ -82,7 +82,7 @@
                     <td>{{Mitarbeiter.Vorname}} {{Mitarbeiter.Name}}</td>
                     <td *ngFor="let Datum of Kalendertageliste" style="width: 48px; height: 30px;" align="center">
                       <ng-container *ngIf="DB.CheckIsUrlaubstag(Mitarbeiter, Datum) !== null">
-                        <div class="urlaubclass" [style.background]="DB.GetUrlaubStatuscolor(DB.CheckIsUrlaubstag(Mitarbeiter, Datum).Status)">
+                        <div class="urlaubclass" [style.background]="DB.GetUrlaubStatuscolor(DB.CheckIsUrlaubstag(Mitarbeiter, Datum))">
                           {{Mitarbeiter.Kuerzel}}
                         </div>
                       </ng-container>

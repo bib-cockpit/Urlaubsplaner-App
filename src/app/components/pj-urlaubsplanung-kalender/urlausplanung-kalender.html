@@ -31,7 +31,7 @@
             </ng-container>
           </div>
         </td>
-        <td *ngFor="let Tag of Tageliste; let Tagindex = index" [style.color]="Tag.Hauptmonat === true ? 'black' : 'darkgray'">
+        <td *ngFor="let Tag of Tageliste; let Tagindex = index" [style.color]="Tag.Hauptmonat === true ? 'black' : 'darkgray'" align="center">
           <ng-container *ngIf="Tagindex >= 5">
             <div class="tagrahmenclass">
               <div class="wochenendedivclass">{{Tag.Tagnummer}}</div>

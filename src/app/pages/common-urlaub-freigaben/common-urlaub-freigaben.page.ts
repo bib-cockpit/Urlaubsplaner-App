@@ -24,6 +24,8 @@ import {cloneDeep} from "lodash-es";
 import {Urlaubprojektbeteiligtestruktur} from "../../dataclasses/urlaubprojektbeteiligtestruktur";
 import {Homeofficezeitspannenstruktur} from "../../dataclasses/homeofficezeitspannenstruktur";
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
+import {Urlaubsvertretungkonversationstruktur} from "../../dataclasses/urlaubsvertretungkonversationstruktur";
+import {loadFromPath} from "@ionic/cli/lib/ssh-config";
 
 @Component({
   selector: 'common-urlaub-freigaben-page',
@@ -39,7 +41,6 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
   public Auswahlindex: number;
   public Auswahltitel: string;
   public ShowAuswahl: boolean;
-  public Auswahlhoehe: number;
 
   private Auswahldialogorigin: string;
   private DataSubscription: Subscription;
@@ -292,15 +293,15 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'GetDatum', this.Debug.Typen.Page);
     }
-
   }
-
 
   VerteretungStatusChangedHandler(event: any, Zeitspanne: Urlauzeitspannenstruktur, _id: string) {
 
     try {
 
-      Zeitspanne.Status = event.detail.value;
+      let Index: number = lodash.findIndex(Zeitspanne.Vertretungskonversationliste, { VertreterID: this.DB.CurrentMitarbeiter._id });
+
+      Zeitspanne.Vertretungskonversationliste[Index].Status = event.detail.value;
 
     } catch (error) {
 
@@ -326,15 +327,20 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
       let Available: boolean = false;
       let Standort: Standortestruktur = lodash.find(this.Pool.Standorteliste, {_id: Mitareiter.StandortID});
+      let Konversation: Urlaubsvertretungkonversationstruktur;
 
-      for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
+      for (let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
-        if(lodash.isUndefined(Zeitspanne.VertreterantwortSended)) Zeitspanne.VertreterantwortSended = false;
+        Konversation = lodash.find(Zeitspanne.Vertretungskonversationliste, {VertreterID: this.DB.CurrentMitarbeiter._id});
 
-        if(Standort.Urlaubfreigabepersonen.length > 0 &&
-           Zeitspanne.VertreterantwortSended === false &&
-           Zeitspanne.UrlaubsvertreterID     === this.DB.CurrentMitarbeiter._id &&
-          (Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Vertreterablehnung || Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Vertreterfreigabe)) Available = true;
+        if (!lodash.isUndefined(Konversation)) {
+
+          //Zeitspanne.UrlaubsvertreterID === this.DB.CurrentMitarbeiter._id &&
+
+          if(Standort.Urlaubfreigabepersonen.length > 0 &&
+             Konversation.VertreterantwortSended === false &&
+            (Konversation.Status === this.DB.Urlaubstatusvarianten.Vertreterablehnung || Konversation.Status === this.DB.Urlaubstatusvarianten.Vertreterfreigabe)) Available = true;
+        }
       }
 
       return Available;
@@ -606,33 +612,18 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
     }
   }
 
-  GetVertetungName(Zeitspanne: Urlauzeitspannenstruktur): string {
+  GetStellvertretername(MitarbeieterID: string): string{
 
     try {
 
-      let Vertretung: Mitarbeiterstruktur;
+      let Mitarbeiter: Mitarbeiterstruktur = lodash.find(this.Pool.Mitarbeiterliste, {_id: MitarbeieterID});
 
-      Vertretung = this.DBMitarbeiter.GetMitarbeiterByID(Zeitspanne.UrlaubsvertreterID);
-
-      if(Zeitspanne.Betriebsurlaub === false) {
-
-        if(!lodash.isUndefined(Vertretung)) {
-
-          return Vertretung.Vorname + ' ' + Vertretung.Name;
-        }
-        else {
-
-          return 'unbekannt';
-        }
-      }
-      else {
-
-        return '';
-      }
+      if(lodash.isUndefined(Mitarbeiter)) return 'unbekannt';
+      else return Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'GetVertetungName', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'GetStellvertretername', this.Debug.Typen.Page);
     }
   }
 

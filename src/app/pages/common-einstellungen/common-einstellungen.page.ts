@@ -43,7 +43,6 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
       this.Security.CheckSecurity();
 
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Einstellungen', 'OnInit', this.Debug.Typen.Page);
@@ -59,6 +58,18 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Einstellungen', 'DebugNoExternalEmaillCheckedChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  ShowCurrentMitarbeiterViewChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      this.Basics.ShowCurrentMitarbeiterView = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Einstellungen', 'ShowCurrentMitarbeiterViewChanged', this.Debug.Typen.Page);
     }
   }
 }

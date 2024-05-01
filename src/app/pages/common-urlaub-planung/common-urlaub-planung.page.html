@@ -183,11 +183,13 @@
                             <td style="font-weight: bold;">Bis</td>
                             <td style="font-weight: bold; text-align: center">Tage</td>
                             <td style="font-weight: bold; text-align: center;">BU</td>
-                            <td style="font-weight: bold; width: 120px;">Stellvertreter</td>
+                            <td style="font-weight: bold; width: 200px;">Stellvertretung</td>
                             <td style="font-weight: bold;">Status</td>
-                            <td style="font-weight: bold; min-width: 450px">Statusmeldung</td>
+                            <td style="font-weight: bold;" colspan="3">Statusmeldung</td>
+                            <!--
                             <td style="width: 30px"></td>
                             <td style="width: 30px"></td>
+                            -->
                           </tr>
                           <ng-container *ngIf="DB.CurrentUrlaub.Urlaubzeitspannen.length > 0">
                             <tr *ngFor="let Zeitspanne of DB.CurrentUrlaub.Urlaubzeitspannen">
@@ -196,19 +198,48 @@
                               <td style="text-align: center">{{Zeitspanne.Tageanzahl}}</td>
                               <td>
                                 <checkbox-clon *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant" [Checked]="Zeitspanne.Betriebsurlaub" (CheckChanged)="BetriebsurlaubCheckedChanged($event, Zeitspanne)"></checkbox-clon>
-                                <div *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant" style="width: 20px; height: 20px; background: #307ac1; border-radius: 100%"></div>
+                                <div *ngIf="Zeitspanne.Betriebsurlaub === true" style="width: 20px; height: 20px; background: #307ac1; border-radius: 100%"></div>
+                                <!--
+                                Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant
+                                -->
                               </td>
-                              <td align="center">
-                                <ion-button *ngIf="(Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant || Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterablehnung)  && Zeitspanne.Betriebsurlaub === false" size="small" color="grau" (click)="StellvertreterFestlegenClicked(Zeitspanne)">Festlegen</ion-button>
-                                <span       *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant && Zeitspanne.Status !== DB.Urlaubstatusvarianten.Vertreterablehnung && Zeitspanne.Status !== DB.Urlaubstatusvarianten.Vertreterfreigabe">{{Zeitspanne.UrlaubsvertreterID !== null ? GetStellvertretername(Zeitspanne) : 'Festlegen'}}</span>
+                              <td>
+                                <!--
+                                Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterablehnung
+                                -->
+                                <ng-container *ngIf="(Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant || DB.CheckVertretungIsAbgelehnt(Zeitspanne) === true)
+                                && Zeitspanne.Betriebsurlaub === false">
+                                  <div (click)="StellvertreterFestlegenClicked(Zeitspanne)" class="festlegenbuttondiv" style="font-size: 12px; font-weight: bold;">
+                                    <span *ngIf="Zeitspanne.UrlaubsvertreterIDListe.length === 0">
+                                      FESTLEGEN
+                                    </span>
+                                    <table *ngIf="Zeitspanne.UrlaubsvertreterIDListe.length !== 0" class="nobordersmalltable">
+                                      <tr *ngFor="let MitarbeiterID of Zeitspanne.UrlaubsvertreterIDListe">
+                                        <td>{{GetStellvertretername(MitarbeiterID)}}</td>
+                                      </tr>
+                                    </table>
+                                  </div>
+                                  <!--
+                                  <ion-button  size="small" color="grau" (click)="StellvertreterFestlegenClicked(Zeitspanne)">Festlegen</ion-button>
+                                  -->
+                                </ng-container>
+                                <ng-container  *ngIf="Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant && DB.CheckVertretungIsAbgelehnt(Zeitspanne) === false">
+
+                                  <table *ngIf="Zeitspanne.UrlaubsvertreterIDListe.length !== 0" class="nobordersmalltable">
+                                    <tr *ngFor="let MitarbeiterID of Zeitspanne.UrlaubsvertreterIDListe">
+                                      <td>{{GetStellvertretername(MitarbeiterID)}}</td>
+                                    </tr>
+                                  </table>
+
+                                </ng-container>
                               </td>
                               <td align="center">
                                 <div (click)="StatusClickedHandler(Zeitspanne)" class="legendedivclass"
                                      [style.cursor]="Pool.Mitarbeiterdaten.Urlaubsfreigaben === true ? 'pointer' : 'default'"
-                                     [style.background]="DB.GetUrlaubStatuscolor(Zeitspanne.Status)">
+                                     [style.background]="DB.GetUrlaubStatuscolor(Zeitspanne)">
                                 </div>
                               </td>
-                              <td [innerHTML]="Zeitspanne.Planungmeldung"></td>
+                              <td style="min-width: 450px;" [innerHTML]="GetPlanungmeldung(Zeitspanne)"></td>
                               <td>
                                 <ion-button size="small" color="grau" (click)="UrlaubSuchen(Zeitspanne)"><ion-icon name="search" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
                               </td>
@@ -642,7 +673,7 @@
 <fi-mitarbeiter-auswahl *ngIf="ShowMitarbeiterauswahl"
                         [Titel]="MitarbeiterauswahlTitel"
                         [Dialogbreite]="600" [ZIndex]="4000"
-                        [Multiselect]="false"
+                        [Multiselect]="MitarbeiterMultiselect"
                         [OnlyProjektmitarbeiter]="false"
                         Iconname="people-outline"
                         [AuswahlIDliste]="AuswahlIDliste"

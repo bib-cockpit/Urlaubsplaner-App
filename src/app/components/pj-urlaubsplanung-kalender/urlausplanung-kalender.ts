@@ -206,11 +206,14 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
           if(Tag.IsFerientag_BG) Tag.Ferienname_BG = this.DB.GetFerientag(Tag, 'BG').Ferienname_BG; // 'BG: ' +
           else Tag.Ferienname_BG = '';
 
-          // Urlaube eintragen
 
-          Tag.Background = 'white';
-          Tag.Color      = 'black';
-          Tag.IsUrlaub   = false;
+          Tag.Background         = 'white';
+          Tag.Color              = 'black';
+          Tag.IsUrlaub           = false;
+          Tag.IsHomeoffice       = false;
+          Tag.IsHalberUrlaubstag = false;
+
+          // Urlaube eintragen
 
           if(this.DB.CurrentUrlaub !== null) {
 
@@ -224,7 +227,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                 this.DB.CheckIsFeiertag(Tag, this.DB.Laendercode) === false) {
 
                 Tag.IsUrlaub   = true;
-                Tag.Background = this.DB.GetUrlaubStatuscolor(Zeitspanne.Status);
+                Tag.Background = this.DB.GetUrlaubStatuscolor(Zeitspanne);
                 Tag.Color      = 'white';
 
                 break;
@@ -234,10 +237,10 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
           // Halbe Urlaubstage eintragen
 
-          Tag.Background         = 'white';
-          Tag.Color              = 'black';
-          Tag.IsUrlaub           = false;
-          Tag.IsHalberUrlaubstag = false;
+          // Tag.Background         = 'white';
+          // Tag.Color              = 'black';
+          // Tag.IsUrlaub           = false;
+
 
           if(this.DB.CurrentUrlaub !== null) {
 
@@ -253,7 +256,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
                   Tag.IsHalberUrlaubstag = true;
                   Tag.IsUrlaub           = true;
-                  Tag.Background         = this.DB.GetUrlaubStatuscolor(Zeitspanne.Status);
+                  Tag.Background         = this.DB.GetUrlaubStatuscolor(Zeitspanne);
                   Tag.Color              = 'white';
 
                   break;
@@ -262,13 +265,14 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
             }
           }
 
+
           // Homeoffice eintragen
 
-          if(Tag.IsUrlaub === false) {
+          // if(Tag.IsUrlaub === false) {
 
-            Tag.Background   = 'white';
-            Tag.Color        = 'black';
-            Tag.IsHomeoffice = false;
+            // Tag.Background   = 'white';
+            // Tag.Color        = 'black';
+
 
             if(this.DB.CurrentUrlaub !== null) {
 
@@ -285,17 +289,20 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                   Tag.Background   = this.DB.GetHomeofficeStatuscolor(Zeitspanne.Status);
                   Tag.Color        = 'white';
 
+
                   break;
                 }
               }
             }
-          }
+          // }
 
           this.Kalendertageliste[wochenindex].push(Tag);
 
           Datum.add(1, 'day');
         }
       }
+
+
 
       // Externe Urlaube
 
@@ -342,7 +349,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                   this.DB.CheckIsFeiertag(Tag, this.DB.Laendercode) === false) {
 
                   Tag.IsUrlaub   = true;
-                  Tag.Background = this.DB.GetUrlaubStatuscolor(Zeitspanne.Status);
+                  Tag.Background = this.DB.GetUrlaubStatuscolor(Zeitspanne);
                   Tag.Color      = 'white';
 
                   break;
@@ -358,6 +365,9 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
           Mitarbeiterindex++;
         }
       }
+
+
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Urlaubsplanung Kalender', 'PrepareData', this.Debug.Typen.Component);
