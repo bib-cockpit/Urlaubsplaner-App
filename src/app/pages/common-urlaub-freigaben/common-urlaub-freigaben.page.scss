@@ -39,6 +39,7 @@
 .legendedivclass {
 
   font-weight: bold;
+  font-size: 80%;
   color: white;
   width: 30px;
   border: 1px solid #444444;
@@ -46,8 +47,22 @@
   display: flex;
   justify-content: center; // horizontal
   align-items: center; // vertikal
-
 }
+
+.legendebreitdivclass {
+
+  font-weight: bold;
+  font-size: 80%;
+  color: white;
+  width: 60px;
+  border: 1px solid #444444;
+  height: 20px;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+}
+
+
 .legendeexterndivclass {
 
   width: 30px;

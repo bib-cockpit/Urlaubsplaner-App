@@ -58,8 +58,17 @@
       </tr>
     </ion-radio-group>
   </table>
-
-
+  <br>
+  <table class="paddingtable">
+    <tr>
+      <td colspan="2">
+        <ion-text color="baeblau"><b>Wartungsmodus</b></ion-text>
+      </td>
+    </tr>
+    <tr>
+      <td><checkbox-clon [Checked]="Pool.Appeinstellungen.Wartungsmodus" (CheckChanged)="WartungsmodusCheckChanged($event)"></checkbox-clon></td><td>Watungsmodus für Standardnutzer aktivieren</td>
+    </tr>
+  </table>
 
 </ion-content>
 <ion-footer>

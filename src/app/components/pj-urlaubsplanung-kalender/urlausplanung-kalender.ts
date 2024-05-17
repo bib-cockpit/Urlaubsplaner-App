@@ -335,22 +335,46 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                 Tagstempel: Datum.valueOf(),
                 Datum: Datum.clone(),
                 IsUrlaub: false,
+                IsHomeoffice: false,
                 Background: 'white',
                 Color:      'black'
               };
 
-              for(let Zeitspanne of this.DB.UrlaublisteExtern[i].Urlaubzeitspannen) {
+               // Urlaub
 
-                Startdatum = moment(Zeitspanne.Startstempel);
-                Endedatum  = moment(Zeitspanne.Endestempel);
+              for(let UrlaubZeitspanne of this.DB.UrlaublisteExtern[i].Urlaubzeitspannen) {
+
+                Startdatum = moment(UrlaubZeitspanne.Startstempel);
+                Endedatum  = moment(UrlaubZeitspanne.Endestempel);
 
                 if(Datum.isSameOrAfter(Startdatum, 'day')  === true &&
                   Datum.isSameOrBefore(Endedatum, 'day')   === true &&
                   this.DB.CheckIsFeiertag(Tag, this.DB.Laendercode) === false) {
 
-                  Tag.IsUrlaub   = true;
-                  Tag.Background = this.DB.GetUrlaubStatuscolor(Zeitspanne);
-                  Tag.Color      = 'white';
+                  Tag.IsUrlaub     = true;
+                  Tag.IsHomeoffice = false;
+                  Tag.Background   = this.DB.GetUrlaubStatuscolor(UrlaubZeitspanne);
+                  Tag.Color        = 'white';
+
+                  break;
+                }
+              }
+
+              // Homeoffice
+
+              for(let HomeofficeZeitspanne of this.DB.UrlaublisteExtern[i].Homeofficezeitspannen) {
+
+                Startdatum = moment(HomeofficeZeitspanne.Startstempel);
+                Endedatum  = moment(HomeofficeZeitspanne.Endestempel);
+
+                if(Datum.isSameOrAfter(Startdatum, 'day')  === true &&
+                  Datum.isSameOrBefore(Endedatum, 'day')   === true &&
+                  this.DB.CheckIsFeiertag(Tag, this.DB.Laendercode) === false) {
+
+                  Tag.IsHomeoffice   = true;
+                  Tag.IsUrlaub       = false;
+                  Tag.Background     = this.DB.GetHomeofficeStatuscolor(HomeofficeZeitspanne.Status);
+                  Tag.Color          = 'white';
 
                   break;
                 }

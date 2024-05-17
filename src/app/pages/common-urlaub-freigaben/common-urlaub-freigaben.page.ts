@@ -738,24 +738,42 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
       let Datum: Moment;
       let Konversation: Urlaubsvertretungkonversationstruktur;
 
-      if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Vertreteranfrage) {
+      switch (Zeitspanne.Status) {
 
-        Konversation = lodash.find(Zeitspanne.Vertretungskonversationliste, {VertreterID: this.DB.CurrentMitarbeiter._id});
+        case this.DB.Urlaubstatusvarianten.Vertreteranfrage:
 
-        if(lodash.isUndefined(Konversation)) Datum = moment();
-        else Datum = moment(Konversation.Vertretunganfragezeitstempel);
+          Konversation = lodash.find(Zeitspanne.Vertretungskonversationliste, {VertreterID: this.DB.CurrentMitarbeiter._id});
+
+          if(lodash.isUndefined(Konversation)) Datum = moment();
+          else Datum = moment(Konversation.Vertretunganfragezeitstempel);
 
 
-        Text = 'Vertretungsanfrage von ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' vom ' + Datum.format('DD.MM.YYYY');
-      }
-      else {
+          Text = 'Vertretungsanfrage von ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' vom ' + Datum.format('DD.MM.YYYY');
 
-        Konversation = lodash.find(Zeitspanne.Vertretungskonversationliste, {VertreterID: this.DB.CurrentMitarbeiter._id});
+          break;
 
-        if(lodash.isUndefined(Konversation)) Datum = moment();
-        else Datum = moment(Konversation.Vertretungantwortzeitstempel);
+        case this.DB.Urlaubstatusvarianten.Vertreterablehnung:
 
-        Text = 'Vertretungsanfrage von ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' wurde am ' + Datum.format('DD.MM.YYYY') + ' abgelehnt';
+
+          Konversation = lodash.find(Zeitspanne.Vertretungskonversationliste, {VertreterID: this.DB.CurrentMitarbeiter._id});
+
+          if(lodash.isUndefined(Konversation)) Datum = moment();
+          else Datum = moment(Konversation.Vertretungantwortzeitstempel);
+
+          Text = 'Vertretungsanfrage von ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' wurde am ' + Datum.format('DD.MM.YYYY') + ' abgelehnt';
+
+          break;
+
+        case this.DB.Urlaubstatusvarianten.Vertreterfreigabe:
+
+          Konversation = lodash.find(Zeitspanne.Vertretungskonversationliste, {VertreterID: this.DB.CurrentMitarbeiter._id});
+
+          if(lodash.isUndefined(Konversation)) Datum = moment();
+          else Datum = moment(Konversation.Vertretungantwortzeitstempel);
+
+          Text = 'Vertretungsanfrage von ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' wurde am ' + Datum.format('DD.MM.YYYY') + ' zugestimmt.';
+
+          break;
       }
 
       return Text;
@@ -783,5 +801,21 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'CheckHasAnfragen', this.Debug.Typen.Page);
     }
+  }
+
+  HomeofficeSuchen(Zeitspanne: Homeofficezeitspannenstruktur) {
+
+    try {
+
+      let Datum: Moment = moment(Zeitspanne.Startstempel);
+
+      this.DB.CurrentMonatindex = Datum.month();
+      this.DB.SetPlanungsmonate();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'HomeofficeSuchen', this.Debug.Typen.Page);
+    }
+
   }
 }

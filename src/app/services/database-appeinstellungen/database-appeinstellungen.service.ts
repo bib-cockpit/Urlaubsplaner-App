@@ -3,7 +3,7 @@ import {DebugProvider} from "../debug/debug";
 import {DatabasePoolService} from "../database-pool/database-pool.service";
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
-import moment, {Moment} from "moment";
+ import * as lodash from "lodash-es";
 import {ConstProvider} from "../const/const";
  import {Appeinstellungenstruktur} from "../../dataclasses/appeinstellungenstruktur";
 
@@ -12,7 +12,7 @@ import {ConstProvider} from "../const/const";
 })
 export class DatabaseAppeinstellungenService {
 
-  public Appeinstellungen: Appeinstellungenstruktur;
+  // public Appeinstellungen: Appeinstellungenstruktur;
   private ServerUrl: string;
 
   constructor(private Debug: DebugProvider,
@@ -21,7 +21,7 @@ export class DatabaseAppeinstellungenService {
               private http: HttpClient) {
     try {
 
-      this.Appeinstellungen    = null;
+      // this.Appeinstellungen    = null;
       this.ServerUrl           = this.Pool.CockpitdockerURL + '/appeinstellungen';
 
     } catch (error) {
@@ -35,6 +35,7 @@ export class DatabaseAppeinstellungenService {
     try {
 
       let Liste: Appeinstellungenstruktur[] = [];
+      let Appeinstellungen: Appeinstellungenstruktur;
 
       this.Debug.ShowMessage('ReadAppeinstellungen', 'Database Appeinstellungen', 'ReadAppeinstellungen', this.Debug.Typen.Service);
 
@@ -57,14 +58,16 @@ export class DatabaseAppeinstellungenService {
 
             if(Liste.length > 0) {
 
-              this.Appeinstellungen = Liste[0];
+              Appeinstellungen = Liste[0];
             }
             else {
 
-              this.Appeinstellungen = this.GetEmptyAppeinstellungen();
+              Appeinstellungen = this.GetEmptyAppeinstellungen();
             }
 
-            this.Pool.Appeinstellungen = this.Appeinstellungen;
+            if(lodash.isUndefined(Appeinstellungen.Wartungsmodus)) Appeinstellungen.Wartungsmodus = false;
+
+            this.Pool.Appeinstellungen = Appeinstellungen;
 
             resolve(true);
 
@@ -92,6 +95,7 @@ export class DatabaseAppeinstellungenService {
         _id: null,
         ShowHomeScreenInfos:  true,
         DebugNoExternalEmail: true,
+        Wartungsmodus: false,
         AdminStartseite: this.Const.Pages.HomePage
       };
 
@@ -105,7 +109,7 @@ export class DatabaseAppeinstellungenService {
 
     try {
 
-      if(this.Appeinstellungen._id === null) {
+      if(this.Pool.Appeinstellungen._id === null) {
 
         await this.AddAppeinstellungen();
       }
@@ -125,23 +129,24 @@ export class DatabaseAppeinstellungenService {
     try {
 
       let Observer: Observable<any>;
+      let Appeinstellungen: Appeinstellungenstruktur;
 
       return new Promise<any>((resove, reject) => {
 
         // POST für neuen Eintrag
 
-        Observer = this.http.post(this.ServerUrl, this.Appeinstellungen);
+        Observer = this.http.post(this.ServerUrl, this.Pool.Appeinstellungen);
 
         Observer.subscribe({
 
           next: (result) => {
 
-            this.Appeinstellungen = result.data;
+            Appeinstellungen = result.data;
 
           },
           complete: () => {
 
-            this.Pool.Appeinstellungen = this.Appeinstellungen;
+            this.Pool.Appeinstellungen = Appeinstellungen;
 
             resove(true);
 
@@ -167,21 +172,24 @@ export class DatabaseAppeinstellungenService {
     try {
 
       let Observer: Observable<any>;
+      let Appeinstellungen: Appeinstellungenstruktur;
 
       return new Promise<any>((resove, reject) => {
 
           // PUT für update
 
-        Observer = this.http.put(this.ServerUrl, this.Appeinstellungen);
+        Observer = this.http.put(this.ServerUrl, this.Pool.Appeinstellungen);
 
         Observer.subscribe({
 
           next: (ne) => {
 
+            // Appeinstellungen = ne;
+
           },
           complete: () => {
 
-            this.Pool.Appeinstellungen = this.Appeinstellungen;
+            // this.Pool.Appeinstellungen = Appeinstellungen;
 
             resove(true);
 

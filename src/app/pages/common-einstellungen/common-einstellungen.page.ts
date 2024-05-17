@@ -94,4 +94,18 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Einstellungen', 'StartseiteChangedHandler', this.Debug.Typen.Page);
     }
   }
+
+  WartungsmodusCheckChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      this.Pool.Appeinstellungen.Wartungsmodus = event.status;
+
+      this.DB.SaveAppeinstellungen();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Einstellungen', 'WartungsmodusCheckChanged', this.Debug.Typen.Page);
+    }
+  }
 }

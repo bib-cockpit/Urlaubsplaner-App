@@ -21,12 +21,13 @@
       <tr *ngFor="let Tageliste of Kalendertageliste; let Wocheindex = index">
         <td>
           <div class="tagrahmenclass">
-            <div class="taginfodivclass">{{Tageliste[Wocheindex].Kalenderwoche}}</div>
+            <div class="kwinfodivclass">{{Tageliste[Wocheindex].Kalenderwoche}}</div>
             <div *ngIf="DB.ShowFerientage_DE" class="taginfospacedivclass"></div>
             <div *ngIf="DB.ShowFerientage_BG" class="taginfospacedivclass"></div>
             <div *ngIf="DB.ShowFeiertage_DE"  class="taginfospacedivclass"></div>
             <div *ngIf="DB.ShowFeiertage_BG"  class="taginfospacedivclass"></div>
-            <ng-container *ngFor="let ExternKalender of KalendertageExternliste;">
+            <ng-container *ngFor="let ExternKalender of KalendertageExternliste; let i = index">
+              <div class="taginfospacedivclass"></div>
               <div class="taginfospacedivclass"></div>
             </ng-container>
           </div>
@@ -89,12 +90,15 @@
                   <ion-icon *ngIf="Tag.IsFeiertag_BG" name="flag-outline" color="gelb" style="font-size: 18px"></ion-icon>
                 </div>
 
-                <ng-container *ngFor="let ExternKalender of KalendertageExternliste; let ExternIndex = index;">
+                <ng-container *ngFor="let ExternKalender of KalendertageExternliste;">
 
                         <div *ngIf="ExternKalender[Wocheindex][Tagindex].IsUrlaub" class="tagexterndivclass"
                              [style.background]="ExternKalender[Wocheindex][Tagindex].Background">{{ExternKalender[Wocheindex][Tagindex].Kuerzel}}</div>
                         <div *ngIf="!ExternKalender[Wocheindex][Tagindex].IsUrlaub" class="tagexternemptydivclass"></div>
 
+                        <div *ngIf="ExternKalender[Wocheindex][Tagindex].IsHomeoffice" class="tagexterndivclass"
+                             [style.background]="ExternKalender[Wocheindex][Tagindex].Background">{{ExternKalender[Wocheindex][Tagindex].Kuerzel}} | HO</div>
+                        <div *ngIf="!ExternKalender[Wocheindex][Tagindex].IsHomeoffice" class="tagexternemptydivclass"></div>
 
                 </ng-container>
 

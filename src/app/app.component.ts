@@ -328,17 +328,16 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
         this.MitarbeiterDB.InitService();
         this.StandortDB.InitService();
 
-
         this.Pool.ShowProgress = false;
 
-        if(this.Pool.Mitarbeiterdaten.Planeradministrator === true) {
+        if(this.Pool.Mitarbeiterdaten.Planeradministrator === false) {
 
-          Page = this.Const.Pages.HomePage;
-          // Page = this.Pool.Appeinstellungen.AdminStartseite;
+          Page = this.Pool.Appeinstellungen.AdminStartseite;
         }
         else {
 
-          Page = this.Const.Pages.WartungPage;
+          if(this.Pool.Appeinstellungen.Wartungsmodus === true) Page = this.Const.Pages.WartungPage;
+          else                                                  Page = this.Const.Pages.UrlaubPlanungPage;
         }
 
         this.Pool.ProjektdatenLoaded = true;

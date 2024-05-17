@@ -259,6 +259,8 @@ export class DatabaseUrlaubService {
 
           for(let Mitarbeiter of this.Pool.Mitarbeiterliste) {
 
+            // Urlaub Freigabeanfragen
+
             Standort = lodash.find(this.Pool.Standorteliste, {_id: Mitarbeiter.StandortID});
 
             Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, (urlaub: Urlaubsstruktur) => {
@@ -286,7 +288,10 @@ export class DatabaseUrlaubService {
 
                     this.Urlaubfreigabenliste.push(Mitarbeiter);
 
-                    if(Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterfreigabe) CountAnfrage = true; // nur offene Anfragen zaehlen
+                    if(Zeitspanne.Status === this.Urlaubstatusvarianten.Vertreterfreigabe) {
+
+                      CountAnfrage = true;
+                    }
                     else {
 
                       CountAntwort = true;
@@ -296,6 +301,8 @@ export class DatabaseUrlaubService {
               }
 
               if(CountAnfrage === true) {
+
+                debugger;
 
                 this.Urlaubsanfragenanzahl++;
                 this.Freigabenanfragenanzahl++;
@@ -308,6 +315,7 @@ export class DatabaseUrlaubService {
               }
             }
 
+            // Homeoffice Freigabeanfragen
 
             Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, (urlaub: Urlaubsstruktur) => {
 
@@ -614,11 +622,15 @@ export class DatabaseUrlaubService {
                    this.Urlaubsanfragenanzahl++;
                  }
 
+                 /*
+
                  if(CountAntwort === true) {
 
                    this.Vertretungsantwortenanzahl++;
                    this.Antwortenanzahl++;
+
                  }
+                */
                }
             }
           }
@@ -1302,8 +1314,6 @@ export class DatabaseUrlaubService {
         }
 
         Nachricht += '</table>';
-        //  Nachricht += '<br><br>';
-        // Nachricht += 'Deine Urlaubsanfrage wurde zur Freigabe an ' + Freigeber.Vorname + ' ' + Freigeber.Name + ' weitergeleitet.';
         Nachricht += '<br><br>';
         Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaub - Homeoffice - Planung jetzt öffnen</a>';
         Nachricht += '<br><br>' + this.Pool.GetFilledSignatur(this.CurrentMitarbeiter,true);
@@ -2120,7 +2130,7 @@ export class DatabaseUrlaubService {
 
       return new Promise((resolve, reject) => {
 
-        Nachricht  = "Hallo " + Mitarbeiter.Vorname + " " + Mitarbeiter.Name + ",<br><br>leider muss ich deine Homeofficeanfrage für nachfolgende Tage ablehnen:<br><br>";
+        Nachricht  = "Hallo " + Mitarbeiter.Vorname + " " + Mitarbeiter.Name + ",<br><br>nachfolgende Homeofficetage sind genehmigt:<br><br>";
         Nachricht += '<table border="1" cellpadding="0" cellspacing="0">';
         Nachricht += '<tr>';
         Nachricht += '<td style="width: 100px; text-align: center;  padding: 2px; font-weight: bold;"><b>Datum</b></td>';
@@ -3237,9 +3247,14 @@ export class DatabaseUrlaubService {
 
     try {
 
+      for(let Zeitspanne of this.CurrentUrlaub.Homeofficezeitspannen) {
+
+        if(lodash.isUndefined(Zeitspanne.Checked) === true) Zeitspanne.Checked = false;
+      }
+
       let Homeofficeliste: Homeofficezeitspannenstruktur[] = lodash.filter(this.CurrentUrlaub.Homeofficezeitspannen, (eintrag: Homeofficezeitspannenstruktur) => {
 
-        return eintrag.Status === Status && eintrag.Checked === false || eintrag.Status !== Status;
+        return  eintrag.Status === Status && eintrag.Checked === false || eintrag.Status !== Status;
       });
 
       this.CurrentUrlaub = lodash.find(this.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
