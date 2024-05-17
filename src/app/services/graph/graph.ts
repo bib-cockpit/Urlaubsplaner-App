@@ -54,6 +54,7 @@ export class Graphservice {
               private AuthService: DatabaseAuthenticationService,
               private Tools: ToolsProvider,
               public Basics: BasicsProvider,
+              private Pool: DatabasePoolService,
               private domSanitizer: DomSanitizer,
   ) {
     try {
@@ -1146,7 +1147,7 @@ export class Graphservice {
         }
       });
 
-      if(this.Basics.DebugNoExternalEmail === true) {
+      if(this.Pool.Appeinstellungen.DebugNoExternalEmail === true) {
 
         for(let Eintrag of Empfaengerliste) {
 

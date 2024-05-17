@@ -1102,6 +1102,33 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
           }
 
           break;
+
+        case this.DB.Urlaubstatusvarianten.Vertreterfreigabe:
+
+          Text += Zeitspanne.Planungmeldung;
+
+          break;
+
+        case this.DB.Urlaubstatusvarianten.Vertreterablehnung:
+
+          for(let Konversation of Zeitspanne.Vertretungskonversationliste) {
+
+            if(Konversation.VertreterantwortSended === true) {
+
+              Text += Konversation.Vertretungmeldung;
+
+              if(Index < Zeitspanne.Vertretungskonversationliste.length) Text += '<br>';
+            }
+          }
+
+          break;
+
+
+        case this.DB.Urlaubstatusvarianten.Genehmigt:
+
+          Text += Zeitspanne.Planungmeldung;
+
+          break;
       }
 
       return Text;

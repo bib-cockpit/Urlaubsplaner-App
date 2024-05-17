@@ -27,30 +27,6 @@
                 </td>
                 <td style="width: 10px"></td>
 
-                <ng-container *ngIf="environment.production === false">
-                  <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
-                  <td style="width: 10px"></td>
-                  <td>
-                    <div class="menubuttonclass" [style.cursor]="DebugMouseOver ? 'pointer': 'default'"
-                         (mouseenter)="DebugMouseOver = true"
-                         (mouseleave)="DebugMouseOver = false"
-                         (click)="DebugButtonClicked()">
-                      <table class="paddingsmalltable">
-                        <tr>
-                          <td>
-                            <ion-icon name="bug-outline"
-                                      [color]="DebugMouseOver ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Weiss">
-                            </ion-icon>
-                          </td>
-                          <td [style.color]="DebugMouseOver ? '#000000' : 'white'">Debug</td>
-                        </tr>
-                      </table>
-                    </div>
-                  </td>
-                  <td style="width: 10px"></td>
-
-                </ng-container>
-
                 <td>
                   <div class="menubuttonclass" [style.cursor]="EinstellungenMouseOver ? 'pointer': 'default'"
                        (mouseenter)="EinstellungenMouseOver = true"
@@ -98,9 +74,9 @@
 <ion-content>
 
 
-  <ng-container *ngIf="AuthService.ShowLogin === false">
+  <ng-container *ngIf="AuthService.ShowLogin === false && Pool.Appeinstellungen !== null">
 
-    <div *ngIf="Basics.ShowHomeScreenInfos" class="changelogdiv">
+    <div *ngIf="Pool.Appeinstellungen.ShowHomeScreenInfos" class="changelogdiv">
 
       <table class="paddingtable" style="font-size: 80%">
         <tr>

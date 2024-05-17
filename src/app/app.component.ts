@@ -18,6 +18,7 @@ import {Graphservice} from "./services/graph/graph";
 import {Mitarbeiterstruktur} from "./dataclasses/mitarbeiterstruktur";
 import {environment} from "../environments/environment";
 import {DatabaseUrlaubService} from "./services/database-urlaub/database-urlaub.service";
+import {DatabaseAppeinstellungenService} from "./services/database-appeinstellungen/database-appeinstellungen.service";
 
 @Component({
   selector: 'app-root',
@@ -48,6 +49,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
               private StandortDB: DatabaseStandorteService,
               private UrlaubDB: DatabaseUrlaubService,
               public GraphService: Graphservice,
+              private AppeinstellungenDB: DatabaseAppeinstellungenService,
               private Debug: DebugProvider) {
     try {
 
@@ -226,6 +228,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
           this.Pool.CurrentProgressValue++;
 
+          this.Pool.ProgressMessage = 'Lade Appp Einstellungen';
+
+          await this.AppeinstellungenDB.ReadAppeinstellungen(); // 9
+
           for(let User of Liste) {
 
             Mitarbeiter = lodash.find(this.Pool.Mitarbeiterliste, (currentmitarbeiter: Mitarbeiterstruktur) => {
@@ -327,11 +333,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         if(this.Pool.Mitarbeiterdaten.Planeradministrator === true) {
 
-          Page = this.Const.Pages.UrlaubFreigabenPage;  // UrlaubFreigabenPage // UrlaubPlanungPage // HomePage // HomePage
+          Page = this.Const.Pages.HomePage;
+          // Page = this.Pool.Appeinstellungen.AdminStartseite;
         }
         else {
 
-          Page = this.Const.Pages.UrlaubPlanungPage;
+          Page = this.Const.Pages.WartungPage;
         }
 
         this.Pool.ProjektdatenLoaded = true;

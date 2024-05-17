@@ -730,6 +730,42 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
     }
   }
 
+  GetPlanungmeldung(Zeitspanne: Urlauzeitspannenstruktur, Mitarbeiter: Mitarbeiterstruktur): string {
+
+    try {
+
+      let Text: string;
+      let Datum: Moment;
+      let Konversation: Urlaubsvertretungkonversationstruktur;
+
+      if(Zeitspanne.Status === this.DB.Urlaubstatusvarianten.Vertreteranfrage) {
+
+        Konversation = lodash.find(Zeitspanne.Vertretungskonversationliste, {VertreterID: this.DB.CurrentMitarbeiter._id});
+
+        if(lodash.isUndefined(Konversation)) Datum = moment();
+        else Datum = moment(Konversation.Vertretunganfragezeitstempel);
+
+
+        Text = 'Vertretungsanfrage von ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' vom ' + Datum.format('DD.MM.YYYY');
+      }
+      else {
+
+        Konversation = lodash.find(Zeitspanne.Vertretungskonversationliste, {VertreterID: this.DB.CurrentMitarbeiter._id});
+
+        if(lodash.isUndefined(Konversation)) Datum = moment();
+        else Datum = moment(Konversation.Vertretungantwortzeitstempel);
+
+        Text = 'Vertretungsanfrage von ' + Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name + ' wurde am ' + Datum.format('DD.MM.YYYY') + ' abgelehnt';
+      }
+
+      return Text;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'GetPlanungmeldung', this.Debug.Typen.Page);
+    }
+  }
+
   CheckHasAnfragen(Urlaub: Urlaubsstruktur): boolean {
 
     try {

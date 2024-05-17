@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   CommonUrlaubsgesamtuebersichtPageModule
 } from "../../pages/common-urlaub-gesamtuebersicht/common-urlaub-gesamtuebersicht.module";
+import {CommonWartungPage} from "../../pages/common-wartung/common-wartung.page";
 
 const _MitarbeiterdatenKeys = {
 
@@ -179,6 +180,7 @@ const _Pages = {
   // Allgemein
 
   HomePage: 'HomePage',
+  WartungPage: 'WartungPage',
   RegistrierungPage: 'RegistrierungPage',
   EinstellungenPage: 'EinstellungenPage',
   StartseitePage: 'StartseitePage',

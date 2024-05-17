@@ -4,6 +4,9 @@ import {DatabasePoolService} from "../../services/database-pool/database-pool.se
 import {ConstProvider} from "../../services/const/const";
 import {BasicsProvider} from "../../services/basics/basics";
 import {SecurityService} from "../../services/security/security.service";
+import {
+  DatabaseAppeinstellungenService
+} from "../../services/database-appeinstellungen/database-appeinstellungen.service";
 
 @Component({
   selector: 'common-einstellungen-page',
@@ -16,6 +19,7 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
               public Const: ConstProvider,
               public Basics: BasicsProvider,
               private Security: SecurityService,
+              private DB: DatabaseAppeinstellungenService,
               public Debug: DebugProvider) {
     try {
 
@@ -53,7 +57,9 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
     try {
 
-      this.Basics.DebugNoExternalEmail = event.status;
+      this.Pool.Appeinstellungen.DebugNoExternalEmail = event.status;
+
+      this.DB.SaveAppeinstellungen();
 
     } catch (error) {
 
@@ -61,15 +67,31 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
     }
   }
 
-  ShowCurrentMitarbeiterViewChanged(event: { status: boolean; index: number; event: any; value: string }) {
+  ShowHomescreeninfosChanged(event: { status: boolean; index: number; event: any; value: string }) {
 
     try {
 
-      this.Basics.ShowCurrentMitarbeiterView = event.status;
+      this.Pool.Appeinstellungen.ShowHomeScreenInfos = event.status;
+
+      this.DB.SaveAppeinstellungen();
 
     } catch (error) {
 
-      this.Debug.ShowErrorMessage(error, 'Einstellungen', 'ShowCurrentMitarbeiterViewChanged', this.Debug.Typen.Page);
+      this.Debug.ShowErrorMessage(error, 'Einstellungen', 'ShowHomescreeninfosChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  StartseiteChangedHandler(event: any) {
+
+    try {
+
+      this.Pool.Appeinstellungen.AdminStartseite = event.detail.value;
+
+      this.DB.SaveAppeinstellungen();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Einstellungen', 'StartseiteChangedHandler', this.Debug.Typen.Page);
     }
   }
 }

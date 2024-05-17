@@ -3,21 +3,63 @@
     <page-header-menu></page-header-menu>
   </page-header>
 </ion-header>
-<ion-content>
+<ion-content *ngIf="Pool.Appeinstellungen !== null">
 
   <table class="paddingtable">
     <tr>
+      <td colspan="2">
+        <ion-text color="baeblau"><b>Einstellungen Allgemein</b></ion-text>
+      </td>
+    </tr>
+    <tr>
       <td style="width: auto;" valign="top">
-        <checkbox-clon [Checked]="Basics.DebugNoExternalEmail" (CheckChanged)="DebugNoExternalEmaillCheckedChanged($event)"></checkbox-clon>
+        <checkbox-clon [Checked]="Pool.Appeinstellungen.DebugNoExternalEmail" (CheckChanged)="DebugNoExternalEmaillCheckedChanged($event)"></checkbox-clon>
       </td>
       <td>nur Testemails senden / keine BAE Emailadressen verwenden</td>
     </tr>
     <tr>
       <td style="width: auto;" valign="top">
-        <checkbox-clon [Checked]="Basics.ShowCurrentMitarbeiterView" (CheckChanged)="ShowCurrentMitarbeiterViewChanged($event)"></checkbox-clon>
+        <checkbox-clon [Checked]="Pool.Appeinstellungen.ShowHomeScreenInfos" (CheckChanged)="ShowHomescreeninfosChanged($event)"></checkbox-clon>
       </td>
-      <td>Zeige Ansicht der aktuellen Person (CurrentMitarbeiter)</td>
+      <td>Zeige Homescreen Infos</td>
     </tr>
+  </table>
+  <br>
+  <table class="paddingtable">
+    <tr>
+      <td colspan="2">
+        <ion-text color="baeblau"><b>Startseite bei Administratoren</b></ion-text>
+      </td>
+    </tr>
+    <ion-radio-group [value]="Pool.Appeinstellungen.AdminStartseite" (ionChange)="StartseiteChangedHandler($event)">
+      <tr>
+        <td><ion-radio [value]="Const.Pages.HomePage"></ion-radio></td><td>Home</td>
+      </tr>
+      <tr>
+        <td><ion-radio [value]="Const.Pages.WartungPage"></ion-radio></td><td>Wartung</td>
+      </tr>
+      <tr>
+        <td><ion-radio [value]="Const.Pages.FiStandortelistePage"></ion-radio></td><td>Standorte</td>
+      </tr>
+      <tr>
+        <td><ion-radio [value]="Const.Pages.FiMitarbeiterlistePage"></ion-radio></td><td>Mitarbeiter</td>
+      </tr>
+      <tr>
+        <td><ion-radio [value]="Const.Pages.UrlaubPlanungPage"></ion-radio></td><td>Urlaub Planung</td>
+      </tr>
+      <tr>
+        <td><ion-radio [value]="Const.Pages.UrlaubUebersichtPage"></ion-radio></td><td>Urlaub Übersicht</td>
+      </tr>
+      <tr>
+        <td><ion-radio [value]="Const.Pages.UrlaubsgesamtuebersichtPage"></ion-radio></td><td>Urlaub Gesamtübersicht</td>
+      </tr>
+      <tr>
+        <td><ion-radio [value]="Const.Pages.UrlaubFreigabenPage"></ion-radio></td><td>Urlaub Freigaben</td>
+      </tr>
+      <tr>
+        <td><ion-radio [value]="Const.Pages.UrlaubEinstellungenPage"></ion-radio></td><td>Urlaub Einstellungen</td>
+      </tr>
+    </ion-radio-group>
   </table>
 
 

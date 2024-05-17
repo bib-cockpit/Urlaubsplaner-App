@@ -647,15 +647,18 @@
 </ion-content>
 <ion-footer>
   <page-footer #PageFooter>
-    <table style="width: 100%;">
+    <table style="width: 100%;" *ngIf="Pool.Appeinstellungen !== null">
       <tr>
-        <td align="left">
+        <td align="left" style="width: 50%">
           <table class="paddingtable">
             <tr>
               <td *ngIf="Flagsource !== ''"><img [src]="Flagsource"></td>
               <td *ngIf="Message    !== ''" style="height: 40px; font-size: 110%; font-weight: bold; color: white; text-align: left">{{Message}}</td>
             </tr>
           </table>
+        </td>
+        <td style="width: 50%">
+          <div *ngIf="Pool.Appeinstellungen.DebugNoExternalEmail" style="padding: 6px; text-align: center; border-radius: 4px; background: red; color: white; font-weight: bold; width: 400px;">Keine externen Email senden</div>
         </td>
       </tr>
     </table>

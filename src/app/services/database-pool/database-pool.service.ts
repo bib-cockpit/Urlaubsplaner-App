@@ -12,6 +12,7 @@ import {environment} from "../../../environments/environment";
 import {Urlaubsstruktur} from "../../dataclasses/urlaubsstruktur";
 import {BasicsProvider} from "../basics/basics";
 import {Mitarbeiterpositionstruktur} from "../../dataclasses/mitarbeiterpositionstruktur";
+import {Appeinstellungenstruktur} from "../../dataclasses/appeinstellungenstruktur";
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +40,7 @@ export class DatabasePoolService {
   // public Festlegungskategorienliste: Festlegungskategoriestruktur[][];
   public ProjektdatenLoaded: boolean;
   public Emailcontentvarinaten: any;
+  public Appeinstellungen: Appeinstellungenstruktur;
 
   // public Simontabellenliste: Simontabellestruktur[][];
 
@@ -87,6 +89,7 @@ export class DatabasePoolService {
       this.Emailcontent             = this.Emailcontentvarinaten.NONE;
       // this.Fachbereich              = new Fachbereiche();
       this.ProjektdatenLoaded         = false;
+      this.Appeinstellungen           = null;
 
       this.Signatur                 =
         `<span style="font-size: 14px;">

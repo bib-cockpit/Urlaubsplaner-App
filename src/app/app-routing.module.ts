@@ -26,8 +26,8 @@ const routes: Routes = [
     loadChildren: () => import('./pages/common-home/common-home.module').then(m => m.CommonHomePageModule),
   },
   {
-    path: 'DebugPage',
-    loadChildren: () => import('./pages/common-debug/common-debug.module').then(m => m.CommonDebugPageModule),
+    path: 'WartungPage',
+    loadChildren: () => import('./pages/common-wartung/common-wartung.module').then(m => m.CommonWartungPageModule),
   },
   {
     path: 'EinstellungenPage',
