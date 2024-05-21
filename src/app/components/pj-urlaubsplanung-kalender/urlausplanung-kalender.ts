@@ -534,6 +534,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
       let IsHomeoffice: boolean = Tag.IsHomeoffice;
       let Starttagindex: number;
       let Endetagindex: number;
+      let Heute: Moment = moment();
 
       event.stopPropagation();
       event.preventDefault();
@@ -567,6 +568,15 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
               this.DB.CurrentUrlaubzeitspanne.Endestempel = Tag.Tagstempel;
               this.DB.CurrentUrlaubzeitspanne.Endestring  = Tag.Datumstring;
+
+              if(EndeDatum.isSameOrBefore(Heute)) {
+
+                this.DB.CurrentUrlaubzeitspanne.Status                      = this.DB.Urlaubstatusvarianten.Genehmigt;
+                this.DB.CurrentUrlaubzeitspanne.FreigabeanfrageSended       = true;
+                this.DB.CurrentUrlaubzeitspanne.FreigabeantwortSended       = true;
+                this.DB.CurrentUrlaubzeitspanne.FreigabeantwortOfficeSended = true;
+                this.DB.CurrentUrlaubzeitspanne.Planungmeldung              = 'Der Urlaub befand sich zum Tage der Eintragung am ' + Heute.format('DD.MM.YYYY') + ' in der Vergangenheit.';
+              }
 
               for (let Index = Starttagindex; Index <= Endetagindex; Index++) {
 

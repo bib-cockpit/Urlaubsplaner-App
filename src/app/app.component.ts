@@ -330,6 +330,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
         this.Pool.ShowProgress = false;
 
+        debugger;
+
         if(this.Pool.Mitarbeiterdaten.Planeradministrator === true) {
 
           Page = this.Pool.Appeinstellungen.AdminStartseite;
