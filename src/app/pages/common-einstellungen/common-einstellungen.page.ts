@@ -14,6 +14,8 @@ import {Urlauzeitspannenstruktur} from "../../dataclasses/urlauzeitspannenstrukt
 import {Urlaubsstruktur} from "../../dataclasses/urlaubsstruktur";
 import * as lodash from "lodash-es";
 import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
+import {Standortestruktur} from "../../dataclasses/standortestruktur";
+import {loadFromPath} from "@ionic/cli/lib/ssh-config";
 
 @Component({
   selector: 'common-einstellungen-page',
@@ -143,7 +145,7 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
       let Jahr: number = moment().year();
       let Urlaub: Urlaubsstruktur;
       let CurrentZeitspanne: Urlauzeitspannenstruktur;
-      let Test: boolean = false;
+      let Standort: Standortestruktur;
 
       this.Vertreterliste = [];
       this.Freigeberliste = [];
@@ -153,8 +155,6 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
         CurrentMitarbeiter.Vertretungenanfragenanzahl = 0;
         CurrentMitarbeiter.Freigabenanfragenanzahl    = 0;
 
-        if(CurrentMitarbeiter.Name === 'Hähnlein') Test = true;
-
         Urlaub = lodash.find(CurrentMitarbeiter.Urlaubsliste, (currenturlaub: Urlaubsstruktur) => {
 
           return currenturlaub.Jahr === Jahr;
@@ -162,50 +162,54 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
         if(lodash.isUndefined(Urlaub) === false) {
 
-          if(Test) console.log('Urlaub ist vorhanden');
-
           for(CurrentZeitspanne of Urlaub.Urlaubzeitspannen) {
-
-            console.log('Status: ' + CurrentZeitspanne.Status);
 
             switch (CurrentZeitspanne.Status) {
 
               case this.DBUrlaub.Urlaubstatusvarianten.Vertreteranfrage:
 
-                Mitarbeiter = lodash.find(this.Vertreterliste, {_id: CurrentMitarbeiter._id});
+                for(let Konversation of CurrentZeitspanne.Vertretungskonversationliste) {
 
-                if(lodash.isUndefined(Mitarbeiter)) {
+                  Mitarbeiter = lodash.find(this.Vertreterliste, { _id: Konversation.VertreterID });
 
-                  this.Vertreterliste.push(CurrentMitarbeiter);
+                  if(lodash.isUndefined(Mitarbeiter)) {
+
+                    this.Vertreterliste.push(Mitarbeiter);
+                  }
+                  else {
+
+                    Mitarbeiter.Vertretungenanfragenanzahl++;
+                  }
                 }
-                else {
 
-                  CurrentMitarbeiter.Vertretungenanfragenanzahl++;
-                }
 
 
                 break;
 
               case this.DBUrlaub.Urlaubstatusvarianten.Vertreterfreigabe:
 
-                Mitarbeiter = lodash.find(this.Freigeberliste, {_id: CurrentMitarbeiter._id});
+                Standort = lodash.find(this.Pool.Standorteliste, {_id: CurrentMitarbeiter.StandortID});
 
-                if(lodash.isUndefined(Mitarbeiter)) {
+                if(lodash.isUndefined(Standort) === false) {
 
-                  this.Freigeberliste.push(CurrentMitarbeiter);
-                }
-                else {
+                  for(let FreigeberID of Standort.Urlaubfreigabepersonen) {
 
-                  CurrentMitarbeiter.Freigabenanfragenanzahl++;
+                    Mitarbeiter = lodash.find(this.Freigeberliste, {_id: FreigeberID});
+
+                    if(lodash.isUndefined(Mitarbeiter) === true) {
+
+                      this.Freigeberliste.push(Mitarbeiter);
+                    }
+                    else {
+
+                      Mitarbeiter.Freigabenanfragenanzahl++;
+                    }
+                  }
                 }
 
                 break;
             }
           }
-        }
-        else {
-
-          if(Test) console.log('Jahr nicht vorhanden: ' + Jahr);
         }
       }
 
