@@ -7,7 +7,7 @@
 
   <table style="width: 100%">
     <tr>
-      <td style="width: 400px;">
+      <td style="width: 400px;" valign="top">
 
         <table class="paddingtable">
           <tr>
@@ -98,7 +98,7 @@
             <tr *ngFor="let Vertreter of Vertreterliste; let i = index">
               <td  style="width: 160px;">{{Vertreter.Vorname}} {{Vertreter.Name}}</td>
               <td>{{Vertreter.Vertretungenanfragenanzahl}}</td>
-              <td><checkbox-clon [Index]="i" [Checked]="Vertreter.UrlaubanfrageReminderSended" (CheckChanged)="VertreterCheckedChanged($event)"></checkbox-clon></td>
+              <td><checkbox-clon [Index]="i" [Checked]="Vertreter.Selected" (CheckChanged)="VertreterCheckedChanged($event)"></checkbox-clon></td>
               <td><div class="sendmailcircle" [style.background]="Vertreter.UrlaubanfrageReminderSended ? '#006400' : 'silver'"></div></td>
             </tr>
           </ng-container>
@@ -117,7 +117,7 @@
             <tr *ngFor="let Freigeber of Freigeberliste; let i = index">
               <td style="width: 160px;">{{Freigeber.Vorname}} {{Freigeber.Name}}</td>
               <td>{{Freigeber.Freigabenanfragenanzahl}}</td>
-              <td><checkbox-clon [Index]="i" [Checked]="Freigeber.UrlaubanfrageReminderSended" (CheckChanged)="FreigberCheckedChanged($event)"></checkbox-clon></td>
+              <td><checkbox-clon [Index]="i" [Checked]="Freigeber.Selected" (CheckChanged)="FreigberCheckedChanged($event)"></checkbox-clon></td>
               <td><div class="sendmailcircle" [style.background]="Freigeber.UrlaubanfrageReminderSended ? '#006400' : 'silver'"></div></td>
             </tr>
           </ng-container>
