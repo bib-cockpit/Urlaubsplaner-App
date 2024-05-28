@@ -99,7 +99,7 @@
               <td  style="width: 160px;">{{Vertreter.Vorname}} {{Vertreter.Name}}</td>
               <td>{{Vertreter.Vertretungenanfragenanzahl}}</td>
               <td><checkbox-clon [Index]="i" [Checked]="Vertreter.UrlaubanfrageReminderSended" (CheckChanged)="VertreterCheckedChanged($event)"></checkbox-clon></td>
-              <td><div class="sendmailcircle" [style.backround]="Vertreter.UrlaubanfrageReminderSended ? '#006400' : 'silver'"></div></td>
+              <td><div class="sendmailcircle" [style.background]="Vertreter.UrlaubanfrageReminderSended ? '#006400' : 'silver'"></div></td>
             </tr>
           </ng-container>
           <tr>
@@ -118,7 +118,7 @@
               <td style="width: 160px;">{{Freigeber.Vorname}} {{Freigeber.Name}}</td>
               <td>{{Freigeber.Freigabenanfragenanzahl}}</td>
               <td><checkbox-clon [Index]="i" [Checked]="Freigeber.UrlaubanfrageReminderSended" (CheckChanged)="FreigberCheckedChanged($event)"></checkbox-clon></td>
-              <td><div class="sendmailcircle" [style.backround]="Freigeber.UrlaubanfrageReminderSended ? '#006400' : 'silver'"></div></td>
+              <td><div class="sendmailcircle" [style.background]="Freigeber.UrlaubanfrageReminderSended ? '#006400' : 'silver'"></div></td>
             </tr>
           </ng-container>
           <ng-container *ngIf="Vertreterliste.length > 0 || Freigeberliste.length > 0">
