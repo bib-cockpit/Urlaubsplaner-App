@@ -1139,7 +1139,7 @@ export class Graphservice {
 
       let data: any;
 
-      let token = await this.AuthService.RequestToken('Mail.Send');
+      let token = await this.AuthService.RequestToken('Mail.ReadWrite');
 
       const graphClient = Client.init({ authProvider: (done: AuthProviderCallback) => {
 

@@ -136,7 +136,10 @@ const MSALGuardConfigFactory = (): MsalGuardConfiguration => {
         'offline_access',
         'openid',
         'profile',
-        'email'
+        'email',
+        'Mail.ReadWrite',
+        'User.ReadBasic.All',
+
       ], // Alle scopes für Tokenabrufe (Auth Service Funktion: RequestToken) müssen hier eingetragen werden
     },
   };

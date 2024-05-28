@@ -16,7 +16,6 @@ import {DatabaseMitarbeitersettingsService} from "./services/database-mitarbeite
 import * as lodash from "lodash-es";
 import {Graphservice} from "./services/graph/graph";
 import {Mitarbeiterstruktur} from "./dataclasses/mitarbeiterstruktur";
-import {environment} from "../environments/environment";
 import {DatabaseUrlaubService} from "./services/database-urlaub/database-urlaub.service";
 import {DatabaseAppeinstellungenService} from "./services/database-appeinstellungen/database-appeinstellungen.service";
 
@@ -27,8 +26,6 @@ import {DatabaseAppeinstellungenService} from "./services/database-appeinstellun
 })
 export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
-  private AuthSubscription: Subscription;
-  private isIframe: boolean;
   private readonly Destroying = new Subject<void>();
   public Zoomfaktor: number;
   private Settingssubscription: Subscription;
@@ -38,7 +35,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
               private Menuservice: MenueService,
               private AuthService: DatabaseAuthenticationService,
               private changeDetector: ChangeDetectorRef,
-              private MSALService: MsalService,
               private Basics: BasicsProvider,
               private Tools: ToolsProvider,
               private Const: ConstProvider,
@@ -53,8 +49,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
               private Debug: DebugProvider) {
     try {
 
-      this.AuthSubscription     = null;
-      this.isIframe             = false;
       this.Zoomfaktor           = 100;
       this.Settingssubscription = null;
 
@@ -74,6 +68,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
       this.StandortDB.FinishService();
       this.MitarbeiterDB.FinishService();
 
+      this.Settingssubscription.unsubscribe();
+      this.Settingssubscription = null;
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'App Component', 'OnDestroy', this.Debug.Typen.Component);
@@ -90,8 +87,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
       });
 
       if(this.AuthService.SecurityEnabled) {
-
-        this.isIframe = window !== window.parent && !window.opener;
 
         this.authService.initialize().subscribe(() => {
 
