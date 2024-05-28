@@ -1208,11 +1208,11 @@ export class DatabasePoolService {
         UrlaubShowVertreterfreigabe: true,
         UrlaubShowGenehmigt:         true,
         UrlaubShowAbgelehnt:         true,
-        UrlaubShowFerien_DE:         true,
-        UrlaubShowFeiertage_DE:      true,
-        UrlaubShowFerien_BG:         true,
-        UrlaubShowFeiertage_BG:      true,
         UrlaubShowMeinenUrlaub:      true,
+        UrlaubShowFerien_DE:         false,
+        UrlaubShowFeiertage_DE:      false,
+        UrlaubShowFerien_BG:         false,
+        UrlaubShowFeiertage_BG:      false,
 
         ShowHomeoffice: true,
 

@@ -184,25 +184,26 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
             Zeitspanne   = lodash.find(this.DB.CurrentUrlaub.Urlaubzeitspannen, {ZeitspannenID: this.DB.CurrentUrlaubzeitspanne.ZeitspannenID});
             Konversation = lodash.find(Zeitspanne.Vertretungskonversationliste, { VertreterID: this.DB.CurrentMitarbeiter._id });
 
-            Zeitspanne.Status                     = data;
+            Zeitspanne.Status = data;
 
             switch (Zeitspanne.Status) {
 
               case this.DB.Urlaubstatusvarianten.Geplant:
 
-                Konversation.VertreteranfrageSended      = false;
-                Konversation.VertreterantwortSended      = false;
-                Zeitspanne.FreigabeanfrageSended       = false;
-                Zeitspanne.FreigabeantwortSended       = false;
-                Zeitspanne.FreigabeantwortOfficeSended = false;
-
-                Konversation.Vertretunganfragezeitstempel     = null;
-                Konversation.Vertretungantwortzeitstempel     = null;
-                Konversation.Vertretungantwortzeitstempel     = null;
+                Zeitspanne.FreigabeanfrageSended            = false;
+                Zeitspanne.FreigabeantwortSended            = false;
+                Zeitspanne.FreigabeantwortOfficeSended      = false;
                 Zeitspanne.Freigabeantwortzeitstempel       = null;
                 Zeitspanne.FreigabeantwortOfficezeitstempel = null;
 
+                if(lodash.isUndefined(Konversation) === false) {
 
+                  Konversation.VertreteranfrageSended           = false;
+                  Konversation.VertreterantwortSended           = false;
+                  Konversation.Vertretunganfragezeitstempel     = null;
+                  Konversation.Vertretungantwortzeitstempel     = null;
+                  Konversation.Vertretungantwortzeitstempel     = null;
+                }
 
                 break;
 
@@ -229,6 +230,8 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
 
             Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+            debugger;
 
             this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
@@ -956,21 +959,26 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
       let Index: number = 0;
 
-      this.Auswahltitel         = 'Status ändern';
-      this.Auswahldialogorigin  = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Status_Aendern;
-      this.DB.CurrentUrlaubzeitspanne = Zeitspanne;
+      if(this.Pool.Mitarbeiterdaten !== null && this.Pool.Mitarbeiterdaten.Urlaubsfreigaben === true) {
 
-      this.Auswahlliste = [];
+        this.Auswahltitel         = 'Status ändern';
+        this.Auswahldialogorigin  = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Status_Aendern;
+        this.DB.CurrentUrlaubzeitspanne = Zeitspanne;
 
-      this.Auswahlliste.push({ Index: Index++, FirstColumn: this.DB.Urlaubstatusvarianten.Geplant, SecoundColumn:      '', Data: this.DB.Urlaubstatusvarianten.Geplant });
-      this.Auswahlliste.push({ Index: Index++, FirstColumn: this.DB.Urlaubstatusvarianten.Vertreteranfrage, SecoundColumn:   '', Data: this.DB.Urlaubstatusvarianten.Vertreteranfrage });
-      this.Auswahlliste.push({ Index: Index++, FirstColumn: this.DB.Urlaubstatusvarianten.Vertreterablehnung, SecoundColumn: '', Data: this.DB.Urlaubstatusvarianten.Vertreterablehnung });
-      this.Auswahlliste.push({ Index: Index++, FirstColumn: this.DB.Urlaubstatusvarianten.Vertreterfreigabe, SecoundColumn:  '', Data: this.DB.Urlaubstatusvarianten.Vertreterfreigabe });
-      this.Auswahlliste.push({ Index: Index++, FirstColumn: this.DB.Urlaubstatusvarianten.Abgelehnt, SecoundColumn:          '', Data: this.DB.Urlaubstatusvarianten.Abgelehnt });
-      this.Auswahlliste.push({ Index: Index++, FirstColumn: this.DB.Urlaubstatusvarianten.Genehmigt, SecoundColumn:          '', Data: this.DB.Urlaubstatusvarianten.Genehmigt });
+        this.Auswahlliste = [];
 
-      this.ShowAuswahl  = true;
-      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: Zeitspanne.Status});
+        this.Auswahlliste.push({ Index: Index++, FirstColumn: this.DB.Urlaubstatusvarianten.Geplant, SecoundColumn:            '', Data: this.DB.Urlaubstatusvarianten.Geplant });
+        this.Auswahlliste.push({ Index: Index++, FirstColumn: this.DB.Urlaubstatusvarianten.Vertreteranfrage, SecoundColumn:   '', Data: this.DB.Urlaubstatusvarianten.Vertreteranfrage });
+        this.Auswahlliste.push({ Index: Index++, FirstColumn: this.DB.Urlaubstatusvarianten.Vertreterablehnung, SecoundColumn: '', Data: this.DB.Urlaubstatusvarianten.Vertreterablehnung });
+        this.Auswahlliste.push({ Index: Index++, FirstColumn: this.DB.Urlaubstatusvarianten.Vertreterfreigabe, SecoundColumn:  '', Data: this.DB.Urlaubstatusvarianten.Vertreterfreigabe });
+        this.Auswahlliste.push({ Index: Index++, FirstColumn: this.DB.Urlaubstatusvarianten.Abgelehnt, SecoundColumn:          '', Data: this.DB.Urlaubstatusvarianten.Abgelehnt });
+        this.Auswahlliste.push({ Index: Index++, FirstColumn: this.DB.Urlaubstatusvarianten.Genehmigt, SecoundColumn:          '', Data: this.DB.Urlaubstatusvarianten.Genehmigt });
+
+        this.ShowAuswahl  = true;
+        this.Auswahlindex = lodash.findIndex(this.Auswahlliste, {Data: Zeitspanne.Status});
+
+      }
+
 
     } catch (error) {
 

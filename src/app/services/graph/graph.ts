@@ -1155,6 +1155,8 @@ export class Graphservice {
         }
       }
 
+      debugger;
+
       if(token !== null) {
 
         const sendMail = {
@@ -1169,18 +1171,26 @@ export class Graphservice {
           saveToSentItems: 'true'
         };
 
+        try {
 
-        data = await graphClient.api('/me/sendMail').post(sendMail);
+          debugger;
 
-        return Promise.resolve(data);
+          data = await graphClient.api('/me/sendMail').post(sendMail);
 
-        debugger;
+          return Promise.resolve(data);
+        }
+        catch (error) {
+
+          debugger;
+        }
+
       }
       else {
 
+        debugger;
+
         return Promise.reject(false);
       }
-
     } catch (error) {
 
       debugger;
