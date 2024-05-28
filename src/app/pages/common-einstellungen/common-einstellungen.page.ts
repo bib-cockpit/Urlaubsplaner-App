@@ -230,7 +230,7 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
     try {
 
-      this.Freigeberliste[event.index].UrlaubanfrageReminderSended = event.status;
+      this.Freigeberliste[event.index].Selected = event.status;
 
     } catch (error) {
 
@@ -242,7 +242,7 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
     try {
 
-      this.Vertreterliste[event.index].UrlaubanfrageReminderSended = event.status;
+      this.Vertreterliste[event.index].Selected = event.status;
 
     } catch (error) {
 
