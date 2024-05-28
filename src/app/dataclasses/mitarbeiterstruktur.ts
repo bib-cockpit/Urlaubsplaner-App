@@ -47,5 +47,6 @@ export interface Mitarbeiterstruktur  {
     ShowInGesamtuebersicht?: boolean;
     Freigabenanfragenanzahl?: number;
     Vertretungenanfragenanzahl?: number;
+    UrlaubanfrageReminderSended?: boolean;
     __v?: any;
 };

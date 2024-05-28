@@ -154,9 +154,6 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
       for(CurrentMitarbeiter of this.Pool.Mitarbeiterliste) {
 
-        CurrentMitarbeiter.Vertretungenanfragenanzahl = 0;
-        CurrentMitarbeiter.Freigabenanfragenanzahl    = 0;
-
         Urlaub = lodash.find(CurrentMitarbeiter.Urlaubsliste, (currenturlaub: Urlaubsstruktur) => {
 
           return currenturlaub.Jahr === Jahr;
@@ -176,6 +173,10 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
                   Mitarbeiter = lodash.find(this.Vertreterliste,        { _id: Konversation.VertreterID });
 
                   if(lodash.isUndefined(Mitarbeiter)) {
+
+                    Vertreter.Vertretungenanfragenanzahl  = 1;
+                    Vertreter.Selected                    = false;
+                    Vertreter.UrlaubanfrageReminderSended = false;
 
                     this.Vertreterliste.push(Vertreter);
                   }
@@ -200,6 +201,10 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
                     if(lodash.isUndefined(Mitarbeiter) === true) {
 
+                      Freigeber.Freigabenanfragenanzahl     = 1;
+                      Freigeber.Selected                    = false;
+                      Freigeber.UrlaubanfrageReminderSended = false;
+
                       this.Freigeberliste.push(Freigeber);
                     }
                     else {
@@ -218,6 +223,30 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Einstellungen', 'PrepareData', this.Debug.Typen.Page);
+    }
+  }
+
+  FreigberCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      this.Freigeberliste[event.index].UrlaubanfrageReminderSended = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Einstellungen', 'FreigberCheckedChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  VertreterCheckedChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      this.Vertreterliste[event.index].UrlaubanfrageReminderSended = event.status;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Einstellungen', 'VertreterCheckedChanged', this.Debug.Typen.Page);
     }
   }
 }

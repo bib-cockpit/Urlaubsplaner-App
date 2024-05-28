@@ -95,8 +95,9 @@
             </tr>
           </ng-container>
           <ng-container *ngIf="Vertreterliste.length !== 0">
-            <tr *ngFor="let Vertreter of Vertreterliste">
+            <tr *ngFor="let Vertreter of Vertreterliste; let i = index">
               <td colspan="10">{{Vertreter.Vorname}} {{Vertreter.Name}}</td>{{Vertreter.Vertretungenanfragenanzahl}}<td></td><td></td>
+              <td><checkbox-clon [Index]="i" [Checked]="Vertreter.UrlaubanfrageReminderSended" (CheckChanged)="VertreterCheckedChanged($event)"></checkbox-clon></td>
             </tr>
           </ng-container>
           <tr>
@@ -111,8 +112,9 @@
             </tr>
           </ng-container>
           <ng-container *ngIf="Freigeberliste.length !== 0">
-            <tr *ngFor="let Freigeber of Freigeberliste">
+            <tr *ngFor="let Freigeber of Freigeberliste; let i = index">
               <td colspan="10">{{Freigeber.Vorname}} {{Freigeber.Name}}</td><td></td><td>{{Freigeber.Freigabenanfragenanzahl}}</td>
+              <td><checkbox-clon [Index]="i" [Checked]="Freigeber.UrlaubanfrageReminderSended" (CheckChanged)="FreigberCheckedChanged($event)"></checkbox-clon></td>
             </tr>
           </ng-container>
         </table>
