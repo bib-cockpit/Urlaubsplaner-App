@@ -92,9 +92,8 @@
                       </div>
                     </td>
                   </ng-container>
-                  <!--
-                  <ng-container *ngIf="Pool.Mitarbeiterdaten.Homeofficefreigaben === true || Pool.Mitarbeiterdaten.Urlaubsfreigaben === true || DBUrlaub.Vertretungsanfragenanzahl > 0">
-                  -->
+
+                  <ng-container *ngIf="Pool.Mitarbeiterdaten.Homeofficefreigaben === true || Pool.Mitarbeiterdaten.Urlaubsfreigaben === true || Pool.Mitarbeiterdaten.Planeradministrator">
                     <td style="width: 20px"></td>
                     <td>
                       <div class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Freigaben)">
@@ -109,9 +108,7 @@
                         </table>
                       </div>
                     </td>
-                <!--
                   </ng-container>
-                  -->
                   <td style="width: 20px"></td>
                   <td>
                     <div class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Einstellungen)">
