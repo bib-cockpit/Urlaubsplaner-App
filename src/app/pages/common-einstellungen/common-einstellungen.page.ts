@@ -144,14 +144,17 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
       let Jahr: number = moment().year();
       let Urlaub: Urlaubsstruktur;
       let CurrentZeitspanne: Urlauzeitspannenstruktur;
-
+      let Test: boolean = false;
 
       this.Vertreterliste = [];
+      this.Freigeberliste = [];
 
       for(CurrentMitarbeiter of this.Pool.Mitarbeiterliste) {
 
         CurrentMitarbeiter.Vertretungenanfragenanzahl = 0;
         CurrentMitarbeiter.Freigabenanfragenanzahl    = 0;
+
+        if(CurrentMitarbeiter.Name === 'Hähnlein') Test = true;
 
         Urlaub = lodash.find(CurrentMitarbeiter.Urlaubsliste, (currenturlaub: Urlaubsstruktur) => {
 
@@ -160,7 +163,11 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
         if(lodash.isUndefined(Urlaub) === false) {
 
+          if(Test) console.log('Urlaub ist vorhanden');
+
           for(CurrentZeitspanne of Urlaub.Urlaubzeitspannen) {
+
+            console.log('Status: ' + CurrentZeitspanne.Status);
 
             switch (CurrentZeitspanne.Status) {
 
@@ -196,6 +203,10 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
                 break;
             }
           }
+        }
+        else {
+
+          if(Test) console.log('Jahr nicht vorhanden: ' + Jahr);
         }
       }
 
