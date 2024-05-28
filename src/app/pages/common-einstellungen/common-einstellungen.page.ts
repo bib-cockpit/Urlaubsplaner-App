@@ -169,7 +169,7 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
                 for(let Konversation of CurrentZeitspanne.Vertretungskonversationliste) {
 
-                  Vertreter   = lodash.find(this.Pool.Mitarbeiterliste, { _id: Konversation.VertreterID });
+                  Vertreter   = lodash.cloneDeep(lodash.find(this.Pool.Mitarbeiterliste, { _id: Konversation.VertreterID }));
                   Mitarbeiter = lodash.find(this.Vertreterliste,        { _id: Konversation.VertreterID });
 
                   if(lodash.isUndefined(Mitarbeiter)) {
@@ -196,7 +196,7 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
                   for(let FreigeberID of Standort.Urlaubfreigabepersonen) {
 
-                    Freigeber   = lodash.find(this.Pool.Mitarbeiterliste, { _id: FreigeberID });
+                    Freigeber   = lodash.cloneDeep(lodash.find(this.Pool.Mitarbeiterliste, { _id: FreigeberID }));
                     Mitarbeiter = lodash.find(this.Freigeberliste,        { _id: FreigeberID });
 
                     if(lodash.isUndefined(Mitarbeiter) === true) {
