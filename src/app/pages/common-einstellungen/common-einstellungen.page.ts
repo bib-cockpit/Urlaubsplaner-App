@@ -146,6 +146,8 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
       let Urlaub: Urlaubsstruktur;
       let CurrentZeitspanne: Urlauzeitspannenstruktur;
       let Standort: Standortestruktur;
+      let Vertreter: Mitarbeiterstruktur;
+      let Freigeber: Mitarbeiterstruktur;
 
       this.Vertreterliste = [];
       this.Freigeberliste = [];
@@ -170,19 +172,18 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
                 for(let Konversation of CurrentZeitspanne.Vertretungskonversationliste) {
 
-                  Mitarbeiter = lodash.find(this.Vertreterliste, { _id: Konversation.VertreterID });
+                  Vertreter   = lodash.find(this.Pool.Mitarbeiterliste, { _id: Konversation.VertreterID });
+                  Mitarbeiter = lodash.find(this.Vertreterliste,        { _id: Konversation.VertreterID });
 
                   if(lodash.isUndefined(Mitarbeiter)) {
 
-                    this.Vertreterliste.push(Mitarbeiter);
+                    this.Vertreterliste.push(Vertreter);
                   }
                   else {
 
                     Mitarbeiter.Vertretungenanfragenanzahl++;
                   }
                 }
-
-
 
                 break;
 
@@ -194,11 +195,12 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
                   for(let FreigeberID of Standort.Urlaubfreigabepersonen) {
 
-                    Mitarbeiter = lodash.find(this.Freigeberliste, {_id: FreigeberID});
+                    Freigeber   = lodash.find(this.Pool.Mitarbeiterliste, { _id: FreigeberID });
+                    Mitarbeiter = lodash.find(this.Freigeberliste,        { _id: FreigeberID });
 
                     if(lodash.isUndefined(Mitarbeiter) === true) {
 
-                      this.Freigeberliste.push(Mitarbeiter);
+                      this.Freigeberliste.push(Freigeber);
                     }
                     else {
 
