@@ -64,14 +64,13 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
     try {
 
-      this.Security.CheckSecurity();
 
       this.DataSubscription = this.Pool.LoadingAllDataFinished.subscribe(() => {
 
         this.PrepareData();
       });
 
-
+      this.PrepareData();
 
     } catch (error) {
 
