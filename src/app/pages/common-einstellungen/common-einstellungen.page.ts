@@ -249,4 +249,30 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Einstellungen', 'VertreterCheckedChanged', this.Debug.Typen.Page);
     }
   }
+
+  SendUrlaubReminderMail() {
+
+    try {
+
+      for(let Vertreter of this.Vertreterliste) {
+
+        if(Vertreter.Selected) {
+
+          Vertreter.UrlaubanfrageReminderSended = true;
+        }
+      }
+
+      for(let Freigeber of this.Freigeberliste) {
+
+        if(Freigeber.Selected) {
+
+          Freigeber.UrlaubanfrageReminderSended = true;
+        }
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Einstellungen', 'SendUrlaubReminderMail', this.Debug.Typen.Page);
+    }
+  }
 }
