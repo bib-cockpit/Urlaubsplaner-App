@@ -5,70 +5,123 @@
 </ion-header>
 <ion-content *ngIf="Pool.Appeinstellungen !== null">
 
-  <table class="paddingtable">
+  <table style="width: 100%">
     <tr>
-      <td colspan="2">
-        <ion-text color="baeblau"><b>Einstellungen Allgemein</b></ion-text>
+      <td style="width: 400px;">
+
+        <table class="paddingtable">
+          <tr>
+            <td colspan="2">
+              <ion-text color="baeblau"><b>Einstellungen Allgemein</b></ion-text>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: auto;" valign="top">
+              <checkbox-clon [Checked]="Pool.Appeinstellungen.DebugNoExternalEmail" (CheckChanged)="DebugNoExternalEmaillCheckedChanged($event)"></checkbox-clon>
+            </td>
+            <td>nur Testemails senden / keine BAE Emailadressen verwenden</td>
+          </tr>
+          <tr>
+            <td style="width: auto;" valign="top">
+              <checkbox-clon [Checked]="Pool.Appeinstellungen.ShowHomeScreenInfos" (CheckChanged)="ShowHomescreeninfosChanged($event)"></checkbox-clon>
+            </td>
+            <td>Zeige Homescreen Infos</td>
+          </tr>
+        </table>
+        <br>
+        <table class="paddingtable">
+          <tr>
+            <td colspan="2">
+              <ion-text color="baeblau"><b>Startseite bei Administratoren</b></ion-text>
+            </td>
+          </tr>
+          <ion-radio-group [value]="Pool.Appeinstellungen.AdminStartseite" (ionChange)="StartseiteChangedHandler($event)">
+            <tr>
+              <td><ion-radio [value]="Const.Pages.HomePage"></ion-radio></td><td>Home</td>
+            </tr>
+            <tr>
+              <td><ion-radio [value]="Const.Pages.FiStandortelistePage"></ion-radio></td><td>Standorte</td>
+            </tr>
+            <tr>
+              <td><ion-radio [value]="Const.Pages.FiMitarbeiterlistePage"></ion-radio></td><td>Mitarbeiter</td>
+            </tr>
+            <tr>
+              <td><ion-radio [value]="Const.Pages.EinstellungenPage"></ion-radio></td><td>Einstellungen</td>
+            </tr>
+            <tr>
+              <td><ion-radio [value]="Const.Pages.UrlaubPlanungPage"></ion-radio></td><td>Urlaub Planung</td>
+            </tr>
+            <tr>
+              <td><ion-radio [value]="Const.Pages.UrlaubUebersichtPage"></ion-radio></td><td>Urlaub Übersicht</td>
+            </tr>
+            <tr>
+              <td><ion-radio [value]="Const.Pages.UrlaubsgesamtuebersichtPage"></ion-radio></td><td>Urlaub Gesamtübersicht</td>
+            </tr>
+            <tr>
+              <td><ion-radio [value]="Const.Pages.UrlaubFreigabenPage"></ion-radio></td><td>Urlaub Freigaben</td>
+            </tr>
+            <tr>
+              <td><ion-radio [value]="Const.Pages.UrlaubEinstellungenPage"></ion-radio></td><td>Urlaub Einstellungen</td>
+            </tr>
+          </ion-radio-group>
+        </table>
+        <br>
+        <table class="paddingtable">
+          <tr>
+            <td colspan="2">
+              <ion-text color="baeblau"><b>Wartungsmodus</b></ion-text>
+            </td>
+          </tr>
+          <tr>
+            <td><checkbox-clon [Checked]="Pool.Appeinstellungen.Wartungsmodus" (CheckChanged)="WartungsmodusCheckChanged($event)"></checkbox-clon></td><td>Watungsmodus für Standardnutzer aktivieren</td>
+          </tr>
+        </table>
+
       </td>
-    </tr>
-    <tr>
-      <td style="width: auto;" valign="top">
-        <checkbox-clon [Checked]="Pool.Appeinstellungen.DebugNoExternalEmail" (CheckChanged)="DebugNoExternalEmaillCheckedChanged($event)"></checkbox-clon>
+      <td style="width: auto" valign="top">
+
+        <table class="paddingsmalltable">
+          <tr>
+            <td colspan="10">
+              <ion-text color="baeblau"><b>Urlaubsplanung</b></ion-text>
+            </td>
+          </tr>
+          <tr>
+            <td  colspan="10" style="font-weight: bold">Vertreteranfragen an:</td>
+          </tr>
+          <ng-container *ngIf="Vertreterliste.length === 0">
+            <tr>
+              <td colspan="10">keine</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="Vertreterliste.length !== 0">
+            <tr *ngFor="let Vertreter of Vertreterliste">
+              <td colspan="10">{{Vertreter.Vorname}} {{Vertreter.Name}}</td>{{Vertreter.Vertretungenanfragenanzahl}}<td></td><td></td>
+            </tr>
+          </ng-container>
+          <tr>
+            <td style="height: 40px;" colspan="10"></td>
+          </tr>
+          <tr>
+            <td colspan="10" style="font-weight: bold">Freigabeanfragen an:</td>
+          </tr>
+          <ng-container *ngIf="Freigeberliste.length === 0">
+            <tr>
+              <td colspan="10">keine</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="Freigeberliste.length !== 0">
+            <tr *ngFor="let Freigeber of Freigeberliste">
+              <td colspan="10">{{Freigeber.Vorname}} {{Freigeber.Name}}</td><td></td><td>{{Freigeber.Freigabenanfragenanzahl}}</td>
+            </tr>
+          </ng-container>
+        </table>
+
       </td>
-      <td>nur Testemails senden / keine BAE Emailadressen verwenden</td>
-    </tr>
-    <tr>
-      <td style="width: auto;" valign="top">
-        <checkbox-clon [Checked]="Pool.Appeinstellungen.ShowHomeScreenInfos" (CheckChanged)="ShowHomescreeninfosChanged($event)"></checkbox-clon>
-      </td>
-      <td>Zeige Homescreen Infos</td>
     </tr>
   </table>
-  <br>
-  <table class="paddingtable">
-    <tr>
-      <td colspan="2">
-        <ion-text color="baeblau"><b>Startseite bei Administratoren</b></ion-text>
-      </td>
-    </tr>
-    <ion-radio-group [value]="Pool.Appeinstellungen.AdminStartseite" (ionChange)="StartseiteChangedHandler($event)">
-      <tr>
-        <td><ion-radio [value]="Const.Pages.HomePage"></ion-radio></td><td>Home</td>
-      </tr>
-      <tr>
-        <td><ion-radio [value]="Const.Pages.FiStandortelistePage"></ion-radio></td><td>Standorte</td>
-      </tr>
-      <tr>
-        <td><ion-radio [value]="Const.Pages.FiMitarbeiterlistePage"></ion-radio></td><td>Mitarbeiter</td>
-      </tr>
-      <tr>
-        <td><ion-radio [value]="Const.Pages.UrlaubPlanungPage"></ion-radio></td><td>Urlaub Planung</td>
-      </tr>
-      <tr>
-        <td><ion-radio [value]="Const.Pages.UrlaubUebersichtPage"></ion-radio></td><td>Urlaub Übersicht</td>
-      </tr>
-      <tr>
-        <td><ion-radio [value]="Const.Pages.UrlaubsgesamtuebersichtPage"></ion-radio></td><td>Urlaub Gesamtübersicht</td>
-      </tr>
-      <tr>
-        <td><ion-radio [value]="Const.Pages.UrlaubFreigabenPage"></ion-radio></td><td>Urlaub Freigaben</td>
-      </tr>
-      <tr>
-        <td><ion-radio [value]="Const.Pages.UrlaubEinstellungenPage"></ion-radio></td><td>Urlaub Einstellungen</td>
-      </tr>
-    </ion-radio-group>
-  </table>
-  <br>
-  <table class="paddingtable">
-    <tr>
-      <td colspan="2">
-        <ion-text color="baeblau"><b>Wartungsmodus</b></ion-text>
-      </td>
-    </tr>
-    <tr>
-      <td><checkbox-clon [Checked]="Pool.Appeinstellungen.Wartungsmodus" (CheckChanged)="WartungsmodusCheckChanged($event)"></checkbox-clon></td><td>Watungsmodus für Standardnutzer aktivieren</td>
-    </tr>
-  </table>
+
+
 
 </ion-content>
 <ion-footer>

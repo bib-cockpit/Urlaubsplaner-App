@@ -45,5 +45,7 @@ export interface Mitarbeiterstruktur  {
     Selected?: boolean;
     Color?:    string;
     ShowInGesamtuebersicht?: boolean;
+    Freigabenanfragenanzahl?: number;
+    Vertretungenanfragenanzahl?: number;
     __v?: any;
 };
