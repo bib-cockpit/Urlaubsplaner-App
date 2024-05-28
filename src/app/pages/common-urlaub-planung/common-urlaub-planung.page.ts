@@ -959,7 +959,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
       let Index: number = 0;
 
-      if(this.Pool.Mitarbeiterdaten !== null && this.Pool.Mitarbeiterdaten.Urlaubsfreigaben === true) {
+      if(this.Pool.Mitarbeiterdaten !== null && (this.Pool.Mitarbeiterdaten.Planeradministrator === true || this.Pool.Mitarbeiterdaten.Urlaubsfreigaben === true)) {
 
         this.Auswahltitel         = 'Status ändern';
         this.Auswahldialogorigin  = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Status_Aendern;

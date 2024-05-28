@@ -235,7 +235,7 @@
                               </td>
                               <td align="center">
                                 <div (click)="StatusClickedHandler(Zeitspanne)" class="legendedivclass"
-                                     [style.cursor]="Pool.Mitarbeiterdaten.Urlaubsfreigaben === true ? 'pointer' : 'default'"
+                                     [style.cursor]="(Pool.Mitarbeiterdaten.Planeradministrator === true || Pool.Mitarbeiterdaten.Urlaubsfreigaben === true) ? 'pointer' : 'default'"
                                      [style.background]="DB.GetUrlaubStatuscolor(Zeitspanne)">
                                 </div>
                               </td>
