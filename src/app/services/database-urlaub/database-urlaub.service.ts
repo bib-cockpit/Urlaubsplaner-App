@@ -1182,6 +1182,96 @@ export class DatabaseUrlaubService {
     }
   }
 
+  public SendVertreterreminder(Vertretung: Mitarbeiterstruktur): Promise<boolean> {
+
+    try {
+
+      let Betreff: string = 'Vertretungsanfragen in der Urlaubsplaner App';
+      let Nachricht: string;
+      let Empfaenger: Outlookemailadressstruktur[] = [];
+
+      return new Promise((resolve, reject) => {
+
+        Nachricht  = "Hallo " + Vertretung.Vorname + ",<br><br>es gibt neue Vertretungsanfragen für dich.<br>";
+        Nachricht += "Bitte prüfe die Anfragen in der App.";
+        Nachricht += '<br><br>';
+        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaub - Homeoffice - Planung jetzt öffnen</a>';
+        Nachricht += '<br><br>' + this.Pool.GetFilledSignatur(this.Pool.Mitarbeiterdaten, true);
+
+        Empfaenger.push({
+
+          emailAddress: {
+
+            address: Vertretung.Email,
+            name: Vertretung.Vorname + ' ' + Vertretung.Name
+          }
+        });
+
+
+          this.Graph.SendMail(Empfaenger, Betreff, Nachricht).then(() => {
+
+            console.log('Vertretungserinnerung wurde an ' + Vertretung.Vorname + ' ' + Vertretung.Name + ' gesendet.');
+
+            resolve(true);
+
+          }).catch((error: any) => {
+
+            reject(error);
+          });
+
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'SendVertreterreminder', this.Debug.Typen.Service);
+    }
+  }
+
+  public SendFreigabereminder(Freigeber: Mitarbeiterstruktur): Promise<boolean> {
+
+    try {
+
+      let Betreff: string = 'Urlaubsfreigaben Anfragen in der Urlaubsplaner App';
+      let Nachricht: string;
+      let Empfaenger: Outlookemailadressstruktur[] = [];
+
+      return new Promise((resolve, reject) => {
+
+        Nachricht  = "Hallo " + Freigeber.Vorname + ",<br><br>es gibt neue Anfragen für Urlaubsfreigaben.<br>";
+        Nachricht += "Bitte prüfe die Anfragen in der App.";
+        Nachricht += '<br><br>';
+        Nachricht += '<a href="' + this.Basics.WebAppUrl + '">Urlaub - Homeoffice - Planung jetzt öffnen</a>';
+        Nachricht += '<br><br>' + this.Pool.GetFilledSignatur(this.Pool.Mitarbeiterdaten, true);
+
+        Empfaenger.push({
+
+          emailAddress: {
+
+            address: Freigeber.Email,
+            name: Freigeber.Vorname + ' ' + Freigeber.Name
+          }
+        });
+
+
+          this.Graph.SendMail(Empfaenger, Betreff, Nachricht).then(() => {
+
+            console.log('Freigebererinnerung wurde an ' + Freigeber.Vorname + ' ' + Freigeber.Name + ' gesendet.');
+
+            resolve(true);
+
+          }).catch((error: any) => {
+
+            reject(error);
+          });
+
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'SendFreigabereminder', this.Debug.Typen.Service);
+    }
+  }
+
   private SendHomeofficefreigabeanfrage(Mitarbeiter: Mitarbeiterstruktur, Freigeberliste: Mitarbeiterstruktur[], Urlaubzeitspannen: Homeofficezeitspannenstruktur[]): Promise<Homeofficezeitspannenstruktur[]> {
 
     try {

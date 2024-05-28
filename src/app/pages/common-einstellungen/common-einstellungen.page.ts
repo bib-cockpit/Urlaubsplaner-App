@@ -250,7 +250,7 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
     }
   }
 
-  SendUrlaubReminderMail() {
+  async SendUrlaubReminderMail() {
 
     try {
 
@@ -258,7 +258,10 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
         if(Vertreter.Selected) {
 
+          await this.DBUrlaub.SendVertreterreminder(Vertreter);
+
           Vertreter.UrlaubanfrageReminderSended = true;
+          Vertreter.Selected                    = false;
         }
       }
 
@@ -266,7 +269,10 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
 
         if(Freigeber.Selected) {
 
+          await this.DBUrlaub.SendFreigabereminder(Freigeber);
+
           Freigeber.UrlaubanfrageReminderSended = true;
+          Freigeber.Selected                    = false;
         }
       }
 
