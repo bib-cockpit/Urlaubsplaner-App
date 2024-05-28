@@ -985,7 +985,8 @@ export class DatabaseUrlaubService {
 
       let Standort: Standortestruktur = lodash.find(this.Pool.Standorteliste, {_id: Mitarbeiter.StandortID});
 
-      return Standort.Homeofficefreigabepersonen.indexOf(this.Pool.Mitarbeiterdaten._id) !== -1;
+      if(this.Pool.Mitarbeiterdaten.Planeradministrator === true) return true;
+      else return Standort.Homeofficefreigabepersonen.indexOf(this.Pool.Mitarbeiterdaten._id) !== -1;
 
     } catch (error) {
 

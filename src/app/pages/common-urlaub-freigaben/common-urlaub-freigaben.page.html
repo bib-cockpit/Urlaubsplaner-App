@@ -444,9 +444,6 @@
                         </tr>
                         <ng-container *ngFor="let Urlaub of Mitarbeiter.Urlaubsliste">
                           <ng-container *ngIf="Urlaub.Jahr === DB.Jahr && DB.CheckHomeofficefreigeberAvailable(Mitarbeiter) === true">
-                            <tr>
-                              <td colspan="12">Homeoffice Freigeber für diesen Standort ok</td>
-                            </tr>
                             <tr *ngIf="CheckHasAnfragen(Urlaub)">
                               <td colspan="3"></td>
                               <!--
