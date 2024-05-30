@@ -203,7 +203,7 @@
                               <td style="text-align: center">{{Zeitspanne.Tageanzahl}}</td>
                               <td>
                                 <checkbox-clon *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant" [Checked]="Zeitspanne.Betriebsurlaub" (CheckChanged)="BetriebsurlaubCheckedChanged($event, Zeitspanne)"></checkbox-clon>
-                                <div *ngIf="Zeitspanne.Betriebsurlaub === true" style="width: 20px; height: 20px; background: #307ac1; border-radius: 100%"></div>
+                                <div *ngIf="Zeitspanne.Betriebsurlaub === true && Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterfreigabe" style="width: 20px; height: 20px; background: #307ac1; border-radius: 100%"></div>
                               </td>
                               <td>
                                 <ng-container *ngIf="(Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant || DB.CheckVertretungIsAbgelehnt(Zeitspanne) === true)

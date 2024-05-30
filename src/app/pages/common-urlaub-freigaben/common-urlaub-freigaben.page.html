@@ -341,23 +341,23 @@
                                     <td align="center">
                                       <div class="legendedivclass" [style.background]="DB.GetUrlaubStatuscolor(Zeitspanne)"></div>
                                     </td>
-                                    <td [innerHTML]="Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterfreigabe ? Zeitspanne.Planungmeldung : Zeitspanne.Freigabemeldung"></td>
+                                    <td style="overflow-wrap: break-word; width: 500px;" [innerHTML]="Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterfreigabe ? Zeitspanne.Planungmeldung : Zeitspanne.Freigabemeldung"></td>
                                     <td>
                                       <ion-button [disabled]="Zeitspanne.Status === DB.Urlaubstatusvarianten.Abgelehnt" size="small" color="grau" (click)="UrlaubSuchen(Zeitspanne, Mitarbeiter)"><ion-icon name="search" slot="icon-only" style="font-size: 16px"></ion-icon></ion-button>
                                     </td>
                                     <td>
                                       <ng-container *ngIf="Zeitspanne.FreigabeantwortSended === false">
                                         <ion-radio-group [value]="Zeitspanne.Status" (ionChange)="FreigabeStatusChangedHandler($event, Zeitspanne, Mitarbeiter._id)">
-                                          <table class="nobordertable">
+                                          <table class="nobordertable" width="100%">
                                             <tr>
-                                              <td><ion-radio [value]="DB.Urlaubstatusvarianten.Genehmigt"></ion-radio></td><td style="color: green">Urlaub genehmigen</td>
-                                              <td><ion-radio [value]="DB.Urlaubstatusvarianten.Abgelehnt"></ion-radio></td><td style="color: red">Urlaub ablehnen</td>
+                                              <td style="width: 30px;"><ion-radio [value]="DB.Urlaubstatusvarianten.Genehmigt"></ion-radio></td><td style="color: green">Urlaub<br>genehmigen</td>
+                                              <td style="width: 30px;"><ion-radio [value]="DB.Urlaubstatusvarianten.Abgelehnt"></ion-radio></td><td style="color: red">Urlaub<br>ablehnen</td>
                                             </tr>
                                           </table>
                                         </ion-radio-group>
                                       </ng-container>
                                       <ng-container *ngIf="Zeitspanne.FreigabeantwortSended === true">
-                                        <table class="nobordertable">
+                                        <table class="nobordertable" width="100%">
                                           <tr>
                                             <td *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Genehmigt" style="color: green">Urlaub genehmigt</td>
                                             <td *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Abgelehnt" style="color: red">Urlaub abgelehnt</td>
@@ -367,19 +367,8 @@
                                     </td>
                                   </tr>
 
-                              <!--
-                              </ng-container>
-                              <ng-container *ngIf="DB.GetVertretungkonversation(DB.CurrentMitarbeiter, Zeitspanne) === null">
-                                <tr>
-                                  <td colspan="100">Urlaubsfreigaben Konversationsfehler</td>
-                                </tr>
-                              </ng-container>
-                                -->
 
                             </ng-container>
-                            <!--
-                             *ngIf="CheckFreigabeUpdateButtonVisible(Mitarbeiter, Urlaub)"
-                             -->
                             <tr>
                               <td colspan="9" align="center">
                                 <table style="width: 100%" class="nobordertable">

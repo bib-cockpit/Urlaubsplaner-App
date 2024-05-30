@@ -181,14 +181,16 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
           if(data !== null && data !== this.DB.CurrentUrlaubzeitspanne.Status) {
 
-            Zeitspanne   = lodash.find(this.DB.CurrentUrlaub.Urlaubzeitspannen, {ZeitspannenID: this.DB.CurrentUrlaubzeitspanne.ZeitspannenID});
+            Zeitspanne   = lodash.find(this.DB.CurrentUrlaub.Urlaubzeitspannen, { ZeitspannenID: this.DB.CurrentUrlaubzeitspanne.ZeitspannenID });
             Konversation = lodash.find(Zeitspanne.Vertretungskonversationliste, { VertreterID: this.DB.CurrentMitarbeiter._id });
 
-            Zeitspanne.Status = data;
 
-            switch (Zeitspanne.Status) {
+
+            switch (data) {
 
               case this.DB.Urlaubstatusvarianten.Geplant:
+
+                Zeitspanne.Status                           = data;
 
                 Zeitspanne.FreigabeanfrageSended            = false;
                 Zeitspanne.FreigabeantwortSended            = false;
@@ -205,40 +207,99 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
                   Konversation.Vertretungantwortzeitstempel     = null;
                 }
 
+                Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+                this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
+
+                await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
+
+                  this.ShowAuswahl = false;
+                });
+
                 break;
 
               case this.DB.Urlaubstatusvarianten.Vertreteranfrage:
+
+                if(Zeitspanne.UrlaubsvertreterIDListe.length > 0) {
+
+                  Zeitspanne.Status = data;
+
+                  this.DB.UpdateVertreteranfragen();
+                }
+                else {
+
+                  Zeitspanne.Status = this.DB.Urlaubstatusvarianten.Geplant;
+
+                  Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+                  this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
+
+                  await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
+
+                    this.ShowAuswahl = false;
+                  });
+                }
 
                 break;
 
               case this.DB.Urlaubstatusvarianten.Vertreterfreigabe:
 
+
+
+
+
                 break;
 
               case this.DB.Urlaubstatusvarianten.Vertreterablehnung:
+
+                Zeitspanne.Status = data;
+
+                Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+                this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
+
+                await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
+
+                  this.ShowAuswahl = false;
+                });
 
                 break;
 
               case this.DB.Urlaubstatusvarianten.Abgelehnt:
 
+                Zeitspanne.Status = data;
+
+                Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+                this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
+
+                await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
+
+                  this.ShowAuswahl = false;
+                });
+
                 break;
 
               case this.DB.Urlaubstatusvarianten.Genehmigt:
+
+                Zeitspanne.Status = data;
+
+                this.DB.CurrentUrlaub = await this.DB.SendOfficeFreigabezusage(this.DB.CurrentMitarbeiter, this.Pool.Mitarbeiterdaten, this.DB.CurrentUrlaub);
+
+                Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+
+                this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
+
+                await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
+
+                  this.ShowAuswahl = false;
+                });
 
                 break;
             }
 
 
-            Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
 
-            debugger;
-
-            this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
-
-            await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
-
-              this.ShowAuswahl = false;
-            });
 
           }
 
