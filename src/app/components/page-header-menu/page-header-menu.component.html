@@ -93,22 +93,21 @@
                     </td>
                   </ng-container>
 
-                  <ng-container *ngIf="Pool.Mitarbeiterdaten.Homeofficefreigaben === true || Pool.Mitarbeiterdaten.Urlaubsfreigaben === true || Pool.Mitarbeiterdaten.Planeradministrator">
-                    <td style="width: 20px"></td>
-                    <td>
-                      <div class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Freigaben)">
-                        <table class="paddingsmalltable">
-                          <tr>
-                            <td><ion-icon style="font-size: 16px" name="thumbs-up-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Freigaben)"></ion-icon></td>
-                            <td [style.color]="GetUrlaubMenueFontcolor(Menuservice.UrlaubMenuebereiche.Freigaben)">Anfragen</td>
-                            <td *ngIf="DBUrlaub.Urlaubsanfragenanzahl > 0 || DBUrlaub.Homeofficeanfragenanzahl > 0">
-                              <ion-badge color="rot">{{(DBUrlaub.Urlaubsanfragenanzahl + DBUrlaub.Homeofficeanfragenanzahl).toString()}}</ion-badge>
-                            </td>
-                          </tr>
-                        </table>
-                      </div>
-                    </td>
-                  </ng-container>
+                  <td style="width: 20px"></td>
+                  <td>
+                    <div class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Freigaben)">
+                      <table class="paddingsmalltable">
+                        <tr>
+                          <td><ion-icon style="font-size: 16px" name="thumbs-up-outline" [color]="GetUrlaubMenueIconcolor(Menuservice.UrlaubMenuebereiche.Freigaben)"></ion-icon></td>
+                          <td [style.color]="GetUrlaubMenueFontcolor(Menuservice.UrlaubMenuebereiche.Freigaben)">Anfragen</td>
+                          <td *ngIf="DBUrlaub.Urlaubsanfragenanzahl > 0 || DBUrlaub.Homeofficeanfragenanzahl > 0">
+                            <ion-badge color="rot">{{(DBUrlaub.Urlaubsanfragenanzahl + DBUrlaub.Homeofficeanfragenanzahl).toString()}}</ion-badge>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </td>
+
                   <td style="width: 20px"></td>
                   <td>
                     <div class="menubuttonclass" (click)="UrlaubMenueButtonClicked(Menuservice.UrlaubMenuebereiche.Einstellungen)">
