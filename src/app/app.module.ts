@@ -28,6 +28,7 @@ import {
 import {BrowserCacheLocation, InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication} from "@azure/msal-browser";
 import {environment} from "../environments/environment";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {HashLocationStrategy, LocationStrategy} from "@angular/common";
 
 const appurl: string                   = environment.production === false ? 'http://localhost:4200' : 'https://polite-cliff-084832d03.4.azurestaticapps.net';
 
@@ -181,7 +182,7 @@ const MSALGuardConfigFactory = (): MsalGuardConfiguration => {
       provide: MSAL_INTERCEPTOR_CONFIG,
       useFactory: MSALInterceptorConfigFactory
     },
-
+    {provide: LocationStrategy, useClass: HashLocationStrategy},
     MsalService,
     MsalGuard,
     MsalBroadcastService,

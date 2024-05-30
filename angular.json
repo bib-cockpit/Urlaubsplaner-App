@@ -20,11 +20,6 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
-                "glob": ".htaccess",
-                "input": "src/",
-                "output": "/"
-              },
-              {
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"
