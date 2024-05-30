@@ -1155,8 +1155,6 @@ export class Graphservice {
         }
       }
 
-      debugger;
-
       if(token !== null) {
 
         const sendMail = {
@@ -1172,8 +1170,6 @@ export class Graphservice {
         };
 
         try {
-
-          debugger;
 
           data = await graphClient.api('/me/sendMail').post(sendMail);
 

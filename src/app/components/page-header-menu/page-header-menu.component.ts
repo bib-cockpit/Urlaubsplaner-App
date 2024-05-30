@@ -67,6 +67,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   @Output()  ShowLOPListeInfoeintraegeChanged = new EventEmitter<any>();
   @Output()  ExpandFestlegungeEvent = new EventEmitter<boolean>();
   @Output()  UrlaubMitarbeiterClicked = new EventEmitter<boolean>();
+  @Output()  UrlaubMitarbeiterMeClicked = new EventEmitter<boolean>();
 
   private SuchleisteInputSubscription: Subscription;
   private Suchleiste2InputSubscription: Subscription;

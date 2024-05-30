@@ -484,4 +484,19 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'HalbjahrZweiButtonClicked', this.Debug.Typen.Page);
     }
   }
+
+  UrlaubMitarbeiterMeClickedHandler() {
+
+    try {
+
+      this.DB.CurrentMitarbeiter = this.Pool.Mitarbeiterdaten;
+
+      this.PrepareData();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'UrlaubMitarbeiterMeClickedHandler', this.Debug.Typen.Page);
+    }
+
+  }
 }

@@ -19,20 +19,21 @@
         <td style="width: 12%"><div class="tagrahmenclass"><div class="taginfodivclass">So</div></div></td>
       </tr>
       <tr *ngFor="let Tageliste of Kalendertageliste; let Wocheindex = index">
-        <td>
+        <td valign="top">
           <div class="tagrahmenclass">
             <div class="kwinfodivclass">{{Tageliste[Wocheindex].Kalenderwoche}}</div>
             <div *ngIf="DB.ShowFerientage_DE" class="taginfospacedivclass"></div>
             <div *ngIf="DB.ShowFerientage_BG" class="taginfospacedivclass"></div>
             <div *ngIf="DB.ShowFeiertage_DE"  class="taginfospacedivclass"></div>
             <div *ngIf="DB.ShowFeiertage_BG"  class="taginfospacedivclass"></div>
-            <ng-container *ngFor="let ExternKalender of KalendertageExternliste; let i = index">
-              <div class="taginfospacedivclass"></div>
+
+            <ng-container *ngFor="let item of [].constructor(GetMaxExternUrlaubseintraege(Tageliste[Wocheindex].Kalenderwoche)); let i = index">
               <div class="taginfospacedivclass"></div>
             </ng-container>
+
           </div>
         </td>
-        <td *ngFor="let Tag of Tageliste; let Tagindex = index" [style.color]="Tag.Hauptmonat === true ? 'black' : 'darkgray'" align="center">
+        <td *ngFor="let Tag of Tageliste; let Tagindex = index" [style.color]="Tag.Hauptmonat === true ? 'black' : 'darkgray'" align="center" valign="top">
           <ng-container *ngIf="Tagindex >= 5">
             <div class="tagrahmenclass">
               <div class="wochenendedivclass">{{Tag.Tagnummer}}</div>
@@ -40,9 +41,11 @@
               <div  *ngIf="DB.ShowFerientage_BG" class="wochenendespacedivclass"></div>
               <div  *ngIf="DB.ShowFeiertage_DE"  class="wochenendespacedivclass"></div>
               <div  *ngIf="DB.ShowFeiertage_BG"  class="wochenendespacedivclass"></div>
-              <ng-container *ngFor="let ExternKalender of KalendertageExternliste;">
+
+              <ng-container *ngFor="let item of [].constructor(GetMaxExternUrlaubseintraege(Tageliste[Wocheindex].Kalenderwoche)); let i = index">
                 <div class="wochenendespacedivclass"></div>
               </ng-container>
+
             </div>
           </ng-container>
           <ng-container *ngIf="Tagindex < 5">
@@ -93,12 +96,15 @@
                 <ng-container *ngFor="let ExternKalender of KalendertageExternliste;">
 
                         <div *ngIf="ExternKalender[Wocheindex][Tagindex].IsUrlaub" class="tagexterndivclass"
-                             [style.background]="ExternKalender[Wocheindex][Tagindex].Background">{{ExternKalender[Wocheindex][Tagindex].Kuerzel}}</div>
-                        <div *ngIf="!ExternKalender[Wocheindex][Tagindex].IsUrlaub" class="tagexternemptydivclass"></div>
+                             [style.background]="ExternKalender[Wocheindex][Tagindex].Background"
+                             (click)="ExternUrlaubstagClicked($event, ExternKalender[Wocheindex][Tagindex].MitarbeiterID)">
+                          {{ExternKalender[Wocheindex][Tagindex].Kuerzel}}
+                        </div>
 
-                        <div *ngIf="ExternKalender[Wocheindex][Tagindex].IsHomeoffice" class="tagexterndivclass"
-                             [style.background]="ExternKalender[Wocheindex][Tagindex].Background">{{ExternKalender[Wocheindex][Tagindex].Kuerzel}} | HO</div>
-                        <div *ngIf="!ExternKalender[Wocheindex][Tagindex].IsHomeoffice" class="tagexternemptydivclass"></div>
+                        <div *ngIf="ExternKalender[Wocheindex][Tagindex].IsHomeoffice && Pool.Mitarbeitersettings.ShowHomeoffice" class="tagexterndivclass"
+                             [style.background]="ExternKalender[Wocheindex][Tagindex].Background">
+                          {{ExternKalender[Wocheindex][Tagindex].Kuerzel}} | HO
+                        </div>
 
                 </ng-container>
 

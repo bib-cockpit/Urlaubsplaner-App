@@ -48,6 +48,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
   @Output() FerientagCrossedEvent = new EventEmitter<{Name: string; Laendercode: string}>();
   @Output() AddUrlaubFinishedEvent       = new EventEmitter<boolean>();
   @Output() AddHomeofficeFinishedEvent   = new EventEmitter<boolean>();
+  @Output() ExternUrlaubstagClickedEvent = new EventEmitter<string>();
 
   public Kalendertageliste: Kalendertagestruktur[][];
   public KalendertageExternliste: Kalendertagestruktur[][][];
@@ -61,6 +62,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
   private CurrentTagindex: number;
   private CurrentWochenindex: number;
   private CancelUrlaubSubscription: Subscription;
+  private UpdateKalenderSubscription: Subscription;
 
   constructor(private Debug: DebugProvider,
               public Basics: BasicsProvider,
@@ -82,6 +84,8 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
       this.AddHomeofficerunning = false;
       this.Monatindex = 0;
       this.ShowYear   = false;
+      this.CurrentWochenindex = null;
+      this.CurrentTagindex = null;
       this.Monatname = this.DB.Monateliste[this.Monatindex];
 
       this.DataSubscription              = null;
@@ -141,6 +145,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
       let Datum: Moment;
       let Mitarbeiterindex: number;
       let Datumsicherung: Moment;
+      let Kalenderewoche: number;
 
       this.Monatname = this.DB.Monateliste[this.Monatindex];
 
@@ -173,16 +178,20 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
         for(let tagindex = 0; tagindex < 7; tagindex++) {
 
+          Kalenderewoche = Datum.isoWeek();
+
           Tag = {
 
             Tagnummer:     Datum.date(),
             Tag:           Datum.format('dddd'),
             Datumstring:   Datum.format('DD.MM.YYYY'),
             Hauptmonat:    Datum.isSameOrAfter(MonatStartdatum, 'day') && Datum.isSameOrBefore(MonatEndedatum, 'day'),
-            Kalenderwoche: Datum.isoWeek(),
+            Kalenderwoche: Kalenderewoche,
             Tagstempel:    Datum.valueOf(),
             Datum:         Datum,
           };
+
+          if(lodash.isUndefined(this.DB.Kalenderwochenhoehenliste[Kalenderewoche])) this.DB.Kalenderwochenhoehenliste[Kalenderewoche] = [];
 
           // Feiertag eintragen
 
@@ -237,11 +246,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
           // Halbe Urlaubstage eintragen
 
-          // Tag.Background         = 'white';
-          // Tag.Color              = 'black';
-          // Tag.IsUrlaub           = false;
-
-
           if(this.DB.CurrentUrlaub !== null) {
 
             for(let Zeitspanne of this.DB.CurrentUrlaub.Urlaubzeitspannen) {
@@ -265,36 +269,28 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
             }
           }
 
-
           // Homeoffice eintragen
 
-          // if(Tag.IsUrlaub === false) {
+          if(this.DB.CurrentUrlaub !== null && this.Pool.Mitarbeitersettings !== null) {
 
-            // Tag.Background   = 'white';
-            // Tag.Color        = 'black';
+            for(let Zeitspanne of this.DB.CurrentUrlaub.Homeofficezeitspannen) {
 
+              Startdatum = moment(Zeitspanne.Startstempel);
+              Endedatum  = moment(Zeitspanne.Endestempel);
 
-            if(this.DB.CurrentUrlaub !== null) {
+              if(Datum.isSameOrAfter(Startdatum, 'day')  === true &&
+                Datum.isSameOrBefore(Endedatum, 'day')   === true &&
+                this.DB.CheckIsFeiertag(Tag, this.DB.Laendercode) === false) {
 
-              for(let Zeitspanne of this.DB.CurrentUrlaub.Homeofficezeitspannen) {
-
-                Startdatum = moment(Zeitspanne.Startstempel);
-                Endedatum  = moment(Zeitspanne.Endestempel);
-
-                if(Datum.isSameOrAfter(Startdatum, 'day')  === true &&
-                  Datum.isSameOrBefore(Endedatum, 'day')   === true &&
-                  this.DB.CheckIsFeiertag(Tag, this.DB.Laendercode) === false) {
-
-                  Tag.IsHomeoffice = true;
-                  Tag.Background   = this.DB.GetHomeofficeStatuscolor(Zeitspanne.Status);
-                  Tag.Color        = 'white';
+                Tag.IsHomeoffice = true;
+                Tag.Background   = this.Pool.Mitarbeitersettings.ShowHomeoffice ? this.DB.GetHomeofficeStatuscolor(Zeitspanne.Status) : 'none';
+                Tag.Color        = this.Pool.Mitarbeitersettings.ShowHomeoffice ? 'white' : 'black';
 
 
-                  break;
-                }
+                break;
               }
             }
-          // }
+          }
 
           this.Kalendertageliste[wochenindex].push(Tag);
 
@@ -302,10 +298,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
         }
       }
 
-
-
       // Externe Urlaube
-
 
       this.KalendertageExternliste = [];
       Mitarbeiterindex = 0;
@@ -327,6 +320,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
               Tag = {
 
                 Kuerzel: this.DB.UrlaublisteExtern[i].NameKuerzel,
+                MitarbeiterID: this.DB.UrlaublisteExtern[i].MitarbeiterIDExtern,
                 Tagnummer:   Datum.date(),
                 Tag: Datum.format('dddd'),
                 Datumstring: Datum.format('DD.MM.YYYY'),
@@ -340,12 +334,23 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                 Color:      'black'
               };
 
-               // Urlaub
+               // Urlaub Extern
 
               for(let UrlaubZeitspanne of this.DB.UrlaublisteExtern[i].Urlaubzeitspannen) {
 
-                Startdatum = moment(UrlaubZeitspanne.Startstempel);
-                Endedatum  = moment(UrlaubZeitspanne.Endestempel);
+                Startdatum     = moment(UrlaubZeitspanne.Startstempel);
+                Endedatum      = moment(UrlaubZeitspanne.Endestempel);
+                Kalenderewoche = Startdatum.isoWeek();
+
+                if(lodash.isUndefined(this.DB.Kalenderwochenhoehenliste[Kalenderewoche])) {
+
+                  this.DB.Kalenderwochenhoehenliste[Kalenderewoche] = [];
+
+                  for(let i = 0; i < 5; i++) {
+
+                    this.DB.Kalenderwochenhoehenliste[Kalenderewoche][i] = [];
+                  }
+                }
 
                 if(Datum.isSameOrAfter(Startdatum, 'day')  === true &&
                   Datum.isSameOrBefore(Endedatum, 'day')   === true &&
@@ -356,11 +361,17 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                   Tag.Background   = this.DB.GetUrlaubStatuscolor(UrlaubZeitspanne);
                   Tag.Color        = 'white';
 
+                  if(this.DB.Kalenderwochenhoehenliste[Kalenderewoche][Datum.weekday()].indexOf(this.DB.UrlaublisteExtern[i].MitarbeiterIDExtern) === -1) {
+
+                    this.DB.Kalenderwochenhoehenliste[Kalenderewoche][Datum.weekday()].push(this.DB.UrlaublisteExtern[i].MitarbeiterIDExtern);
+                  }
+
                   break;
                 }
               }
 
-              // Homeoffice
+
+              // Homeoffice Extern
 
               for(let HomeofficeZeitspanne of this.DB.UrlaublisteExtern[i].Homeofficezeitspannen) {
 
@@ -375,6 +386,11 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                   Tag.IsUrlaub       = false;
                   Tag.Background     = this.DB.GetHomeofficeStatuscolor(HomeofficeZeitspanne.Status);
                   Tag.Color          = 'white';
+
+                  if(this.DB.Kalenderwochenhoehenliste[Kalenderewoche][Datum.weekday()].indexOf(this.DB.UrlaublisteExtern[i].MitarbeiterIDExtern) === -1) {
+
+                    this.DB.Kalenderwochenhoehenliste[Kalenderewoche][Datum.weekday()].push(this.DB.UrlaublisteExtern[i].MitarbeiterIDExtern);
+                  }
 
                   break;
                 }
@@ -438,6 +454,11 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
         this.CancelUrlaub();
       });
+
+      this.UpdateKalenderSubscription = this.DB.UpdateKalenderRequestEvent.subscribe(() => {
+
+        this.PrepareData();
+      });
     }
     catch (error) {
 
@@ -471,6 +492,9 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
       this.CancelUrlaubSubscription.unsubscribe();
       this.CancelUrlaubSubscription = null;
+
+      this.UpdateKalenderSubscription.unsubscribe();
+      this.UpdateKalenderSubscription = null;
 
     } catch (error) {
 
@@ -731,7 +755,9 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
       if(Tag.IsUrlaub === true || Tag.IsHomeoffice === true) {
 
-        return Tag.Background;
+        if     (Tag.IsUrlaub) return Tag.Background;
+        else if(Tag.IsHomeoffice === true && this.Pool.Mitarbeitersettings.ShowHomeoffice === true) return Tag.Background;
+        else return 'none';
       }
       else return 'none';
 
@@ -745,15 +771,89 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
 
     try {
 
-      let Kalendertag: Kalendertagestruktur = this.Kalendertageliste[this.CurrentWochenindex][this.CurrentTagindex];
 
-      Kalendertag.Background = 'none';
-      Kalendertag.IsUrlaub   = false;
-      Kalendertag.Color      = 'black';
+      let Kalendertag: Kalendertagestruktur;
 
+      if(lodash.isUndefined(this.CurrentWochenindex) === false && this.CurrentWochenindex !== null &&
+         lodash.isUndefined(this.CurrentTagindex)    === false && this.CurrentTagindex    !== null) {
+
+        Kalendertag = this.Kalendertageliste[this.CurrentWochenindex][this.CurrentTagindex];
+
+        Kalendertag.Background = 'none';
+        Kalendertag.IsUrlaub   = false;
+        Kalendertag.Color      = 'black';
+      }
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Kalender', 'CancelUrlaub', this.Debug.Typen.Component);
     }
+  }
+
+  protected readonly lodash = lodash;
+
+  GetMaxExternUrlaubseintraege(Kalenderwoche: number): number {
+
+    try {
+
+      let Liste: string[][] = this.DB.Kalenderwochenhoehenliste[Kalenderwoche];
+      // let IDListe: string[] = [];
+      // let Eintrag: string;
+      let Eintraege: string[];
+      let Max: number = 0;
+
+      if(Liste.length > 0) {
+
+        if(Kalenderwoche === 25) {
+
+            // debugger;
+        }
+
+        for(let i = 0; i < Liste.length; i++) {
+
+          if(!lodash.isUndefined(Liste[i])) {
+
+            Eintraege = Liste[i];
+
+            if(Eintraege.length > Max) Max = Eintraege.length;
+
+            /*
+            for(let j = 0; j < Eintraege.length; j++) {
+
+              if(lodash.isUndefined(Eintraege[j]) === false) {
+
+                Eintrag = Eintraege[j];
+
+                if(IDListe.indexOf(Eintrag) === -1) IDListe.push(Eintrag);
+              }
+            }
+
+             */
+          }
+        }
+      }
+
+      return Max;
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Kalender', 'GetMaxExternUrlaubseintraege', this.Debug.Typen.Component);
+    }
+  }
+
+  ExternUrlaubstagClicked(event: MouseEvent, MitarbeiterID: string) {
+
+    try {
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      this.ExternUrlaubstagClickedEvent.emit(MitarbeiterID);
+
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Kalender', 'ExternUrlaubstagClicked', this.Debug.Typen.Component);
+    }
+
   }
 }

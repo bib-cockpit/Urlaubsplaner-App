@@ -553,4 +553,19 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'MitarbeiterWechselnClicked', this.Debug.Typen.Page);
     }
   }
+
+  UrlaubMitarbeiterMeClickedHandler() {
+
+    try {
+
+      this.DB.CurrentMitarbeiter = this.Pool.Mitarbeiterdaten;
+
+      this.PrepareData();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'UrlaubMitarbeiterMeClickedHandler', this.Debug.Typen.Page);
+    }
+
+  }
 }

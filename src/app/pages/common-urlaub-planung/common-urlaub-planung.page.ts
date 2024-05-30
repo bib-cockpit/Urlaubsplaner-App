@@ -304,6 +304,8 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
       this.DB.SetPlanungsmonate();
       this.DB.CountAnfragenanzahlen();
 
+      this.DB.UpdateKalenderRequestEvent.emit();
+
       this.BundeslandAuswahlliste  = [];
 
       for(let Region of this.DB.Regionenliste) {
@@ -1144,6 +1146,56 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'GetPlanungmeldung', this.Debug.Typen.Page);
+    }
+  }
+
+  MitarbeiterMeWechselnClickedHandler() {
+
+    try {
+
+      this.DB.CurrentMitarbeiter = this.Pool.Mitarbeiterdaten;
+
+      this.PrepareData();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'MitarbeiterMeWechselnClickedHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  ExternUrlaubstagClickedEventHandler(mitarbeiterid: string) {
+
+    try {
+
+      let Mitarbeiter: Mitarbeiterstruktur = lodash.find(this.Pool.Mitarbeiterliste, { _id: mitarbeiterid });
+
+      if(lodash.isUndefined(Mitarbeiter) === false) {
+
+        this.DB.CurrentMitarbeiter = Mitarbeiter;
+
+        this.PrepareData();
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'ExternUrlaubstagClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+  ShowHomeofficeChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      this.Pool.Mitarbeitersettings.ShowHomeoffice = event.status;
+
+      this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null).then(() => {
+
+        this.DB.UpdateKalenderRequestEvent.emit();
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'ShowHomeofficeChanged', this.Debug.Typen.Page);
     }
   }
 }

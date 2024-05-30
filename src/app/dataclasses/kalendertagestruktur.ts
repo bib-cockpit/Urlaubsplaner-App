@@ -23,4 +23,5 @@ export type Kalendertagestruktur = {
   Background?: string;
   Color?: string;
   Kuerzel?: string;
+  MitarbeiterID?: string;
 };

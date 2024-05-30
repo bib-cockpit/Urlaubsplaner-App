@@ -41,9 +41,28 @@
   font-weight: bold;
   font-size: 80%;
   color: white;
-  width: 30px;
+  width: 36px;
   border: 1px solid #444444;
-  height: 20px;
+  height: 24px;
+  display: flex;
+  justify-content: center; // horizontal
+  align-items: center; // vertikal
+}
+
+.legendenewdivclass {
+
+  width: 36px;
+  height: 24px;
+  display: flex;
+  flex-direction: row;
+}
+
+.legendeinnerdivclass {
+
+  color: white;
+  font-size: 90%;
+  width: 50%;
+  height: 24px;
   display: flex;
   justify-content: center; // horizontal
   align-items: center; // vertikal

@@ -25,7 +25,7 @@ import {Urlaubprojektbeteiligtestruktur} from "../../dataclasses/urlaubprojektbe
 import {Homeofficezeitspannenstruktur} from "../../dataclasses/homeofficezeitspannenstruktur";
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import {Urlaubsvertretungkonversationstruktur} from "../../dataclasses/urlaubsvertretungkonversationstruktur";
-import {loadFromPath} from "@ionic/cli/lib/ssh-config";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'common-urlaub-freigaben-page',
@@ -36,6 +36,9 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
   @ViewChild('PageHeader', {static: false}) PageHeader: PageHeaderComponent;
   @ViewChild('PageFooter', {static: false}) PageFooter: PageFooterComponent;
+
+
+  protected readonly environment = environment;
 
   public Auswahlliste: Auswahldialogstruktur[];
   public Auswahlindex: number;
@@ -151,6 +154,8 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
       this.DB.SetPlanungsmonate();
       this.DB.CountAnfragenanzahlen();
 
+      this.DB.UpdateKalenderRequestEvent.emit();
+
 
     } catch (error) {
 
@@ -168,6 +173,21 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'GetDatumlangtext', this.Debug.Typen.Page);
     }
+  }
+
+  UrlaubMitarbeiterMeClickedHandler() {
+
+    try {
+
+      this.DB.CurrentMitarbeiter = this.Pool.Mitarbeiterdaten;
+
+      this.PrepareData();
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'UrlaubMitarbeiterMeClickedHandler', this.Debug.Typen.Page);
+    }
+
   }
 
   MitarbeiterauswahlOkButtonClicked(idliste: string[]) {
@@ -816,6 +836,42 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'HomeofficeSuchen', this.Debug.Typen.Page);
     }
+  }
 
+  ExternUrlaubstagClickedEventHandler(mitarbeiterid: string) {
+
+    try {
+
+      let Mitarbeiter: Mitarbeiterstruktur = lodash.find(this.Pool.Mitarbeiterliste, { _id: mitarbeiterid });
+
+      if(lodash.isUndefined(Mitarbeiter) === false) {
+
+        this.DB.CurrentMitarbeiter = Mitarbeiter;
+
+        this.PrepareData();
+      }
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'ExternUrlaubstagClickedEventHandler', this.Debug.Typen.Page);
+    }
+  }
+
+
+  ShowHomeofficeChanged(event: { status: boolean; index: number; event: any; value: string }) {
+
+    try {
+
+      this.Pool.Mitarbeitersettings.ShowHomeoffice = event.status;
+
+      this.DBMitarbeitersettings.UpdateMitarbeitersettings(this.Pool.Mitarbeitersettings, null).then(() => {
+
+        this.DB.UpdateKalenderRequestEvent.emit();
+      });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'ShowHomeofficeChanged', this.Debug.Typen.Page);
+    }
   }
 }

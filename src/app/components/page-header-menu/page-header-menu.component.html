@@ -122,7 +122,18 @@
                   <td *ngIf="DBUrlaub.CorrectSetup === false"><img src="assets/svgs/alert.svg" style="width: 24px"></td>
                   <td style="width: 60px;"></td>
                   <td *ngIf="Pool.Mitarbeiterdaten !== null && Pool.Mitarbeiterdaten.Planeradministrator === true" style="font-size: 90%; color: white;">
-                    <ion-button size="small" color="grau" (click)="UrlaubMitarbeiterClicked.emit()">{{DBUrlaub.CurrentMitarbeiter !== null ? DBUrlaub.CurrentMitarbeiter.Vorname + ' ' + DBUrlaub.CurrentMitarbeiter.Name : 'unbekannt'}}</ion-button>
+                    <table>
+                      <tr>
+                        <td>
+                          <ion-button size="small" color="grau" (click)="UrlaubMitarbeiterClicked.emit()">{{DBUrlaub.CurrentMitarbeiter !== null ? DBUrlaub.CurrentMitarbeiter.Vorname + ' ' + DBUrlaub.CurrentMitarbeiter.Name : 'unbekannt'}}</ion-button>
+                        </td>
+                        <td *ngIf="this.DBUrlaub.CurrentMitarbeiter !== null && this.DBUrlaub.CurrentMitarbeiter._id !== Pool.Mitarbeiterdaten._id">
+                            <ion-button size="small" color="grau" slot="icon-only" (click)="UrlaubMitarbeiterMeClicked.emit()">
+                              <ion-icon name="person-circle-outline"></ion-icon>
+                            </ion-button>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                   <td style="width: 120px;"></td>
                 </tr>

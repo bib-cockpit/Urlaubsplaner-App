@@ -53,6 +53,7 @@ export class DatabasePoolService {
   public LoadingAllDataFinished: EventEmitter<any> = new EventEmitter<any>();
   public ChangeloglisteChanged: EventEmitter<any> = new EventEmitter<any>();
   public Signatur: string;
+  public ApplicationURL: string;
 
   constructor(private Debug: DebugProvider,
               private Const: ConstProvider,
@@ -86,6 +87,7 @@ export class DatabasePoolService {
       //  this.Simontabellenliste       = [];
       this.CockpitserverURL         = environment.production === true ? 'https://bae-urlaubsplaner-server.azurewebsites.net' : 'http://localhost:8080';
       this.CockpitdockerURL         = environment.production === true ? 'https://bae-urlaubsplaner-docker.azurewebsites.net' : 'http://localhost:80';
+      this.ApplicationURL           = environment.production === true ? 'https://nice-glacier-0c9ec7703.3.azurestaticapps.net' : 'http://localhost:4200';
       this.Emailcontent             = this.Emailcontentvarinaten.NONE;
       // this.Fachbereich              = new Fachbereiche();
       this.ProjektdatenLoaded         = false;

@@ -1,11 +1,13 @@
 <ion-header class="ion-no-border">
   <page-header #PageHeader>
-    <page-header-menu (UrlaubMitarbeiterClicked)="MitarbeiterWechselnClicked()"></page-header-menu>
+    <page-header-menu (UrlaubMitarbeiterClicked)="MitarbeiterWechselnClicked()" (UrlaubMitarbeiterMeClicked)="MitarbeiterMeWechselnClickedHandler()"></page-header-menu>
   </page-header>
 </ion-header>
 <ion-content>
 
   <div class="contentkeeperdivclass" *ngIf="Pool.Mitarbeiterdaten !== null">
+
+
 
     <div class="contentdivclass">
 
@@ -49,6 +51,7 @@
                     [AddUrlaubRunning]="AddUrlaubRunning"
                     [AddHomeofficerunning]="AddHomeofficeRunning"
                     [AddHalberUrlaubstagRunning]="AddHalberUrlaubstagRunning"
+                    (ExternUrlaubstagClickedEvent)="ExternUrlaubstagClickedEventHandler($event)"
                     (AddUrlaubFinishedEvent)="AddUrlaubFinishedHandler()"
                     (AddHomeofficeFinishedEvent)="AddHomeofficeFinishedHandler()"
                     (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
@@ -64,6 +67,7 @@
                     [AddUrlaubRunning]="AddUrlaubRunning"
                     [AddHomeofficerunning]="AddHomeofficeRunning"
                     [AddHalberUrlaubstagRunning]="AddHalberUrlaubstagRunning"
+                    (ExternUrlaubstagClickedEvent)="ExternUrlaubstagClickedEventHandler($event)"
                     (AddUrlaubFinishedEvent)="AddUrlaubFinishedHandler()"
                     (AddHomeofficeFinishedEvent)="AddHomeofficeFinishedHandler()"
                     (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
@@ -78,6 +82,7 @@
                     [AddUrlaubRunning]="AddUrlaubRunning"
                     [AddHomeofficerunning]="AddHomeofficeRunning"
                     [AddHalberUrlaubstagRunning]="AddHalberUrlaubstagRunning"
+                    (ExternUrlaubstagClickedEvent)="ExternUrlaubstagClickedEventHandler($event)"
                     (AddUrlaubFinishedEvent)="AddUrlaubFinishedHandler()"
                     (AddHomeofficeFinishedEvent)="AddHomeofficeFinishedHandler()"
                     (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)"
@@ -199,14 +204,8 @@
                               <td>
                                 <checkbox-clon *ngIf="Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant" [Checked]="Zeitspanne.Betriebsurlaub" (CheckChanged)="BetriebsurlaubCheckedChanged($event, Zeitspanne)"></checkbox-clon>
                                 <div *ngIf="Zeitspanne.Betriebsurlaub === true" style="width: 20px; height: 20px; background: #307ac1; border-radius: 100%"></div>
-                                <!--
-                                Zeitspanne.Status !== DB.Urlaubstatusvarianten.Geplant
-                                -->
                               </td>
                               <td>
-                                <!--
-                                Zeitspanne.Status === DB.Urlaubstatusvarianten.Vertreterablehnung
-                                -->
                                 <ng-container *ngIf="(Zeitspanne.Status === DB.Urlaubstatusvarianten.Geplant || DB.CheckVertretungIsAbgelehnt(Zeitspanne) === true)
                                 && Zeitspanne.Betriebsurlaub === false">
                                   <div (click)="StellvertreterFestlegenClicked(Zeitspanne)" class="festlegenbuttondiv" style="font-size: 12px; font-weight: bold;">
@@ -234,9 +233,13 @@
                                 </ng-container>
                               </td>
                               <td align="center">
-                                <div (click)="StatusClickedHandler(Zeitspanne)" class="legendedivclass"
+                                <div (click)="StatusClickedHandler(Zeitspanne)" class="legendenewdivclass"
                                      [style.cursor]="(Pool.Mitarbeiterdaten.Planeradministrator === true || Pool.Mitarbeiterdaten.Urlaubsfreigaben === true) ? 'pointer' : 'default'"
                                      [style.background]="DB.GetUrlaubStatuscolor(Zeitspanne)">
+                                  <!--
+                                  <div class="legendeinnerdivclass" [style.background]="DB.GetUrlaubStatuscolor(Zeitspanne)"></div>
+                                  <div class="legendeinnerdivclass" [style.background]="DB.GetUrlaubStatuscolorSplit(Zeitspanne, true)"></div>
+                                  -->
                                 </div>
                               </td>
                               <td style="min-width: 450px;" [innerHTML]="GetPlanungmeldung(Zeitspanne)"></td>
@@ -631,6 +634,13 @@
                   <checkbox-clon [Checked]="DB.CheckDisplayExternenUrlaub(Urlaub.MitarbeiterIDExtern)" (CheckChanged)="DisplayExternCheckChanged($event, Urlaub, i)" [Enabled]="Urlaub.Urlaubzeitspannen.length > 0"></checkbox-clon>
                 </td>
                 <td><div class="legendeexterndivclass">{{Urlaub.NameKuerzel}}</div></td><td>{{Urlaub.NameExtern}} {{Urlaub.Text}}</td>
+              </tr>
+              <tr>
+                <td colspan="3" style="height: 20px"></td>
+              </tr>
+              <tr>
+                <td><checkbox-clon [Checked]="Pool.Mitarbeitersettings.ShowHomeoffice" (CheckChanged)="ShowHomeofficeChanged($event)"></checkbox-clon></td>
+                <td colspan="2">Homeoffice Einträge anzeigen</td>
               </tr>
             </table>
 

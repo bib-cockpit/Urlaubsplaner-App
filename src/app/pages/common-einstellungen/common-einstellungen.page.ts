@@ -16,6 +16,7 @@ import * as lodash from "lodash-es";
 import {DatabaseUrlaubService} from "../../services/database-urlaub/database-urlaub.service";
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import {loadFromPath} from "@ionic/cli/lib/ssh-config";
+import {ToolsProvider} from "../../services/tools/tools";
 
 @Component({
   selector: 'common-einstellungen-page',
@@ -31,7 +32,7 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
   constructor(public Pool: DatabasePoolService,
               public Const: ConstProvider,
               public Basics: BasicsProvider,
-              private Security: SecurityService,
+              private Tools: ToolsProvider,
               private DBUrlaub: DatabaseUrlaubService,
               private DB: DatabaseAppeinstellungenService,
               public Debug: DebugProvider) {
@@ -108,13 +109,21 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
     }
   }
 
-  StartseiteChangedHandler(event: any) {
+  async StartseiteChangedHandler(event: any) {
 
     try {
 
       this.Pool.Appeinstellungen.AdminStartseite = event.detail.value;
 
-      this.DB.SaveAppeinstellungen();
+      await this.DB.SaveAppeinstellungen();
+
+      this.Tools.ShowHinweisDialog('App wird neu gestartet.....');
+
+      window.setTimeout(() => {
+
+        location.replace(this.Pool.ApplicationURL)
+
+      },500);
 
     } catch (error) {
 
