@@ -34,8 +34,8 @@ const appurl: string                   = environment.production === false ? 'htt
 
 // !! Server URL auch in Pool service anpassen
 
-const serverurl: string                = environment.production === false ? 'http://localhost:8080' : 'bae-urlaubsplaner-server.azurewebsites.net';
-const dockerurl: string                = environment.production === false ? 'http://localhost:80'   : 'bae-urlaubsplaner-docker.azurewebsites.net';
+const serverurl: string                = environment.production === false && environment.useonlinedb === false ? 'http://localhost:8080' : 'bae-urlaubsplaner-server.azurewebsites.net';
+const dockerurl: string                = environment.production === false && environment.useonlinedb === false ? 'http://localhost:80'   : 'bae-urlaubsplaner-docker.azurewebsites.net';
 
 const MandantenID: string              = '8870822d-b5ee-4a63-b4ea-7147f0ee753d';
 const clientappregistration: string    = 'e85e5489-e9fd-4d10-b6aa-37be3ce084b6'; // Login funktioniert mit peter.hornburger

@@ -84,12 +84,12 @@ export class DatabasePoolService {
       this.Standorteliste           = [];
       this.Mitarbeiterliste         = [];
       this.Changlogliste            = [];
-      //  this.Simontabellenliste       = [];
-      this.CockpitserverURL         = environment.production === true ? 'https://bae-urlaubsplaner-server.azurewebsites.net' : 'http://localhost:8080';
-      this.CockpitdockerURL         = environment.production === true ? 'https://bae-urlaubsplaner-docker.azurewebsites.net' : 'http://localhost:80';
+
+      this.CockpitserverURL         = environment.production === true || environment.useonlinedb === true ? 'https://bae-urlaubsplaner-server.azurewebsites.net' : 'http://localhost:8080';
+      this.CockpitdockerURL         = environment.production === true || environment.useonlinedb === true ? 'https://bae-urlaubsplaner-docker.azurewebsites.net' : 'http://localhost:80';
       this.ApplicationURL           = environment.production === true ? 'https://nice-glacier-0c9ec7703.3.azurestaticapps.net' : 'http://localhost:4200';
       this.Emailcontent             = this.Emailcontentvarinaten.NONE;
-      // this.Fachbereich              = new Fachbereiche();
+
       this.ProjektdatenLoaded         = false;
       this.Appeinstellungen           = null;
 

@@ -263,9 +263,15 @@ export class DatabaseUrlaubService {
 
             // Urlaub Freigabeanfragen
 
-            Standort = lodash.find(this.Pool.Standorteliste, {_id: Mitarbeiter.StandortID});
+            /*
+            if(Mitarbeiter.Name === 'Enzensberger') {
 
-            Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, (urlaub: Urlaubsstruktur) => {
+              debugger;
+            }
+             */
+
+            Standort = lodash.find(this.Pool.Standorteliste, {_id: Mitarbeiter.StandortID});
+            Urlaub   = lodash.find(Mitarbeiter.Urlaubsliste, (urlaub: Urlaubsstruktur) => {
 
               return urlaub.Jahr === this.Jahr;
             });
@@ -314,11 +320,6 @@ export class DatabaseUrlaubService {
             }
 
             // Homeoffice Freigabeanfragen
-
-            Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, (urlaub: Urlaubsstruktur) => {
-
-              return urlaub.Jahr === this.Jahr && Mitarbeiter.StandortID === this.Pool.Mitarbeiterdaten.StandortID;
-            });
 
             if(!lodash.isUndefined(Urlaub)) {
 
@@ -3181,18 +3182,27 @@ export class DatabaseUrlaubService {
       let CurrentTag: Moment = moment(Tag.Tagstempel);
       let Feiertag: Moment;
       let IsFeiertag: boolean = false;
+      let Blockerdatum: Moment;
 
       if(!lodash.isUndefined(this.Feiertageliste[landcode])) {
 
-        for(let Eintrag of this.Feiertageliste[landcode]) {
+        for (let Eintrag of this.Feiertageliste[landcode]) {
 
           Feiertag = moment(Eintrag.Anfangstempel);
 
-          if(Feiertag.isSame(CurrentTag, 'day') && lodash.findIndex(this.CurrentUrlaub.Feiertageblockerliste, Tag.Tagstempel) === -1) {
+          if (Feiertag.isSame(CurrentTag, 'day')) {
 
             IsFeiertag = true;
 
-            break;
+            for (let Eintrag of this.CurrentUrlaub.Feiertageblockerliste) {
+
+              Blockerdatum = moment(Eintrag);
+
+              if (Blockerdatum.isSame(CurrentTag, 'day')) {
+
+                IsFeiertag = false;
+              }
+            }
           }
         }
       }
@@ -3204,8 +3214,6 @@ export class DatabaseUrlaubService {
       this.Debug.ShowErrorMessage(error, 'Database Urlaub', 'CheckIsFeiertag', this.Debug.Typen.Service);
     }
   }
-
-
 
   GetFeiertag(currenttag: Kalendertagestruktur, landcode: string): Kalendertagestruktur {
 

@@ -143,16 +143,12 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
 
       this.Projektbeteiligteliste = [];
 
-
-
       for (let Eintrag of this.DB.CurrentUrlaub.Projektbeteiligteliste) {
 
         Mitarbeiter = this.DBMitarbeiter.GetMitarbeiterByID(Eintrag.MitarbeiterID);
 
         if (Mitarbeiter !== null) this.Projektbeteiligteliste.push(Mitarbeiter);
       }
-
-      debugger;
 
       this.Projektbeteiligteliste.sort((a: Mitarbeiterstruktur, b: Mitarbeiterstruktur) => {
 

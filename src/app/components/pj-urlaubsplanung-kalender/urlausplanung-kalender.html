@@ -95,16 +95,21 @@
 
                 <ng-container *ngFor="let ExternKalender of KalendertageExternliste;">
 
-                        <div *ngIf="ExternKalender[Wocheindex][Tagindex].IsUrlaub" class="tagexterndivclass"
-                             [style.background]="ExternKalender[Wocheindex][Tagindex].Background"
-                             (click)="ExternUrlaubstagClicked($event, ExternKalender[Wocheindex][Tagindex].MitarbeiterID)">
-                          {{ExternKalender[Wocheindex][Tagindex].Kuerzel}}
-                        </div>
+                  <ng-container *ngIf="!lodash.isUndefined(ExternKalender[Wocheindex]) && !lodash.isUndefined(ExternKalender[Wocheindex][Tagindex])">
 
-                        <div *ngIf="ExternKalender[Wocheindex][Tagindex].IsHomeoffice && Pool.Mitarbeitersettings.ShowHomeoffice" class="tagexterndivclass"
-                             [style.background]="ExternKalender[Wocheindex][Tagindex].Background">
-                          {{ExternKalender[Wocheindex][Tagindex].Kuerzel}} | HO
-                        </div>
+                    <div *ngIf="ExternKalender[Wocheindex][Tagindex].IsUrlaub" class="tagexterndivclass"
+                         [style.background]="ExternKalender[Wocheindex][Tagindex].Background"
+                         (click)="ExternUrlaubstagClicked($event, ExternKalender[Wocheindex][Tagindex].MitarbeiterID)">
+                      {{ExternKalender[Wocheindex][Tagindex].Kuerzel}}
+                    </div>
+
+                    <div *ngIf="ExternKalender[Wocheindex][Tagindex].IsHomeoffice && Pool.Mitarbeitersettings.ShowHomeoffice" class="tagexterndivclass"
+                         [style.background]="ExternKalender[Wocheindex][Tagindex].Background">
+                      {{ExternKalender[Wocheindex][Tagindex].Kuerzel}} | HO
+                    </div>
+
+                  </ng-container>
+
 
                 </ng-container>
 

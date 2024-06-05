@@ -29,7 +29,7 @@ import {boolean} from "joi";
   templateUrl: 'urlausplanung-kalender.html',
   styleUrls: ['urlausplanung-kalender.scss']
 })
-export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, OnChanges {
+export class UrlaubsplanungKalenderComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() public ShowProtokollpunkte: boolean;
   @Input() Iconname: string;
@@ -370,7 +370,6 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
                 }
               }
 
-
               // Homeoffice Extern
 
               for(let HomeofficeZeitspanne of this.DB.UrlaublisteExtern[i].Homeofficezeitspannen) {
@@ -406,7 +405,7 @@ export class PjProjektpunktDateKWPickerComponent implements OnInit, OnDestroy, O
         }
       }
 
-
+      // debugger;
 
     } catch (error) {
 
