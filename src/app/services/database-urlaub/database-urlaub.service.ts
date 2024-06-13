@@ -1128,6 +1128,8 @@ export class DatabaseUrlaubService {
         }
       }
 
+      debugger;
+
       for(let Zeitspanne of Urlaub.Urlaubzeitspannen) {
 
         Konversation = lodash.find(Zeitspanne.Vertretungskonversationliste, {VertreterID: this.CurrentMitarbeiter._id});
@@ -1172,7 +1174,7 @@ export class DatabaseUrlaubService {
 
       Mitarbeiter.Urlaubsliste[Urlaubindex] = Urlaub;
 
-      await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(Mitarbeiter);
+      // await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(Mitarbeiter);
 
     } catch (error) {
 
@@ -1637,6 +1639,8 @@ export class DatabaseUrlaubService {
 
           Konversation = lodash.find(Zeitspanne.Vertretungskonversationliste, {VertreterID: this.CurrentMitarbeiter._id});
 
+          debugger;
+
           if(!lodash.isUndefined(Konversation)) {
 
             // Zeitspanne.UrlaubsvertreterID === Vertretung._id &&
@@ -1687,6 +1691,8 @@ export class DatabaseUrlaubService {
 
           debugger;
 
+          /*
+
           for(Konversation of Zeitspanne.Vertretungskonversationliste) {
 
             if(Konversation.Status === this.Urlaubstatusvarianten.Vertreteranfrage) GoOn = true;
@@ -1696,6 +1702,8 @@ export class DatabaseUrlaubService {
 
             Zeitspanne.Status = this.Urlaubstatusvarianten.Vertreterablehnung;
           }
+
+           */
         }
 
         Nachricht += '</table>';
