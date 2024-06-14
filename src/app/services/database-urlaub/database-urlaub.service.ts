@@ -1174,7 +1174,7 @@ export class DatabaseUrlaubService {
 
       Mitarbeiter.Urlaubsliste[Urlaubindex] = Urlaub;
 
-      // await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(Mitarbeiter);
+      await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(Mitarbeiter);
 
     } catch (error) {
 
