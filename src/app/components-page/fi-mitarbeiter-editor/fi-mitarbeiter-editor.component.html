@@ -69,7 +69,7 @@
                   <!--
                   <input-clone [(Value)]="DB.CurrentMitarbeiter.Jobtitel" [Required]="true" [MinLength]="3" [MaxLength]="100"  Titel="Jobtitel" (TextChanged)="TextChanged($event)"></input-clone>
                   -->
-                  <input-clone  [Enabled]="false" [Clickable]="true" [Value]="DB.GetPositionsbezeichnung(DB.CurrentMitarbeiter.PositionID)" [DisabledColor]="'gray'" (click)="PositionClicked()"  Titel="Possition"></input-clone>
+                  <input-clone [Enabled]="false" [Clickable]="true" [Value]="DB.GetPositionsbezeichnung(DB.CurrentMitarbeiter.PositionID)" [DisabledColor]="'gray'" (click)="PositionClicked()"  Titel="Position"></input-clone>
                 </ion-col>
               </ion-row>
               <ion-row>

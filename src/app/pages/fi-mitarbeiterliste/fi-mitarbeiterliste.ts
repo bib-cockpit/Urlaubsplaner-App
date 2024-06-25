@@ -844,7 +844,7 @@ export class FiMitarbeiterlistePage implements OnInit, OnDestroy {
       this.Auswahldialogorigin = this.Auswahlservice.Auswahloriginvarianten.Mitarbeiter_Liste_Position;
 
       this.ShowAuswahl   = true;
-      this.Auswahltitel  = 'Possition festlegen';
+      this.Auswahltitel  = 'Position festlegen';
       this.Auswahlliste  = [];
 
       for(let Eintrag of this.Pool.Mitarbeiterpositionenliste) {

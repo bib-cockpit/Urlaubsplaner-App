@@ -16,7 +16,7 @@ const _MitarbeiterdatenKeys = {
   Telefon: 'Telefon',
   Mobil: 'Mobil',
   Email: 'Email',
-  Possition: 'Possition',
+  Position: 'Position',
   Zeit: 'Zeit',
   Zeitstempel: 'Zeitstempel',
   Aktiviert: 'Aktiviert',
