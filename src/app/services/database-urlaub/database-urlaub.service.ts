@@ -2034,11 +2034,8 @@ export class DatabaseUrlaubService {
             }
             else {
 
-              Nachricht += '<td style="color: red;">';
-
-              Nachricht += '</td>';
-
-              if(!Zeitspanne.Betriebsurlaub) Nachricht += 'unbekannt';
+              if(!Zeitspanne.Betriebsurlaub) Nachricht += '<td style="color: red;">unbekannt</td>';
+              else                           Nachricht += '<td style="color: #307ac1;">BU</td>';
             }
 
             Nachricht += '<td style="color: green;">Freigabe';
@@ -2140,12 +2137,8 @@ export class DatabaseUrlaubService {
             }
             else {
 
-              Nachricht += '<td style="color: red;">';
-
-              if(!Zeitspanne.Betriebsurlaub) Nachricht += 'unbekannt';
-
-              Nachricht += '</td>';
-
+              if(!Zeitspanne.Betriebsurlaub) Nachricht += '<td style="color: red;">unbekannt</td>';
+              else                           Nachricht += '<td style="color: #307ac1;">BU</td>';
             }
 
             Nachricht += '<td style="color: green;">Freigabe</td>';
@@ -2239,7 +2232,8 @@ export class DatabaseUrlaubService {
             }
             else {
 
-              Nachricht += '<td style="color: red;">unbekannt</td>';
+              if(!Zeitspanne.Betriebsurlaub) Nachricht += '<td style="color: red;">unbekannt</td>';
+              else                           Nachricht += '<td style="color: #307ac1;">BU</td>';
             }
 
             Nachricht += '<td style="color: red;">Abgelehnt</td>';
