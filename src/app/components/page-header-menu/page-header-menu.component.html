@@ -39,6 +39,7 @@
 
               <table>
                 <tr>
+
                   <td>
                     <div class="menubuttonclass" [style.cursor]="LogoutMouseOver ? 'pointer': 'default'"
                          (mouseenter)="LogoutMouseOver = true"
@@ -52,6 +53,25 @@
                             </ion-icon>
                           </td>
                           <td [style.color]="LogoutMouseOver ? '#000000' : 'white'">Abmelden</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </td>
+                  <td style="width: 10px"></td>
+                  <td align="center" class="trennertdclass"><div class="trennerdivclass"></div></td>
+                  <td>
+                    <div class="menubuttonclass" [style.cursor]="JahrMouseOver ? 'pointer': 'default'"
+                         (mouseenter)="JahrMouseOver = true"
+                         (mouseleave)="JahrMouseOver = false"
+                         (click)="JahrButtonClicked.emit()">
+                      <table class="paddingsmalltable">
+                        <tr>
+                          <td>
+                            <ion-icon style="font-size: 18px" name="sunny-outline"
+                                      [color]="JahrMouseOver ? Basics.Ionicfarben.Schwarz : Basics.Ionicfarben.Weiss">
+                            </ion-icon>
+                          </td>
+                          <td [style.color]="JahrMouseOver ? '#000000' : 'white'">Jahr {{DBUrlaub.CurrentJahr}}</td>
                         </tr>
                       </table>
                     </div>

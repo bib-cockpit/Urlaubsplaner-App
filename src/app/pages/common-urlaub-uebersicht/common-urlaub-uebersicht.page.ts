@@ -21,6 +21,7 @@ import {
 import {Urlaubsstruktur} from "../../dataclasses/urlaubsstruktur";
 import {Urlaubprojektbeteiligtestruktur} from "../../dataclasses/urlaubprojektbeteiligtestruktur";
 import {DatabaseMitarbeiterService} from "../../services/database-mitarbeiter/database-mitarbeiter.service";
+import {LoadingAnimationService} from "../../services/loadinganimation/loadinganimation";
 
 @Component({
   selector: 'common-urlaub-uebersicht-page',
@@ -63,7 +64,7 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
   public Monateliste_HalbjahrEins: string[];
   public Monateliste_HalbjahrZwei: string[];
 
-  constructor(public Menuservice: MenueService,
+  constructor(public Loadinganimation: LoadingAnimationService,
               public Basics: BasicsProvider,
               public Pool: DatabasePoolService,
               public DB: DatabaseUrlaubService,
@@ -236,8 +237,22 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
           });
 
           break;
-      }
 
+        case this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Jahr_Aendern:
+
+          this.DB.CurrentJahr = data;
+
+          await this.Loadinganimation.ShowLoadingAnimation('Hinweis', 'Daten werden geladen');
+
+          await this.DB.ReadFeiertage('DE');
+          await this.DB.ReadFeiertage('BG');
+          await this.DB.ReadFerien('DE');
+          await this.DB.ReadFerien('BG');
+
+          await this.Loadinganimation.HideLoadingAnimation(true);
+
+          break;
+      }
 
 
       this.ShowAuswahl = false;
@@ -372,7 +387,7 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
 
       if(!lodash.isUndefined(Beteiligt)) Beteiligt.Display = event.status;
 
-      let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+      let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.CurrentJahr });
 
       this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
@@ -497,6 +512,32 @@ export class CommonUrlaubUebersichtPage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'UrlaubMitarbeiterMeClickedHandler', this.Debug.Typen.Page);
     }
+  }
 
+  JahrButtonClickedHandler() {
+
+    try {
+
+      let Index: number = 0;
+      let Jahr: number = this.DB.Jahr;
+      let Nextjahr: number = Jahr + 1;
+
+      this.Auswahltitel         = 'Jahr ändern';
+      this.Auswahldialogorigin  = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Jahr_Aendern;
+
+      this.Auswahlliste = [];
+
+      for(let j = this.DB.Startjahr; j <= Nextjahr; j++) {
+
+        this.Auswahlliste.push({ Index: Index++, FirstColumn: j.toString(), SecoundColumn: '', Data: j });
+      }
+
+      this.ShowAuswahl  = true;
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, { Data: this.DB.CurrentJahr });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'JahrButtonClickedHandler', this.Debug.Typen.Page);
+    }
   }
 }

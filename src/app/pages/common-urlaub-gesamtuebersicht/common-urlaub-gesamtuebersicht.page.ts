@@ -23,6 +23,7 @@ import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import {Kalendertagestruktur} from "../../dataclasses/kalendertagestruktur";
 import {Kalenderwochestruktur} from "../../dataclasses/kalenderwochestruktur";
 import {Urlauzeitspannenstruktur} from "../../dataclasses/urlauzeitspannenstruktur";
+import {LoadingAnimationService} from "../../services/loadinganimation/loadinganimation";
 
 @Component({
   selector: 'common-urlaub-gesamtuebersicht-page',
@@ -47,7 +48,6 @@ export class CommonUrlaubGesamtuebersichtPage implements OnInit, OnDestroy {
   private Auswahldialogorigin: string;
   private DataSubscription: Subscription;
   public AuswahlIDliste: string[];
-  public Auswahlliste: Auswahldialogstruktur[];
   public ShowMitarbeiterauswahl: boolean;
   public LegendeVisible: boolean;
   public Legendehoehe: number;
@@ -61,24 +61,22 @@ export class CommonUrlaubGesamtuebersichtPage implements OnInit, OnDestroy {
   public Tagesumme: number;
   public Auswahlindex: number;
   public Auswahltitel: string;
+  public Auswahlliste: Auswahldialogstruktur[];
   public ShowAuswahl: boolean;
   public MitarbeiterauswahlTitel: string;
-  public Auswahlhoehe: number;
   public Headerhoehe: number;
   public Contenthoehe: number;
 
-  constructor(public Menuservice: MenueService,
+  constructor(public Loadinganimation: LoadingAnimationService,
               public Basics: BasicsProvider,
               public Pool: DatabasePoolService,
               public DB: DatabaseUrlaubService,
               public Const: ConstProvider,
-              private DBMitarbeiter: DatabaseMitarbeiterService,
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public DBStandort: DatabaseStandorteService,
               public Auswahlservice: AuswahlDialogService,
               public Debug: DebugProvider) {
     try {
-
 
       this.DataSubscription      = null;
       this.Message               = '';
@@ -126,6 +124,24 @@ export class CommonUrlaubGesamtuebersichtPage implements OnInit, OnDestroy {
 
             this.DBStandort.StandortfilterChanged.emit();
           });
+
+          break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Jahr_Aendern:
+
+          this.DB.CurrentJahr = data;
+          this.ShowAuswahl    = false;
+
+          await this.Loadinganimation.ShowLoadingAnimation('Hinweis', 'Daten werden geladen');
+
+          await this.DB.ReadFeiertage('DE');
+          await this.DB.ReadFeiertage('BG');
+          await this.DB.ReadFerien('DE');
+          await this.DB.ReadFerien('BG');
+
+          await this.Loadinganimation.HideLoadingAnimation(true);
+
+          this.PrepareData();
 
           break;
 
@@ -280,11 +296,11 @@ export class CommonUrlaubGesamtuebersichtPage implements OnInit, OnDestroy {
       if(Monattext < 10 ) Monattext = '0' + Monattext.toString();
       else                Monattext = Monattext.toString();
 
-      Tageanzahl = moment(this.DB.Jahr.toString() + '-' + Monattext , "YYYY-MM").daysInMonth(); // 31
+      Tageanzahl = moment(this.DB.CurrentJahr.toString() + '-' + Monattext , "YYYY-MM").daysInMonth(); // 31
       this.Tagesumme  = Tageanzahl;
 
-      let MonatStartdatum: Moment   = moment().set({date: 1,          month: this.DB.CurrentMonatindex, year: this.DB.Jahr, hour: 8, minute: 0}).locale('de');
-      let MonatEndedatum: Moment    = moment().set({date: Tageanzahl, month: this.DB.CurrentMonatindex, year: this.DB.Jahr, hour: 8, minute: 0}).locale('de');
+      let MonatStartdatum: Moment   = moment().set({date: 1,          month: this.DB.CurrentMonatindex, year: this.DB.CurrentJahr, hour: 8, minute: 0}).locale('de');
+      let MonatEndedatum: Moment    = moment().set({date: Tageanzahl, month: this.DB.CurrentMonatindex, year: this.DB.CurrentJahr, hour: 8, minute: 0}).locale('de');
 
       Tagindex  = MonatStartdatum.isoWeekday();
       Tage      = Tagindex - 1;
@@ -592,6 +608,32 @@ export class CommonUrlaubGesamtuebersichtPage implements OnInit, OnDestroy {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'UrlaubMitarbeiterMeClickedHandler', this.Debug.Typen.Page);
     }
+  }
 
+  JahrButtonClickedHandler() {
+
+    try {
+
+      let Index: number = 0;
+      let Jahr: number = this.DB.Jahr;
+      let Nextjahr: number = Jahr + 1;
+
+      this.Auswahltitel         = 'Jahr wechseln';
+      this.Auswahldialogorigin  = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Jahr_Aendern;
+
+      this.Auswahlliste = [];
+
+      for(let j = this.DB.Startjahr; j <= Nextjahr; j++) {
+
+        this.Auswahlliste.push({ Index: Index++, FirstColumn: j.toString(), SecoundColumn: '', Data: j });
+      }
+
+      this.ShowAuswahl  = true;
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, { Data: this.DB.CurrentJahr });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsuebersicht Page', 'JahrButtonClickedHandler', this.Debug.Typen.Page);
+    }
   }
 }

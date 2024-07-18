@@ -1,6 +1,7 @@
 <ion-header class="ion-no-border">
   <page-header #PageHeader>
-    <page-header-menu (UrlaubMitarbeiterClicked)="MitarbeiterWechselnClicked()" (UrlaubMitarbeiterMeClicked)="MitarbeiterMeWechselnClickedHandler()"></page-header-menu>
+    <page-header-menu (UrlaubMitarbeiterClicked)="MitarbeiterWechselnClicked()"
+                      (UrlaubMitarbeiterMeClicked)="MitarbeiterMeWechselnClickedHandler()" (JahrButtonClicked)="JahrButtonClickedHandler()"></page-header-menu>
   </page-header>
 </ion-header>
 <ion-content>
@@ -46,7 +47,7 @@
 
                 <td style="width: 500px" valign="top">
                   <urlaubsplanung-kalender
-                    [Jahr]="DB.Jahr"
+                    [Jahr]="DB.CurrentJahr"
                     [Monatindex]="DB.FirstMonatIndex"
                     [AddUrlaubRunning]="AddUrlaubRunning"
                     [AddHomeofficerunning]="AddHomeofficeRunning"
@@ -61,7 +62,7 @@
 
                 <td style="width: 500px" valign="top">
                   <urlaubsplanung-kalender
-                    [Jahr]="DB.Jahr"
+                    [Jahr]="DB.CurrentJahr"
                     [ShowYear]="true"
                     [Monatindex]="DB.CurrentMonatindex"
                     [AddUrlaubRunning]="AddUrlaubRunning"
@@ -77,7 +78,7 @@
 
                 <td style="width: 500px" valign="top">
                   <urlaubsplanung-kalender
-                    [Jahr]="DB.Jahr"
+                    [Jahr]="DB.CurrentJahr"
                     [Monatindex]="DB.LastMonatIndex"
                     [AddUrlaubRunning]="AddUrlaubRunning"
                     [AddHomeofficerunning]="AddHomeofficeRunning"

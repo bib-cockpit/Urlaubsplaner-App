@@ -1,6 +1,9 @@
 <ion-header class="ion-no-border">
   <page-header #PageHeader>
-    <page-header-menu (UrlaubMitarbeiterClicked)="MitarbeiterWechselnClicked()" (UrlaubMitarbeiterMeClicked)="UrlaubMitarbeiterMeClickedHandler()"></page-header-menu>
+    <page-header-menu (UrlaubMitarbeiterClicked)="MitarbeiterWechselnClicked()"
+                      (UrlaubMitarbeiterMeClicked)="UrlaubMitarbeiterMeClickedHandler()"
+                      (JahrButtonClicked)="JahrButtonClickedHandler()">
+    </page-header-menu>
   </page-header>
 </ion-header>
 <ion-content>

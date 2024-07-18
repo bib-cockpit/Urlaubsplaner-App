@@ -1,6 +1,9 @@
 <ion-header class="ion-no-border">
   <page-header #PageHeader>
-    <page-header-menu (UrlaubMitarbeiterClicked)="MitarbeiterWechselnClicked()"  (UrlaubMitarbeiterMeClicked)="UrlaubMitarbeiterMeClickedHandler()"></page-header-menu>
+    <page-header-menu (UrlaubMitarbeiterClicked)="MitarbeiterWechselnClicked()"
+                      (UrlaubMitarbeiterMeClicked)="UrlaubMitarbeiterMeClickedHandler()"
+                      (JahrButtonClicked)="JahrButtonClickedHandler()">
+    </page-header-menu>
   </page-header>
 </ion-header>
 <ion-content>
@@ -43,7 +46,7 @@
 
               <table class="docinnertable">
                 <tr>
-                  <td [colSpan]="Tagesumme + 1" align="center" style="height: 40px; font-size: 120%;"><b>{{Monatname}} {{DB.Jahr}}</b></td>
+                  <td [colSpan]="Tagesumme + 1" align="center" style="height: 40px; font-size: 120%;"><b>{{Monatname}} {{DB.CurrentJahr}}</b></td>
                 </tr>
                 <tr>
                   <td rowspan="3" style="width: 200px;"></td>

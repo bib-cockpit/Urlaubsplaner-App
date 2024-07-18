@@ -1,6 +1,8 @@
 <ion-header class="ion-no-border">
   <page-header #PageHeader>
-    <page-header-menu (UrlaubMitarbeiterClicked)="MitarbeiterWechselnClicked()"  (UrlaubMitarbeiterMeClicked)="UrlaubMitarbeiterMeClickedHandler()"></page-header-menu>
+    <page-header-menu (UrlaubMitarbeiterClicked)="MitarbeiterWechselnClicked()"
+                      (UrlaubMitarbeiterMeClicked)="UrlaubMitarbeiterMeClickedHandler()"
+                      (JahrButtonClicked)="JahrButtonClickedHandler()"></page-header-menu>
   </page-header>
 </ion-header>
 <ion-content>
@@ -17,13 +19,13 @@
           <table class="paddingsmalltable">
             <tr>
               <td>
-                <div [style.color]="Ansichtvariante === Ansichtenvarinaten.Gesamtjahr ? 'orange' : 'black'" (click)="JahrButtonClicked()"  class="monatedivclass">Gesamtjahr {{DB.Jahr}}</div>
+                <div [style.color]="Ansichtvariante === Ansichtenvarinaten.Gesamtjahr ? 'orange' : 'black'" (click)="JahrButtonClicked()"  class="monatedivclass">Gesamtjahr {{DB.CurrentJahr}}</div>
               </td>
               <td>
-                <div [style.color]="Ansichtvariante === Ansichtenvarinaten.HalbjahrEins ? 'orange' : 'black'" (click)="HalbjahrEinsButtonClicked()"  class="monatedivclass">1. Halbjahr {{DB.Jahr}}</div>
+                <div [style.color]="Ansichtvariante === Ansichtenvarinaten.HalbjahrEins ? 'orange' : 'black'" (click)="HalbjahrEinsButtonClicked()"  class="monatedivclass">1. Halbjahr {{DB.CurrentJahr}}</div>
               </td>
               <td>
-                <div [style.color]="Ansichtvariante === Ansichtenvarinaten.HalbjahrZwei ? 'orange' : 'black'" (click)="HalbjahrZweiButtonClicked()"  class="monatedivclass">2. Halbjahr {{DB.Jahr}}</div>
+                <div [style.color]="Ansichtvariante === Ansichtenvarinaten.HalbjahrZwei ? 'orange' : 'black'" (click)="HalbjahrZweiButtonClicked()"  class="monatedivclass">2. Halbjahr {{DB.CurrentJahr}}</div>
               </td>
             </tr>
           </table>
@@ -40,7 +42,7 @@
           <td style="width: 16%; height: inherit" valign="top" *ngFor="let Monat of Zeile; let spalteindex = index">
 
             <urlaubsplanung-kalender
-              [Jahr]="DB.Jahr"
+              [Jahr]="DB.CurrentJahr"
               [Monatindex]="6 * zeileindex + spalteindex"
               (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)" (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
             </urlaubsplanung-kalender>
@@ -60,7 +62,7 @@
           <td style="width: 16%; height: inherit" valign="top" *ngFor="let Monat of Monateliste_HalbjahrEins; let monatindex = index">
 
             <urlaubsplanung-kalender
-              [Jahr]="DB.Jahr"
+              [Jahr]="DB.CurrentJahr"
               [Monatindex]="monatindex"
               (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)" (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
             </urlaubsplanung-kalender>
@@ -80,7 +82,7 @@
           <td style="width: 16%; height: inherit" valign="top" *ngFor="let Monat of Monateliste_HalbjahrZwei; let monatindex = index">
 
             <urlaubsplanung-kalender
-              [Jahr]="DB.Jahr"
+              [Jahr]="DB.CurrentJahr"
               [Monatindex]="monatindex + 6"
               (FeiertagCrossedEvent)="FeiertagCrossedEventHandler($event)" (FerientagCrossedEvent)="FerientagCrossedEventHandler($event)">
             </urlaubsplanung-kalender>

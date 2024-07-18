@@ -17,6 +17,8 @@ import {DatabaseUrlaubService} from "../../services/database-urlaub/database-url
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import {loadFromPath} from "@ionic/cli/lib/ssh-config";
 import {ToolsProvider} from "../../services/tools/tools";
+import {cloneDeep} from "lodash-es";
+import {Auswahldialogstruktur} from "../../dataclasses/auswahldialogstruktur";
 
 @Component({
   selector: 'common-einstellungen-page',
@@ -28,6 +30,10 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
   private DataSubscription: Subscription;
   public Vertreterliste: Mitarbeiterstruktur[];
   public Freigeberliste: Mitarbeiterstruktur[];
+  public ShowAuswahl: boolean;
+  public Auswahlindex: number;
+  public Auswahltitel: string;
+  public Auswahlliste: Auswahldialogstruktur[];
 
   constructor(public Pool: DatabasePoolService,
               public Const: ConstProvider,
@@ -41,7 +47,10 @@ export class CommonEinstellungenPage implements OnInit, OnDestroy {
       this.DataSubscription = null;
       this.Vertreterliste   = [];
       this.Freigeberliste   = [];
-
+      this.ShowAuswahl      = false;
+      this.Auswahlliste     = [{ Index: 0, FirstColumn: '', SecoundColumn: '', Data: null}];
+      this.Auswahlindex     = 0;
+      this.Auswahltitel     = '';
 
     } catch (error) {
 

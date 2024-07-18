@@ -1,6 +1,9 @@
 <ion-header class="ion-no-border" xmlns="http://www.w3.org/1999/html">
   <page-header #PageHeader>
-    <page-header-menu (UrlaubMitarbeiterClicked)="MitarbeiterWechselnClicked()" (UrlaubMitarbeiterMeClicked)="UrlaubMitarbeiterMeClickedHandler()"></page-header-menu>
+    <page-header-menu (UrlaubMitarbeiterClicked)="MitarbeiterWechselnClicked()"
+                      (UrlaubMitarbeiterMeClicked)="UrlaubMitarbeiterMeClickedHandler()"
+                      (JahrButtonClicked)="JahrButtonClickedHandler()">
+    </page-header-menu>
   </page-header>
 </ion-header>
 <ion-content>
@@ -67,7 +70,7 @@
 
                 <td style="width: 500px" valign="top">
                   <urlaubsplanung-kalender
-                    [Jahr]="DB.Jahr"
+                    [Jahr]="DB.CurrentJahr"
                     [Monatindex]="DB.FirstMonatIndex"
                     [AddUrlaubRunning]="false"
                     (ExternUrlaubstagClickedEvent)="ExternUrlaubstagClickedEventHandler($event)"
@@ -78,7 +81,7 @@
 
                 <td style="width: 500px" valign="top">
                   <urlaubsplanung-kalender
-                    [Jahr]="DB.Jahr"
+                    [Jahr]="DB.CurrentJahr"
                     [ShowYear]="true"
                     [Monatindex]="DB.CurrentMonatindex"
                     [AddUrlaubRunning]="false"
@@ -90,7 +93,7 @@
 
                 <td style="width: 500px" valign="top">
                   <urlaubsplanung-kalender
-                    [Jahr]="DB.Jahr"
+                    [Jahr]="DB.CurrentJahr"
                     [Monatindex]="DB.LastMonatIndex"
                     [AddUrlaubRunning]="false"
                     (ExternUrlaubstagClickedEvent)="ExternUrlaubstagClickedEventHandler($event)"
@@ -151,7 +154,7 @@
                           <td style="font-weight: bold; width: 300px;">Anfrage beantworten</td>
                         </tr>
                         <ng-container *ngFor="let Urlaub of Mitarbeiter.Urlaubsliste">
-                          <ng-container *ngIf="Urlaub.Jahr === DB.Jahr">
+                          <ng-container *ngIf="Urlaub.Jahr === DB.CurrentJahr">
                             <ng-container *ngFor="let Zeitspanne of Urlaub.Urlaubzeitspannen">
 
                               <ng-container *ngIf="DB.GetVertretungkonversation(DB.CurrentMitarbeiter, Zeitspanne) !== null">
@@ -316,7 +319,7 @@
                           <td style="font-weight: bold; width: 300px;">Anfrage beantworten</td>
                         </tr>
                         <ng-container *ngFor="let Urlaub of Mitarbeiter.Urlaubsliste">
-                          <ng-container *ngIf="Urlaub.Jahr === DB.Jahr && this.DB.CheckUrlaubsfreigeberAvailable(Mitarbeiter) === true">
+                          <ng-container *ngIf="Urlaub.Jahr === DB.CurrentJahr && this.DB.CheckUrlaubsfreigeberAvailable(Mitarbeiter) === true">
                             <ng-container *ngFor="let Zeitspanne of Urlaub.Urlaubzeitspannen">
 
                                   <tr *ngIf="DB.CheckUrlaubFreigabeanwortAge(Zeitspanne) === true &&
@@ -446,7 +449,7 @@
                           <td style="font-weight: bold;">Abgelehnt</td>
                         </tr>
                         <ng-container *ngFor="let Urlaub of Mitarbeiter.Urlaubsliste">
-                          <ng-container *ngIf="Urlaub.Jahr === DB.Jahr && DB.CheckHomeofficefreigeberAvailable(Mitarbeiter) === true">
+                          <ng-container *ngIf="Urlaub.Jahr === DB.CurrentJahr && DB.CheckHomeofficefreigeberAvailable(Mitarbeiter) === true">
                             <tr *ngIf="CheckHasAnfragen(Urlaub)">
                               <td colspan="3"></td>
                               <!--

@@ -23,6 +23,8 @@ import {Feiertagestruktur} from "../../dataclasses/feiertagestruktur";
 import {Urlaubprojektbeteiligtestruktur} from "../../dataclasses/urlaubprojektbeteiligtestruktur";
 import {Subscription} from "rxjs";
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
+import {ToolsProvider} from "../../services/tools/tools";
+import {LoadingAnimationService} from "../../services/loadinganimation/loadinganimation";
 
 @Component({
   selector: 'common-urlaub-einstellungen-page',
@@ -61,6 +63,8 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
               public DBStandort: DatabaseStandorteService,
               public DBMitarbeiterstettings: DatabaseMitarbeitersettingsService,
               public Auswahlservice: AuswahlDialogService,
+              public Loadinganimation: LoadingAnimationService,
+              public Tools: ToolsProvider,
               public Debug: DebugProvider) {
     try {
 
@@ -344,6 +348,22 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
           });
 
           break;
+
+
+        case this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Jahr_Aendern:
+
+          this.DB.CurrentJahr = data;
+
+          await this.Loadinganimation.ShowLoadingAnimation('Hinweis', 'Daten werden geladen');
+
+          await this.DB.ReadFeiertage('DE');
+          await this.DB.ReadFeiertage('BG');
+          await this.DB.ReadFerien('DE');
+          await this.DB.ReadFerien('BG');
+
+          await this.Loadinganimation.HideLoadingAnimation(true);
+
+          break;
       }
 
       this.ShowAuswahl = false;
@@ -563,5 +583,31 @@ export class CommonUrlaubEinstellungenPage implements OnInit, OnDestroy {
       this.Debug.ShowErrorMessage(error, 'Urlaub Einstellungen Page', 'UrlaubMitarbeiterMeClickedHandler', this.Debug.Typen.Page);
     }
 
+  }
+
+  JahrButtonClickedHandler() {
+
+    try {
+
+      let Index: number = 0;
+      let Jahr: number = this.DB.Jahr;
+      let Nextjahr: number = Jahr + 1;
+
+      this.Auswahltitel = 'Jahr wechseln';
+      this.Auswahlliste = [];
+      this.Auswahldialogorigin  = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Jahr_Aendern;
+
+      for(let j = this.DB.Startjahr; j <= Nextjahr; j++) {
+
+        this.Auswahlliste.push({ Index: Index++, FirstColumn: j.toString(), SecoundColumn: '', Data: j });
+      }
+
+      this.ShowAuswahl  = true;
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, { Data: this.DB.CurrentJahr });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Einstellungen', 'JahrButtonClickedHandler', this.Debug.Typen.Page);
+    }
   }
 }

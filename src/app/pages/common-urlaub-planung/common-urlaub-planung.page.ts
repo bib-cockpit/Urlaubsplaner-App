@@ -27,6 +27,7 @@ import {cloneDeep} from "lodash-es";
 import {Homeofficezeitspannenstruktur} from "../../dataclasses/homeofficezeitspannenstruktur";
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import {Urlaubsvertretungkonversationstruktur} from "../../dataclasses/urlaubsvertretungkonversationstruktur";
+import {LoadingAnimationService} from "../../services/loadinganimation/loadinganimation";
 
 @Component({
   selector: 'common-urlaub-planung-page',
@@ -63,7 +64,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
   public Flagsource: string;
   public MitarbeiterMultiselect: boolean;
 
-  constructor(public Menuservice: MenueService,
+  constructor(public Loadinganimation: LoadingAnimationService,
               public Basics: BasicsProvider,
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public Pool: DatabasePoolService,
@@ -207,7 +208,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
                   Konversation.Vertretungantwortzeitstempel     = null;
                 }
 
-                Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+                Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.CurrentJahr });
 
                 this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
@@ -230,7 +231,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
                   Zeitspanne.Status = this.DB.Urlaubstatusvarianten.Geplant;
 
-                  Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+                  Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.CurrentJahr });
 
                   this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
@@ -254,7 +255,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
                 Zeitspanne.Status = data;
 
-                Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+                Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.CurrentJahr });
 
                 this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
@@ -269,7 +270,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
                 Zeitspanne.Status = data;
 
-                Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+                Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.CurrentJahr });
 
                 this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
@@ -286,7 +287,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
                 this.DB.CurrentUrlaub = await this.DB.SendOfficeFreigabezusage(this.DB.CurrentMitarbeiter, this.Pool.Mitarbeiterdaten, this.DB.CurrentUrlaub);
 
-                Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+                Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.CurrentJahr });
 
                 this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
@@ -297,10 +298,6 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
                 break;
             }
-
-
-
-
           }
 
 
@@ -317,35 +314,30 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
             this.ShowAuswahl = false;
 
+            this.PrepareData();
+
             this.DBStandort.StandortfilterChanged.emit();
           });
 
           break;
 
-          /*
-        case  this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Vertreter_Festlegen:
+        case this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Jahr_Aendern:
 
-          Zeitspanne = lodash.find(this.DB.CurrentUrlaub.Urlaubzeitspannen, {ZeitspannenID: this.DB.CurrentUrlaubzeitspanne.ZeitspannenID});
+          this.DB.CurrentJahr = data;
+          this.ShowAuswahl    = false;
 
-          this.DB.CurrentUrlaubzeitspanne.UrlaubsvertreterID = data;
-          Zeitspanne.UrlaubsvertreterID                = data;
-          Zeitspanne.Status                     = this.DB.Urlaubstatusvarianten.Geplant;
-          Zeitspanne.FreigabeantwortSended      = false;
-          Zeitspanne.FreigabeanfrageSended      = false;
-          Zeitspanne.VertreterantwortSended     = false;
+          await this.Loadinganimation.ShowLoadingAnimation('Hinweis', 'Daten werden geladen');
 
-          Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+          await this.DB.ReadFeiertage('DE');
+          await this.DB.ReadFeiertage('BG');
+          await this.DB.ReadFerien('DE');
+          await this.DB.ReadFerien('BG');
 
-          this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
+          await this.Loadinganimation.HideLoadingAnimation(true);
 
-          await this.DBMitarbeiter.UpdateMitarbeiterUrlaub(this.DB.CurrentMitarbeiter).then(() => {
-
-            this.ShowAuswahl = false;
-          });
+          this.PrepareData();
 
           break;
-
-           */
       }
 
     } catch (error) {
@@ -606,7 +598,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
         this.DB.CurrentUrlaub.Urlaubzeitspannen.push(this.DB.CurrentUrlaubzeitspanne);
 
-        let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+        let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.CurrentJahr });
 
         this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
@@ -630,10 +622,10 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
         return eintrag.ZeitspannenID !== Zeitspanne.ZeitspannenID;
       });
 
-      this.DB.CurrentUrlaub                   = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.Jahr});
+      this.DB.CurrentUrlaub                   = lodash.find(this.DB.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.DB.CurrentJahr});
       this.DB.CurrentUrlaub.Urlaubzeitspannen = Zeitspannen;
 
-      let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+      let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.CurrentJahr });
 
       this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
@@ -752,7 +744,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
           this.DB.InitVertreterkonversationen(Zeitspanne, true);
 
-          Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+          Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.CurrentJahr });
 
           this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
@@ -891,7 +883,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
       if(!lodash.isUndefined(Beteiligt)) Beteiligt.Display = event.status;
 
-      let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+      let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.CurrentJahr });
 
       this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
@@ -1057,7 +1049,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
         this.DB.CurrentUrlaub.Homeofficezeitspannen.push(this.DB.CurrentHomeofficezeitspanne);
 
-        let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+        let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.CurrentJahr });
 
         this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
@@ -1130,7 +1122,7 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
       }
 
 
-      let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+      let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.CurrentJahr });
 
       this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
@@ -1257,6 +1249,33 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'ShowHomeofficeChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  JahrButtonClickedHandler() {
+
+    try {
+
+      let Index: number = 0;
+      let Jahr: number = this.DB.Jahr;
+      let Nextjahr: number = Jahr + 1;
+
+      this.Auswahltitel         = 'Jahr ändern';
+      this.Auswahldialogorigin  = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Jahr_Aendern;
+
+      this.Auswahlliste = [];
+
+      for(let j = this.DB.Startjahr; j <= Nextjahr; j++) {
+
+        this.Auswahlliste.push({ Index: Index++, FirstColumn: j.toString(), SecoundColumn: '', Data: j });
+      }
+
+      this.ShowAuswahl  = true;
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, { Data: this.DB.CurrentJahr });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'JahrButtonClickedHandler', this.Debug.Typen.Page);
     }
   }
 }

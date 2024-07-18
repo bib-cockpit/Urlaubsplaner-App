@@ -68,6 +68,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   @Output()  ExpandFestlegungeEvent = new EventEmitter<boolean>();
   @Output()  UrlaubMitarbeiterClicked = new EventEmitter<boolean>();
   @Output()  UrlaubMitarbeiterMeClicked = new EventEmitter<boolean>();
+  @Output()  JahrButtonClicked = new EventEmitter<boolean>();
 
   private SuchleisteInputSubscription: Subscription;
   private Suchleiste2InputSubscription: Subscription;
@@ -85,6 +86,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
   public BackMouseOver: boolean;
   public Timelinebreite: number;
   public LogoutMouseOver: boolean;
+  public JahrMouseOver: boolean;
 
 
   constructor(private Debug: DebugProvider,
@@ -125,6 +127,7 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
       this.SendFestlegungenEnabled      = false;
       this.BackMouseOver                = false;
       this.LogoutMouseOver              = false;
+      this.JahrMouseOver                = false;
       this.Timelineindex                = 0;
 
     } catch (error) {
@@ -1248,5 +1251,4 @@ export class PageHeaderMenuComponent implements OnInit, OnDestroy, AfterViewInit
 
    */
 
-  protected readonly environment = environment;
 }

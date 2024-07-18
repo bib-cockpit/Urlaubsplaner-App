@@ -26,6 +26,7 @@ import {Homeofficezeitspannenstruktur} from "../../dataclasses/homeofficezeitspa
 import {Standortestruktur} from "../../dataclasses/standortestruktur";
 import {Urlaubsvertretungkonversationstruktur} from "../../dataclasses/urlaubsvertretungkonversationstruktur";
 import {environment} from "../../../environments/environment";
+import {LoadingAnimationService} from "../../services/loadinganimation/loadinganimation";
 
 @Component({
   selector: 'common-urlaub-freigaben-page',
@@ -57,7 +58,7 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
   public Legendehoehe: number;
   public Legendebreite: number;
 
-  constructor(public Menuservice: MenueService,
+  constructor(public Loadinganimation: LoadingAnimationService,
               public Basics: BasicsProvider,
               private DBMitarbeitersettings: DatabaseMitarbeitersettingsService,
               public Pool: DatabasePoolService,
@@ -263,7 +264,6 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
         case this.Auswahlservice.Auswahloriginvarianten.UrlaubAnfargen_Standort_Filter:
 
-
           this.DBStandort.CurrentStandortfilter        = cloneDeep(data);
           this.Pool.Mitarbeitersettings.StandortFilter = data !== null ? data._id : this.Const.NONE;
 
@@ -271,16 +271,31 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
             this.ShowAuswahl = false;
 
+            this.PrepareData();
+
             this.DBStandort.StandortfilterChanged.emit();
           });
 
           break;
+
+        case this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Jahr_Aendern:
+
+          this.DB.CurrentJahr = data;
+          this.ShowAuswahl    = false;
+
+          await this.Loadinganimation.ShowLoadingAnimation('Hinweis', 'Daten werden geladen');
+
+          await this.DB.ReadFeiertage('DE');
+          await this.DB.ReadFeiertage('BG');
+          await this.DB.ReadFerien('DE');
+          await this.DB.ReadFerien('BG');
+
+          await this.Loadinganimation.HideLoadingAnimation(true);
+
+          this.PrepareData();
+
+          break;
       }
-
-      this.ShowAuswahl = false;
-
-      this.PrepareData();
-
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error.message, 'Urlaub Freigaben Page', 'AuswahlOkButtonClicked', this.Debug.Typen.Page);
@@ -453,7 +468,7 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
 
       if(!lodash.isUndefined(Beteiligt)) Beteiligt.Display = event.status;
 
-      let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.Jahr });
+      let Urlaubindex = lodash.findIndex(this.DB.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.DB.CurrentJahr });
 
       this.DB.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.DB.CurrentUrlaub;
 
@@ -872,6 +887,33 @@ export class CommonUrlaubFreigabenPage implements OnInit, OnDestroy {
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'ShowHomeofficeChanged', this.Debug.Typen.Page);
+    }
+  }
+
+  JahrButtonClickedHandler() {
+
+    try {
+
+      let Index: number = 0;
+      let Jahr: number = this.DB.Jahr;
+      let Nextjahr: number = Jahr + 1;
+
+      this.Auswahltitel         = 'Jahr wechseln';
+      this.Auswahldialogorigin  = this.Auswahlservice.Auswahloriginvarianten.Urlaubsplanung_Jahr_Aendern;
+
+      this.Auswahlliste = [];
+
+      for(let j = this.DB.Startjahr; j <= Nextjahr; j++) {
+
+        this.Auswahlliste.push({ Index: Index++, FirstColumn: j.toString(), SecoundColumn: '', Data: j });
+      }
+
+      this.ShowAuswahl  = true;
+      this.Auswahlindex = lodash.findIndex(this.Auswahlliste, { Data: this.DB.CurrentJahr });
+
+    } catch (error) {
+
+      this.Debug.ShowErrorMessage(error, 'Urlaub Freigaben Page', 'JahrButtonClickedHandler', this.Debug.Typen.Page);
     }
   }
 }

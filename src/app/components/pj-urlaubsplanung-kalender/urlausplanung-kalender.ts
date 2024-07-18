@@ -146,6 +146,7 @@ export class UrlaubsplanungKalenderComponent implements OnInit, OnDestroy, OnCha
       let Mitarbeiterindex: number;
       let Datumsicherung: Moment;
       let Kalenderewoche: number;
+      let Wochentagnummer: number;
 
       this.Monatname = this.DB.Monateliste[this.Monatindex];
 
@@ -361,9 +362,13 @@ export class UrlaubsplanungKalenderComponent implements OnInit, OnDestroy, OnCha
                   Tag.Background   = this.DB.GetUrlaubStatuscolor(UrlaubZeitspanne);
                   Tag.Color        = 'white';
 
-                  if(this.DB.Kalenderwochenhoehenliste[Kalenderewoche][Datum.weekday()].indexOf(this.DB.UrlaublisteExtern[i].MitarbeiterIDExtern) === -1) {
+                  Wochentagnummer  = Datum.weekday();
 
-                    this.DB.Kalenderwochenhoehenliste[Kalenderewoche][Datum.weekday()].push(this.DB.UrlaublisteExtern[i].MitarbeiterIDExtern);
+                  debugger;
+
+                  if(lodash.isUndefined(this.DB.Kalenderwochenhoehenliste[Kalenderewoche][Wochentagnummer]) === false && this.DB.Kalenderwochenhoehenliste[Kalenderewoche][Wochentagnummer].indexOf(this.DB.UrlaublisteExtern[i].MitarbeiterIDExtern) === -1) {
+
+                    this.DB.Kalenderwochenhoehenliste[Kalenderewoche][Wochentagnummer].push(this.DB.UrlaublisteExtern[i].MitarbeiterIDExtern);
                   }
 
                   break;
@@ -386,9 +391,11 @@ export class UrlaubsplanungKalenderComponent implements OnInit, OnDestroy, OnCha
                   Tag.Background     = this.DB.GetHomeofficeStatuscolor(HomeofficeZeitspanne.Status);
                   Tag.Color          = 'white';
 
-                  if(this.DB.Kalenderwochenhoehenliste[Kalenderewoche][Datum.weekday()].indexOf(this.DB.UrlaublisteExtern[i].MitarbeiterIDExtern) === -1) {
+                  Wochentagnummer  = Datum.weekday();
 
-                    this.DB.Kalenderwochenhoehenliste[Kalenderewoche][Datum.weekday()].push(this.DB.UrlaublisteExtern[i].MitarbeiterIDExtern);
+                  if(lodash.isUndefined(this.DB.Kalenderwochenhoehenliste[Kalenderewoche][Wochentagnummer]) === false && this.DB.Kalenderwochenhoehenliste[Kalenderewoche][Wochentagnummer].indexOf(this.DB.UrlaublisteExtern[i].MitarbeiterIDExtern) === -1) {
+
+                    this.DB.Kalenderwochenhoehenliste[Kalenderewoche][Wochentagnummer].push(this.DB.UrlaublisteExtern[i].MitarbeiterIDExtern);
                   }
 
                   break;

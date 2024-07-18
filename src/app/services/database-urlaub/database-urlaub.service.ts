@@ -40,7 +40,9 @@ export class DatabaseUrlaubService {
   public Bundeslandkuerzel: string;
   public Bundesland: string;
   public Regionenliste: Regionenstruktur[];
+  public CurrentJahr: number;
   public Jahr: number;
+  public Startjahr: number;
   public Feiertageliste: Feiertagestruktur[];
   public Ferienliste: Ferienstruktur[];
   public CurrentUrlaub: Urlaubsstruktur;
@@ -150,6 +152,7 @@ export class DatabaseUrlaubService {
       this.ServerReadFerienUrl     = this.Pool.CockpitdockerURL + '/readferien';
       this.ServerReadRegionenUrl   = this.Pool.CockpitdockerURL + '/readregionen';
       this.CurrentUrlaub           = null;
+      this.CurrentJahr             = moment().year();
       this.Jahr                    = moment().year();
       this.Bundeslandkuerzel       = 'DE-BY';
       this.Bundesland              = '';
@@ -181,6 +184,8 @@ export class DatabaseUrlaubService {
       this.Homeofficantwortenanzahl   = 0;
       this.CurrentHomeofficecounter   = 0;
       this.CurrentMitarbeiter      = null;
+      this.Startjahr               = 2024;
+
       this.CorrectSetup            = false;
       this.Officeemailadress       = 'office@b-a-e.eu';
       this.Monateliste             = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
@@ -273,7 +278,7 @@ export class DatabaseUrlaubService {
             Standort = lodash.find(this.Pool.Standorteliste, {_id: Mitarbeiter.StandortID});
             Urlaub   = lodash.find(Mitarbeiter.Urlaubsliste, (urlaub: Urlaubsstruktur) => {
 
-              return urlaub.Jahr === this.Jahr;
+              return urlaub.Jahr === this.CurrentJahr;
             });
 
             if(!lodash.isUndefined(Urlaub)) {
@@ -599,7 +604,7 @@ export class DatabaseUrlaubService {
 
             if(Mitarbeiter._id !== this.CurrentMitarbeiter._id) {
 
-               Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
+               Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, {Jahr: this.CurrentJahr});
 
                if(!lodash.isUndefined(Urlaub)) {
 
@@ -969,7 +974,7 @@ export class DatabaseUrlaubService {
         this.CurrentUrlaub.Urlaubzeitspannen[Index] = Zeitspanne;
       }
 
-      let Urlaubindex = lodash.findIndex(this.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.Jahr });
+      let Urlaubindex = lodash.findIndex(this.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.CurrentJahr });
 
       this.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.CurrentUrlaub;
 
@@ -1033,7 +1038,7 @@ export class DatabaseUrlaubService {
         this.CurrentUrlaub.Homeofficezeitspannen[Index] = Zeitspanne;
       }
 
-      let Urlaubindex = lodash.findIndex(this.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.Jahr });
+      let Urlaubindex = lodash.findIndex(this.CurrentMitarbeiter.Urlaubsliste, { Jahr: this.CurrentJahr });
 
 
 
@@ -1170,7 +1175,7 @@ export class DatabaseUrlaubService {
 
       if (FreigabeReady) Urlaub = await this.SendFreigabeanfrage(Mitarbeiter, Urlaub);
 
-      let Urlaubindex = lodash.findIndex(Mitarbeiter.Urlaubsliste, { Jahr: this.Jahr });
+      let Urlaubindex = lodash.findIndex(Mitarbeiter.Urlaubsliste, { Jahr: this.CurrentJahr });
 
       Mitarbeiter.Urlaubsliste[Urlaubindex] = Urlaub;
 
@@ -1543,7 +1548,7 @@ export class DatabaseUrlaubService {
       Urlaub = await this.SendMitarbeiterHomeofficeFreigabeablehnung(Mitarbeiter, Freigebender, Urlaub);
       Urlaub = await this.SendMitarbeiterHomeofficeFreigabezusage(Mitarbeiter, Freigebender, Urlaub);
 
-      let Urlaubindex = lodash.findIndex(Mitarbeiter.Urlaubsliste, { Jahr: this.Jahr });
+      let Urlaubindex = lodash.findIndex(Mitarbeiter.Urlaubsliste, { Jahr: this.CurrentJahr });
 
       Mitarbeiter.Urlaubsliste[Urlaubindex] = Urlaub;
 
@@ -1600,7 +1605,7 @@ export class DatabaseUrlaubService {
       Urlaub = await this.SendMitarbeiterFreigabezusage(Mitarbeiter, Freigebender, Urlaub);
       Urlaub = await this.SendOfficeFreigabezusage(Mitarbeiter, Freigebender, Urlaub);
 
-      let Urlaubindex = lodash.findIndex(Mitarbeiter.Urlaubsliste, { Jahr: this.Jahr });
+      let Urlaubindex = lodash.findIndex(Mitarbeiter.Urlaubsliste, { Jahr: this.CurrentJahr });
 
       Mitarbeiter.Urlaubsliste[Urlaubindex] = Urlaub;
 
@@ -2497,7 +2502,7 @@ export class DatabaseUrlaubService {
       let Daten = {
 
         Standort:          Standort,
-        Jahr:              this.Jahr,
+        Jahr:              this.CurrentJahr,
         Bundeslandkuerzel: this.Bundeslandkuerzel,
         Landcode:          landcode
       };
@@ -2541,7 +2546,7 @@ export class DatabaseUrlaubService {
       let FerienObserver: Observable<any>;
       let Daten = {
 
-        Jahr:              this.Jahr,
+        Jahr:              this.CurrentJahr,
         Bundeslandkuerzel: this.Bundeslandkuerzel,
         Landcode:          landcode
       };
@@ -2661,11 +2666,11 @@ export class DatabaseUrlaubService {
 
       if(this.CurrentMitarbeiter !== null) {
 
-        this.CurrentUrlaub = lodash.find(this.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
+        this.CurrentUrlaub = lodash.find(this.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.CurrentJahr});
 
         if(lodash.isUndefined(this.CurrentUrlaub)) {
 
-          this.CurrentUrlaub           = this.GetEmptyUrlaub(this.Jahr);
+          this.CurrentUrlaub           = this.GetEmptyUrlaub(this.CurrentJahr);
           this.CurrentUrlaubzeitspanne = null;
 
           this.CurrentMitarbeiter.Urlaubsliste.push(this.CurrentUrlaub);
@@ -2705,7 +2710,7 @@ export class DatabaseUrlaubService {
 
         if(!lodash.isUndefined(Mitarbeiter)) {
 
-          Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
+          Urlaub = lodash.find(Mitarbeiter.Urlaubsliste, {Jahr: this.CurrentJahr});
 
           if(!lodash.isUndefined(Urlaub)) {
 
@@ -2722,7 +2727,7 @@ export class DatabaseUrlaubService {
           }
           else {
 
-            Urlaub = this.GetEmptyUrlaub(this.Jahr);
+            Urlaub = this.GetEmptyUrlaub(this.CurrentJahr);
 
             Urlaub.MitarbeiterIDExtern = Mitarbeiter._id;
             Urlaub.NameExtern          = Mitarbeiter.Vorname + ' ' + Mitarbeiter.Name;
@@ -2978,7 +2983,7 @@ export class DatabaseUrlaubService {
       let Endetag: Moment;
       let IsUrlaubstag: boolean = false;
       let Urlaub: Urlaubsstruktur;
-      let Index: number = lodash.findIndex(Mitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
+      let Index: number = lodash.findIndex(Mitarbeiter.Urlaubsliste, {Jahr: this.CurrentJahr});
       let Merker: Urlauzeitspannenstruktur;
 
       if(Index !== -1) {
@@ -3050,7 +3055,7 @@ export class DatabaseUrlaubService {
       let Starttag: Moment;
       let Endetag: Moment;
       let Homeoffice: Urlaubsstruktur;
-      let Index: number = lodash.findIndex(Mitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
+      let Index: number = lodash.findIndex(Mitarbeiter.Urlaubsliste, {Jahr: this.CurrentJahr});
 
       if(Index !== -1) {
 
@@ -3505,10 +3510,10 @@ export class DatabaseUrlaubService {
         return  eintrag.Status === Status && eintrag.Checked === false || eintrag.Status !== Status;
       });
 
-      this.CurrentUrlaub = lodash.find(this.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
+      this.CurrentUrlaub = lodash.find(this.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.CurrentJahr});
       this.CurrentUrlaub.Homeofficezeitspannen = Homeofficeliste;
 
-      let Urlaubindex = lodash.findIndex(this.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.Jahr});
+      let Urlaubindex = lodash.findIndex(this.CurrentMitarbeiter.Urlaubsliste, {Jahr: this.CurrentJahr});
 
       this.CurrentMitarbeiter.Urlaubsliste[Urlaubindex] = this.CurrentUrlaub;
 
