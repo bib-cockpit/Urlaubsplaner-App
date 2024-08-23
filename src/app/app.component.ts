@@ -253,7 +253,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
         }
         catch(error) {
 
-          debugger;
+          console.log('Error happend heer...');
         }
 
         if(this.MitarbeiterDB.CheckMitarbeiterExists(this.GraphService.Graphuser.mail) === false) {
