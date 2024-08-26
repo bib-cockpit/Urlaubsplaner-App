@@ -88,34 +88,45 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
       if(this.AuthService.SecurityEnabled) {
 
-        this.authService.initialize().subscribe(() => {
+        try {
 
-        this.msalBroadcastService.inProgress$
-          .pipe(
-            filter((status_a: InteractionStatus) => {
+          this.authService.initialize().subscribe(() => {
 
-              this.Debug.ShowMessage('Interaction Status: ' + status_a, 'App Component', 'StartApp', this.Debug.Typen.Component);
+          this.msalBroadcastService.inProgress$
+            .pipe(
+              filter((status_a: InteractionStatus) => {
 
-              return status_a === InteractionStatus.None;
-            }),
-            takeUntil(this.Destroying)
-          )
-          .subscribe((status_b: InteractionStatus) => {
+                this.Debug.ShowMessage('Interaction Status: ' + status_a, 'App Component', 'StartApp', this.Debug.Typen.Component);
 
-            this.Debug.ShowMessage('Interaction Status: ' + status_b, 'App Component', 'StartApp', this.Debug.Typen.Component);
+                return status_a === InteractionStatus.None;
+              }),
+              takeUntil(this.Destroying)
+            )
+            .subscribe((status_b: InteractionStatus) => {
 
-            this.AuthService.SetShowLoginStatus();
-          });
+              this.Debug.ShowMessage('Interaction Status: ' + status_b, 'App Component', 'StartApp', this.Debug.Typen.Component);
 
-          this.AuthService.LoginSuccessEvent.subscribe(() => {
+              this.AuthService.SetShowLoginStatus();
+            });
 
-            this.Debug.ShowMessage('LoginSuccessEvent -> Start App', 'App Component', 'StartApp', this.Debug.Typen.Component);
+            this.AuthService.LoginSuccessEvent.subscribe(() => {
+
+              this.Debug.ShowMessage('LoginSuccessEvent -> Start App', 'App Component', 'StartApp', this.Debug.Typen.Component);
+
+              this.StartApp();
+            });
 
             this.StartApp();
           });
 
-          this.StartApp();
-        });
+        } catch (error) {
+
+          this.AuthService.UnsetActiveUser();
+
+          this.Debug.ShowErrorMessage(error, 'App Component', 'OnInit', this.Debug.Typen.Component);
+        }
+
+
       }
       else {
 

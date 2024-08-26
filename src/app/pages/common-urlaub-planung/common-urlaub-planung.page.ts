@@ -370,6 +370,10 @@ export class CommonUrlaubPlanungPage implements OnInit, OnDestroy {
 
       this.DB.Bundesland = lodash.find(this.BundeslandAuswahlliste, {Data: this.DB.Bundeslandkuerzel}).FirstColumn;
 
+      let test = this.DB.CurrentUrlaub.Urlaubzeitspannen;
+
+      debugger;
+
     } catch (error) {
 
       this.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'PrepareData', this.Debug.Typen.Page);

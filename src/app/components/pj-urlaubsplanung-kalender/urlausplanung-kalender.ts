@@ -555,6 +555,7 @@ export class UrlaubsplanungKalenderComponent implements OnInit, OnDestroy, OnCha
     try {
 
       let EndeDatum: Moment;
+      let Datum: Moment;
       let Startdatum: Moment;
       let Kalendertag: Kalendertagestruktur;
       let Anzahl: number = 0  ;
@@ -720,6 +721,19 @@ export class UrlaubsplanungKalenderComponent implements OnInit, OnDestroy, OnCha
           Kalendertag.IsUrlaub           = true;
           Kalendertag.IsHalberUrlaubstag = true;
           Kalendertag.Color              = 'white';
+
+          Datum = moment(Tag.Tagstempel);
+
+          if(Datum.isSameOrBefore(Heute)) {
+
+            this.DB.CurrentUrlaubzeitspanne.Status                      = this.DB.Urlaubstatusvarianten.Genehmigt;
+            this.DB.CurrentUrlaubzeitspanne.FreigabeanfrageSended       = true;
+            this.DB.CurrentUrlaubzeitspanne.FreigabeantwortSended       = true;
+            this.DB.CurrentUrlaubzeitspanne.FreigabeantwortOfficeSended = true;
+            this.DB.CurrentUrlaubzeitspanne.Planungmeldung              = 'Der Urlaub befand sich zum Tage der Eintragung am ' + Heute.format('DD.MM.YYYY') + ' in der Vergangenheit.';
+
+            Kalendertag.Background = this.DB.Urlaubsfaben.Genehmigt;
+          }
 
 
           this.AddUrlaubFinishedEvent.emit(true);

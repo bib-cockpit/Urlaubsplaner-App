@@ -166,20 +166,25 @@ let AppComponent = class AppComponent {
         this.Zoomfaktor = this.Pool.Mitarbeitersettings.Zoomfaktor;
       });
       if (this.AuthService.SecurityEnabled) {
-        this.authService.initialize().subscribe(() => {
-          this.msalBroadcastService.inProgress$.pipe((0, rxjs_1.filter)(status_a => {
-            this.Debug.ShowMessage('Interaction Status: ' + status_a, 'App Component', 'StartApp', this.Debug.Typen.Component);
-            return status_a === msal_browser_1.InteractionStatus.None;
-          }), (0, rxjs_1.takeUntil)(this.Destroying)).subscribe(status_b => {
-            this.Debug.ShowMessage('Interaction Status: ' + status_b, 'App Component', 'StartApp', this.Debug.Typen.Component);
-            this.AuthService.SetShowLoginStatus();
-          });
-          this.AuthService.LoginSuccessEvent.subscribe(() => {
-            this.Debug.ShowMessage('LoginSuccessEvent -> Start App', 'App Component', 'StartApp', this.Debug.Typen.Component);
+        try {
+          this.authService.initialize().subscribe(() => {
+            this.msalBroadcastService.inProgress$.pipe((0, rxjs_1.filter)(status_a => {
+              this.Debug.ShowMessage('Interaction Status: ' + status_a, 'App Component', 'StartApp', this.Debug.Typen.Component);
+              return status_a === msal_browser_1.InteractionStatus.None;
+            }), (0, rxjs_1.takeUntil)(this.Destroying)).subscribe(status_b => {
+              this.Debug.ShowMessage('Interaction Status: ' + status_b, 'App Component', 'StartApp', this.Debug.Typen.Component);
+              this.AuthService.SetShowLoginStatus();
+            });
+            this.AuthService.LoginSuccessEvent.subscribe(() => {
+              this.Debug.ShowMessage('LoginSuccessEvent -> Start App', 'App Component', 'StartApp', this.Debug.Typen.Component);
+              this.StartApp();
+            });
             this.StartApp();
           });
-          this.StartApp();
-        });
+        } catch (error) {
+          this.AuthService.UnsetActiveUser();
+          this.Debug.ShowErrorMessage(error, 'App Component', 'OnInit', this.Debug.Typen.Component);
+        }
       } else {
         this.StartApp();
       }
@@ -5502,6 +5507,7 @@ let UrlaubsplanungKalenderComponent = class UrlaubsplanungKalenderComponent {
   TagClicked(event, Tag, Wocheindex, CurrentTagindex) {
     try {
       let EndeDatum;
+      let Datum;
       let Startdatum;
       let Kalendertag;
       let Anzahl = 0;
@@ -5611,6 +5617,15 @@ let UrlaubsplanungKalenderComponent = class UrlaubsplanungKalenderComponent {
           Kalendertag.IsUrlaub = true;
           Kalendertag.IsHalberUrlaubstag = true;
           Kalendertag.Color = 'white';
+          Datum = (0, moment_1.default)(Tag.Tagstempel);
+          if (Datum.isSameOrBefore(Heute)) {
+            this.DB.CurrentUrlaubzeitspanne.Status = this.DB.Urlaubstatusvarianten.Genehmigt;
+            this.DB.CurrentUrlaubzeitspanne.FreigabeanfrageSended = true;
+            this.DB.CurrentUrlaubzeitspanne.FreigabeantwortSended = true;
+            this.DB.CurrentUrlaubzeitspanne.FreigabeantwortOfficeSended = true;
+            this.DB.CurrentUrlaubzeitspanne.Planungmeldung = 'Der Urlaub befand sich zum Tage der Eintragung am ' + Heute.format('DD.MM.YYYY') + ' in der Vergangenheit.';
+            Kalendertag.Background = this.DB.Urlaubsfaben.Genehmigt;
+          }
           this.AddUrlaubFinishedEvent.emit(true);
         } else {
           if (IsFeiertag) this.Tools.ShowHinweisDialog('Dieser Tag ist ein Feiertag.');else if (IsUrlaub) this.Tools.ShowHinweisDialog('Dieser Tag ist ein Urlaubstag.');else this.Tools.ShowHinweisDialog('Dieser Tag ist bereits ein Homeofficetag.');
@@ -8762,6 +8777,8 @@ let CommonUrlaubPlanungPage = class CommonUrlaubPlanungPage {
         _this2.DB.Bundesland = lodash.find(_this2.BundeslandAuswahlliste, {
           Data: _this2.DB.Bundeslandkuerzel
         }).FirstColumn;
+        let test = _this2.DB.CurrentUrlaub.Urlaubzeitspannen;
+        debugger;
       } catch (error) {
         _this2.Debug.ShowErrorMessage(error, 'Urlaubsplanung Page', 'PrepareData', _this2.Debug.Typen.Page);
       }
@@ -11476,9 +11493,9 @@ let BasicsProvider = class BasicsProvider {
   InnerContenthoehe = 0;
   Waittime = 300;
   Svgpath = 'assets/svgs/';
-  AppBuild = '05.06.2024 07:00';
-  AppVersionName = '1.19';
-  AppVersionDatum = '05.06.2024';
+  AppBuild = '26.08.2024 07:00';
+  AppVersionName = '1.20';
+  AppVersionDatum = '26.08.2024';
   WebAppUrl = 'https://polite-cliff-084832d03.4.azurestaticapps.net/';
   Farben = {
     BAEBlau: '#307ac1',
