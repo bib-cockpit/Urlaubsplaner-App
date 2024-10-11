@@ -19,6 +19,7 @@ import moment, {Moment} from "moment";
 // import {DatabaseOutlookemailService} from "../database-email/database-outlookemail.service";
 import {BasicsProvider} from "../basics/basics";
 import {Outlookemailadressstruktur} from "../../dataclasses/outlookemailadressstruktur";
+import {codeSharp} from "ionicons/icons";
 
 @Injectable({
   providedIn: 'root'
@@ -307,7 +308,6 @@ export class Graphservice {
 
       return new Promise((resolve, reject) => {
 
-
         if(token !== null) {
 
           graphClient.api('/me').select('*').get().then((result: User) => {
@@ -317,6 +317,8 @@ export class Graphservice {
             resolve(true);
 
           }).catch((error: GraphError) => {
+
+            console.log('Benutzer konnte nicht geladen werden.');
 
             switch (error.code) {
 
@@ -336,12 +338,16 @@ export class Graphservice {
                 break;
             }
 
-            reject(error);
+            console.log(error);
+
+            resolve(true);
           });
         }
         else {
 
-          reject(false);
+          console.log('GetOwnUserinfo Token Error');
+
+          resolve(true);
         }
       });
 
@@ -1223,6 +1229,8 @@ export class Graphservice {
 
           }).catch((error: GraphError) => {
 
+            console.log('Fehler beim Laden des Bildes.');
+
             switch (error.statusCode) {
 
               case 404: // Not found
@@ -1235,17 +1243,22 @@ export class Graphservice {
 
               default:
 
+                this.UserimageSRC = null;
+
+                resolve(true);
+
                 debugger;
 
                 break;
             }
 
-            reject(error);
           });
         }
         else {
 
-          reject(false);
+          console.log('GetOwnUserimage Token error');
+
+          resolve(true);
         }
 
       });

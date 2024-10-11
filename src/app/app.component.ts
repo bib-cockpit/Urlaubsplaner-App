@@ -190,7 +190,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
 
           this.Pool.ProgressMessage = 'Lade Change Log';
 
-          // await this.Pool.ReadChangelogliste(); // 1
+          await this.Pool.ReadChangelogliste(); // 1
 
           this.Pool.CurrentProgressValue++;
 
