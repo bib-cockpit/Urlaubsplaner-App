@@ -154,8 +154,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
       this.Basics.Contentbreite = this.platform.width();
       this.Basics.Contenthoehe  = this.platform.height();
 
-      debugger;
-
       if(this.AuthService.ActiveUser !== null) {
 
         // Benutzer ist angemeldet
@@ -266,7 +264,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentChecked {
         }
         catch(error) {
 
-          console.log('Error happend heer...');
+          console.log('error.message');
         }
 
         if(this.MitarbeiterDB.CheckMitarbeiterExists(this.GraphService.Graphuser.mail) === false) {

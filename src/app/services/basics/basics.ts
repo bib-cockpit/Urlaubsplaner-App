@@ -17,9 +17,9 @@ export class BasicsProvider {
   public InnerContenthoehe: number    = 0;
   public Waittime: number             = 300;
   public Svgpath: string              = 'assets/svgs/';
-  public AppBuild: string             = '26.08.2024 07:00';
-  public AppVersionName: string       = '1.20';
-  public AppVersionDatum: string      = '26.08.2024';
+  public AppBuild: string             = '15.10.2024 23:00';
+  public AppVersionName: string       = '1.21';
+  public AppVersionDatum: string      = '15.10.2024';
   public WebAppUrl: string            = 'https://polite-cliff-084832d03.4.azurestaticapps.net/';
 
 
